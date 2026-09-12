@@ -1587,7 +1587,7 @@
       "name": "kpi-grid",
       "type": "registry:item",
       "title": "KPI Grid",
-      "description": "Two to six stat cards that pop in one after another, reflowing to three columns in landscape, two in square, and one or two in portrait.",
+      "description": "Two to six stat cards that pop in one after another, reflowing to up to four columns in landscape (never leaving a lone card on its own row), two in square, and one or two in portrait.",
       "categories": [
         "data"
       ],

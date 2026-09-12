@@ -795,7 +795,7 @@ const heading = `${fonts.instrumentSerif}, ui-serif, Georgia, serif`;
 </Center>
 ```
 
-- [KPI Grid](http://localhost:3000/r/kpi-grid.json): Two to six stat cards that pop in one after another, reflowing to three columns in landscape, two in square, and one or two in portrait. (length 75f@30fps · use for A dashboard summary slide: revenue, users, churn and NPS side by side; End-of-video recap of the numbers that mattered · avoid A single metric — use `stat-counter`)
+- [KPI Grid](http://localhost:3000/r/kpi-grid.json): Two to six stat cards that pop in one after another, reflowing to up to four columns in landscape (never leaving a lone card on its own row), two in square, and one or two in portrait. (length 75f@30fps · use for A dashboard summary slide: revenue, users, churn and NPS side by side; End-of-video recap of the numbers that mattered · avoid A single metric — use `stat-counter`)
 
 ```tsx
 <Center>
