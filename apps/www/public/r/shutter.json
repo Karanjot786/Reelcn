@@ -1,0 +1,40 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "shutter",
+  "title": "Shutter",
+  "description": "Slats close one after another over the outgoing scene, then open in the same direction onto the next one.",
+  "dependencies": [
+    "@remotion/transitions",
+    "remotion"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/shutter.tsx",
+      "content": "/**\n * @title Shutter\n * @category transitions\n * @description Slats close one after another over the outgoing scene, then open in the same direction onto the next one.\n * @duration 30\n * @use Section changes in slideshows, listicles and countdowns\n * @use Editorial or retro looks that want a mechanical rhythm\n * @tags shutter, blinds, slats, stagger\n * @example\n * <TransitionSeries>\n *   <TransitionSeries.Sequence durationInFrames={60}>\n *     <NumberThree />\n *   </TransitionSeries.Sequence>\n *   <TransitionSeries.Transition presentation={shutter({ slats: 8 })} timing={linearTiming({ durationInFrames: 30 })} />\n *   <TransitionSeries.Sequence durationInFrames={60}>\n *     <NumberTwo />\n *   </TransitionSeries.Sequence>\n * </TransitionSeries>\n */\nimport type { TransitionPresentation, TransitionPresentationComponentProps } from \"@remotion/transitions\";\nimport { AbsoluteFill, interpolate } from \"remotion\";\nimport { CLAMP, easings, useTheme, useViewport } from \"./core\";\n\nexport type ShutterProps = {\n  /** Number of slats. Defaults to one per 160 design units across the frame. */\n  slats?: number;\n  /** `horizontal` slats stack top to bottom; `vertical` slats stand side by side. */\n  direction?: \"horizontal\" | \"vertical\";\n  /** Slat color. Defaults to the theme accent. */\n  color?: string;\n};\n\nfunction ShutterPresentation({\n  children,\n  presentationDirection,\n  presentationProgress,\n  passedProps,\n}: TransitionPresentationComponentProps<ShutterProps>) {\n  const theme = useTheme();\n  const { width, height, u } = useViewport();\n  if (presentationDirection === \"exiting\") {\n    return <AbsoluteFill style={{ opacity: presentationProgress < 0.5 ? 1 : 0 }}>{children}</AbsoluteFill>;\n  }\n\n  const vertical = passedProps.direction === \"vertical\";\n  // The length the slats are stacked along.\n  const extent = vertical ? width : height;\n  const count = Math.max(2, Math.round(passedProps.slats ?? extent / u(160)));\n  // Every slat is shut from 0.48 to 0.52, which hides the cut.\n  const step = 0.18 / (count - 1);\n  const span = 0.48 - step * (count - 1);\n  const color = passedProps.color ?? theme.colors.accent;\n  const at = (start: number) =>\n    interpolate(presentationProgress, [start, start + span], [0, 1], { ...CLAMP, easing: easings.gentle });\n\n  return (\n    <AbsoluteFill>\n      <AbsoluteFill style={{ opacity: presentationProgress >= 0.5 ? 1 : 0 }}>{children}</AbsoluteFill>\n      {Array.from({ length: count }, (_, index) => {\n        // Whole pixels that overlap by up to one, so shut slats never show a hairline seam.\n        const start = Math.floor((index * extent) / count);\n        const size = Math.ceil(((index + 1) * extent) / count) - start;\n        // A slat grows from its leading edge, then shrinks toward its trailing edge, so the motion keeps one direction.\n        const close = at(index * step);\n        const open = at(0.52 + index * step);\n        const from = start + size * open;\n        const length = size * (close - open);\n        if (length <= 0) return null;\n        return (\n          <div\n            key={index}\n            style={{\n              position: \"absolute\",\n              background: color,\n              ...(vertical\n                ? { top: 0, bottom: 0, left: from, width: length }\n                : { left: 0, right: 0, top: from, height: length }),\n            }}\n          />\n        );\n      })}\n    </AbsoluteFill>\n  );\n}\n\nexport function shutter(props: ShutterProps = {}): TransitionPresentation<ShutterProps> {\n  return { component: ShutterPresentation, props };\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/shutter.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "30",
+    "use": [
+      "Section changes in slideshows, listicles and countdowns",
+      "Editorial or retro looks that want a mechanical rhythm"
+    ],
+    "avoid": [],
+    "tags": [
+      "shutter",
+      "blinds",
+      "slats",
+      "stagger"
+    ]
+  },
+  "docs": "Usage:\n\n<TransitionSeries>\n  <TransitionSeries.Sequence durationInFrames={60}>\n    <NumberThree />\n  </TransitionSeries.Sequence>\n  <TransitionSeries.Transition presentation={shutter({ slats: 8 })} timing={linearTiming({ durationInFrames: 30 })} />\n  <TransitionSeries.Sequence durationInFrames={60}>\n    <NumberTwo />\n  </TransitionSeries.Sequence>\n</TransitionSeries>",
+  "categories": [
+    "transitions"
+  ],
+  "type": "registry:item"
+}

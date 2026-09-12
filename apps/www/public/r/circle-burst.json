@@ -1,0 +1,41 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "circle-burst",
+  "title": "Circle Burst",
+  "description": "A colored circle bursts out from a point to cover the frame, then a second circle opens from the same point onto the next scene.",
+  "dependencies": [
+    "@remotion/transitions",
+    "remotion"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/circle-burst.tsx",
+      "content": "/**\n * @title Circle Burst\n * @category transitions\n * @description A colored circle bursts out from a point to cover the frame, then a second circle opens from the same point onto the next scene.\n * @duration 30\n * @use Moving from a point of interest, like a button, logo or face, into the next scene\n * @use Bold, playful scene changes in social clips\n * @tags circle, burst, iris, radial, reveal\n * @example\n * <TransitionSeries>\n *   <TransitionSeries.Sequence durationInFrames={60}>\n *     <AppScreen />\n *   </TransitionSeries.Sequence>\n *   <TransitionSeries.Transition\n *     presentation={circleBurst({ origin: { x: 80, y: 20 } })}\n *     timing={linearTiming({ durationInFrames: 30 })}\n *   />\n *   <TransitionSeries.Sequence durationInFrames={60}>\n *     <NextScreen />\n *   </TransitionSeries.Sequence>\n * </TransitionSeries>\n */\nimport type { TransitionPresentation, TransitionPresentationComponentProps } from \"@remotion/transitions\";\nimport { AbsoluteFill, interpolate } from \"remotion\";\nimport { CLAMP, easings, useTheme, useViewport } from \"./core\";\n\nexport type CircleBurstProps = {\n  /** Center of the burst, in percent of the frame. */\n  origin?: { x: number; y: number };\n  /** Circle color. Defaults to the theme accent. */\n  color?: string;\n  /** Thin ring that leads both circles. Defaults to the theme highlight. */\n  ringColor?: string;\n};\n\nfunction CircleBurstPresentation({\n  children,\n  presentationDirection,\n  presentationProgress,\n  passedProps,\n}: TransitionPresentationComponentProps<CircleBurstProps>) {\n  const theme = useTheme();\n  const { width, height, u } = useViewport();\n  if (presentationDirection === \"exiting\") return <AbsoluteFill>{children}</AbsoluteFill>;\n\n  const origin = passedProps.origin ?? { x: 50, y: 50 };\n  const cx = (origin.x / 100) * width;\n  const cy = (origin.y / 100) * height;\n  const ring = u(28);\n  // Radius that reaches the farthest corner, plus the ring.\n  const reach = Math.hypot(Math.max(cx, width - cx), Math.max(cy, height - cy)) + ring;\n  const cover = interpolate(presentationProgress, [0, 0.5], [0, 1], { ...CLAMP, easing: easings.gentle });\n  const reveal = interpolate(presentationProgress, [0.5, 1], [0, 1], { ...CLAMP, easing: easings.gentle });\n  const circle = (radius: number) => `circle(${Math.max(radius, 0)}px at ${cx}px ${cy}px)`;\n  const ringColor = passedProps.ringColor ?? theme.colors.highlight;\n\n  return (\n    <AbsoluteFill>\n      <AbsoluteFill style={{ background: ringColor, clipPath: circle(reach * cover) }} />\n      <AbsoluteFill\n        style={{ background: passedProps.color ?? theme.colors.accent, clipPath: circle(reach * cover - ring) }}\n      />\n      <AbsoluteFill style={{ background: ringColor, clipPath: circle(reach * reveal) }} />\n      <AbsoluteFill style={{ clipPath: circle(reach * reveal - ring), opacity: presentationProgress >= 0.5 ? 1 : 0 }}>\n        {children}\n      </AbsoluteFill>\n    </AbsoluteFill>\n  );\n}\n\nexport function circleBurst(props: CircleBurstProps = {}): TransitionPresentation<CircleBurstProps> {\n  return { component: CircleBurstPresentation, props };\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/circle-burst.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "30",
+    "use": [
+      "Moving from a point of interest, like a button, logo or face, into the next scene",
+      "Bold, playful scene changes in social clips"
+    ],
+    "avoid": [],
+    "tags": [
+      "circle",
+      "burst",
+      "iris",
+      "radial",
+      "reveal"
+    ]
+  },
+  "docs": "Usage:\n\n<TransitionSeries>\n  <TransitionSeries.Sequence durationInFrames={60}>\n    <AppScreen />\n  </TransitionSeries.Sequence>\n  <TransitionSeries.Transition\n    presentation={circleBurst({ origin: { x: 80, y: 20 } })}\n    timing={linearTiming({ durationInFrames: 30 })}\n  />\n  <TransitionSeries.Sequence durationInFrames={60}>\n    <NextScreen />\n  </TransitionSeries.Sequence>\n</TransitionSeries>",
+  "categories": [
+    "transitions"
+  ],
+  "type": "registry:item"
+}

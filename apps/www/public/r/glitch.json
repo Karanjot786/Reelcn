@@ -1,0 +1,43 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "glitch",
+  "title": "Glitch",
+  "description": "A digital hit: RGB channel split and seeded horizontal slice offsets build to a peak, cut to the next scene, then settle.",
+  "dependencies": [
+    "@remotion/transitions",
+    "remotion"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/glitch.tsx",
+      "content": "/**\n * @title Glitch\n * @category transitions\n * @description A digital hit: RGB channel split and seeded horizontal slice offsets build to a peak, cut to the next scene, then settle.\n * @duration 16\n * @use Tech, gaming and music edits\n * @use Hard cuts that need a jolt of energy\n * @avoid Calm, premium or corporate pieces — use `card-push`\n * @tags glitch, rgb, digital, cut, distortion\n * @example\n * <TransitionSeries>\n *   <TransitionSeries.Sequence durationInFrames={45}>\n *     <Hook />\n *   </TransitionSeries.Sequence>\n *   <TransitionSeries.Transition presentation={glitch({ intensity: 1.2 })} timing={linearTiming({ durationInFrames: 16 })} />\n *   <TransitionSeries.Sequence durationInFrames={60}>\n *     <Reveal />\n *   </TransitionSeries.Sequence>\n * </TransitionSeries>\n */\nimport type { TransitionPresentation, TransitionPresentationComponentProps } from \"@remotion/transitions\";\nimport { useId } from \"react\";\nimport { AbsoluteFill, random } from \"remotion\";\nimport { useTheme, useViewport } from \"./core\";\n\nexport type GlitchProps = {\n  /** Scales the channel split and slice offsets. */\n  intensity?: number;\n  /** Most horizontal slices displaced at once, reached at the cut. */\n  slices?: number;\n  /** Colors of the thin bars that flash near the cut. Defaults to the theme accent and highlight. */\n  colors?: string[];\n  seed?: string | number;\n};\n\n// Each matrix keeps one color channel, so the three can be offset apart and screened back together.\nconst RED = \"1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0\";\nconst GREEN = \"0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0\";\nconst BLUE = \"0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0\";\n\nfunction GlitchPresentation({\n  children,\n  presentationDirection,\n  presentationProgress,\n  presentationDurationInFrames,\n  passedProps,\n}: TransitionPresentationComponentProps<GlitchProps>) {\n  const theme = useTheme();\n  const { width, height, u } = useViewport();\n  const filterId = `reelcn-glitch-${useId().replace(/[^\\w-]/g, \"\")}`;\n  const { intensity = 1, slices = 6, seed = \"glitch\" } = passedProps;\n  const colors = passedProps.colors ?? [theme.colors.accent, theme.colors.highlight];\n  const visible = presentationDirection === \"entering\" ? presentationProgress >= 0.5 : presentationProgress < 0.5;\n  // 0 at both ends, full at the cut. Both scenes compute the same pattern, so the cut lands mid-glitch.\n  const peak = (1 - Math.abs(presentationProgress * 2 - 1)) ** 1.5 * intensity;\n  // A fresh pattern on every frame of the transition.\n  const frame = Math.floor(presentationProgress * presentationDurationInFrames);\n  const rand = (index: number, key: string) => random(`${seed}-${frame}-${index}-${key}`);\n  const shift = u(22) * peak;\n  const bands = Array.from({ length: Math.ceil(slices * Math.min(peak, 1)) }, (_, index) => ({\n    y: Math.round(rand(index, \"y\") * height),\n    h: Math.round(u(10 + rand(index, \"h\") * 110)),\n    dx: (rand(index, \"x\") - 0.5) * u(320) * peak,\n  }));\n  const bars = colors\n    .map((color, index) => ({\n      color,\n      on: rand(index, \"bar\") < peak - 0.3,\n      x: rand(index, \"bx\") * width * 0.5,\n      y: rand(index, \"by\") * height,\n      w: width * (0.25 + rand(index, \"bw\") * 0.5),\n      h: u(4 + rand(index, \"bh\") * 14),\n    }))\n    .filter((bar) => visible && bar.on);\n\n  return (\n    <AbsoluteFill style={{ opacity: visible ? 1 : 0 }}>\n      <svg width={0} height={0} style={{ position: \"absolute\" }} aria-hidden=\"true\">\n        <filter id={filterId} x=\"0\" y=\"0\" width=\"100%\" height=\"100%\" colorInterpolationFilters=\"sRGB\">\n          {bands.map((band, index) => (\n            <feOffset\n              key={index}\n              in=\"SourceGraphic\"\n              dx={band.dx}\n              dy={0}\n              x={0}\n              y={band.y}\n              width={width}\n              height={band.h}\n              result={`band${index}`}\n            />\n          ))}\n          <feMerge result=\"sliced\">\n            <feMergeNode in=\"SourceGraphic\" />\n            {bands.map((_, index) => (\n              <feMergeNode key={index} in={`band${index}`} />\n            ))}\n          </feMerge>\n          <feColorMatrix in=\"sliced\" type=\"matrix\" values={RED} result=\"red\" />\n          <feOffset in=\"red\" dx={-shift} dy={0} result=\"redShifted\" />\n          <feColorMatrix in=\"sliced\" type=\"matrix\" values={GREEN} result=\"green\" />\n          <feColorMatrix in=\"sliced\" type=\"matrix\" values={BLUE} result=\"blue\" />\n          <feOffset in=\"blue\" dx={shift} dy={0} result=\"blueShifted\" />\n          <feBlend in=\"redShifted\" in2=\"green\" mode=\"screen\" result=\"redGreen\" />\n          <feBlend in=\"redGreen\" in2=\"blueShifted\" mode=\"screen\" />\n        </filter>\n      </svg>\n      <AbsoluteFill style={{ filter: visible && peak > 0.01 ? `url(#${filterId})` : undefined }}>\n        {children}\n      </AbsoluteFill>\n      {bars.map((bar, index) => (\n        <div\n          key={index}\n          style={{ position: \"absolute\", left: bar.x, top: bar.y, width: bar.w, height: bar.h, background: bar.color }}\n        />\n      ))}\n    </AbsoluteFill>\n  );\n}\n\nexport function glitch(props: GlitchProps = {}): TransitionPresentation<GlitchProps> {\n  return { component: GlitchPresentation, props };\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/glitch.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "16",
+    "use": [
+      "Tech, gaming and music edits",
+      "Hard cuts that need a jolt of energy"
+    ],
+    "avoid": [
+      "Calm, premium or corporate pieces — use `card-push`"
+    ],
+    "tags": [
+      "glitch",
+      "rgb",
+      "digital",
+      "cut",
+      "distortion"
+    ]
+  },
+  "docs": "Usage:\n\n<TransitionSeries>\n  <TransitionSeries.Sequence durationInFrames={45}>\n    <Hook />\n  </TransitionSeries.Sequence>\n  <TransitionSeries.Transition presentation={glitch({ intensity: 1.2 })} timing={linearTiming({ durationInFrames: 16 })} />\n  <TransitionSeries.Sequence durationInFrames={60}>\n    <Reveal />\n  </TransitionSeries.Sequence>\n</TransitionSeries>",
+  "categories": [
+    "transitions"
+  ],
+  "type": "registry:item"
+}

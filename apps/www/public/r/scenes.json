@@ -1,0 +1,37 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "scenes",
+  "title": "Scenes",
+  "description": "Plays a list of scenes back to back with a transition between each pair, and computes the total length for calculateMetadata.",
+  "dependencies": [
+    "@remotion/transitions"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/items/scenes.tsx",
+      "content": "/**\n * @title Scenes\n * @category transitions\n * @description Plays a list of scenes back to back with a transition between each pair, and computes the total length for calculateMetadata.\n * @duration data-driven\n * @use Assembling a whole video from scene components, one entry per scene\n * @use Mixing reelcn transitions with the ones built into @remotion/transitions\n * @tags scenes, sequence, timeline, storyboard\n * @example\n * <Scenes\n *   items={[\n *     { node: <Intro />, duration: 90, transition: splitDoors() },\n *     { node: <Features />, duration: 150, transition: fade(), timing: linearTiming({ durationInFrames: 15 }) },\n *     { node: <Outro />, duration: 90 },\n *   ]}\n *   defaultTiming={linearTiming({ durationInFrames: 24 })}\n * />\n */\nimport {\n  linearTiming,\n  type TransitionPresentation,\n  TransitionSeries,\n  type TransitionTiming,\n} from \"@remotion/transitions\";\nimport type React from \"react\";\nimport { Fragment } from \"react\";\n\n// biome-ignore lint/suspicious/noExplicitAny: every presentation, reelcn or built-in, has its own props type.\ntype AnyPresentation = TransitionPresentation<any>;\n\nexport type SceneItem = {\n  node: React.ReactNode;\n  /** Length in frames, including the frames shared with its transitions. */\n  duration: number;\n  /** Transition into the next scene. Ignored on the last scene. */\n  transition?: AnyPresentation;\n  /** Timing of that transition. */\n  timing?: TransitionTiming;\n};\n\nexport type ScenesProps = {\n  items: SceneItem[];\n  /** Used after scenes that set no transition. Without one, those scenes hard-cut. */\n  defaultTransition?: AnyPresentation;\n  /** Used by transitions that set no timing. Defaults to 20 linear frames. */\n  defaultTiming?: TransitionTiming;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\ntype Defaults = Pick<ScenesProps, \"defaultTransition\" | \"defaultTiming\">;\n\nconst FALLBACK_TIMING = linearTiming({ durationInFrames: 20 });\n\n/** The transition after scene `index`, or null for a hard cut. */\nfunction transitionAfter(items: SceneItem[], index: number, defaults: Defaults) {\n  const presentation = items[index].transition ?? defaults.defaultTransition;\n  if (index >= items.length - 1 || !presentation) return null;\n  return { presentation, timing: items[index].timing ?? defaults.defaultTiming ?? FALLBACK_TIMING };\n}\n\nexport function Scenes({ items, defaultTransition, defaultTiming, style, className }: ScenesProps) {\n  const defaults = { defaultTransition, defaultTiming };\n  return (\n    <TransitionSeries style={style} className={className}>\n      {items.map((item, index) => {\n        const next = transitionAfter(items, index, defaults);\n        return (\n          <Fragment key={index}>\n            <TransitionSeries.Sequence durationInFrames={item.duration}>{item.node}</TransitionSeries.Sequence>\n            {next ? <TransitionSeries.Transition presentation={next.presentation} timing={next.timing} /> : null}\n          </Fragment>\n        );\n      })}\n    </TransitionSeries>\n  );\n}\n\n/**\n * Total frames of `<Scenes>`: every scene's duration minus the frames each transition overlaps.\n * Pass the same defaults you give `<Scenes>`, e.g. from `calculateMetadata`.\n */\nexport function getScenesDuration(items: SceneItem[], fps: number, defaults: Defaults = {}): number {\n  return items.reduce((total, item, index) => {\n    const next = transitionAfter(items, index, defaults);\n    return total + item.duration - (next ? next.timing.getDurationInFrames({ fps }) : 0);\n  }, 0);\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/scenes.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "Assembling a whole video from scene components, one entry per scene",
+      "Mixing reelcn transitions with the ones built into @remotion/transitions"
+    ],
+    "avoid": [],
+    "tags": [
+      "scenes",
+      "sequence",
+      "timeline",
+      "storyboard"
+    ]
+  },
+  "docs": "Usage:\n\n<Scenes\n  items={[\n    { node: <Intro />, duration: 90, transition: splitDoors() },\n    { node: <Features />, duration: 150, transition: fade(), timing: linearTiming({ durationInFrames: 15 }) },\n    { node: <Outro />, duration: 90 },\n  ]}\n  defaultTiming={linearTiming({ durationInFrames: 24 })}\n/>",
+  "categories": [
+    "transitions"
+  ],
+  "type": "registry:item"
+}

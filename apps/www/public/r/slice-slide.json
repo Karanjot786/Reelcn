@@ -1,0 +1,42 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "slice-slide",
+  "title": "Slice Slide",
+  "description": "Cuts the frame into horizontal slices that slide out alternately left and right, each pushed out by the matching slice of the next scene.",
+  "dependencies": [
+    "@remotion/transitions",
+    "remotion"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/slice-slide.tsx",
+      "content": "/**\n * @title Slice Slide\n * @category transitions\n * @description Cuts the frame into horizontal slices that slide out alternately left and right, each pushed out by the matching slice of the next scene.\n * @duration 30\n * @use Stylised scene changes in promos, music and fashion edits\n * @use Swapping between two layouts with a strong horizontal rhythm\n * @avoid Scenes that play audio or video, since both render once per slice — use `brand-sweep`\n * @tags slices, strips, push, stagger\n * @example\n * <TransitionSeries>\n *   <TransitionSeries.Sequence durationInFrames={60}>\n *     <LookOne />\n *   </TransitionSeries.Sequence>\n *   <TransitionSeries.Transition presentation={sliceSlide({ slices: 6 })} timing={linearTiming({ durationInFrames: 30 })} />\n *   <TransitionSeries.Sequence durationInFrames={60}>\n *     <LookTwo />\n *   </TransitionSeries.Sequence>\n * </TransitionSeries>\n */\nimport type { TransitionPresentation, TransitionPresentationComponentProps } from \"@remotion/transitions\";\nimport { AbsoluteFill, interpolate } from \"remotion\";\nimport { CLAMP, easings, useViewport } from \"./core\";\n\nexport type SliceSlideProps = {\n  /** Number of horizontal slices. Defaults to one per 216 design units of height. */\n  slices?: number;\n  /** Where the top slice leaves to. The slices below alternate. */\n  direction?: \"left\" | \"right\";\n};\n\nfunction SliceSlidePresentation({\n  children,\n  presentationDirection,\n  presentationProgress,\n  passedProps,\n}: TransitionPresentationComponentProps<SliceSlideProps>) {\n  const { width, height, u } = useViewport();\n  const count = Math.max(2, Math.round(passedProps.slices ?? height / u(216)));\n  const first = passedProps.direction === \"right\" ? 1 : -1;\n  const entering = presentationDirection === \"entering\";\n  // Slices start one after another from the top; the last one still gets 70% of the transition to travel.\n  const step = 0.3 / (count - 1);\n  const span = 1 - step * (count - 1);\n\n  return (\n    <AbsoluteFill>\n      {Array.from({ length: count }, (_, index) => {\n        const top = Math.round((index * height) / count);\n        const bottom = Math.round(((index + 1) * height) / count);\n        const sign = index % 2 === 0 ? first : -first;\n        const travel = interpolate(presentationProgress, [index * step, index * step + span], [0, 1], {\n          ...CLAMP,\n          easing: easings.gentle,\n        });\n        // Outgoing slices leave toward `sign`; incoming slices follow them in from the opposite edge.\n        const x = sign * (entering ? travel - 1 : travel) * width;\n        return (\n          <div\n            key={index}\n            style={{\n              position: \"absolute\",\n              left: 0,\n              top,\n              width,\n              height: bottom - top,\n              overflow: \"hidden\",\n              translate: `${x}px 0`,\n            }}\n          >\n            <div style={{ position: \"absolute\", left: 0, top: -top, width, height }}>{children}</div>\n          </div>\n        );\n      })}\n    </AbsoluteFill>\n  );\n}\n\nexport function sliceSlide(props: SliceSlideProps = {}): TransitionPresentation<SliceSlideProps> {\n  return { component: SliceSlidePresentation, props };\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/slice-slide.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "30",
+    "use": [
+      "Stylised scene changes in promos, music and fashion edits",
+      "Swapping between two layouts with a strong horizontal rhythm"
+    ],
+    "avoid": [
+      "Scenes that play audio or video, since both render once per slice — use `brand-sweep`"
+    ],
+    "tags": [
+      "slices",
+      "strips",
+      "push",
+      "stagger"
+    ]
+  },
+  "docs": "Usage:\n\n<TransitionSeries>\n  <TransitionSeries.Sequence durationInFrames={60}>\n    <LookOne />\n  </TransitionSeries.Sequence>\n  <TransitionSeries.Transition presentation={sliceSlide({ slices: 6 })} timing={linearTiming({ durationInFrames: 30 })} />\n  <TransitionSeries.Sequence durationInFrames={60}>\n    <LookTwo />\n  </TransitionSeries.Sequence>\n</TransitionSeries>",
+  "categories": [
+    "transitions"
+  ],
+  "type": "registry:item"
+}

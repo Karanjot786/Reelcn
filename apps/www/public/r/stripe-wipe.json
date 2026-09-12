@@ -1,0 +1,40 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "stripe-wipe",
+  "title": "Stripe Wipe",
+  "description": "A band of tapered diagonal stripes sweeps across the frame, wiping the next scene in behind it.",
+  "dependencies": [
+    "@remotion/transitions",
+    "remotion"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/stripe-wipe.tsx",
+      "content": "/**\n * @title Stripe Wipe\n * @category transitions\n * @description A band of tapered diagonal stripes sweeps across the frame, wiping the next scene in behind it.\n * @duration 24\n * @use Energetic scene changes in sports, promo and social edits\n * @use Wipes that should carry the brand color\n * @tags wipe, stripes, diagonal, speed\n * @example\n * <TransitionSeries>\n *   <TransitionSeries.Sequence durationInFrames={60}>\n *     <Score />\n *   </TransitionSeries.Sequence>\n *   <TransitionSeries.Transition presentation={stripeWipe({ stripes: 6 })} timing={linearTiming({ durationInFrames: 24 })} />\n *   <TransitionSeries.Sequence durationInFrames={60}>\n *     <Highlights />\n *   </TransitionSeries.Sequence>\n * </TransitionSeries>\n */\nimport type { TransitionPresentation, TransitionPresentationComponentProps } from \"@remotion/transitions\";\nimport { AbsoluteFill, interpolate } from \"remotion\";\nimport { CLAMP, easings, useTheme, useViewport } from \"./core\";\n\nexport type StripeWipeProps = {\n  /** Stripe colors, cycled from the wipe edge forward. Defaults to the theme accent. */\n  colors?: string[];\n  /** Number of stripes in the band. */\n  stripes?: number;\n  /** Which way the wipe travels. */\n  direction?: \"right\" | \"left\";\n  /** Lean of the stripes in degrees. */\n  angle?: number;\n};\n\nfunction StripeWipePresentation({\n  children,\n  presentationDirection,\n  presentationProgress,\n  passedProps,\n}: TransitionPresentationComponentProps<StripeWipeProps>) {\n  const theme = useTheme();\n  const { width, height, u } = useViewport();\n  if (presentationDirection === \"exiting\") return <AbsoluteFill>{children}</AbsoluteFill>;\n\n  const colors = passedProps.colors ?? [theme.colors.accent];\n  const count = Math.max(1, Math.round(passedProps.stripes ?? 5));\n  const flip = passedProps.direction === \"left\";\n  const lean = (height / 2) * Math.tan(((passedProps.angle ?? 24) * Math.PI) / 180);\n  // Stripes taper away from the wipe edge; the first one sits on the edge and hides it.\n  const stripes: { offset: number; size: number }[] = [];\n  let band = 0;\n  for (let index = 0; index < count; index++) {\n    const size = (u(84) * (count - index)) / count;\n    stripes.push({ offset: band, size });\n    band += size * 1.5;\n  }\n  const edge =\n    -(band + lean) +\n    (width + band + 2 * lean) * interpolate(presentationProgress, [0, 1], [0, 1], { ...CLAMP, easing: easings.gentle });\n  const x = (value: number) => (flip ? width - value : value);\n  const slant = (from: number, to: number) =>\n    `polygon(${x(from + lean)}px 0, ${x(to + lean)}px 0, ${x(to - lean)}px ${height}px, ${x(from - lean)}px ${height}px)`;\n\n  return (\n    <AbsoluteFill>\n      <AbsoluteFill style={{ clipPath: slant(-width - 2 * lean, edge) }}>{children}</AbsoluteFill>\n      {stripes.map((stripe, index) => (\n        <AbsoluteFill\n          key={index}\n          style={{\n            background: colors[index % colors.length],\n            clipPath: slant(edge + stripe.offset, edge + stripe.offset + stripe.size),\n          }}\n        />\n      ))}\n    </AbsoluteFill>\n  );\n}\n\nexport function stripeWipe(props: StripeWipeProps = {}): TransitionPresentation<StripeWipeProps> {\n  return { component: StripeWipePresentation, props };\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/stripe-wipe.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "24",
+    "use": [
+      "Energetic scene changes in sports, promo and social edits",
+      "Wipes that should carry the brand color"
+    ],
+    "avoid": [],
+    "tags": [
+      "wipe",
+      "stripes",
+      "diagonal",
+      "speed"
+    ]
+  },
+  "docs": "Usage:\n\n<TransitionSeries>\n  <TransitionSeries.Sequence durationInFrames={60}>\n    <Score />\n  </TransitionSeries.Sequence>\n  <TransitionSeries.Transition presentation={stripeWipe({ stripes: 6 })} timing={linearTiming({ durationInFrames: 24 })} />\n  <TransitionSeries.Sequence durationInFrames={60}>\n    <Highlights />\n  </TransitionSeries.Sequence>\n</TransitionSeries>",
+  "categories": [
+    "transitions"
+  ],
+  "type": "registry:item"
+}

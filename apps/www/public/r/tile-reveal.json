@@ -1,0 +1,41 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tile-reveal",
+  "title": "Tile Reveal",
+  "description": "A grid of tiles pops in over the outgoing scene in a diagonal or seeded wave, then clears the same way onto the next scene.",
+  "dependencies": [
+    "@remotion/transitions",
+    "remotion"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/tile-reveal.tsx",
+      "content": "/**\n * @title Tile Reveal\n * @category transitions\n * @description A grid of tiles pops in over the outgoing scene in a diagonal or seeded wave, then clears the same way onto the next scene.\n * @duration 36\n * @use Openers and section breaks with a designed, grid-based feel\n * @use Moving between portfolio, gallery or dashboard scenes\n * @tags tiles, grid, mosaic, stagger, pixel\n * @example\n * <TransitionSeries>\n *   <TransitionSeries.Sequence durationInFrames={60}>\n *     <Gallery />\n *   </TransitionSeries.Sequence>\n *   <TransitionSeries.Transition presentation={tileReveal({ pattern: \"random\" })} timing={linearTiming({ durationInFrames: 36 })} />\n *   <TransitionSeries.Sequence durationInFrames={60}>\n *     <Project />\n *   </TransitionSeries.Sequence>\n * </TransitionSeries>\n */\nimport type { TransitionPresentation, TransitionPresentationComponentProps } from \"@remotion/transitions\";\nimport type React from \"react\";\nimport { AbsoluteFill, interpolate, random } from \"remotion\";\nimport { CLAMP, easings, useTheme, useViewport } from \"./core\";\n\nexport type TileRevealProps = {\n  /** Columns in the grid. Defaults to one per 200 design units of width. */\n  cols?: number;\n  /** Rows in the grid. Defaults to one per 200 design units of height. */\n  rows?: number;\n  /** `diagonal` sweeps from the top-left corner; `random` scatters the tiles in a seeded order. */\n  pattern?: \"diagonal\" | \"random\";\n  seed?: string | number;\n  /** Tile color. Defaults to the theme accent. */\n  color?: string;\n};\n\n/** How far apart the first and last tiles start, and how long each tile takes, as fractions of the transition. */\nconst SPREAD = 0.26;\nconst SPAN = 0.22;\n\nfunction TileRevealPresentation({\n  children,\n  presentationDirection,\n  presentationProgress,\n  passedProps,\n}: TransitionPresentationComponentProps<TileRevealProps>) {\n  const theme = useTheme();\n  const { width, height, u } = useViewport();\n  if (presentationDirection === \"exiting\") {\n    return <AbsoluteFill style={{ opacity: presentationProgress < 0.5 ? 1 : 0 }}>{children}</AbsoluteFill>;\n  }\n\n  const cols = Math.max(1, Math.round(passedProps.cols ?? width / u(200)));\n  const rows = Math.max(1, Math.round(passedProps.rows ?? height / u(200)));\n  const { pattern = \"diagonal\", seed = \"tile-reveal\" } = passedProps;\n  const color = passedProps.color ?? theme.colors.accent;\n  const at = (start: number) =>\n    interpolate(presentationProgress, [start, start + SPAN], [0, 1], { ...CLAMP, easing: easings.gentle });\n  const tiles: React.ReactNode[] = [];\n\n  for (let row = 0; row < rows; row++) {\n    for (let col = 0; col < cols; col++) {\n      const index = row * cols + col;\n      // 0 for the first tile to move, 1 for the last.\n      const order = pattern === \"random\" ? random(`${seed}-${index}`) : (row + col) / Math.max(1, rows + cols - 2);\n      // Every tile is fully shut from 0.48 to 0.52, which hides the cut.\n      const size = at(order * SPREAD) - at(0.52 + order * SPREAD);\n      if (size <= 0) continue;\n      const left = Math.floor((col * width) / cols);\n      const top = Math.floor((row * height) / rows);\n      tiles.push(\n        <div\n          key={index}\n          style={{\n            position: \"absolute\",\n            left,\n            top,\n            width: Math.ceil(((col + 1) * width) / cols) - left,\n            height: Math.ceil(((row + 1) * height) / rows) - top,\n            background: color,\n            scale: String(size),\n            // Small tiles are dots that square off as they grow, so the full grid is seamless.\n            borderRadius: `${(1 - size) * 50}%`,\n          }}\n        />,\n      );\n    }\n  }\n\n  return (\n    <AbsoluteFill>\n      <AbsoluteFill style={{ opacity: presentationProgress >= 0.5 ? 1 : 0 }}>{children}</AbsoluteFill>\n      {tiles}\n    </AbsoluteFill>\n  );\n}\n\nexport function tileReveal(props: TileRevealProps = {}): TransitionPresentation<TileRevealProps> {\n  return { component: TileRevealPresentation, props };\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/tile-reveal.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "36",
+    "use": [
+      "Openers and section breaks with a designed, grid-based feel",
+      "Moving between portfolio, gallery or dashboard scenes"
+    ],
+    "avoid": [],
+    "tags": [
+      "tiles",
+      "grid",
+      "mosaic",
+      "stagger",
+      "pixel"
+    ]
+  },
+  "docs": "Usage:\n\n<TransitionSeries>\n  <TransitionSeries.Sequence durationInFrames={60}>\n    <Gallery />\n  </TransitionSeries.Sequence>\n  <TransitionSeries.Transition presentation={tileReveal({ pattern: \"random\" })} timing={linearTiming({ durationInFrames: 36 })} />\n  <TransitionSeries.Sequence durationInFrames={60}>\n    <Project />\n  </TransitionSeries.Sequence>\n</TransitionSeries>",
+  "categories": [
+    "transitions"
+  ],
+  "type": "registry:item"
+}

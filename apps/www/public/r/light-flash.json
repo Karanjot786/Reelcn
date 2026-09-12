@@ -1,0 +1,41 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "light-flash",
+  "title": "Light Flash",
+  "description": "Overexposes the outgoing scene into a flash of light, cuts at the peak, and lets the glow burn off the next scene.",
+  "dependencies": [
+    "@remotion/transitions",
+    "remotion"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/light-flash.tsx",
+      "content": "/**\n * @title Light Flash\n * @category transitions\n * @description Overexposes the outgoing scene into a flash of light, cuts at the peak, and lets the glow burn off the next scene.\n * @duration 20\n * @use Beat-synced cuts, reveals and before-and-after moments\n * @use Hiding the jump between two very different scenes\n * @tags flash, light, exposure, white, cut\n * @example\n * <TransitionSeries>\n *   <TransitionSeries.Sequence durationInFrames={60}>\n *     <Before />\n *   </TransitionSeries.Sequence>\n *   <TransitionSeries.Transition presentation={lightFlash()} timing={linearTiming({ durationInFrames: 20 })} />\n *   <TransitionSeries.Sequence durationInFrames={60}>\n *     <After />\n *   </TransitionSeries.Sequence>\n * </TransitionSeries>\n */\nimport type { TransitionPresentation, TransitionPresentationComponentProps } from \"@remotion/transitions\";\nimport { AbsoluteFill, interpolate } from \"remotion\";\nimport { CLAMP, easings, exitEasing, useTheme } from \"./core\";\n\nexport type LightFlashProps = {\n  /** Flash color. Defaults to white. */\n  color?: string;\n  /** Soft tint at the edges of the flash. Defaults to the theme highlight. */\n  tint?: string;\n};\n\nfunction LightFlashPresentation({\n  children,\n  presentationDirection,\n  presentationProgress,\n  passedProps,\n}: TransitionPresentationComponentProps<LightFlashProps>) {\n  const theme = useTheme();\n  const entering = presentationDirection === \"entering\";\n  const visible = entering ? presentationProgress >= 0.5 : presentationProgress < 0.5;\n  // Builds up over the first half, peaks at the cut, then burns off over the second half.\n  const glow = entering\n    ? 1 - interpolate(presentationProgress, [0.5, 1], [0, 1], { ...CLAMP, easing: easings.smooth })\n    : interpolate(presentationProgress, [0, 0.5], [0, 1], { ...CLAMP, easing: exitEasing });\n  const color = passedProps.color ?? \"#ffffff\";\n  const tint = passedProps.tint ?? theme.colors.highlight;\n\n  return (\n    <AbsoluteFill style={{ opacity: visible ? 1 : 0 }}>\n      <AbsoluteFill\n        style={{\n          filter: glow > 0 ? `brightness(${1 + glow * 1.4}) saturate(${1 - glow * 0.5})` : undefined,\n          scale: String(1 + glow * 0.04),\n        }}\n      >\n        {children}\n      </AbsoluteFill>\n      <AbsoluteFill\n        style={{\n          opacity: glow ** 1.5,\n          background: `radial-gradient(circle at 50% 50%, ${color} 35%, color-mix(in srgb, ${color} 70%, ${tint}) 100%)`,\n        }}\n      />\n    </AbsoluteFill>\n  );\n}\n\nexport function lightFlash(props: LightFlashProps = {}): TransitionPresentation<LightFlashProps> {\n  return { component: LightFlashPresentation, props };\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/light-flash.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "20",
+    "use": [
+      "Beat-synced cuts, reveals and before-and-after moments",
+      "Hiding the jump between two very different scenes"
+    ],
+    "avoid": [],
+    "tags": [
+      "flash",
+      "light",
+      "exposure",
+      "white",
+      "cut"
+    ]
+  },
+  "docs": "Usage:\n\n<TransitionSeries>\n  <TransitionSeries.Sequence durationInFrames={60}>\n    <Before />\n  </TransitionSeries.Sequence>\n  <TransitionSeries.Transition presentation={lightFlash()} timing={linearTiming({ durationInFrames: 20 })} />\n  <TransitionSeries.Sequence durationInFrames={60}>\n    <After />\n  </TransitionSeries.Sequence>\n</TransitionSeries>",
+  "categories": [
+    "transitions"
+  ],
+  "type": "registry:item"
+}

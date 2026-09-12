@@ -1,0 +1,42 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "split-doors",
+  "title": "Split Doors",
+  "description": "The outgoing scene splits down the middle and its two halves slide apart like doors, revealing the next scene.",
+  "dependencies": [
+    "@remotion/transitions",
+    "remotion"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/split-doors.tsx",
+      "content": "/**\n * @title Split Doors\n * @category transitions\n * @description The outgoing scene splits down the middle and its two halves slide apart like doors, revealing the next scene.\n * @duration 24\n * @use Revealing a product shot, logo or new chapter behind the current scene\n * @use Moving from a title card into the main content\n * @avoid An outgoing scene that plays audio or video, since it renders once per door — use `circle-burst`\n * @tags doors, split, open, reveal\n * @example\n * <TransitionSeries>\n *   <TransitionSeries.Sequence durationInFrames={60}>\n *     <TitleCard />\n *   </TransitionSeries.Sequence>\n *   <TransitionSeries.Transition presentation={splitDoors()} timing={linearTiming({ durationInFrames: 24 })} />\n *   <TransitionSeries.Sequence durationInFrames={90}>\n *     <ProductShot />\n *   </TransitionSeries.Sequence>\n * </TransitionSeries>\n */\nimport type { TransitionPresentation, TransitionPresentationComponentProps } from \"@remotion/transitions\";\nimport { AbsoluteFill, interpolate } from \"remotion\";\nimport { alpha, CLAMP, easings, useViewport } from \"./core\";\n\nexport type SplitDoorsProps = {\n  /** Which way the doors travel. Defaults to `horizontal` in landscape and square, `vertical` in portrait. */\n  direction?: \"horizontal\" | \"vertical\";\n  /** Shadow the doors cast on the revealed scene. */\n  shadowColor?: string;\n};\n\nfunction SplitDoorsPresentation({\n  children,\n  presentationDirection,\n  presentationProgress,\n  passedProps,\n}: TransitionPresentationComponentProps<SplitDoorsProps>) {\n  const { width, height, isPortrait, u } = useViewport();\n  const horizontal = (passedProps.direction ?? (isPortrait ? \"vertical\" : \"horizontal\")) === \"horizontal\";\n  const open = interpolate(presentationProgress, [0, 1], [0, 1], { ...CLAMP, easing: easings.gentle });\n\n  if (presentationDirection === \"entering\") {\n    // The incoming scene shows through the widening gap, shaded at the door edges and settling from a slight zoom.\n    const gap = (1 - open) * 50;\n    const shadow = passedProps.shadowColor ?? alpha(\"#000000\", 0.5);\n    const fade = u(120);\n    return (\n      <AbsoluteFill style={{ clipPath: horizontal ? `inset(0 ${gap}%)` : `inset(${gap}% 0)` }}>\n        <AbsoluteFill style={{ scale: String(1.08 - 0.08 * open) }}>{children}</AbsoluteFill>\n        <AbsoluteFill\n          style={{\n            opacity: 1 - open,\n            background: `linear-gradient(${horizontal ? \"90deg\" : \"180deg\"}, ${shadow} ${gap}%, transparent calc(${gap}% + ${fade}px), transparent calc(${100 - gap}% - ${fade}px), ${shadow} ${100 - gap}%)`,\n          }}\n        />\n      </AbsoluteFill>\n    );\n  }\n\n  // The outgoing scene is drawn once per door; each door shows its half and travels its own size off-screen.\n  return (\n    <AbsoluteFill>\n      {[0, 1].map((door) => {\n        const sign = door === 0 ? -1 : 1;\n        return (\n          <div\n            key={door}\n            style={{\n              position: \"absolute\",\n              overflow: \"hidden\",\n              left: horizontal ? (door * width) / 2 : 0,\n              top: horizontal ? 0 : (door * height) / 2,\n              width: horizontal ? width / 2 : width,\n              height: horizontal ? height : height / 2,\n              translate: horizontal ? `${sign * open * 100}% 0` : `0 ${sign * open * 100}%`,\n            }}\n          >\n            <div\n              style={{\n                position: \"absolute\",\n                left: horizontal ? (-door * width) / 2 : 0,\n                top: horizontal ? 0 : (-door * height) / 2,\n                width,\n                height,\n              }}\n            >\n              {children}\n            </div>\n          </div>\n        );\n      })}\n    </AbsoluteFill>\n  );\n}\n\nexport function splitDoors(props: SplitDoorsProps = {}): TransitionPresentation<SplitDoorsProps> {\n  return { component: SplitDoorsPresentation, props };\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/split-doors.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "24",
+    "use": [
+      "Revealing a product shot, logo or new chapter behind the current scene",
+      "Moving from a title card into the main content"
+    ],
+    "avoid": [
+      "An outgoing scene that plays audio or video, since it renders once per door — use `circle-burst`"
+    ],
+    "tags": [
+      "doors",
+      "split",
+      "open",
+      "reveal"
+    ]
+  },
+  "docs": "Usage:\n\n<TransitionSeries>\n  <TransitionSeries.Sequence durationInFrames={60}>\n    <TitleCard />\n  </TransitionSeries.Sequence>\n  <TransitionSeries.Transition presentation={splitDoors()} timing={linearTiming({ durationInFrames: 24 })} />\n  <TransitionSeries.Sequence durationInFrames={90}>\n    <ProductShot />\n  </TransitionSeries.Sequence>\n</TransitionSeries>",
+  "categories": [
+    "transitions"
+  ],
+  "type": "registry:item"
+}
