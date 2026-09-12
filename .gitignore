@@ -1,0 +1,16 @@
+node_modules/
+dist/
+build/
+.env
+.env.*
+.DS_Store
+*.log
+coverage/
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+*.mp4
+*.mov
+*.avi
+*.mkv

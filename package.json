@@ -1,0 +1,37 @@
+{
+  "name": "reelcn",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "registry:build": "shadcn build registry.json --output public/r"
+  },
+  "dependencies": {
+    "@remotion/captions": "4.0.523",
+    "@remotion/cli": "4.0.523",
+    "@remotion/google-fonts": "4.0.523",
+    "@remotion/layout-utils": "4.0.523",
+    "@remotion/media": "4.0.523",
+    "@remotion/media-utils": "4.0.523",
+    "@remotion/noise": "4.0.523",
+    "@remotion/paths": "4.0.523",
+    "@remotion/player": "4.0.523",
+    "@remotion/renderer": "4.0.523",
+    "@remotion/shapes": "4.0.523",
+    "@remotion/transitions": "4.0.523",
+    "@remotion/zod-types": "4.0.523",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "remotion": "4.0.523",
+    "zod": "4.5.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "shadcn": "4.21.0",
+    "typescript": "^7.0.2"
+  }
+}
