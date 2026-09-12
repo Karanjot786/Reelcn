@@ -1,0 +1,40 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "drop-in",
+  "title": "Drop In",
+  "description": "Headline whose words drop in from above with a slight tilt that settles.",
+  "dependencies": [],
+  "registryDependencies": [
+    "http://localhost:3000/r/text-reveal.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/drop-in.tsx",
+      "content": "/**\n * @title Drop In\n * @category text\n * @description Headline whose words drop in from above with a slight tilt that settles.\n * @duration 30\n * @use Playful announcements, drops and release titles\n * @use Friendly, casual brands\n * @avoid Serious or premium tone — use `blur-in`\n * @tags drop, fall, playful, headline\n * @preset text-reveal\n * @example\n * <Center>\n *   <DropIn text=\"Fresh drops every Friday\" />\n * </Center>\n */\nimport { TextReveal, type TextRevealProps } from \"./text-reveal\";\n\nexport type DropInProps = Omit<TextRevealProps, \"effect\">;\n\nexport function DropIn(props: DropInProps) {\n  return <TextReveal {...props} effect=\"drop\" />;\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/drop-in.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "30",
+    "use": [
+      "Playful announcements, drops and release titles",
+      "Friendly, casual brands"
+    ],
+    "avoid": [
+      "Serious or premium tone — use `blur-in`"
+    ],
+    "tags": [
+      "drop",
+      "fall",
+      "playful",
+      "headline"
+    ],
+    "preset": "text-reveal"
+  },
+  "docs": "Usage:\n\n<Center>\n  <DropIn text=\"Fresh drops every Friday\" />\n</Center>",
+  "categories": [
+    "text"
+  ],
+  "type": "registry:item"
+}

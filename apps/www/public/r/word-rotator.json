@@ -1,0 +1,40 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "word-rotator",
+  "title": "Word Rotator",
+  "description": "Sentence with one slot that cycles through a list of words by sliding, flipping or blurring them in place.",
+  "dependencies": [],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/word-rotator.tsx",
+      "content": "/**\n * @title Word Rotator\n * @category text\n * @description Sentence with one slot that cycles through a list of words by sliding, flipping or blurring them in place.\n * @duration sustained\n * @use Taglines that list audiences, platforms or benefits\n * @use Hooks such as \"Made for creators / startups / agencies\"\n * @avoid Emphasizing one fixed phrase — use `highlight`\n * @tags rotate, cycle, swap, words, tagline\n * @example\n * <Center>\n *   <WordRotator before=\"Made for\" words={[\"creators\", \"startups\", \"agencies\"]} effect=\"slide\" />\n * </Center>\n */\nimport type React from \"react\";\nimport { type MotionProps, tween, useMotion, useTheme, useViewport } from \"./core\";\n\nexport type WordRotatorEffect = \"slide\" | \"flip\" | \"blur\";\n\nexport type WordRotatorProps = MotionProps & {\n  /** Text before the slot. */\n  before?: string;\n  /** Words cycled through the slot. The slot is as wide as the widest word, so the sentence never reflows. */\n  words: string[];\n  /** Text after the slot. */\n  after?: string;\n  /** Frames each word rests before the next one arrives. Defaults to 1s. `duration` sets the swap length. */\n  holdFrames?: number;\n  effect?: WordRotatorEffect;\n  /** Start over after the last word. `false` stops on it. */\n  loop?: boolean;\n  /** Font size in design units. */\n  size?: number;\n  weight?: number;\n  font?: \"heading\" | \"body\" | \"mono\";\n  color?: string;\n  /** Color of the rotating words. Defaults to the theme accent. */\n  accentColor?: string;\n  align?: \"left\" | \"center\" | \"right\";\n  style?: React.CSSProperties;\n  className?: string;\n};\n\n/** A word at swap progress `p`: the arriving word goes from offset 1 to 0, the leaving one from 0 to -1. */\nfunction wordStyle(effect: WordRotatorEffect, p: number, arriving: boolean, fontPx: number): React.CSSProperties {\n  const offset = arriving ? 1 - p : -p;\n  const opacity = Math.min(Math.max(1 - Math.abs(offset), 0), 1);\n  switch (effect) {\n    case \"slide\":\n      return { translate: `0 ${offset * 105}%` };\n    case \"flip\":\n      return {\n        opacity,\n        transform: `perspective(${fontPx * 4}px) rotateX(${-offset * 90}deg)`,\n        backfaceVisibility: \"hidden\",\n      };\n    case \"blur\":\n      return { opacity, filter: `blur(${Math.abs(offset) * fontPx * 0.12}px)`, translate: `0 ${offset * 0.25}em` };\n  }\n}\n\nexport function WordRotator({\n  before,\n  words,\n  after,\n  holdFrames,\n  effect = \"slide\",\n  loop = true,\n  size = 96,\n  weight,\n  font = \"heading\",\n  color,\n  accentColor,\n  align = \"center\",\n  style,\n  className,\n  ...motion\n}: WordRotatorProps) {\n  const theme = useTheme();\n  const { u, width, safe } = useViewport();\n  const m = useMotion(motion);\n  const fontPx = u(size);\n  const cycle = (holdFrames ?? m.fps) + m.enterFrames;\n  const elapsed = Math.max(0, Math.floor((m.frame - m.delay) / cycle));\n  const step = loop ? elapsed : Math.min(elapsed, words.length - 1);\n  const current = step % words.length;\n  const previous = step > 0 ? (step - 1) % words.length : -1;\n  const p = tween(m.frame, m.fps, { from: m.delay + step * cycle, duration: m.enterFrames, motion: m.preset });\n\n  const styleFor = (index: number): React.CSSProperties => {\n    if (index === current) return wordStyle(effect, p, true, fontPx);\n    if (index === previous && previous !== current) return wordStyle(effect, p, false, fontPx);\n    return { visibility: \"hidden\" };\n  };\n\n  return (\n    <div\n      className={className}\n      style={{\n        fontFamily: theme.fonts[font],\n        fontSize: fontPx,\n        fontWeight: weight ?? (font === \"heading\" ? theme.headingWeight : 500),\n        color: color ?? theme.colors.foreground,\n        lineHeight: 1.1,\n        letterSpacing: font === \"mono\" ? 0 : \"-0.025em\",\n        textAlign: align,\n        textWrap: \"balance\",\n        maxWidth: width - safe.x * 2,\n        opacity: m.presence,\n        translate: `0 ${-m.exit * fontPx * 0.2}px`,\n        ...style,\n      }}\n    >\n      {before ? `${before} ` : null}\n      {/* Every word sits in the same grid cell, so the slot is natively as wide as the widest one. */}\n      <span\n        style={{\n          display: \"inline-grid\",\n          justifyItems: \"start\",\n          color: accentColor ?? theme.colors.accent,\n          // Sliding words are clipped to the line; the padding keeps descenders and overhangs from being cut.\n          ...(effect === \"slide\" && {\n            overflow: \"hidden\",\n            verticalAlign: \"top\",\n            padding: \"0 0.06em 0.12em\",\n            margin: \"0 -0.06em -0.12em\",\n          }),\n        }}\n      >\n        {words.map((word, index) => (\n          <span key={index} style={{ gridArea: \"1 / 1\", whiteSpace: \"nowrap\", ...styleFor(index) }}>\n            {word}\n          </span>\n        ))}\n      </span>\n      {after ? ` ${after}` : null}\n    </div>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/word-rotator.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "sustained",
+    "use": [
+      "Taglines that list audiences, platforms or benefits",
+      "Hooks such as \"Made for creators / startups / agencies\""
+    ],
+    "avoid": [
+      "Emphasizing one fixed phrase — use `highlight`"
+    ],
+    "tags": [
+      "rotate",
+      "cycle",
+      "swap",
+      "words",
+      "tagline"
+    ]
+  },
+  "docs": "Usage:\n\n<Center>\n  <WordRotator before=\"Made for\" words={[\"creators\", \"startups\", \"agencies\"]} effect=\"slide\" />\n</Center>",
+  "categories": [
+    "text"
+  ],
+  "type": "registry:item"
+}

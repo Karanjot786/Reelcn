@@ -1,0 +1,40 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "blur-in",
+  "title": "Blur In",
+  "description": "Headline whose words fade up out of a soft blur, one after another.",
+  "dependencies": [],
+  "registryDependencies": [
+    "http://localhost:3000/r/text-reveal.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/blur-in.tsx",
+      "content": "/**\n * @title Blur In\n * @category text\n * @description Headline whose words fade up out of a soft blur, one after another.\n * @duration 30\n * @use Calm, premium intros and brand statements\n * @use Titles laid over footage or gradients\n * @avoid Punchy, high-energy hooks — use `pop-in`\n * @tags blur, focus, soft, headline\n * @preset text-reveal\n * @example\n * <Center>\n *   <BlurIn text=\"Quietly, then all at once\" />\n * </Center>\n */\nimport { TextReveal, type TextRevealProps } from \"./text-reveal\";\n\nexport type BlurInProps = Omit<TextRevealProps, \"effect\">;\n\nexport function BlurIn(props: BlurInProps) {\n  return <TextReveal {...props} effect=\"blur\" />;\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/blur-in.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "30",
+    "use": [
+      "Calm, premium intros and brand statements",
+      "Titles laid over footage or gradients"
+    ],
+    "avoid": [
+      "Punchy, high-energy hooks — use `pop-in`"
+    ],
+    "tags": [
+      "blur",
+      "focus",
+      "soft",
+      "headline"
+    ],
+    "preset": "text-reveal"
+  },
+  "docs": "Usage:\n\n<Center>\n  <BlurIn text=\"Quietly, then all at once\" />\n</Center>",
+  "categories": [
+    "text"
+  ],
+  "type": "registry:item"
+}

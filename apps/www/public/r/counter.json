@@ -1,0 +1,43 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "counter",
+  "title": "Counter",
+  "description": "Number that counts between two values with Intl formatting, or rolls its digits like an odometer.",
+  "dependencies": [
+    "remotion"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/counter.tsx",
+      "content": "/**\n * @title Counter\n * @category text\n * @description Number that counts between two values with Intl formatting, or rolls its digits like an odometer.\n * @duration 45\n * @use Revenue, users, downloads and other headline metrics\n * @use Prices and percentages that should tick up on screen\n * @avoid A metric with a label and a change indicator — use `stat-counter`\n * @avoid Several metrics at once — use `kpi-grid`\n * @tags number, count up, odometer, metric, stat\n * @example\n * <Center>\n *   <Counter to={48200} format={{ style: \"currency\", currency: \"USD\" }} suffix=\"/mo\" rolling />\n * </Center>\n */\nimport type React from \"react\";\nimport { useVideoConfig } from \"remotion\";\nimport { type MotionProps, useMotion, useTheme, useViewport } from \"./core\";\n\nexport type CounterProps = MotionProps & {\n  to: number;\n  from?: number;\n  /** Intl.NumberFormat options. Fraction digits default to however many `from` and `to` have. */\n  format?: Intl.NumberFormatOptions;\n  /** Defaults to \"en-US\", so renders match on every machine. */\n  locale?: string;\n  prefix?: string;\n  suffix?: string;\n  /** Font size in design units. */\n  size?: number;\n  weight?: number;\n  font?: \"heading\" | \"body\" | \"mono\";\n  color?: string;\n  /** Odometer-style digit wheels instead of a counting number. */\n  rolling?: boolean;\n  align?: \"left\" | \"center\" | \"right\";\n  style?: React.CSSProperties;\n  className?: string;\n};\n\nconst decimals = (n: number) => {\n  const text = String(n);\n  const dot = text.indexOf(\".\");\n  return dot < 0 ? 0 : Math.min(text.length - dot - 1, 6);\n};\n\n/** Show as many fraction digits as `from` and `to` have, unless the format already decides. */\nfunction withDigits(format: Intl.NumberFormatOptions, from: number, to: number): Intl.NumberFormatOptions {\n  if (\n    format.minimumFractionDigits !== undefined ||\n    format.maximumFractionDigits !== undefined ||\n    format.minimumSignificantDigits !== undefined ||\n    format.maximumSignificantDigits !== undefined\n  ) {\n    return format;\n  }\n  const digits = Math.max(0, Math.max(decimals(from), decimals(to)) - (format.style === \"percent\" ? 2 : 0));\n  return { ...format, minimumFractionDigits: digits, maximumFractionDigits: digits };\n}\n\nconst isDigit = (char: string) => char >= \"0\" && char <= \"9\";\nconst STRIP = \"01234567890\".split(\"\");\n\n/** One odometer wheel. `position` 0–10 runs through the digits and back to 0; fractions sit between two digits. */\nfunction Wheel({ position }: { position: number }) {\n  const offset = ((position % 10) + 10) % 10;\n  return (\n    <span style={{ height: \"1.1em\", overflow: \"hidden\" }}>\n      <span style={{ display: \"flex\", flexDirection: \"column\", translate: `0 ${-offset * 1.1}em` }}>\n        {STRIP.map((digit, index) => (\n          <span key={index} style={{ height: \"1.1em\" }}>\n            {digit}\n          </span>\n        ))}\n      </span>\n    </span>\n  );\n}\n\n/** Lays the final value out once and turns each of its digits from the matching digit of the start value. */\nfunction wheels(target: string, start: string, progress: number, up: boolean) {\n  const startDigits = start.split(\"\").filter(isDigit);\n  const cells: React.ReactNode[] = [];\n  let place = 0;\n  for (let i = target.length - 1; i >= 0; i--) {\n    const char = target[i];\n    if (!isDigit(char)) {\n      cells.unshift(<span key={i}>{char}</span>);\n      continue;\n    }\n    const to = Number(char);\n    const from = Number(startDigits[startDigits.length - 1 - place] || \"0\");\n    // The lowest places spin extra full turns, so the number reads as rolling rather than blinking.\n    const turns = 10 * Math.max(0, 2 - place);\n    const travel = up ? ((to - from + 10) % 10) + turns : -(((from - to + 10) % 10) + turns);\n    cells.unshift(<Wheel key={i} position={from + travel * progress} />);\n    place++;\n  }\n  return cells;\n}\n\nexport function Counter({\n  to,\n  from = 0,\n  format = {},\n  locale = \"en-US\",\n  prefix = \"\",\n  suffix = \"\",\n  size = 120,\n  weight,\n  font = \"heading\",\n  color,\n  rolling = false,\n  align = \"center\",\n  style,\n  className,\n  ...motion\n}: CounterProps) {\n  const theme = useTheme();\n  const { u } = useViewport();\n  const { fps } = useVideoConfig();\n  const m = useMotion({ ...motion, duration: motion.duration ?? Math.round(fps * 1.5) });\n  const fontPx = u(size);\n  const formatter = new Intl.NumberFormat(locale, withDigits(format, from, to));\n  const value = from + (to - from) * m.enter;\n\n  return (\n    <div\n      className={className}\n      style={{\n        fontFamily: theme.fonts[font],\n        fontSize: fontPx,\n        fontWeight: weight ?? (font === \"heading\" ? theme.headingWeight : 600),\n        color: color ?? theme.colors.foreground,\n        lineHeight: 1.1,\n        letterSpacing: font === \"mono\" ? 0 : \"-0.02em\",\n        fontVariantNumeric: \"tabular-nums\",\n        whiteSpace: \"nowrap\",\n        textAlign: align,\n        opacity: 1 - m.exit,\n        translate: `0 ${-m.exit * fontPx * 0.2}px`,\n        ...style,\n      }}\n    >\n      {rolling ? (\n        <span style={{ display: \"inline-flex\", alignItems: \"flex-start\" }}>\n          {prefix}\n          {wheels(formatter.format(to), formatter.format(from), m.enter, to >= from)}\n          {suffix}\n        </span>\n      ) : (\n        // The start and end values sit invisibly in the same grid cell, so the width never changes mid-count.\n        <span\n          style={{\n            display: \"inline-grid\",\n            justifyItems: align === \"left\" ? \"start\" : align === \"right\" ? \"end\" : \"center\",\n          }}\n        >\n          {[from, to, value].map((n, index) => (\n            <span key={index} style={{ gridArea: \"1 / 1\", visibility: index === 2 ? \"visible\" : \"hidden\" }}>\n              {prefix}\n              {formatter.format(n)}\n              {suffix}\n            </span>\n          ))}\n        </span>\n      )}\n    </div>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/counter.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "45",
+    "use": [
+      "Revenue, users, downloads and other headline metrics",
+      "Prices and percentages that should tick up on screen"
+    ],
+    "avoid": [
+      "A metric with a label and a change indicator — use `stat-counter`",
+      "Several metrics at once — use `kpi-grid`"
+    ],
+    "tags": [
+      "number",
+      "count up",
+      "odometer",
+      "metric",
+      "stat"
+    ]
+  },
+  "docs": "Usage:\n\n<Center>\n  <Counter to={48200} format={{ style: \"currency\", currency: \"USD\" }} suffix=\"/mo\" rolling />\n</Center>",
+  "categories": [
+    "text"
+  ],
+  "type": "registry:item"
+}

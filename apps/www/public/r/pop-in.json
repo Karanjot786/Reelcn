@@ -1,0 +1,41 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "pop-in",
+  "title": "Pop In",
+  "description": "Headline whose words scale up with a springy overshoot.",
+  "dependencies": [],
+  "registryDependencies": [
+    "http://localhost:3000/r/text-reveal.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/pop-in.tsx",
+      "content": "/**\n * @title Pop In\n * @category text\n * @description Headline whose words scale up with a springy overshoot.\n * @duration 30\n * @use Energetic hooks, sales and launch callouts\n * @use Short labels that should feel lively\n * @avoid Calm or premium tone — use `blur-in`\n * @tags pop, bounce, spring, scale, energetic\n * @preset text-reveal\n * @example\n * <Center>\n *   <PopIn text=\"Now in beta\" size={130} />\n * </Center>\n */\nimport { TextReveal, type TextRevealProps } from \"./text-reveal\";\n\nexport type PopInProps = Omit<TextRevealProps, \"effect\" | \"motion\">;\n\nexport function PopIn(props: PopInProps) {\n  return <TextReveal {...props} effect=\"scale\" motion=\"bouncy\" />;\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/pop-in.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "30",
+    "use": [
+      "Energetic hooks, sales and launch callouts",
+      "Short labels that should feel lively"
+    ],
+    "avoid": [
+      "Calm or premium tone — use `blur-in`"
+    ],
+    "tags": [
+      "pop",
+      "bounce",
+      "spring",
+      "scale",
+      "energetic"
+    ],
+    "preset": "text-reveal"
+  },
+  "docs": "Usage:\n\n<Center>\n  <PopIn text=\"Now in beta\" size={130} />\n</Center>",
+  "categories": [
+    "text"
+  ],
+  "type": "registry:item"
+}

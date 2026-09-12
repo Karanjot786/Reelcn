@@ -1,0 +1,42 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "stamp",
+  "title": "Stamp",
+  "description": "A line that lands in one hit with a springy scale and a tilt that straightens as it settles.",
+  "dependencies": [],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json",
+    "http://localhost:3000/r/text-reveal.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/stamp.tsx",
+      "content": "/**\n * @title Stamp\n * @category text\n * @description A line that lands in one hit with a springy scale and a tilt that straightens as it settles.\n * @duration 30\n * @use Verdicts and labels such as sold out, approved or new\n * @use One- or two-word punchlines\n * @avoid Headlines longer than a few words — use `pop-in`\n * @tags stamp, slam, bounce, label, punchline\n * @preset text-reveal\n * @example\n * <Center>\n *   <Stamp text=\"Sold out\" size={170} />\n * </Center>\n */\nimport { useMotion } from \"./core\";\nimport { TextReveal, type TextRevealProps } from \"./text-reveal\";\n\nexport type StampProps = Omit<TextRevealProps, \"effect\" | \"motion\">;\n\nexport function Stamp({ style, ...props }: StampProps) {\n  const m = useMotion({ delay: props.delay, duration: props.duration, motion: \"bouncy\" });\n  return (\n    <TextReveal\n      split=\"line\"\n      {...props}\n      effect=\"scale\"\n      motion=\"bouncy\"\n      style={{ rotate: `${(1 - m.enter) * -8}deg`, ...style }}\n    />\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/stamp.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "30",
+    "use": [
+      "Verdicts and labels such as sold out, approved or new",
+      "One- or two-word punchlines"
+    ],
+    "avoid": [
+      "Headlines longer than a few words — use `pop-in`"
+    ],
+    "tags": [
+      "stamp",
+      "slam",
+      "bounce",
+      "label",
+      "punchline"
+    ],
+    "preset": "text-reveal"
+  },
+  "docs": "Usage:\n\n<Center>\n  <Stamp text=\"Sold out\" size={170} />\n</Center>",
+  "categories": [
+    "text"
+  ],
+  "type": "registry:item"
+}

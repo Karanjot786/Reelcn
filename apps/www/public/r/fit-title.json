@@ -1,0 +1,43 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "fit-title",
+  "title": "Fit Title",
+  "description": "One-line title that sizes itself to fill the available width, measured with the real font once it has loaded.",
+  "dependencies": [
+    "remotion"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json",
+    "http://localhost:3000/r/text-reveal.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/fit-title.tsx",
+      "content": "/**\n * @title Fit Title\n * @category text\n * @description One-line title that sizes itself to fill the available width, measured with the real font once it has loaded.\n * @duration 30\n * @use Big one-word or short titles that should fill the frame at every aspect ratio\n * @use Titles of unknown length, such as data-driven names or chapter titles\n * @avoid Headlines that should wrap onto several lines — use `text-reveal`\n * @tags fit, auto size, responsive, title, big type\n * @example\n * <Center>\n *   <FitTitle text=\"Season finale\" effect=\"mask\" />\n * </Center>\n */\n/// <reference lib=\"dom\" />\nimport { useEffect, useState } from \"react\";\nimport { continueRender, delayRender } from \"remotion\";\nimport { graphemes, useTheme, useViewport } from \"./core\";\nimport { TextReveal, type TextRevealProps } from \"./text-reveal\";\n\nexport type FitTitleProps = Omit<TextRevealProps, \"size\" | \"split\"> & {\n  /** Largest font size in design units, reached when the text is short. */\n  maxSize?: number;\n  /** Width to fill, in design units. Defaults to the safe-zone width. */\n  maxWidth?: number;\n  split?: \"word\" | \"char\";\n};\n\nlet context: CanvasRenderingContext2D | null = null;\n\n/** Width of `text` in px for a CSS `font` shorthand. */\nfunction measure(text: string, font: string) {\n  if (!context) context = document.createElement(\"canvas\").getContext(\"2d\");\n  if (!context) return 0;\n  context.font = font;\n  return context.measureText(text).width;\n}\n\n/**\n * True once the first family of a font stack has a face covering this weight in `document.fonts`.\n * `@remotion/google-fonts` adds a face only after it has loaded, so `document.fonts.ready` alone can resolve too early.\n */\nfunction hasFace(stack: string, weight: number) {\n  const family = stack.split(\",\")[0].trim().replace(/[\"']/g, \"\");\n  let found = false;\n  document.fonts.forEach((face) => {\n    const range = face.weight.split(\" \");\n    const covers = Number(range[0]) <= weight && weight <= Number(range[range.length - 1]);\n    if (covers && face.family.replace(/[\"']/g, \"\") === family) found = true;\n  });\n  return found;\n}\n\nexport function FitTitle({ text, maxSize = 240, maxWidth, font = \"heading\", weight, style, ...props }: FitTitleProps) {\n  const theme = useTheme();\n  const { u, scale, width, safe } = useViewport();\n  const [handle] = useState(() => delayRender(\"fit-title fonts\"));\n  const [ready, setReady] = useState(false);\n  const stack = theme.fonts[font];\n  const fontWeight = weight ?? (font === \"heading\" ? theme.headingWeight : 500);\n\n  useEffect(() => {\n    let cancelled = false;\n    let attempts = 0;\n    // A system font never shows up as a face: after two seconds, measure with whatever is there.\n    const check = () => {\n      if (cancelled) return;\n      if (hasFace(stack, fontWeight) || ++attempts > 40) setReady(true);\n      else setTimeout(check, 50);\n    };\n    document.fonts.ready.then(check);\n    return () => {\n      cancelled = true;\n    };\n  }, [stack, fontWeight]);\n\n  // Release the frame only after the measured size has been committed.\n  useEffect(() => {\n    if (ready) continueRender(handle);\n  }, [ready, handle]);\n\n  const available = maxWidth === undefined ? width - safe.x * 2 : u(maxWidth);\n  // Matches TextReveal's tracking: -0.025em, none for mono.\n  const tracking = font === \"mono\" ? 0 : -0.025;\n  const perPx = ready ? measure(text, `${fontWeight} 100px ${stack}`) / 100 + graphemes(text).length * tracking : 0;\n  // 2% headroom: each word or character is its own box, so kerning across boxes is lost and the line runs a bit wider.\n  const px = perPx > 0 ? Math.min((available * 0.98) / perPx, u(maxSize)) : u(maxSize);\n\n  return (\n    <TextReveal\n      {...props}\n      text={text}\n      font={font}\n      weight={fontWeight}\n      size={px / scale}\n      style={{ whiteSpace: \"nowrap\", maxWidth: \"none\", visibility: ready ? undefined : \"hidden\", ...style }}\n    />\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/fit-title.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "30",
+    "use": [
+      "Big one-word or short titles that should fill the frame at every aspect ratio",
+      "Titles of unknown length, such as data-driven names or chapter titles"
+    ],
+    "avoid": [
+      "Headlines that should wrap onto several lines — use `text-reveal`"
+    ],
+    "tags": [
+      "fit",
+      "auto size",
+      "responsive",
+      "title",
+      "big type"
+    ]
+  },
+  "docs": "Usage:\n\n<Center>\n  <FitTitle text=\"Season finale\" effect=\"mask\" />\n</Center>",
+  "categories": [
+    "text"
+  ],
+  "type": "registry:item"
+}

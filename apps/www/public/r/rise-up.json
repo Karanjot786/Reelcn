@@ -1,0 +1,40 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "rise-up",
+  "title": "Rise Up",
+  "description": "Headline whose words rise into place from just below the line.",
+  "dependencies": [],
+  "registryDependencies": [
+    "http://localhost:3000/r/text-reveal.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/rise-up.tsx",
+      "content": "/**\n * @title Rise Up\n * @category text\n * @description Headline whose words rise into place from just below the line.\n * @duration 30\n * @use The default choice for clean, confident headlines\n * @use Section titles and short-form hooks\n * @avoid Letter-by-letter reveals of a single word — use `char-rise`\n * @tags rise, slide up, headline, clean\n * @preset text-reveal\n * @example\n * <Center>\n *   <RiseUp text=\"Every frame is code\" accentWords={[\"code\"]} />\n * </Center>\n */\nimport { TextReveal, type TextRevealProps } from \"./text-reveal\";\n\nexport type RiseUpProps = Omit<TextRevealProps, \"effect\">;\n\nexport function RiseUp(props: RiseUpProps) {\n  return <TextReveal {...props} effect=\"rise\" />;\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/rise-up.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "30",
+    "use": [
+      "The default choice for clean, confident headlines",
+      "Section titles and short-form hooks"
+    ],
+    "avoid": [
+      "Letter-by-letter reveals of a single word — use `char-rise`"
+    ],
+    "tags": [
+      "rise",
+      "slide up",
+      "headline",
+      "clean"
+    ],
+    "preset": "text-reveal"
+  },
+  "docs": "Usage:\n\n<Center>\n  <RiseUp text=\"Every frame is code\" accentWords={[\"code\"]} />\n</Center>",
+  "categories": [
+    "text"
+  ],
+  "type": "registry:item"
+}

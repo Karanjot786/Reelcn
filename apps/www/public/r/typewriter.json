@@ -1,0 +1,41 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "typewriter",
+  "title": "Typewriter",
+  "description": "Types text out character by character, with pause markers and a caret that blinks once typing stops.",
+  "dependencies": [],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/typewriter.tsx",
+      "content": "/**\n * @title Typewriter\n * @category text\n * @description Types text out character by character, with pause markers and a caret that blinks once typing stops.\n * @duration data-driven\n * @use Prompts, search queries and chat-style reveals\n * @use Quotes and statements that should read at speaking pace\n * @avoid Code listings — use `code-block`\n * @avoid Shell commands with output — use `terminal`\n * @tags typing, caret, cursor, prompt, type on\n * @example\n * <Center>\n *   <Typewriter text=\"Make a launch video^ for vertical\" cps={20} />\n * </Center>\n */\nimport type React from \"react\";\nimport { graphemes, type MotionProps, useMotion, useTheme, useViewport } from \"./core\";\n\nexport type TypewriterProps = MotionProps & {\n  /** Text to type. `^` pauses for `pause` frames, `^20` pauses for 20 frames, `\\n` starts a new line. */\n  text: string;\n  /** Characters per second. A `duration` wins over it and becomes the total typing time in frames. */\n  cps?: number;\n  /** Frames a bare `^` waits. Defaults to 0.5s. */\n  pause?: number;\n  caret?: \"bar\" | \"block\" | \"none\";\n  /** Font size in design units. */\n  size?: number;\n  weight?: number;\n  font?: \"heading\" | \"body\" | \"mono\";\n  color?: string;\n  /** Caret color. Defaults to the theme accent. */\n  caretColor?: string;\n  align?: \"left\" | \"center\" | \"right\";\n  style?: React.CSSProperties;\n  className?: string;\n};\n\n/** The characters to type, and for each one the extra frames to wait before it appears. */\nfunction parse(text: string, pause: number) {\n  const chars: string[] = [];\n  const waits: number[] = [];\n  let wait = 0;\n  text.split(/\\^(\\d*)/).forEach((part, index) => {\n    // split() with a capture group alternates text, marker digits, text, marker digits…\n    if (index % 2 === 1) {\n      wait += part === \"\" ? pause : Number(part);\n      return;\n    }\n    for (const char of graphemes(part)) {\n      chars.push(char);\n      waits.push(wait);\n      wait = 0;\n    }\n  });\n  return { chars, waits };\n}\n\nexport function Typewriter({\n  text,\n  cps = 18,\n  pause,\n  caret = \"bar\",\n  size = 72,\n  weight,\n  font = \"heading\",\n  color,\n  caretColor,\n  align = \"center\",\n  style,\n  className,\n  ...motion\n}: TypewriterProps) {\n  const theme = useTheme();\n  const { u, width, safe } = useViewport();\n  const m = useMotion(motion);\n  const fontPx = u(size);\n  const { chars, waits } = parse(text, pause ?? Math.round(m.fps * 0.5));\n  const perChar = motion.duration ? motion.duration / Math.max(chars.length, 1) : m.fps / cps;\n\n  let typed = 0;\n  let end = m.delay;\n  for (let i = 0; i < chars.length; i++) {\n    end += waits[i] + perChar;\n    if (m.frame >= end) typed = i + 1;\n  }\n  // Solid while typing, then a hard on/off blink once a second, like a real text cursor.\n  const typing = m.frame >= m.delay && m.frame < end;\n  const caretOn = typing || Math.floor(Math.abs(m.frame - end) / (m.fps / 2)) % 2 === 0;\n  const block = caret === \"block\";\n\n  return (\n    <div\n      className={className}\n      style={{\n        fontFamily: theme.fonts[font],\n        fontSize: fontPx,\n        fontWeight: weight ?? (font === \"heading\" ? theme.headingWeight : 500),\n        color: color ?? theme.colors.foreground,\n        lineHeight: 1.2,\n        letterSpacing: font === \"mono\" ? 0 : \"-0.02em\",\n        textAlign: align,\n        textWrap: \"balance\",\n        whiteSpace: \"pre-wrap\",\n        maxWidth: width - safe.x * 2,\n        opacity: 1 - m.exit,\n        translate: `0 ${-m.exit * fontPx * 0.2}px`,\n        ...style,\n      }}\n    >\n      {chars.slice(0, typed).join(\"\")}\n      {caret !== \"none\" && (\n        // An empty inline span marks the insertion point without adding a line-break opportunity.\n        <span style={{ position: \"relative\" }}>\n          <span\n            style={{\n              position: \"absolute\",\n              left: block ? 0 : \"0.02em\",\n              top: \"0.08em\",\n              bottom: \"0.08em\",\n              width: block ? \"0.56em\" : \"0.07em\",\n              background: caretColor ?? theme.colors.accent,\n              opacity: caretOn ? (block ? 0.75 : 1) : 0,\n            }}\n          />\n        </span>\n      )}\n      {/* The untyped rest keeps its space, so wrapping and centering never shift while typing. */}\n      <span style={{ visibility: \"hidden\" }}>{chars.slice(typed).join(\"\")}</span>\n    </div>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/typewriter.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "Prompts, search queries and chat-style reveals",
+      "Quotes and statements that should read at speaking pace"
+    ],
+    "avoid": [
+      "Code listings — use `code-block`",
+      "Shell commands with output — use `terminal`"
+    ],
+    "tags": [
+      "typing",
+      "caret",
+      "cursor",
+      "prompt",
+      "type on"
+    ]
+  },
+  "docs": "Usage:\n\n<Center>\n  <Typewriter text=\"Make a launch video^ for vertical\" cps={20} />\n</Center>",
+  "categories": [
+    "text"
+  ],
+  "type": "registry:item"
+}

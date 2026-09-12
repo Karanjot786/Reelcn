@@ -1,0 +1,41 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "mask-reveal",
+  "title": "Mask Reveal",
+  "description": "Headline whose words slide up from behind an invisible edge, as if uncovered by a mask.",
+  "dependencies": [],
+  "registryDependencies": [
+    "http://localhost:3000/r/text-reveal.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/mask-reveal.tsx",
+      "content": "/**\n * @title Mask Reveal\n * @category text\n * @description Headline whose words slide up from behind an invisible edge, as if uncovered by a mask.\n * @duration 30\n * @use Editorial and cinematic titles\n * @use Crisp reveals where fading would feel soft\n * @avoid Multi-line statements that should arrive line by line — use `line-slide`\n * @tags mask, clip, reveal, editorial, headline\n * @preset text-reveal\n * @example\n * <Center>\n *   <MaskReveal text=\"Made for vertical first\" />\n * </Center>\n */\nimport { TextReveal, type TextRevealProps } from \"./text-reveal\";\n\nexport type MaskRevealProps = Omit<TextRevealProps, \"effect\">;\n\nexport function MaskReveal(props: MaskRevealProps) {\n  return <TextReveal {...props} effect=\"mask\" />;\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/mask-reveal.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "30",
+    "use": [
+      "Editorial and cinematic titles",
+      "Crisp reveals where fading would feel soft"
+    ],
+    "avoid": [
+      "Multi-line statements that should arrive line by line — use `line-slide`"
+    ],
+    "tags": [
+      "mask",
+      "clip",
+      "reveal",
+      "editorial",
+      "headline"
+    ],
+    "preset": "text-reveal"
+  },
+  "docs": "Usage:\n\n<Center>\n  <MaskReveal text=\"Made for vertical first\" />\n</Center>",
+  "categories": [
+    "text"
+  ],
+  "type": "registry:item"
+}

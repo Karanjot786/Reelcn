@@ -1,0 +1,41 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "char-rise",
+  "title": "Char Rise",
+  "description": "A short word or name whose characters rise in one after another.",
+  "dependencies": [],
+  "registryDependencies": [
+    "http://localhost:3000/r/text-reveal.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/char-rise.tsx",
+      "content": "/**\n * @title Char Rise\n * @category text\n * @description A short word or name whose characters rise in one after another.\n * @duration 30\n * @use Single words, names and short brand lines\n * @use Big title cards with only a few letters\n * @avoid Sentences longer than a few words — use `rise-up`\n * @tags characters, letters, stagger, rise, title\n * @preset text-reveal\n * @example\n * <Center>\n *   <CharRise text=\"Launch day\" size={150} />\n * </Center>\n */\nimport { TextReveal, type TextRevealProps } from \"./text-reveal\";\n\nexport type CharRiseProps = Omit<TextRevealProps, \"effect\" | \"split\">;\n\nexport function CharRise(props: CharRiseProps) {\n  return <TextReveal {...props} split=\"char\" effect=\"rise\" />;\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/char-rise.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "30",
+    "use": [
+      "Single words, names and short brand lines",
+      "Big title cards with only a few letters"
+    ],
+    "avoid": [
+      "Sentences longer than a few words — use `rise-up`"
+    ],
+    "tags": [
+      "characters",
+      "letters",
+      "stagger",
+      "rise",
+      "title"
+    ],
+    "preset": "text-reveal"
+  },
+  "docs": "Usage:\n\n<Center>\n  <CharRise text=\"Launch day\" size={150} />\n</Center>",
+  "categories": [
+    "text"
+  ],
+  "type": "registry:item"
+}

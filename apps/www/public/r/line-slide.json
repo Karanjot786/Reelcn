@@ -1,0 +1,41 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "line-slide",
+  "title": "Line Slide",
+  "description": "Multi-line statement where each line slides up from behind a mask, one line after another.",
+  "dependencies": [],
+  "registryDependencies": [
+    "http://localhost:3000/r/text-reveal.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/line-slide.tsx",
+      "content": "/**\n * @title Line Slide\n * @category text\n * @description Multi-line statement where each line slides up from behind a mask, one line after another.\n * @duration 30\n * @use Two- or three-line statements, with lines separated by \"\\n\"\n * @use Manifesto-style sequences and closing statements\n * @avoid A single word or name — use `char-rise`\n * @tags lines, mask, slide, statement, stagger\n * @preset text-reveal\n * @example\n * <Center>\n *   <LineSlide text={\"Write the script.\\nRender the story.\"} align=\"left\" />\n * </Center>\n */\nimport { TextReveal, type TextRevealProps } from \"./text-reveal\";\n\nexport type LineSlideProps = Omit<TextRevealProps, \"effect\" | \"split\">;\n\nexport function LineSlide(props: LineSlideProps) {\n  return <TextReveal {...props} split=\"line\" effect=\"mask\" />;\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/line-slide.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "30",
+    "use": [
+      "Two- or three-line statements, with lines separated by \"\\n\"",
+      "Manifesto-style sequences and closing statements"
+    ],
+    "avoid": [
+      "A single word or name — use `char-rise`"
+    ],
+    "tags": [
+      "lines",
+      "mask",
+      "slide",
+      "statement",
+      "stagger"
+    ],
+    "preset": "text-reveal"
+  },
+  "docs": "Usage:\n\n<Center>\n  <LineSlide text={\"Write the script.\\nRender the story.\"} align=\"left\" />\n</Center>",
+  "categories": [
+    "text"
+  ],
+  "type": "registry:item"
+}

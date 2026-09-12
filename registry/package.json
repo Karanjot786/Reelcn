@@ -5,6 +5,7 @@
   "type": "module",
   "dependencies": {
     "@remotion/google-fonts": "catalog:",
+    "@remotion/transitions": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "remotion": "catalog:"

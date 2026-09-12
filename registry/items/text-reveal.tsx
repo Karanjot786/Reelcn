@@ -112,6 +112,7 @@ export function TextReveal({
 
   const lines = text.split("\n").map((line, lineNumber) => {
     const lineIndex = unitIndex;
+    if (split === "line") unitIndex++;
     const parts = line.split(/(\s+)/).map((word, wordNumber) => {
       // Whitespace stays a plain text node so the browser can still wrap the line.
       if (!word || /^\s+$/.test(word)) return word;
@@ -123,14 +124,35 @@ export function TextReveal({
           </span>
         );
       }
+      // `line` stagger animates the whole line as one rigid unit below, so words here stay plain.
+      if (split === "line")
+        return accent ? (
+          <span key={wordNumber} style={accent}>
+            {word}
+          </span>
+        ) : (
+          word
+        );
       return (
         <span key={wordNumber} style={accent}>
-          {renderUnit(word, wordNumber, split === "word" ? unitIndex++ : lineIndex)}
+          {renderUnit(word, wordNumber, unitIndex++)}
         </span>
       );
     });
-    if (split === "line") unitIndex++;
-    return <div key={lineNumber}>{parts}</div>;
+    if (split !== "line") return <div key={lineNumber}>{parts}</div>;
+    const progress = tween(m.frame, m.fps, {
+      from: m.delay + lineIndex * step,
+      duration: m.enterFrames,
+      motion: m.preset,
+    });
+    return (
+      <div
+        key={lineNumber}
+        style={effect === "mask" ? { overflow: "hidden", paddingBottom: "0.12em", marginBottom: "-0.12em" } : undefined}
+      >
+        <span style={{ display: "inline-block", ...unitStyle(effect, progress, fontPx) }}>{parts}</span>
+      </div>
+    );
   });
 
   return (
