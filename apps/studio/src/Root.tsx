@@ -1,5 +1,6 @@
 import { demos } from "@reelcn/registry/demos";
-import { Stage, type ThemeName, ThemeProvider, themeNames, Viewport } from "@reelcn/registry/items/core";
+import { DemoFrame } from "@reelcn/registry/demos/view";
+import { type ThemeName, themeNames, Viewport } from "@reelcn/registry/items/core";
 import { AbsoluteFill, Composition, Folder, Freeze, Sequence } from "remotion";
 import { z } from "zod";
 import { SelfTest } from "./self-test";
@@ -24,18 +25,7 @@ function lookup(id: string) {
 }
 
 function DemoView({ demo, theme }: z.infer<typeof demoSchema>) {
-  const { component: Component, bare } = lookup(demo);
-  return (
-    <ThemeProvider theme={theme}>
-      {bare ? (
-        <Component />
-      ) : (
-        <Stage>
-          <Component />
-        </Stage>
-      )}
-    </ThemeProvider>
-  );
+  return <DemoFrame demo={lookup(demo)} theme={theme} />;
 }
 
 const SHEET_CELLS = 9;
