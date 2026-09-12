@@ -19,14 +19,16 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
+      - name: Typecheck items at the user's es2015 lib
+        run: pnpm typecheck:user
       - run: pnpm lint
       - run: pnpm test
       - run: pnpm registry:build
       - name: Generated files must be committed
-        run: git diff --exit-code -- registry.json apps/www/public
+        run: pnpm check:drift
       - name: Core self-test
         run: pnpm test:self
-      - name: Smoke render every demo
+      - name: Smoke render every demo (fails blank or static demos)
         run: pnpm stills smoke
       - uses: actions/upload-artifact@v4
         if: failure()
