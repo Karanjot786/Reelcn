@@ -1,7 +1,7 @@
 // Derives registry.json, the shadcn artifacts and the llms files from each registry file's JSDoc header and imports.
 // Run: node scripts/build-registry.ts
 import { execFileSync } from "node:child_process";
-import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 export const CATEGORIES = [
@@ -18,6 +18,22 @@ export const CATEGORIES = [
   "templates",
   "tools",
 ] as const;
+
+/** npm packages registry code may import (spec §4.2). Anything else needs a spec change. */
+export const ALLOWED_PACKAGES = new Set([
+  "remotion",
+  "@remotion/google-fonts",
+  "@remotion/transitions",
+  "@remotion/media-utils",
+  "@remotion/captions",
+  "@remotion/media",
+  "mediabunny",
+  "@remotion/install-whisper-cpp",
+  "@remotion/openai-whisper",
+  "@remotion/bundler",
+  "@remotion/renderer",
+  "zod",
+]);
 
 export type Header = {
   title: string;
@@ -59,13 +75,17 @@ export function parseHeader(source: string, file: string): Header {
     throw new Error(`${file}: invalid @duration "${duration}" (frames at 30fps, "sustained" or "data-driven")`);
   }
   if (!duration && !DURATIONLESS.has(category)) throw new Error(`${file}: missing @duration`);
+  const use = many("use");
+  if (use.length === 0 && !DURATIONLESS.has(category)) {
+    throw new Error(`${file}: missing @use (say what the item is for; agents pick components from it)`);
+  }
 
   return {
     title: one("title") as string,
     category,
     description: one("description") as string,
     duration,
-    use: many("use"),
+    use,
     avoid: many("avoid"),
     tags: (one("tags") ?? "")
       .split(",")
@@ -77,12 +97,20 @@ export function parseHeader(source: string, file: string): Header {
 }
 
 export function parseImports(source: string, file: string): { local: string[]; npm: string[] } {
-  const specifiers = [...source.matchAll(/^(?:import|export)\s(?:[^;]*?\sfrom\s)?["']([^"']+)["']/gm)].map(
-    (match) => match[1],
-  );
+  // An import must end its line, and must not sit inside a template string (code-block and terminal demos show code).
+  // Inside a template string, the count of backticks before the line is odd. The header is dropped first so its
+  // backticks (in @avoid) don't count.
+  // ponytail: O(n²) backtick counting; fine for single-file items, swap for a tokenizer if a file passes ~100 KB.
+  const body = source.replace(/^\/\*\*[\s\S]*?\*\//, "");
+  const specifiers = [...body.matchAll(/^(?:import|export)\s(?:[^;]*?\sfrom\s)?["']([^"']+)["'][ \t]*;?[ \t]*$/gm)]
+    .filter((match) => (body.slice(0, match.index).match(/`/g) ?? []).length % 2 === 0)
+    .map((match) => match[1]);
   const local: string[] = [];
   const npm: string[] = [];
   for (const specifier of specifiers) {
+    if (specifier.startsWith("@/")) {
+      throw new Error(`${file}: "${specifier}" is a path alias; registry code imports siblings as "./name"`);
+    }
     if (specifier.startsWith(".")) {
       const name = specifier.replace(/^\.\//, "").replace(/\.tsx?$/, "");
       if (!specifier.startsWith("./") || name.includes("/")) {
@@ -96,9 +124,19 @@ export function parseImports(source: string, file: string): { local: string[]; n
       .slice(0, specifier.startsWith("@") ? 2 : 1)
       .join("/");
     if (root === "react" || root === "react-dom") continue;
+    if (!ALLOWED_PACKAGES.has(root)) {
+      throw new Error(`${file}: "${root}" is not on the dependency allowlist (spec §4.2)`);
+    }
     if (!npm.includes(root)) npm.push(root);
   }
   return { local, npm };
+}
+
+/** Theme preset names, read from core.tsx as text: importing core needs a browser, because fonts load at import. */
+export function themeNamesFromSource(source = readFileSync("registry/items/core.tsx", "utf8")): string[] {
+  const names = [...source.matchAll(/^\s{4}name: "(\w+)",$/gm)].map((match) => match[1]);
+  if (names.length === 0) throw new Error("no themes found in registry/items/core.tsx");
+  return names;
 }
 
 type Item = ReturnType<typeof collect>[number];
@@ -192,15 +230,14 @@ function main() {
   const items = collect(base);
   validate(items);
 
-  const themes = [...readFileSync("registry/items/core.tsx", "utf8").matchAll(/^\s{4}name: "(\w+)",$/gm)].map(
-    (match) => match[1],
-  );
-  if (themes.length === 0) throw new Error("no themes found in registry/items/core.tsx");
+  const themes = themeNamesFromSource();
 
   writeFileSync(
     "registry.json",
     `${JSON.stringify({ $schema: "https://ui.shadcn.com/schema/registry.json", name: "reelcn", homepage: base, items }, null, 2)}\n`,
   );
+  // Clear stale artifacts so a deleted or renamed item cannot linger in public/r.
+  rmSync("apps/www/public/r", { recursive: true, force: true });
   execFileSync("pnpm", ["exec", "shadcn", "build", "registry.json", "--output", "apps/www/public/r"], {
     stdio: "inherit",
   });

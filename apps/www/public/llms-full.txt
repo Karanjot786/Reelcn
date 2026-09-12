@@ -44,7 +44,7 @@ const heading = `${fonts.instrumentSerif}, ui-serif, Georgia, serif`;
 
 ## motion
 
-- [Animate](http://localhost:3000/r/animate.json): Wrap anything (logo, screenshot, card, image) to give it a themed enter and exit. The swiss-army knife of reelcn. (length 18f@30fps)
+- [Animate](http://localhost:3000/r/animate.json): Wrap anything (logo, screenshot, card, image) to give it a themed enter and exit. The swiss-army knife of reelcn. (length 18f@30fps · use for Entrances and exits for logos, screenshots, cards and anything without its own animation; Quick prototypes before reaching for a dedicated component · avoid Headlines — use `text-reveal`)
 
 ```tsx
 <Animate effect="up" delay={10}>

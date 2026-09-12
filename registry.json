@@ -25,9 +25,20 @@
       "docs": "Usage:\n\n<Animate effect=\"up\" delay={10}>\n  <Img src={staticFile(\"logo.png\")} />\n</Animate>",
       "meta": {
         "duration": "18",
-        "use": [],
-        "avoid": [],
-        "tags": []
+        "use": [
+          "Entrances and exits for logos, screenshots, cards and anything without its own animation",
+          "Quick prototypes before reaching for a dedicated component"
+        ],
+        "avoid": [
+          "Headlines — use `text-reveal`"
+        ],
+        "tags": [
+          "wrapper",
+          "entrance",
+          "exit",
+          "fade",
+          "slide"
+        ]
       }
     },
     {

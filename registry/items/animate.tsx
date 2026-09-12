@@ -3,6 +3,10 @@
  * @category motion
  * @description Wrap anything (logo, screenshot, card, image) to give it a themed enter and exit. The swiss-army knife of reelcn.
  * @duration 18
+ * @use Entrances and exits for logos, screenshots, cards and anything without its own animation
+ * @use Quick prototypes before reaching for a dedicated component
+ * @avoid Headlines — use `text-reveal`
+ * @tags wrapper, entrance, exit, fade, slide
  * @example
  * <Animate effect="up" delay={10}>
  *   <Img src={staticFile("logo.png")} />

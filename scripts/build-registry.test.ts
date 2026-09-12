@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { parseHeader, parseImports } from "./build-registry.ts";
+import { parseHeader, parseImports, themeNamesFromSource } from "./build-registry.ts";
 
 const source = `/**
  * @title Text Reveal
@@ -61,4 +61,29 @@ test("parseImports separates sibling items from npm package roots", () => {
 test("parseImports rejects relative imports that are not flat siblings", () => {
   assert.throws(() => parseImports('import { a } from "../core";\n', "x.tsx"), /flat sibling/);
   assert.throws(() => parseImports('import { a } from "./lib/core";\n', "x.tsx"), /flat sibling/);
+});
+
+test("parseImports ignores import lines inside template strings", () => {
+  const code = 'import { a } from "./core";\nconst sample = `\nimport { b } from "left-pad";\n`;\n';
+  assert.deepEqual(parseImports(code, "x.tsx"), { local: ["core"], npm: [] });
+});
+
+test("parseImports ignores `from` clauses that do not end the line", () => {
+  const code =
+    'import { a } from "./core";\nexport function X() {\n  return <C code={`import b from "left-pad"`} />\n}\n';
+  assert.deepEqual(parseImports(code, "x.tsx"), { local: ["core"], npm: [] });
+});
+
+test("parseImports rejects path aliases and packages outside the allowlist", () => {
+  assert.throws(() => parseImports('import { a } from "@/lib/core";\n', "x.tsx"), /path alias/);
+  assert.throws(() => parseImports('import confetti from "canvas-confetti";\n', "x.tsx"), /allowlist/);
+});
+
+test("parseHeader requires @use for components", () => {
+  assert.throws(() => parseHeader(source.replace(/ \* @use .*\n/g, ""), "x.tsx"), /missing @use/);
+});
+
+test("themeNamesFromSource reads preset names from core source", () => {
+  const core = '  midnight: {\n    name: "midnight",\n  },\n  paper: {\n    name: "paper",\n  },\n';
+  assert.deepEqual(themeNamesFromSource(core), ["midnight", "paper"]);
 });
