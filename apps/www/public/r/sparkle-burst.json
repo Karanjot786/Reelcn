@@ -1,0 +1,42 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sparkle-burst",
+  "title": "Sparkle Burst",
+  "description": "A ring of four-point star sparkles that pops out from a point, spins and fades, over a soft pulse ring.",
+  "dependencies": [
+    "remotion"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/sparkle-burst.tsx",
+      "content": "/**\n * @title Sparkle Burst\n * @category overlays\n * @description A ring of four-point star sparkles that pops out from a point, spins and fades, over a soft pulse ring.\n * @duration 27\n * @use Drawing the eye to a button, price or word the moment it appears\n * @use A small \"done\" or \"new\" accent on a card\n * @avoid Full-screen celebrations — use `confetti`\n * @tags sparkle, star, twinkle, emphasis, accent\n * @example\n * <Sequence from={20} durationInFrames={40}>\n *   <SparkleBurst origin={{ x: 72, y: 64 }} count={8} />\n * </Sequence>\n */\nimport type React from \"react\";\nimport { AbsoluteFill, random } from \"remotion\";\nimport { type MotionProps, tween, useMotion, useTheme, useViewport } from \"./core\";\n\nexport type SparkleBurstProps = MotionProps & {\n  /** Center of the burst in % of the canvas (0-100 on each axis). */\n  origin?: { x: number; y: number };\n  /** Number of sparkles. 6-12 reads best. */\n  count?: number;\n  /** How far the sparkles travel, in design units. */\n  radius?: number;\n  /** Largest sparkle size in design units. */\n  size?: number;\n  /** Sparkle color. Defaults to the theme highlight. */\n  color?: string;\n  /** Every other sparkle, and the pulse ring. Defaults to the theme accent. */\n  secondaryColor?: string;\n  /** Show the expanding ring behind the sparkles. */\n  ring?: boolean;\n  seed?: string | number;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\n/** Four-point star in a 100 × 100 box: concave sides meeting in sharp tips. */\nconst STAR = \"M50 0C53 35 65 47 100 50C65 53 53 65 50 100C47 65 35 53 0 50C35 47 47 35 50 0Z\";\n\nexport function SparkleBurst({\n  origin = { x: 50, y: 50 },\n  count = 8,\n  radius = 150,\n  size = 44,\n  color,\n  secondaryColor,\n  ring = true,\n  seed = \"sparkle\",\n  style,\n  className,\n  ...motion\n}: SparkleBurstProps) {\n  const theme = useTheme();\n  const { u, width, height } = useViewport();\n  const m = useMotion(motion);\n  const primary = color ?? theme.colors.highlight;\n  const secondary = secondaryColor ?? theme.colors.accent;\n  const lifeFrames = Math.round(m.enterFrames * 1.5);\n  const x0 = (origin.x / 100) * width;\n  const y0 = (origin.y / 100) * height;\n  const pulse = tween(m.frame, m.fps, { from: m.delay, duration: m.enterFrames, motion: \"smooth\" });\n  const pulseSize = u(radius) * 1.3 * pulse;\n\n  const sparkles = Array.from({ length: count }, (_, i) => {\n    const r = (key: string) => random(`${seed}-${i}-${key}`);\n    const start = m.delay + Math.floor(r(\"delay\") * 4);\n    const life = (m.frame - start) / lifeFrames;\n    if (life <= 0 || life >= 1) return null;\n    const out = Math.min(tween(m.frame, m.fps, { from: start, duration: m.enterFrames, motion: m.preset }), 1.15);\n    const theta = ((i + (r(\"angle\") - 0.5) * 0.7) / count) * Math.PI * 2 - Math.PI / 2;\n    const distance = u(radius) * (0.55 + 0.45 * r(\"distance\")) * out;\n    // Pops to full size early in its life, then shrinks away.\n    const s = u(size) * (0.45 + 0.55 * r(\"size\")) * Math.sin(Math.PI * life ** 0.6);\n    const turn = (i % 2 === 0 ? 1 : -1) * (30 + 60 * life) + (r(\"spin\") - 0.5) * 40;\n    return (\n      <svg\n        key={i}\n        aria-hidden=\"true\"\n        viewBox=\"0 0 100 100\"\n        width={s}\n        height={s}\n        style={{\n          position: \"absolute\",\n          left: x0 + Math.cos(theta) * distance - s / 2,\n          top: y0 + Math.sin(theta) * distance - s / 2,\n          rotate: `${turn}deg`,\n          overflow: \"visible\",\n        }}\n      >\n        <path d={STAR} fill={i % 2 === 0 ? primary : secondary} />\n      </svg>\n    );\n  });\n\n  return (\n    <AbsoluteFill className={className} style={{ pointerEvents: \"none\", opacity: 1 - m.exit, ...style }}>\n      {ring && pulse > 0 && pulse < 1 && (\n        <div\n          style={{\n            position: \"absolute\",\n            left: x0 - pulseSize / 2,\n            top: y0 - pulseSize / 2,\n            width: pulseSize,\n            height: pulseSize,\n            borderRadius: \"50%\",\n            border: `${u(3)}px solid ${secondary}`,\n            opacity: (1 - pulse) * 0.7,\n          }}\n        />\n      )}\n      {sparkles}\n    </AbsoluteFill>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/sparkle-burst.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "27",
+    "use": [
+      "Drawing the eye to a button, price or word the moment it appears",
+      "A small \"done\" or \"new\" accent on a card"
+    ],
+    "avoid": [
+      "Full-screen celebrations — use `confetti`"
+    ],
+    "tags": [
+      "sparkle",
+      "star",
+      "twinkle",
+      "emphasis",
+      "accent"
+    ]
+  },
+  "docs": "Usage:\n\n<Sequence from={20} durationInFrames={40}>\n  <SparkleBurst origin={{ x: 72, y: 64 }} count={8} />\n</Sequence>",
+  "categories": [
+    "overlays"
+  ],
+  "type": "registry:item"
+}

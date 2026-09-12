@@ -1,0 +1,43 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "reaction-burst",
+  "title": "Reaction Burst",
+  "description": "Live-stream style reactions (heart, thumbs-up, star, flame) that pop in, float up with a sway and fade.",
+  "dependencies": [
+    "remotion"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/reaction-burst.tsx",
+      "content": "/**\n * @title Reaction Burst\n * @category overlays\n * @description Live-stream style reactions (heart, thumbs-up, star, flame) that pop in, float up with a sway and fade.\n * @duration 100\n * @use Showing audience love for a clip, a hot take or a product reveal\n * @use Social proof in short-form and live-stream style edits\n * @avoid A single celebratory moment — use `confetti`\n * @tags reactions, hearts, likes, live, social, float\n * @example\n * <Sequence from={30} durationInFrames={120}>\n *   <ReactionBurst icons={[\"heart\", \"flame\"]} count={16} />\n * </Sequence>\n */\nimport type React from \"react\";\nimport { AbsoluteFill, random } from \"remotion\";\nimport { alpha, type MotionProps, tween, useMotion, useTheme, useViewport } from \"./core\";\n\nexport type ReactionIcon = \"heart\" | \"thumbsUp\" | \"star\" | \"flame\";\n\nexport type ReactionBurstProps = MotionProps & {\n  /** Where reactions spawn, in % of the canvas. Defaults to the lower right. */\n  origin?: { x: number; y: number };\n  /** Number of reactions. */\n  count?: number;\n  /** Icons to draw from; each reaction picks one (seeded). */\n  icons?: ReactionIcon[];\n  /** Frames between spawns. Defaults to 0.12s. */\n  interval?: number;\n  /** Frames each reaction lives. Defaults to 1.8s. */\n  life?: number;\n  /** How far reactions float up, in design units. */\n  rise?: number;\n  /** Side-to-side sway in design units. */\n  sway?: number;\n  /** Icon size in design units. */\n  size?: number;\n  /** Fill per icon. Defaults: heart and thumbs-up use the theme accent, star and flame the highlight. */\n  colors?: Partial<Record<ReactionIcon, string>>;\n  seed?: string | number;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\n/** Five-point star with softened tips, built from ten alternating radii. */\nconst STAR = `${Array.from({ length: 10 }, (_, i) => {\n  const radius = i % 2 === 0 ? 10.4 : 4.6;\n  const angle = (i * Math.PI) / 5 - Math.PI / 2;\n  return `${i === 0 ? \"M\" : \"L\"}${(12 + radius * Math.cos(angle)).toFixed(2)} ${(12.8 + radius * Math.sin(angle)).toFixed(2)}`;\n}).join(\" \")}Z`;\n\n/** Hand-drawn 24 × 24 glyphs. Plain paths, so they render the same on every machine (unlike emoji fonts). */\nconst GLYPHS: Record<ReactionIcon, string[]> = {\n  heart: [\n    \"M12 20.6C12 20.6 2.8 14.9 2.8 8.8C2.8 5.9 5 3.8 7.7 3.8C9.6 3.8 11.1 4.9 12 6.4C12.9 4.9 14.4 3.8 16.3 3.8C19 3.8 21.2 5.9 21.2 8.8C21.2 14.9 12 20.6 12 20.6Z\",\n  ],\n  thumbsUp: [\n    \"M3 10.6C3 10 3.4 9.6 4 9.6H6.4C7 9.6 7.4 10 7.4 10.6V19.4C7.4 20 7 20.4 6.4 20.4H4C3.4 20.4 3 20 3 19.4Z\",\n    \"M9 10.2L12.6 4.2C13.2 3.2 14.7 3.4 15 4.5C15.1 4.9 15.1 5.3 15 5.7L14.2 9H19.1C20.3 9 21.2 10.1 21 11.3L19.8 18.7C19.6 19.7 18.8 20.4 17.8 20.4H9Z\",\n  ],\n  star: [STAR],\n  flame: [\n    \"M12 2.4C12.6 6 16 7.9 17.6 11C19.6 14.9 17.4 21.2 12 21.2C6.6 21.2 4.4 15.9 6.3 12.1C7.1 10.5 8.4 9.6 8.9 7.9C9.9 9.2 10.1 10.6 10 11.8C11.8 10 12.6 6.5 12 2.4Z\",\n  ],\n};\n\n/** The flame's inner tongue, painted in a lighter tint of the flame color. */\nconst FLAME_CORE =\n  \"M12 12.6C13.5 14 14.7 15.4 14.4 17.3C14.1 19 13.1 19.9 12 19.9C10.6 19.9 9.5 18.8 9.7 17.2C9.9 15.6 11.4 14.8 12 12.6Z\";\n\nexport function ReactionBurst({\n  origin = { x: 82, y: 78 },\n  count = 12,\n  icons = [\"heart\", \"thumbsUp\", \"star\", \"flame\"],\n  interval,\n  life,\n  rise = 560,\n  sway = 34,\n  size = 72,\n  colors = {},\n  seed = \"reactions\",\n  style,\n  className,\n  ...motion\n}: ReactionBurstProps) {\n  const theme = useTheme();\n  const { u, width, height } = useViewport();\n  const m = useMotion(motion);\n  const step = interval ?? Math.round(m.fps * 0.12);\n  const lifeFrames = life ?? Math.round(m.fps * 1.8);\n  const x0 = (origin.x / 100) * width;\n  const y0 = (origin.y / 100) * height;\n  const fills: Record<ReactionIcon, string> = {\n    heart: colors.heart ?? theme.colors.accent,\n    thumbsUp: colors.thumbsUp ?? theme.colors.accent,\n    star: colors.star ?? theme.colors.highlight,\n    flame: colors.flame ?? theme.colors.highlight,\n  };\n\n  const reactions = Array.from({ length: count }, (_, i) => {\n    const r = (key: string) => random(`${seed}-${i}-${key}`);\n    const spawn = m.delay + i * step + Math.floor(r(\"jitter\") * step);\n    const age = m.frame - spawn;\n    if (age < 0 || age >= lifeFrames) return null;\n    const p = age / lifeFrames;\n    const icon = icons.length > 0 ? icons[Math.floor(r(\"icon\") * icons.length)] : \"heart\";\n    const fill = fills[icon];\n    const pop = tween(m.frame, m.fps, { from: spawn, duration: Math.round(m.enterFrames / 2), motion: m.preset });\n    const phase = r(\"phase\") * Math.PI * 2;\n    // Rises fast, then drifts: an ease-out on height with a widening sway.\n    const lift = 1 - (1 - p) ** 1.6;\n    const x =\n      x0 +\n      Math.sin(p * Math.PI * (1.4 + r(\"frequency\")) + phase) * u(sway) * (0.4 + 0.6 * p) +\n      (r(\"drift\") - 0.5) * u(sway) * 1.5 * p;\n    const y = y0 - u(rise) * (0.75 + 0.25 * r(\"rise\")) * lift;\n    const s = u(size) * (0.8 + 0.4 * r(\"size\"));\n    return (\n      <svg\n        key={i}\n        aria-hidden=\"true\"\n        viewBox=\"0 0 24 24\"\n        width={s}\n        height={s}\n        style={{\n          position: \"absolute\",\n          left: x - s / 2,\n          top: y - s / 2,\n          overflow: \"visible\",\n          opacity: Math.min((1 - p) / 0.35, 1),\n          scale: String(Math.max(pop, 0)),\n          rotate: `${Math.sin(p * Math.PI * 2 + phase) * 10}deg`,\n          filter: `drop-shadow(0 ${u(6)}px ${u(10)}px ${alpha(\"#000000\", 0.3)})`,\n        }}\n      >\n        {GLYPHS[icon].map((d, index) => (\n          <path key={index} d={d} fill={fill} stroke={fill} strokeWidth={1.2} strokeLinejoin=\"round\" />\n        ))}\n        {icon === \"flame\" && <path d={FLAME_CORE} fill={`color-mix(in srgb, ${fill} 40%, #ffffff)`} />}\n      </svg>\n    );\n  });\n\n  return (\n    <AbsoluteFill className={className} style={{ pointerEvents: \"none\", opacity: 1 - m.exit, ...style }}>\n      {reactions}\n    </AbsoluteFill>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/reaction-burst.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "100",
+    "use": [
+      "Showing audience love for a clip, a hot take or a product reveal",
+      "Social proof in short-form and live-stream style edits"
+    ],
+    "avoid": [
+      "A single celebratory moment — use `confetti`"
+    ],
+    "tags": [
+      "reactions",
+      "hearts",
+      "likes",
+      "live",
+      "social",
+      "float"
+    ]
+  },
+  "docs": "Usage:\n\n<Sequence from={30} durationInFrames={120}>\n  <ReactionBurst icons={[\"heart\", \"flame\"]} count={16} />\n</Sequence>",
+  "categories": [
+    "overlays"
+  ],
+  "type": "registry:item"
+}

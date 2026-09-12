@@ -1,0 +1,42 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "confetti",
+  "title": "Confetti",
+  "description": "Seeded confetti burst with closed-form physics: launch spread, gravity, air drag, spin and flutter, in theme colors.",
+  "dependencies": [
+    "remotion"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/confetti.tsx",
+      "content": "/**\n * @title Confetti\n * @category overlays\n * @description Seeded confetti burst with closed-form physics: launch spread, gravity, air drag, spin and flutter, in theme colors.\n * @duration 90\n * @use Launches, milestones and end cards\n * @use Celebrating the moment a number or result lands\n * @avoid Emphasis on a single word or button — use `sparkle-burst`\n * @tags celebration, particles, party, burst, physics\n * @example\n * <Sequence from={45} durationInFrames={90}>\n *   <Confetti origin={{ x: 50, y: 70 }} count={120} />\n * </Sequence>\n */\nimport type React from \"react\";\nimport { AbsoluteFill, random } from \"remotion\";\nimport { type MotionProps, tween, useMotion, useTheme, useViewport } from \"./core\";\n\nexport type ConfettiShape = \"rect\" | \"strip\" | \"circle\";\n\nexport type ConfettiProps = MotionProps & {\n  /** Launch point in % of the canvas (0-100 on each axis), so it stays put at every aspect ratio. */\n  origin?: { x: number; y: number };\n  /** Number of pieces. */\n  count?: number;\n  /** Launch direction in degrees: -90 is straight up, 0 is to the right. */\n  angle?: number;\n  /** Width of the launch cone in degrees. */\n  spread?: number;\n  /** Launch speed of the fastest piece, in design units per second. */\n  power?: number;\n  /** Downward acceleration in design units per second squared. */\n  gravity?: number;\n  /** Air drag per second. Higher values stop pieces sooner and slow their fall. */\n  drag?: number;\n  /** Piece size in design units. */\n  size?: number;\n  /** Frames each piece lives before it has faded out. Defaults to 3s. */\n  life?: number;\n  shapes?: ConfettiShape[];\n  /** Piece colors. Defaults to the theme accent, highlight and foreground. */\n  colors?: string[];\n  /** Change it for a different burst; the same seed always renders the same frames. */\n  seed?: string | number;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\n/**\n * Distance covered `t` seconds after launch at speed `v0`, under constant acceleration `accel` and linear air drag `k`.\n * Closed form, so every frame is computed on its own and renders identically in any order.\n */\nfunction travel(v0: number, accel: number, k: number, t: number) {\n  const settle = (1 - Math.exp(-k * t)) / k;\n  return v0 * settle + (accel / k) * (t - settle);\n}\n\nexport function Confetti({\n  origin = { x: 50, y: 60 },\n  count = 90,\n  angle = -90,\n  spread = 70,\n  power = 2200,\n  gravity = 1000,\n  drag = 2.2,\n  size = 22,\n  life,\n  shapes = [\"rect\", \"strip\", \"circle\"],\n  colors,\n  seed = \"confetti\",\n  style,\n  className,\n  ...motion\n}: ConfettiProps) {\n  const theme = useTheme();\n  const { u, width, height } = useViewport();\n  const m = useMotion(motion);\n  const palette =\n    colors && colors.length > 0 ? colors : [theme.colors.accent, theme.colors.highlight, theme.colors.foreground];\n  const lifeFrames = life ?? Math.round(m.fps * 3);\n  const k = Math.max(drag, 0.001);\n  const x0 = (origin.x / 100) * width;\n  const y0 = (origin.y / 100) * height;\n\n  const pieces = Array.from({ length: count }, (_, i) => {\n    const r = (key: string) => random(`${seed}-${i}-${key}`);\n    // A few frames of launch jitter keep the burst from reading as one solid pop.\n    const launch = m.delay + Math.floor(r(\"launch\") * 3);\n    const age = m.frame - launch;\n    if (age < 0 || age >= lifeFrames) return null;\n    const t = age / m.fps;\n    const direction = ((angle + (r(\"angle\") - 0.5) * spread) * Math.PI) / 180;\n    const speed = u(power) * (0.45 + 0.55 * r(\"speed\"));\n    const sway = Math.sin(t * (2 + 3 * r(\"sway\")) + r(\"phase\") * Math.PI * 2) * u(16) * Math.min(t, 1);\n    const x = x0 + travel(Math.cos(direction) * speed, 0, k, t) + sway;\n    const y = y0 + travel(Math.sin(direction) * speed, u(gravity), k, t);\n    const shape = shapes[Math.floor(r(\"shape\") * shapes.length)] ?? \"rect\";\n    const base = u(size) * (0.7 + 0.6 * r(\"size\"));\n    const w = shape === \"strip\" ? base * 0.35 : shape === \"circle\" ? base * 0.7 : base;\n    const h = shape === \"strip\" ? base * 1.5 : shape === \"circle\" ? base * 0.7 : base * 0.6;\n    const spin = r(\"rotation\") * 360 + (r(\"spin\") - 0.5) * 1440 * t;\n    // Flutter: the piece turns edge-on and back, like paper tumbling through air.\n    const flutter = Math.cos(t * (6 + 10 * r(\"flutter\")) + r(\"phase\") * Math.PI * 2);\n    const grow = Math.min(tween(m.frame, m.fps, { from: launch, duration: m.enterFrames, motion: m.preset }), 1);\n    const fade = Math.min((lifeFrames - age) / (lifeFrames * 0.3), 1);\n    return (\n      <div\n        key={i}\n        style={{\n          position: \"absolute\",\n          left: x - w / 2,\n          top: y - h / 2,\n          width: w,\n          height: h,\n          borderRadius: shape === \"circle\" ? \"50%\" : u(2),\n          background: palette[Math.floor(r(\"color\") * palette.length)],\n          opacity: fade * (1 - m.exit),\n          transform: `rotate(${spin}deg) scale(${grow * flutter}, ${grow})`,\n        }}\n      />\n    );\n  });\n\n  return (\n    <AbsoluteFill className={className} style={{ overflow: \"hidden\", pointerEvents: \"none\", ...style }}>\n      {pieces}\n    </AbsoluteFill>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/confetti.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "90",
+    "use": [
+      "Launches, milestones and end cards",
+      "Celebrating the moment a number or result lands"
+    ],
+    "avoid": [
+      "Emphasis on a single word or button — use `sparkle-burst`"
+    ],
+    "tags": [
+      "celebration",
+      "particles",
+      "party",
+      "burst",
+      "physics"
+    ]
+  },
+  "docs": "Usage:\n\n<Sequence from={45} durationInFrames={90}>\n  <Confetti origin={{ x: 50, y: 70 }} count={120} />\n</Sequence>",
+  "categories": [
+    "overlays"
+  ],
+  "type": "registry:item"
+}

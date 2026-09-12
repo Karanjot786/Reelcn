@@ -1,0 +1,40 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "progress-bar",
+  "title": "Progress Bar",
+  "description": "Video progress bar on the top or bottom edge, split into chapter segments, with the current chapter's name.",
+  "dependencies": [
+    "remotion"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/progress-bar.tsx",
+      "content": "/**\n * @title Progress Bar\n * @category overlays\n * @description Video progress bar on the top or bottom edge, split into chapter segments, with the current chapter's name.\n * @duration data-driven\n * @use Tutorials, explainers and long-form edits with named chapters\n * @use Showing viewers how much of a short is left\n * @tags progress, chapters, timeline, playback, retention\n * @example\n * <Sequence durationInFrames={900}>\n *   <ProgressBar chapters={[{ at: 0, label: \"Intro\" }, { at: 240, label: \"Setup\" }, { at: 600, label: \"Result\" }]} />\n * </Sequence>\n */\nimport type React from \"react\";\nimport { AbsoluteFill } from \"remotion\";\nimport { alpha, type MotionProps, tween, useMotion, useTheme, useViewport } from \"./core\";\n\nexport type ProgressBarChapter = {\n  /** First frame of the chapter, counted from the start of the bar's own Sequence. */\n  at: number;\n  label: string;\n};\n\nexport type ProgressBarProps = MotionProps & {\n  edge?: \"top\" | \"bottom\";\n  /**\n   * Frames the bar takes to fill. Defaults to the length of its parent `<Sequence>` (or the composition). Inside a\n   * Sequence `useCurrentFrame()` is local, so the bar measures its own Sequence, not the whole video: put it at the\n   * top level of the composition to track the full video.\n   */\n  total?: number;\n  /** Chapter starts; each one becomes a segment of the bar. */\n  chapters?: ProgressBarChapter[];\n  /** Bar thickness in design units. */\n  thickness?: number;\n  /** Distance from the edge in design units. */\n  offset?: number;\n  /** Show the current chapter's name next to the bar. */\n  showLabel?: boolean;\n  /** Fill color. Defaults to the theme accent. */\n  color?: string;\n  /** Unfilled track. Defaults to the theme foreground at 20%. */\n  trackColor?: string;\n  /** Chapter label text. Defaults to the theme foreground. */\n  labelColor?: string;\n  /** Chapter label pill. Defaults to the theme surface at 85%. */\n  labelBackground?: string;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\nconst clamp01 = (value: number) => Math.min(Math.max(value, 0), 1);\n\nexport function ProgressBar({\n  edge = \"bottom\",\n  total,\n  chapters = [],\n  thickness = 8,\n  offset = 0,\n  showLabel = true,\n  color,\n  trackColor,\n  labelColor,\n  labelBackground,\n  style,\n  className,\n  ...motion\n}: ProgressBarProps) {\n  const theme = useTheme();\n  const { u, safe } = useViewport();\n  const m = useMotion(motion);\n  // Full on the last frame: frame `last` of a `last + 1` frame Sequence.\n  const last = Math.max((total ?? m.durationInFrames) - 1, 1);\n  const played = clamp01(m.frame / last);\n  const sorted = chapters.slice().sort((a, b) => a.at - b.at);\n  // Time before the first chapter still needs a segment; it just has no name.\n  const starts = sorted.length === 0 || sorted[0].at > 0 ? [{ at: 0, label: \"\" }].concat(sorted) : sorted;\n  const segments = starts.map((chapter, i) => ({\n    start: clamp01(chapter.at / last),\n    end: i + 1 < starts.length ? clamp01(starts[i + 1].at / last) : 1,\n  }));\n  const current = starts.reduce((found, chapter, i) => (m.frame >= chapter.at ? i : found), 0);\n  const chapterNumber = sorted.indexOf(starts[current]) + 1;\n  const shown = clamp01(m.enter);\n  const labelIn = tween(m.frame, m.fps, {\n    from: Math.max(starts[current].at, m.delay),\n    duration: Math.round(m.enterFrames * 0.7),\n    motion: m.preset,\n  });\n  const fill = color ?? theme.colors.accent;\n  const track = trackColor ?? alpha(theme.colors.foreground, 0.2);\n  const rounded = offset > 0 ? u(thickness / 2) : 0;\n  const fromEdge = (distance: number) => (edge === \"top\" ? { top: u(distance) } : { bottom: u(distance) });\n\n  return (\n    <AbsoluteFill\n      className={className}\n      style={{ pointerEvents: \"none\", fontFamily: theme.fonts.body, opacity: 1 - m.exit, ...style }}\n    >\n      <div\n        style={{\n          position: \"absolute\",\n          left: 0,\n          right: 0,\n          ...fromEdge(offset),\n          height: u(thickness),\n          display: \"flex\",\n          gap: segments.length > 1 ? u(4) : 0,\n          scale: `1 ${shown}`,\n          transformOrigin: edge,\n        }}\n      >\n        {segments.map((segment, i) => {\n          const span = segment.end - segment.start;\n          const filled = span > 0 ? clamp01((played - segment.start) / span) : 1;\n          return (\n            <div\n              key={i}\n              style={{\n                flex: `${Math.max(span, 0)} 1 0`,\n                position: \"relative\",\n                overflow: \"hidden\",\n                borderRadius: rounded,\n                background: track,\n              }}\n            >\n              <div\n                style={{\n                  position: \"absolute\",\n                  left: 0,\n                  top: 0,\n                  bottom: 0,\n                  width: `${filled * 100}%`,\n                  background: fill,\n                }}\n              />\n            </div>\n          );\n        })}\n      </div>\n      {showLabel && chapterNumber > 0 && (\n        <div\n          style={{\n            position: \"absolute\",\n            left: safe.x,\n            ...fromEdge(offset + thickness + 20),\n            display: \"flex\",\n            alignItems: \"center\",\n            gap: u(12),\n            padding: `${u(10)}px ${u(20)}px`,\n            borderRadius: u(999),\n            background: labelBackground ?? alpha(theme.colors.surface, 0.85),\n            color: labelColor ?? theme.colors.foreground,\n            fontSize: u(26),\n            fontWeight: 600,\n            opacity: clamp01(labelIn) * shown,\n            translate: `0 ${(1 - labelIn) * u(10) * (edge === \"top\" ? -1 : 1)}px`,\n          }}\n        >\n          <span style={{ opacity: 0.6, fontVariantNumeric: \"tabular-nums\" }}>\n            {chapterNumber}/{sorted.length}\n          </span>\n          <span>{starts[current].label}</span>\n        </div>\n      )}\n    </AbsoluteFill>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/progress-bar.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "Tutorials, explainers and long-form edits with named chapters",
+      "Showing viewers how much of a short is left"
+    ],
+    "avoid": [],
+    "tags": [
+      "progress",
+      "chapters",
+      "timeline",
+      "playback",
+      "retention"
+    ]
+  },
+  "docs": "Usage:\n\n<Sequence durationInFrames={900}>\n  <ProgressBar chapters={[{ at: 0, label: \"Intro\" }, { at: 240, label: \"Setup\" }, { at: 600, label: \"Result\" }]} />\n</Sequence>",
+  "categories": [
+    "overlays"
+  ],
+  "type": "registry:item"
+}

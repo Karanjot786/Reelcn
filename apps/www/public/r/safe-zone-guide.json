@@ -1,0 +1,45 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "safe-zone-guide",
+  "title": "Safe Zone Guide",
+  "description": "Dev aid that hatches the regions a platform's own UI would cover. Defaults to the generic `useViewport().safe` insets; a `platform` prop swaps in TikTok, Reels, Shorts or YouTube's own reserved zones.",
+  "dependencies": [
+    "remotion"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/safe-zone-guide.tsx",
+      "content": "/**\n * @title Safe Zone Guide\n * @category overlays\n * @description Dev aid that hatches the regions a platform's own UI would cover. Defaults to the generic `useViewport().safe` insets; a `platform` prop swaps in TikTok, Reels, Shorts or YouTube's own reserved zones.\n * @duration 24\n * @use Checking a caption, lower third or button clears a platform's UI before publishing\n * @use Auditing a layout across 16:9, 9:16 and 1:1 while building a component\n * @avoid Shipping in the final render — this is a development-time guide, not a look\n * @tags safe-zone, guide, dev, platform, tiktok, reels, shorts, youtube\n * @example\n * <SafeZoneGuide platform=\"tiktok\" />\n */\nimport type React from \"react\";\nimport { AbsoluteFill } from \"remotion\";\nimport { alpha, type MotionProps, useMotion, useTheme, useViewport } from \"./core\";\n\nexport type SafeZoneGuidePlatform = \"tiktok\" | \"reels\" | \"shorts\" | \"youtube\";\n\nexport type SafeZoneGuideProps = MotionProps & {\n  /** Named platform preset for its own reserved UI. Omit for the generic `useViewport().safe` insets. */\n  platform?: SafeZoneGuidePlatform;\n  /** Hatch and label color. Defaults to the theme highlight. */\n  color?: string;\n  /** Region fill opacity, 0-1. */\n  opacity?: number;\n  /** Draw the region names. */\n  showLabels?: boolean;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\ntype Zone = { edge: \"top\" | \"bottom\" | \"left\" | \"right\"; fraction: number; label: string };\n\n/** Approximate chrome each platform draws over the frame, as a fraction of the relevant side. Tune against the real app when pixel accuracy matters. */\nconst PLATFORM_ZONES: Record<SafeZoneGuidePlatform, Zone[]> = {\n  tiktok: [\n    { edge: \"top\", fraction: 0.08, label: \"Top bar\" },\n    { edge: \"bottom\", fraction: 0.22, label: \"Caption + toolbar\" },\n    { edge: \"right\", fraction: 0.16, label: \"Like · comment · share\" },\n  ],\n  reels: [\n    { edge: \"top\", fraction: 0.09, label: \"Top bar\" },\n    { edge: \"bottom\", fraction: 0.24, label: \"Caption + audio\" },\n    { edge: \"right\", fraction: 0.15, label: \"Like · comment · share\" },\n  ],\n  shorts: [\n    { edge: \"top\", fraction: 0.07, label: \"Top bar\" },\n    { edge: \"bottom\", fraction: 0.2, label: \"Caption + description\" },\n    { edge: \"right\", fraction: 0.14, label: \"Like · comment · remix\" },\n  ],\n  youtube: [\n    { edge: \"top\", fraction: 0.1, label: \"Title safe\" },\n    { edge: \"bottom\", fraction: 0.1, label: \"Title safe\" },\n    { edge: \"left\", fraction: 0.05, label: \"Action safe\" },\n    { edge: \"right\", fraction: 0.05, label: \"Action safe\" },\n  ],\n};\n\nexport function SafeZoneGuide({\n  platform,\n  color,\n  opacity = 0.9,\n  showLabels = true,\n  style,\n  className,\n  ...motion\n}: SafeZoneGuideProps) {\n  const theme = useTheme();\n  const { u, width, height, safe } = useViewport();\n  const m = useMotion(motion);\n  const tint = color ?? theme.colors.highlight;\n  const shown = Math.min(Math.max(m.enter, 0), 1) * (1 - m.exit);\n\n  const zones: Zone[] =\n    platform !== undefined\n      ? PLATFORM_ZONES[platform]\n      : [\n          { edge: \"top\", fraction: safe.top / height, label: \"Top safe\" },\n          { edge: \"bottom\", fraction: safe.bottom / height, label: \"Bottom safe\" },\n          { edge: \"left\", fraction: safe.x / width, label: \"Side safe\" },\n          { edge: \"right\", fraction: safe.x / width, label: \"Side safe\" },\n        ];\n\n  const stripe = u(10);\n  const hatch = `repeating-linear-gradient(45deg, ${alpha(tint, 0.5)} 0, ${alpha(tint, 0.5)} ${u(3)}px, transparent ${u(3)}px, transparent ${stripe}px)`;\n\n  return (\n    <AbsoluteFill className={className} style={{ pointerEvents: \"none\", opacity: opacity * shown, ...style }}>\n      {zones.map((zone, i) => {\n        const vertical = zone.edge === \"top\" || zone.edge === \"bottom\";\n        const size = Math.round((vertical ? height : width) * zone.fraction);\n        return (\n          <div\n            key={i}\n            style={{\n              position: \"absolute\",\n              ...(vertical ? { left: 0, right: 0, height: size } : { top: 0, bottom: 0, width: size }),\n              ...(zone.edge === \"top\" && { top: 0 }),\n              ...(zone.edge === \"bottom\" && { bottom: 0 }),\n              ...(zone.edge === \"left\" && { left: 0 }),\n              ...(zone.edge === \"right\" && { right: 0 }),\n              background: hatch,\n              borderTop: zone.edge === \"bottom\" ? `${u(2)}px solid ${tint}` : undefined,\n              borderBottom: zone.edge === \"top\" ? `${u(2)}px solid ${tint}` : undefined,\n              borderLeft: zone.edge === \"right\" ? `${u(2)}px solid ${tint}` : undefined,\n              borderRight: zone.edge === \"left\" ? `${u(2)}px solid ${tint}` : undefined,\n              display: \"flex\",\n              alignItems: zone.edge === \"top\" ? \"flex-end\" : zone.edge === \"bottom\" ? \"flex-start\" : \"center\",\n              justifyContent: \"center\",\n              padding: u(10),\n            }}\n          >\n            {showLabels && (\n              <span\n                style={{\n                  fontFamily: theme.fonts.mono,\n                  fontSize: u(20),\n                  fontWeight: 600,\n                  letterSpacing: \"0.02em\",\n                  color: tint,\n                  background: alpha(theme.colors.background, 0.6),\n                  padding: `${u(4)}px ${u(10)}px`,\n                  borderRadius: u(6),\n                  whiteSpace: \"nowrap\",\n                  writingMode: vertical ? \"horizontal-tb\" : \"vertical-rl\",\n                }}\n              >\n                {zone.label}\n              </span>\n            )}\n          </div>\n        );\n      })}\n    </AbsoluteFill>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/safe-zone-guide.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "24",
+    "use": [
+      "Checking a caption, lower third or button clears a platform's UI before publishing",
+      "Auditing a layout across 16:9, 9:16 and 1:1 while building a component"
+    ],
+    "avoid": [
+      "Shipping in the final render — this is a development-time guide, not a look"
+    ],
+    "tags": [
+      "safe-zone",
+      "guide",
+      "dev",
+      "platform",
+      "tiktok",
+      "reels",
+      "shorts",
+      "youtube"
+    ]
+  },
+  "docs": "Usage:\n\n<SafeZoneGuide platform=\"tiktok\" />",
+  "categories": [
+    "overlays"
+  ],
+  "type": "registry:item"
+}
