@@ -1,0 +1,64 @@
+# reelcn
+
+> Copy-paste Remotion components that adapt to any aspect ratio and restyle from a single theme.
+
+Install any item: `npx shadcn@latest add http://localhost:3000/r/<name>.json`. Files land in `src/reelcn/`; no components.json and no path aliases are needed.
+
+How they work:
+- Wrap scenes in `<ThemeProvider theme="midnight">` (themes: midnight, daylight, paper, neon, mono, sunset); `createTheme` makes a brand kit.
+- Sizes are design units: `u(n)` is n px when the canvas short side is 1080px, so one component fits 16:9, 9:16 and 1:1.
+- Motion props are frames: `delay`, `duration`, `exit`, `motion` (smooth, snappy, bouncy, gentle, linear).
+- Components exit automatically at the end of their `<Sequence>`; pass `exit={false}` to hold.
+
+## lib
+
+- [Core](http://localhost:3000/r/core.json): Theme tokens, responsive design units, platform safe zones and motion presets. Every reelcn component builds on this file.
+
+```tsx
+<ThemeProvider theme="midnight">
+  <Stage>
+    <Center><TextReveal text="Hello" /></Center>
+  </Stage>
+</ThemeProvider>
+```
+
+- [Fonts](http://localhost:3000/r/fonts.json): Loads the curated font set used by the built-in themes, so renders look identical on every machine.
+
+```tsx
+import { fonts } from "./fonts";
+
+const heading = `${fonts.instrumentSerif}, ui-serif, Georgia, serif`;
+```
+
+
+## text
+
+- [Text Reveal](http://localhost:3000/r/text-reveal.json): Headline that animates in by word, character or line with rise, blur, fade, scale, drop or mask effects. (length 30f@30fps · use for Hero headlines, section titles and short-form hooks; Any line of up to about twelve words that needs an entrance)
+
+```tsx
+<Center>
+  <TextReveal text="Ship videos, not keyframes" effect="blur" accentWords={["videos"]} />
+</Center>
+```
+
+
+## motion
+
+- [Animate](http://localhost:3000/r/animate.json): Wrap anything (logo, screenshot, card, image) to give it a themed enter and exit. The swiss-army knife of reelcn. (length 18f@30fps)
+
+```tsx
+<Animate effect="up" delay={10}>
+  <Img src={staticFile("logo.png")} />
+</Animate>
+```
+
+
+## social
+
+- [Lower Third](http://localhost:3000/r/lower-third.json): Name and title strap that slides in above the bottom safe zone and centers itself in vertical video. (length 30f@30fps · use for Interviews, podcasts, tutorials and talking-head intros; Naming a speaker, product or location on screen)
+
+```tsx
+<Sequence durationInFrames={120}>
+  <LowerThird name="Ada Lovelace" title="Founder, Analytical Engines" variant="card" />
+</Sequence>
+```

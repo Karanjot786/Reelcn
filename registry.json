@@ -1,0 +1,161 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "reelcn",
+  "homepage": "http://localhost:3000",
+  "items": [
+    {
+      "name": "animate",
+      "type": "registry:item",
+      "title": "Animate",
+      "description": "Wrap anything (logo, screenshot, card, image) to give it a themed enter and exit. The swiss-army knife of reelcn.",
+      "categories": [
+        "motion"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "http://localhost:3000/r/core.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/animate.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/animate.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Animate effect=\"up\" delay={10}>\n  <Img src={staticFile(\"logo.png\")} />\n</Animate>",
+      "meta": {
+        "duration": "18",
+        "use": [],
+        "avoid": [],
+        "tags": []
+      }
+    },
+    {
+      "name": "core",
+      "type": "registry:item",
+      "title": "Core",
+      "description": "Theme tokens, responsive design units, platform safe zones and motion presets. Every reelcn component builds on this file.",
+      "categories": [
+        "lib"
+      ],
+      "dependencies": [
+        "remotion"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/fonts.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/core.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/core.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<ThemeProvider theme=\"midnight\">\n  <Stage>\n    <Center><TextReveal text=\"Hello\" /></Center>\n  </Stage>\n</ThemeProvider>",
+      "meta": {
+        "use": [],
+        "avoid": [],
+        "tags": []
+      }
+    },
+    {
+      "name": "fonts",
+      "type": "registry:item",
+      "title": "Fonts",
+      "description": "Loads the curated font set used by the built-in themes, so renders look identical on every machine.",
+      "categories": [
+        "lib"
+      ],
+      "dependencies": [
+        "@remotion/google-fonts"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "registry/items/fonts.ts",
+          "type": "registry:file",
+          "target": "~/src/reelcn/fonts.ts"
+        }
+      ],
+      "docs": "Usage:\n\nimport { fonts } from \"./fonts\";\n\nconst heading = `${fonts.instrumentSerif}, ui-serif, Georgia, serif`;",
+      "meta": {
+        "use": [],
+        "avoid": [],
+        "tags": []
+      }
+    },
+    {
+      "name": "lower-third",
+      "type": "registry:item",
+      "title": "Lower Third",
+      "description": "Name and title strap that slides in above the bottom safe zone and centers itself in vertical video.",
+      "categories": [
+        "social"
+      ],
+      "dependencies": [
+        "remotion"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/core.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/lower-third.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/lower-third.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Sequence durationInFrames={120}>\n  <LowerThird name=\"Ada Lovelace\" title=\"Founder, Analytical Engines\" variant=\"card\" />\n</Sequence>",
+      "meta": {
+        "duration": "30",
+        "use": [
+          "Interviews, podcasts, tutorials and talking-head intros",
+          "Naming a speaker, product or location on screen"
+        ],
+        "avoid": [],
+        "tags": [
+          "name",
+          "title",
+          "strap",
+          "interview",
+          "podcast"
+        ]
+      }
+    },
+    {
+      "name": "text-reveal",
+      "type": "registry:item",
+      "title": "Text Reveal",
+      "description": "Headline that animates in by word, character or line with rise, blur, fade, scale, drop or mask effects.",
+      "categories": [
+        "text"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "http://localhost:3000/r/core.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/text-reveal.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/text-reveal.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Center>\n  <TextReveal text=\"Ship videos, not keyframes\" effect=\"blur\" accentWords={[\"videos\"]} />\n</Center>",
+      "meta": {
+        "duration": "30",
+        "use": [
+          "Hero headlines, section titles and short-form hooks",
+          "Any line of up to about twelve words that needs an entrance"
+        ],
+        "avoid": [],
+        "tags": [
+          "headline",
+          "title",
+          "kinetic",
+          "stagger"
+        ]
+      }
+    }
+  ]
+}
