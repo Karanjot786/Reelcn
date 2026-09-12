@@ -79,8 +79,18 @@ function Pair<P extends Record<string, unknown>>({ presentation }: { presentatio
   );
 }
 
+// A quarter into the transition (which spans HOLD_A - TRANSITION .. HOLD_A), not its midpoint: the
+// midpoint of a `cover`-style transition is a solid fill, which makes for a blank catalog thumbnail.
+const THUMB_FRAME = HOLD_A - TRANSITION + Math.round(TRANSITION / 4);
+
 function pair<P extends Record<string, unknown>>(id: string, presentation: TransitionPresentation<P>): Demo {
-  return { id, duration: DURATION, bare: true, component: () => <Pair presentation={presentation} /> };
+  return {
+    id,
+    duration: DURATION,
+    bare: true,
+    thumbFrame: THUMB_FRAME,
+    component: () => <Pair presentation={presentation} />,
+  };
 }
 
 // One reelcn transition and one built into @remotion/transitions: 40 + 45 + 40 - 20 - 15 = 90 frames.

@@ -15,6 +15,7 @@ const byId = new Map(demos.map((d) => [d.id, d]));
 const demoSchema = z.object({
   demo: z.string(),
   theme: z.enum(themeNames as [ThemeName, ...ThemeName[]]),
+  thumbFrame: z.number().optional(),
 });
 const sheetSchema = demoSchema.extend({ format: z.enum(formats as [Format, ...Format[]]) });
 
@@ -95,7 +96,7 @@ export function Root() {
                     id={`${demo.id}-${format}`}
                     component={DemoView}
                     schema={demoSchema}
-                    defaultProps={{ demo: demo.id, theme: "midnight" as ThemeName }}
+                    defaultProps={{ demo: demo.id, theme: "midnight" as ThemeName, thumbFrame: demo.thumbFrame }}
                     durationInFrames={demo.duration}
                     fps={30}
                     width={FORMATS[format][0]}

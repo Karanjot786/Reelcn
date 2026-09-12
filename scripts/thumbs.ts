@@ -27,23 +27,28 @@ const perDemo: Job[] = all
   .filter((composition) => composition.id.endsWith("-16x9") && !composition.id.startsWith("sheet-"))
   .map((composition) => ({ id: composition.id, out: composition.id.slice(0, -"-16x9".length) }));
 
-for (const job of [...perDemo, ...fixed]) {
-  const composition = byId.get(job.id);
-  if (!composition) throw new Error(`no composition "${job.id}"`);
-  const output = path.join(OUT, `${job.out}.jpg`);
-  await renderStill({
-    // renderStill renders composition.props; its inputProps option only feeds calculateMetadata.
-    composition: job.theme ? { ...composition, props: { ...composition.props, theme: job.theme } } : composition,
-    serveUrl,
-    frame: job.frame ?? Math.floor(composition.durationInFrames / 2),
-    output,
-    imageFormat: "jpeg",
-    jpegQuality: 72,
-    scale: 0.25,
-    puppeteerInstance: browser,
-  });
-  console.log(`ok   ${output}`);
+try {
+  for (const job of [...perDemo, ...fixed]) {
+    const composition = byId.get(job.id);
+    if (!composition) throw new Error(`no composition "${job.id}"`);
+    const output = path.join(OUT, `${job.out}.jpg`);
+    await renderStill({
+      // renderStill renders composition.props; its inputProps option only feeds calculateMetadata.
+      composition: job.theme ? { ...composition, props: { ...composition.props, theme: job.theme } } : composition,
+      serveUrl,
+      frame:
+        job.frame ??
+        (composition.props.thumbFrame as number | undefined) ??
+        Math.floor(composition.durationInFrames / 2),
+      output,
+      imageFormat: "jpeg",
+      jpegQuality: 72,
+      scale: 0.25,
+      puppeteerInstance: browser,
+    });
+    console.log(`ok   ${output}`);
+  }
+} finally {
+  await browser.close({ silent: true });
 }
-
-await browser.close({ silent: true });
 console.log(`${perDemo.length + fixed.length} thumbnails in ${OUT}`);

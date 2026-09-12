@@ -17,6 +17,8 @@ export type Demo = {
   component: React.ComponentType;
   /** Set when the component paints its own full-bleed background, so `<Stage>` is skipped. */
   bare?: boolean;
+  /** Frame the thumbnail script stills instead of the midpoint, for demos whose midpoint is a blank/solid frame. */
+  thumbFrame?: number;
 };
 
 // Each category adds one entry. Tasks 3-5 and later plans extend this map.
