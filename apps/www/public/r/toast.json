@@ -1,0 +1,40 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toast",
+  "title": "Toast",
+  "description": "Notification card with a status icon that slides in from an edge, holds, then slides back out.",
+  "dependencies": [],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/toast.tsx",
+      "content": "/**\n * @title Toast\n * @category product\n * @description Notification card with a status icon that slides in from an edge, holds, then slides back out.\n * @duration 90\n * @use Confirming an action, a deploy, an upload or a saved state in a product demo\n * @use A short system message that appears over a UI mockup\n * @avoid A message pointing at part of the screen — use `callout`\n * @tags toast, notification, alert, snackbar, status\n * @example\n * <Toast variant=\"success\" title=\"Deployed\" description=\"Live in 12 regions\" />\n */\nimport type React from \"react\";\nimport { alpha, type MotionProps, useMotion, useTheme, useViewport } from \"./core\";\n\nexport type ToastVariant = \"success\" | \"info\" | \"warning\" | \"error\";\n\nexport type ToastProps = MotionProps & {\n  variant?: ToastVariant;\n  title: string;\n  description?: string;\n  /** Edge it slides from. Defaults to `top` in portrait, `bottom-right` otherwise. */\n  edge?: \"top\" | \"bottom\" | \"bottom-right\" | \"top-right\";\n  /** Card width in design units. */\n  width?: number;\n  background?: string;\n  borderColor?: string;\n  titleColor?: string;\n  descriptionColor?: string;\n  /** Icon well and stroke color. Defaults per `variant`. */\n  accentColor?: string;\n  /** Corner radius in design units. Defaults to 70% of the theme radius. */\n  radius?: number;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\nconst clamp01 = (value: number) => Math.min(Math.max(value, 0), 1);\n\nfunction ToastIcon({ variant }: { variant: ToastVariant }) {\n  if (variant === \"success\") return <path d=\"M5 13l4 4L19 7\" />;\n  if (variant === \"info\")\n    return (\n      <>\n        <circle cx=\"12\" cy=\"12\" r=\"9\" />\n        <path d=\"M12 11v5M12 8h.01\" />\n      </>\n    );\n  if (variant === \"warning\")\n    return (\n      <>\n        <path d=\"M10.29 3.86 1.82 18a1 1 0 0 0 .86 1.5h18.64a1 1 0 0 0 .86-1.5L13.71 3.86a1 1 0 0 0-1.72 0Z\" />\n        <path d=\"M12 9v4M12 17h.01\" />\n      </>\n    );\n  return (\n    <>\n      <circle cx=\"12\" cy=\"12\" r=\"9\" />\n      <path d=\"M15 9l-6 6M9 9l6 6\" />\n    </>\n  );\n}\n\nexport function Toast({\n  variant = \"info\",\n  title,\n  description,\n  edge,\n  width = 380,\n  background,\n  borderColor,\n  titleColor,\n  descriptionColor,\n  accentColor,\n  radius,\n  style,\n  className,\n  ...motion\n}: ToastProps) {\n  const theme = useTheme();\n  const { u, safe, isPortrait } = useViewport();\n  const m = useMotion(motion);\n  const side = edge ?? (isPortrait ? \"top\" : \"bottom-right\");\n  const defaultTone: Record<ToastVariant, string> = {\n    success: \"#22c55e\",\n    info: theme.colors.accent,\n    warning: \"#f59e0b\",\n    error: \"#ef4444\",\n  };\n  const tone = accentColor ?? defaultTone[variant];\n  const border = borderColor ?? theme.colors.border;\n  const cardW = u(width);\n  const enter = clamp01(m.enter);\n  const away = 1 - enter + m.exit;\n  const centered = side === \"top\" || side === \"bottom\";\n  const dir = side === \"top\" ? -1 : 1;\n  const travel = u(70);\n  const slide = dir * away * travel;\n  const translate = centered ? `-50% ${slide}px` : `${slide}px 0`;\n  const position: React.CSSProperties =\n    side === \"top\"\n      ? { top: safe.top, left: \"50%\" }\n      : side === \"bottom\"\n        ? { bottom: safe.bottom, left: \"50%\" }\n        : side === \"top-right\"\n          ? { top: safe.top, right: safe.x }\n          : { bottom: safe.bottom, right: safe.x };\n\n  return (\n    <div\n      className={className}\n      style={{\n        position: \"absolute\",\n        ...position,\n        width: cardW,\n        display: \"flex\",\n        gap: u(14),\n        padding: u(18),\n        borderRadius: u(radius ?? theme.radius * 0.7),\n        background: background ?? theme.colors.surface,\n        border: `1px solid ${border}`,\n        boxShadow: `0 ${u(16)}px ${u(44)}px ${alpha(\"#000000\", 0.28)}`,\n        opacity: enter * (1 - m.exit),\n        translate,\n        fontFamily: theme.fonts.body,\n        ...style,\n      }}\n    >\n      <div\n        style={{\n          flexShrink: 0,\n          width: u(34),\n          height: u(34),\n          borderRadius: \"50%\",\n          display: \"grid\",\n          placeItems: \"center\",\n          background: alpha(tone, 0.16),\n          color: tone,\n        }}\n      >\n        <svg\n          aria-hidden=\"true\"\n          viewBox=\"0 0 24 24\"\n          width={u(18)}\n          height={u(18)}\n          fill=\"none\"\n          stroke=\"currentColor\"\n          strokeWidth={2.4}\n          strokeLinecap=\"round\"\n          strokeLinejoin=\"round\"\n        >\n          <ToastIcon variant={variant} />\n        </svg>\n      </div>\n      <div>\n        <div style={{ fontSize: u(24), fontWeight: 600, color: titleColor ?? theme.colors.foreground }}>{title}</div>\n        {description && (\n          <div style={{ marginTop: u(4), fontSize: u(20), color: descriptionColor ?? theme.colors.muted }}>\n            {description}\n          </div>\n        )}\n      </div>\n    </div>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/toast.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "90",
+    "use": [
+      "Confirming an action, a deploy, an upload or a saved state in a product demo",
+      "A short system message that appears over a UI mockup"
+    ],
+    "avoid": [
+      "A message pointing at part of the screen — use `callout`"
+    ],
+    "tags": [
+      "toast",
+      "notification",
+      "alert",
+      "snackbar",
+      "status"
+    ]
+  },
+  "docs": "Usage:\n\n<Toast variant=\"success\" title=\"Deployed\" description=\"Live in 12 regions\" />",
+  "categories": [
+    "product"
+  ],
+  "type": "registry:item"
+}

@@ -1,0 +1,41 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "svg-draw",
+  "title": "Svg Draw",
+  "description": "Draws any set of SVG paths on stroke by stroke, staggered, with an optional fill fade once each finishes.",
+  "dependencies": [],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/svg-draw.tsx",
+      "content": "/**\n * @title Svg Draw\n * @category product\n * @description Draws any set of SVG paths on stroke by stroke, staggered, with an optional fill fade once each finishes.\n * @duration data-driven\n * @use A logo mark, icon or custom illustration drawing itself on screen\n * @use Sketching a diagram or shape that a `callout` or label then points at\n * @avoid A single hand-drawn circle or arrow — use `scribble-circle` or `arrow`\n * @tags svg, draw, path, icon, illustration, line art\n * @example\n * <Center>\n *   <SvgDraw viewBox=\"0 0 24 24\" paths={[\"M4 12h16\", \"M4 6h10\", \"M4 18h7\"]} size={220} />\n * </Center>\n */\nimport type React from \"react\";\nimport { type MotionProps, tween, useMotion, useTheme, useViewport } from \"./core\";\n\nexport type SvgDrawProps = MotionProps & {\n  /** One or more `d` attributes, drawn in order. */\n  paths: string[];\n  /** Must be space- or comma-separated: `\"minX minY width height\"`. */\n  viewBox: string;\n  /** Stroke color. Defaults to the theme foreground. */\n  color?: string;\n  /** In `viewBox` units, not design units — it scales with the drawing, like an icon's stroke. */\n  strokeWidth?: number;\n  /** Frames between one path's draw and the next. Defaults to 0.15s. */\n  step?: number;\n  /** Rendered width in design units. Height follows the `viewBox` ratio. */\n  size?: number;\n  /** Fades a fill in behind each path once it finishes drawing. Omit for a stroke-only line drawing. */\n  fill?: string;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\nconst clamp01 = (value: number) => Math.min(Math.max(value, 0), 1);\n\nexport function SvgDraw({\n  paths,\n  viewBox,\n  color,\n  strokeWidth = 3,\n  step,\n  size = 200,\n  fill,\n  style,\n  className,\n  ...motion\n}: SvgDrawProps) {\n  const theme = useTheme();\n  const { u } = useViewport();\n  const m = useMotion(motion);\n  const stroke = color ?? theme.colors.foreground;\n  const frames = step ?? Math.round(m.fps * 0.15);\n  const box = viewBox.split(/[\\s,]+/).map(Number);\n  const vbWidth = box[2];\n  const vbHeight = box[3];\n  const width = u(size);\n  const height = vbWidth > 0 ? width * (vbHeight / vbWidth) : width;\n\n  return (\n    <svg\n      aria-hidden=\"true\"\n      className={className}\n      width={width}\n      height={height}\n      viewBox={viewBox}\n      style={{ opacity: 1 - m.exit, overflow: \"visible\", ...style }}\n    >\n      {paths.map((d, index) => {\n        const drawn = clamp01(\n          tween(m.frame, m.fps, { from: m.delay + index * frames, duration: m.enterFrames, motion: m.preset }),\n        );\n        const filled = fill\n          ? clamp01(\n              tween(m.frame, m.fps, {\n                from: m.delay + index * frames + m.enterFrames,\n                duration: Math.round(m.enterFrames * 0.6),\n                motion: \"smooth\",\n              }),\n            )\n          : 0;\n        return (\n          <path\n            key={index}\n            d={d}\n            fill={fill ?? \"none\"}\n            fillOpacity={fill ? filled : undefined}\n            stroke={stroke}\n            strokeWidth={strokeWidth}\n            strokeLinecap=\"round\"\n            strokeLinejoin=\"round\"\n            pathLength={1}\n            strokeDasharray={1}\n            strokeDashoffset={1 - drawn}\n            opacity={drawn > 0 ? 1 : 0}\n          />\n        );\n      })}\n    </svg>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/svg-draw.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "A logo mark, icon or custom illustration drawing itself on screen",
+      "Sketching a diagram or shape that a `callout` or label then points at"
+    ],
+    "avoid": [
+      "A single hand-drawn circle or arrow — use `scribble-circle` or `arrow`"
+    ],
+    "tags": [
+      "svg",
+      "draw",
+      "path",
+      "icon",
+      "illustration",
+      "line art"
+    ]
+  },
+  "docs": "Usage:\n\n<Center>\n  <SvgDraw viewBox=\"0 0 24 24\" paths={[\"M4 12h16\", \"M4 6h10\", \"M4 18h7\"]} size={220} />\n</Center>",
+  "categories": [
+    "product"
+  ],
+  "type": "registry:item"
+}

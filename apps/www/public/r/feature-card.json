@@ -1,0 +1,42 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "feature-card",
+  "title": "Feature Card",
+  "description": "Icon, title, body copy and an optional badge on a themed card that rises into place.",
+  "dependencies": [],
+  "registryDependencies": [
+    "http://localhost:3000/r/animate.json",
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/feature-card.tsx",
+      "content": "/**\n * @title Feature Card\n * @category product\n * @description Icon, title, body copy and an optional badge on a themed card that rises into place.\n * @duration 24\n * @use One feature at a time in a launch video, or several staggered inside `stagger` or `bento-grid`\n * @use A pricing tier or plan card with a \"New\" or \"Popular\" badge\n * @avoid Several feature tiles on one canvas at once — use `bento-grid`\n * @tags feature, card, icon, badge, pricing, plan\n * @example\n * <Center>\n *   <FeatureCard title=\"Zero config\" body=\"Install with shadcn, no path aliases.\" badge=\"New\" />\n * </Center>\n */\nimport type React from \"react\";\nimport { effectStyle } from \"./animate\";\nimport { alpha, type MotionProps, useMotion, useTheme, useViewport } from \"./core\";\n\nexport type FeatureCardProps = MotionProps & {\n  /** Small mark shown in a rounded well above the title, e.g. an inline `<svg>`. */\n  icon?: React.ReactNode;\n  title: string;\n  body?: string;\n  /** Small pill in the top-right corner, e.g. \"New\" or \"Popular\". */\n  badge?: string;\n  /** Card width in design units. */\n  width?: number;\n  background?: string;\n  borderColor?: string;\n  titleColor?: string;\n  bodyColor?: string;\n  /** Icon well color, and the badge's default color. Defaults to the theme accent. */\n  iconColor?: string;\n  /** Icon well fill. Defaults to a soft tint of `iconColor`. */\n  iconBackground?: string;\n  badgeColor?: string;\n  badgeBackground?: string;\n  radius?: number;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\nexport function FeatureCard({\n  icon,\n  title,\n  body,\n  badge,\n  width = 420,\n  background,\n  borderColor,\n  titleColor,\n  bodyColor,\n  iconColor,\n  iconBackground,\n  badgeColor,\n  badgeBackground,\n  radius,\n  style,\n  className,\n  ...motion\n}: FeatureCardProps) {\n  const theme = useTheme();\n  const { u } = useViewport();\n  const m = useMotion(motion);\n  const accent = iconColor ?? theme.colors.accent;\n  const { opacity: riseOpacity = 1, ...rise } = effectStyle(\"up\", m.enter, u(46));\n\n  return (\n    <div\n      className={className}\n      style={{\n        position: \"relative\",\n        width: u(width),\n        padding: u(32),\n        borderRadius: u(radius ?? theme.radius),\n        background: background ?? theme.colors.surface,\n        border: `1px solid ${borderColor ?? theme.colors.border}`,\n        fontFamily: theme.fonts.body,\n        opacity: Number(riseOpacity) * (1 - m.exit),\n        ...rise,\n        ...style,\n      }}\n    >\n      {badge && (\n        <div\n          style={{\n            position: \"absolute\",\n            top: u(20),\n            right: u(20),\n            padding: `${u(4)}px ${u(12)}px`,\n            borderRadius: 9999,\n            background: badgeBackground ?? alpha(accent, 0.16),\n            color: badgeColor ?? accent,\n            fontSize: u(16),\n            fontWeight: 700,\n            letterSpacing: \"0.04em\",\n            textTransform: \"uppercase\",\n          }}\n        >\n          {badge}\n        </div>\n      )}\n      {icon && (\n        <div\n          style={{\n            width: u(56),\n            height: u(56),\n            borderRadius: u(theme.radius * 0.7),\n            display: \"grid\",\n            placeItems: \"center\",\n            background: iconBackground ?? alpha(accent, 0.14),\n            color: accent,\n            fontSize: u(28),\n          }}\n        >\n          {icon}\n        </div>\n      )}\n      <div\n        style={{\n          marginTop: icon ? u(22) : 0,\n          fontFamily: theme.fonts.heading,\n          fontWeight: theme.headingWeight,\n          fontSize: u(34),\n          lineHeight: 1.15,\n          letterSpacing: \"-0.02em\",\n          color: titleColor ?? theme.colors.foreground,\n        }}\n      >\n        {title}\n      </div>\n      {body && (\n        <div style={{ marginTop: u(10), fontSize: u(22), lineHeight: 1.4, color: bodyColor ?? theme.colors.muted }}>\n          {body}\n        </div>\n      )}\n    </div>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/feature-card.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "24",
+    "use": [
+      "One feature at a time in a launch video, or several staggered inside `stagger` or `bento-grid`",
+      "A pricing tier or plan card with a \"New\" or \"Popular\" badge"
+    ],
+    "avoid": [
+      "Several feature tiles on one canvas at once — use `bento-grid`"
+    ],
+    "tags": [
+      "feature",
+      "card",
+      "icon",
+      "badge",
+      "pricing",
+      "plan"
+    ]
+  },
+  "docs": "Usage:\n\n<Center>\n  <FeatureCard title=\"Zero config\" body=\"Install with shadcn, no path aliases.\" badge=\"New\" />\n</Center>",
+  "categories": [
+    "product"
+  ],
+  "type": "registry:item"
+}

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "before-after",
+  "title": "Before After",
+  "description": "Comparison slider: a divider with a handle wipes from one position to another, revealing \"after\" past it.",
+  "dependencies": [
+    "remotion"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/before-after.tsx",
+      "content": "/**\n * @title Before After\n * @category product\n * @description Comparison slider: a divider with a handle wipes from one position to another, revealing \"after\" past it.\n * @duration 45\n * @use Redesigns, edits and upgrades — anything with a clear before and after state\n * @use A single screenshot that changes at one point, rather than two panes shown at once\n * @avoid Two panes shown side by side the whole time — use `split-screen`\n * @tags before after, comparison, slider, diff, reveal\n * @example\n * <BeforeAfter labels={[\"Before\", \"After\"]} before={<OldUI />} after={<NewUI />} />\n */\nimport type React from \"react\";\nimport { AbsoluteFill } from \"remotion\";\nimport { alpha, type MotionProps, useMotion, useTheme, useViewport, Viewport } from \"./core\";\n\nexport type BeforeAfterProps = MotionProps & {\n  /** Content left of the divider. */\n  before: React.ReactNode;\n  /** Content right of the divider. */\n  after: React.ReactNode;\n  /** Divider's resting position, in % of width (0–100). Defaults to 50. */\n  to?: number;\n  /** Divider's starting position before the wipe, in % of width. Defaults to 100 (fully \"before\"). */\n  from?: number;\n  /** Corner labels: `[beforeLabel, afterLabel]`. */\n  labels?: [string, string];\n  dividerColor?: string;\n  handleColor?: string;\n  labelColor?: string;\n  labelBackground?: string;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\nconst clamp01 = (value: number) => Math.min(Math.max(value, 0), 1);\n\nexport function BeforeAfter({\n  before,\n  after,\n  to = 50,\n  from = 100,\n  labels,\n  dividerColor,\n  handleColor,\n  labelColor,\n  labelBackground,\n  style,\n  className,\n  ...motion\n}: BeforeAfterProps) {\n  const theme = useTheme();\n  const { width, height, u, safe } = useViewport();\n  const m = useMotion(motion);\n  const progress = clamp01(m.enter);\n  const divider = from + (to - from) * progress;\n  const line = dividerColor ?? theme.colors.background;\n  const handle = handleColor ?? theme.colors.foreground;\n\n  return (\n    <AbsoluteFill className={className} style={{ overflow: \"hidden\", opacity: 1 - m.exit, ...style }}>\n      <Viewport width={width} height={height}>\n        {before}\n      </Viewport>\n      <div style={{ position: \"absolute\", inset: 0, clipPath: `inset(0 0 0 ${divider}%)` }}>\n        <Viewport width={width} height={height}>\n          {after}\n        </Viewport>\n      </div>\n      <div\n        style={{\n          position: \"absolute\",\n          left: `${divider}%`,\n          top: 0,\n          bottom: 0,\n          width: u(4),\n          marginLeft: -u(2),\n          background: line,\n          boxShadow: `0 0 0 1px ${alpha(\"#000000\", 0.2)}`,\n        }}\n      />\n      <div\n        style={{\n          position: \"absolute\",\n          left: `${divider}%`,\n          top: \"50%\",\n          width: u(56),\n          height: u(56),\n          borderRadius: \"50%\",\n          translate: \"-50% -50%\",\n          background: handle,\n          display: \"flex\",\n          alignItems: \"center\",\n          justifyContent: \"center\",\n          boxShadow: `0 ${u(10)}px ${u(28)}px ${alpha(\"#000000\", 0.35)}`,\n        }}\n      >\n        <svg\n          aria-hidden=\"true\"\n          viewBox=\"0 0 24 24\"\n          width={u(26)}\n          height={u(26)}\n          fill=\"none\"\n          stroke={theme.colors.background}\n          strokeWidth={2.4}\n          strokeLinecap=\"round\"\n          strokeLinejoin=\"round\"\n        >\n          <path d=\"M9 6l-6 6 6 6M15 6l6 6-6 6\" />\n        </svg>\n      </div>\n      {labels && (\n        <>\n          <div\n            style={{\n              position: \"absolute\",\n              left: safe.x,\n              top: safe.top,\n              padding: `${u(8)}px ${u(18)}px`,\n              borderRadius: u(theme.radius),\n              background: labelBackground ?? alpha(theme.colors.background, 0.7),\n              color: labelColor ?? theme.colors.foreground,\n              fontFamily: theme.fonts.body,\n              fontSize: u(24),\n              fontWeight: 600,\n              opacity: progress,\n            }}\n          >\n            {labels[0]}\n          </div>\n          <div\n            style={{\n              position: \"absolute\",\n              right: safe.x,\n              top: safe.top,\n              padding: `${u(8)}px ${u(18)}px`,\n              borderRadius: u(theme.radius),\n              background: labelBackground ?? alpha(theme.colors.background, 0.7),\n              color: labelColor ?? theme.colors.foreground,\n              fontFamily: theme.fonts.body,\n              fontSize: u(24),\n              fontWeight: 600,\n              opacity: progress,\n            }}\n          >\n            {labels[1]}\n          </div>\n        </>\n      )}\n    </AbsoluteFill>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/before-after.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "45",
+    "use": [
+      "Redesigns, edits and upgrades — anything with a clear before and after state",
+      "A single screenshot that changes at one point, rather than two panes shown at once"
+    ],
+    "avoid": [
+      "Two panes shown side by side the whole time — use `split-screen`"
+    ],
+    "tags": [
+      "before after",
+      "comparison",
+      "slider",
+      "diff",
+      "reveal"
+    ]
+  },
+  "docs": "Usage:\n\n<BeforeAfter labels={[\"Before\", \"After\"]} before={<OldUI />} after={<NewUI />} />",
+  "categories": [
+    "product"
+  ],
+  "type": "registry:item"
+}

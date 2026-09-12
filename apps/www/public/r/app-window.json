@@ -1,0 +1,41 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "app-window",
+  "title": "App Window",
+  "description": "Native desktop window with a title bar and no address bar, wrapped around any app content you pass as children.",
+  "dependencies": [],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/app-window.tsx",
+      "content": "/**\n * @title App Window\n * @category product\n * @description Native desktop window with a title bar and no address bar, wrapped around any app content you pass as children.\n * @duration data-driven\n * @use Framing a desktop app, editor or settings panel in a launch video\n * @use Two app windows side by side inside `split-screen`\n * @avoid A website with an address bar — use `browser-window`\n * @tags window, app, desktop, chrome, mockup, frame\n * @example\n * <Center>\n *   <AppWindow title=\"Settings\">\n *     <div style={{ width: \"100%\", height: \"100%\", background: \"#fff\" }} />\n *   </AppWindow>\n * </Center>\n */\nimport type React from \"react\";\nimport { alpha, type MotionProps, useMotion, useTheme, useViewport } from \"./core\";\n\nexport type AppWindowProps = MotionProps & {\n  /** Shown centered in the title bar. */\n  title?: string;\n  /** Window width as a fraction of the safe area (0–1). Defaults to 0.8 in landscape, 1 otherwise. */\n  width?: number;\n  /** Window aspect ratio (width / height). Defaults to 16/10. */\n  aspect?: number;\n  children?: React.ReactNode;\n  barColor?: string;\n  background?: string;\n  borderColor?: string;\n  titleColor?: string;\n  /** Corner radius in design units. Defaults to the theme radius. */\n  radius?: number;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\nexport function AppWindow({\n  title,\n  width: widthFraction,\n  aspect = 16 / 10,\n  children,\n  barColor,\n  background,\n  borderColor,\n  titleColor,\n  radius,\n  style,\n  className,\n  ...motion\n}: AppWindowProps) {\n  const theme = useTheme();\n  const { u, width, height, safe, isLandscape } = useViewport();\n  const m = useMotion(motion);\n  const border = borderColor ?? theme.colors.border;\n  const bar = barColor ?? theme.colors.surface;\n  const maxW = (width - safe.x * 2) * (widthFraction ?? (isLandscape ? 0.8 : 1));\n  const maxH = height - safe.top - safe.bottom;\n  const barH = u(54);\n  const cardW = Math.min(maxW, (maxH - barH) * aspect);\n  const cardH = cardW / aspect + barH;\n  const r = u(radius ?? theme.radius);\n\n  return (\n    <div\n      className={className}\n      style={{\n        width: cardW,\n        height: cardH,\n        borderRadius: r,\n        overflow: \"hidden\",\n        background: background ?? theme.colors.background,\n        border: `1px solid ${border}`,\n        boxShadow: `0 ${u(2)}px ${u(6)}px ${alpha(\"#000000\", 0.12)}, 0 ${u(28)}px ${u(72)}px ${alpha(\"#000000\", 0.3)}`,\n        fontFamily: theme.fonts.body,\n        opacity: Math.min(1, Math.max(0, m.enter)) * (1 - m.exit),\n        translate: `0 ${(1 - m.enter) * u(40) - m.exit * u(24)}px`,\n        scale: String(0.97 + 0.03 * m.enter),\n        ...style,\n      }}\n    >\n      <div\n        style={{\n          position: \"relative\",\n          display: \"flex\",\n          alignItems: \"center\",\n          height: barH,\n          padding: `0 ${u(20)}px`,\n          background: bar,\n          borderBottom: `1px solid ${border}`,\n        }}\n      >\n        <div style={{ display: \"flex\", gap: u(9) }}>\n          {[0, 1, 2].map((dot) => (\n            <div\n              key={dot}\n              style={{ width: u(12), height: u(12), borderRadius: \"50%\", background: alpha(theme.colors.muted, 0.4) }}\n            />\n          ))}\n        </div>\n        {title && (\n          <div\n            style={{\n              position: \"absolute\",\n              left: \"50%\",\n              translate: \"-50% 0\",\n              fontSize: u(21),\n              fontWeight: 600,\n              color: titleColor ?? theme.colors.foreground,\n            }}\n          >\n            {title}\n          </div>\n        )}\n      </div>\n      <div style={{ position: \"relative\", width: cardW, height: cardH - barH, overflow: \"hidden\" }}>{children}</div>\n    </div>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/app-window.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "Framing a desktop app, editor or settings panel in a launch video",
+      "Two app windows side by side inside `split-screen`"
+    ],
+    "avoid": [
+      "A website with an address bar — use `browser-window`"
+    ],
+    "tags": [
+      "window",
+      "app",
+      "desktop",
+      "chrome",
+      "mockup",
+      "frame"
+    ]
+  },
+  "docs": "Usage:\n\n<Center>\n  <AppWindow title=\"Settings\">\n    <div style={{ width: \"100%\", height: \"100%\", background: \"#fff\" }} />\n  </AppWindow>\n</Center>",
+  "categories": [
+    "product"
+  ],
+  "type": "registry:item"
+}

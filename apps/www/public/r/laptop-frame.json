@@ -1,0 +1,41 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "laptop-frame",
+  "title": "Laptop Frame",
+  "description": "Laptop lid with a bezel around your screen content, sitting on a simple deck with a hinge line.",
+  "dependencies": [],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/laptop-frame.tsx",
+      "content": "/**\n * @title Laptop Frame\n * @category product\n * @description Laptop lid with a bezel around your screen content, sitting on a simple deck with a hinge line.\n * @duration data-driven\n * @use Framing a desktop app, dashboard or website screenshot in a launch video\n * @use Two builds side by side inside `split-screen` for a before/after\n * @avoid A phone or tablet screen — use `phone-frame`\n * @tags laptop, desktop, computer, device, mockup, frame\n * @example\n * <Center>\n *   <LaptopFrame>\n *     <div style={{ width: \"100%\", height: \"100%\", background: \"#fff\" }} />\n *   </LaptopFrame>\n * </Center>\n */\nimport type React from \"react\";\nimport { alpha, type MotionProps, useMotion, useTheme, useViewport } from \"./core\";\n\nexport type LaptopFrameProps = MotionProps & {\n  /** Screen width as a fraction of the safe area (0–1). Defaults to 0.78 in landscape, 0.94 otherwise. */\n  width?: number;\n  /** Screen aspect ratio (width / height). Defaults to 16/10. */\n  aspect?: number;\n  children?: React.ReactNode;\n  /** Body color. Defaults to a shade between the theme surface and foreground. */\n  color?: string;\n  /** Screen fill behind the children. Defaults to the theme background. */\n  screenColor?: string;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\nexport function LaptopFrame({\n  width: widthFraction,\n  aspect = 16 / 10,\n  children,\n  color,\n  screenColor,\n  style,\n  className,\n  ...motion\n}: LaptopFrameProps) {\n  const theme = useTheme();\n  const { u, width, height, safe, isLandscape } = useViewport();\n  const m = useMotion(motion);\n  const body = color ?? `color-mix(in srgb, ${theme.colors.foreground} 16%, ${theme.colors.surface})`;\n  const bezel = u(20);\n  const deckH = u(26);\n  const maxScreenW = (width - safe.x * 2) * (widthFraction ?? (isLandscape ? 0.78 : 0.94)) - bezel * 2;\n  const maxScreenH = height - safe.top - safe.bottom - bezel * 2 - deckH - u(16);\n  const screenW = Math.min(maxScreenW, maxScreenH * aspect);\n  const screenH = screenW / aspect;\n  const lidW = screenW + bezel * 2;\n  const lidH = screenH + bezel * 2;\n  const deckW = lidW * 1.06;\n\n  return (\n    <div\n      className={className}\n      style={{\n        display: \"flex\",\n        flexDirection: \"column\",\n        alignItems: \"center\",\n        opacity: Math.min(1, Math.max(0, m.enter)) * (1 - m.exit),\n        translate: `0 ${(1 - m.enter) * u(40) - m.exit * u(24)}px`,\n        scale: String(0.96 + 0.04 * m.enter),\n        ...style,\n      }}\n    >\n      <div\n        style={{\n          width: lidW,\n          height: lidH,\n          padding: bezel,\n          borderRadius: `${u(14)}px ${u(14)}px ${u(4)}px ${u(4)}px`,\n          background: body,\n          boxShadow: `inset 0 0 0 ${u(1.5)}px ${alpha(\"#000000\", 0.3)}`,\n        }}\n      >\n        <div\n          style={{\n            width: screenW,\n            height: screenH,\n            borderRadius: u(4),\n            overflow: \"hidden\",\n            background: screenColor ?? theme.colors.background,\n          }}\n        >\n          {children}\n        </div>\n      </div>\n      <div\n        style={{\n          width: deckW,\n          height: deckH,\n          borderRadius: `0 0 ${u(10)}px ${u(10)}px`,\n          background: body,\n          boxShadow: `0 ${u(10)}px ${u(24)}px ${alpha(\"#000000\", 0.35)}`,\n          display: \"flex\",\n          justifyContent: \"center\",\n        }}\n      >\n        {/* Hinge shadow line where the lid meets the deck. */}\n        <div\n          style={{\n            width: u(120),\n            height: u(4),\n            marginTop: u(-2),\n            borderRadius: u(2),\n            background: alpha(\"#000000\", 0.25),\n          }}\n        />\n      </div>\n    </div>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/laptop-frame.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "Framing a desktop app, dashboard or website screenshot in a launch video",
+      "Two builds side by side inside `split-screen` for a before/after"
+    ],
+    "avoid": [
+      "A phone or tablet screen — use `phone-frame`"
+    ],
+    "tags": [
+      "laptop",
+      "desktop",
+      "computer",
+      "device",
+      "mockup",
+      "frame"
+    ]
+  },
+  "docs": "Usage:\n\n<Center>\n  <LaptopFrame>\n    <div style={{ width: \"100%\", height: \"100%\", background: \"#fff\" }} />\n  </LaptopFrame>\n</Center>",
+  "categories": [
+    "product"
+  ],
+  "type": "registry:item"
+}
