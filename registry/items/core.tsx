@@ -287,10 +287,12 @@ export function useMotion({ delay = 0, duration, exit = true, motion }: MotionPr
   const enterFrames = duration ?? Math.round(fps * 0.6);
   const exitFrames = typeof exit === "number" ? exit : Math.round(fps * 0.35);
   const enter = tween(frame, fps, { from: delay, duration: enterFrames, motion: preset });
+  // The last rendered frame is durationInFrames - 1, so the exit has to finish there.
+  const lastFrame = durationInFrames - 1;
   const out =
     exit === false
       ? 0
-      : interpolate(frame, [durationInFrames - exitFrames, durationInFrames], [0, 1], {
+      : interpolate(frame, [lastFrame - exitFrames, lastFrame], [0, 1], {
           ...CLAMP,
           easing: exitEasing,
         });
