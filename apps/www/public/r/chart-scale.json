@@ -1,0 +1,33 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "chart-scale",
+  "title": "Chart Scale",
+  "description": "Pure math shared by the data components: nice axis ticks, linear scales, an on-theme series palette and jitter-free number formatting.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/items/chart-scale.ts",
+      "content": "/**\n * @title Chart Scale\n * @category lib\n * @description Pure math shared by the data components: nice axis ticks, linear scales, an on-theme series palette and jitter-free number formatting.\n * @tags chart, axis, ticks, scale, palette, format\n * @example\n * const ticks = niceTicks(0, 87); // [0, 20, 40, 60, 80, 100]\n * const y = scaleLinear([ticks[0], ticks[ticks.length - 1]], [400, 0]);\n * const colors = palette(theme.colors.accent, theme.colors.highlight, theme.colors.foreground, 4);\n * const label = formatter([12.5, 40], \"en-US\")(12.5); // \"12.5\"\n */\n\n/** Drops float noise such as 0.6000000000000001 and turns -0 into 0. */\nconst clean = (value: number) => Number(value.toPrecision(12));\n\n/**\n * Round axis ticks covering [min, max] on a 1-2-5 step. Zero is always a tick when the domain crosses it.\n * `count` is a target, not a promise.\n */\nexport function niceTicks(min: number, max: number, count = 5): number[] {\n  let lo = Math.min(min, max);\n  let hi = Math.max(min, max);\n  if (!isFinite(lo) || !isFinite(hi)) return [0, 1];\n  if (lo === hi) {\n    if (lo === 0) hi = 1;\n    else if (lo > 0) lo = 0;\n    else hi = 0;\n  }\n  const raw = (hi - lo) / Math.max(1, count);\n  const magnitude = 10 ** Math.floor(Math.log10(raw));\n  const norm = raw / magnitude;\n  let nice = 10;\n  for (const candidate of [1, 2, 5]) {\n    if (norm <= candidate + 1e-9) {\n      nice = candidate;\n      break;\n    }\n  }\n  const step = nice * magnitude;\n  // The epsilon stops 0.6 / 0.2 = 2.9999999999999996 from adding a stray tick.\n  const first = Math.floor(lo / step + 1e-9);\n  const last = Math.ceil(hi / step - 1e-9);\n  const ticks: number[] = [];\n  for (let i = first; i <= last; i++) ticks.push(clean(i * step));\n  return ticks;\n}\n\n/** Maps `domain` onto `range` linearly. Pass an inverted range (`[bottom, top]`) for SVG y axes. */\nexport function scaleLinear(domain: [number, number], range: [number, number]): (value: number) => number {\n  const [d0, d1] = domain;\n  const [r0, r1] = range;\n  if (d0 === d1) return () => (r0 + r1) / 2;\n  return (value) => r0 + ((value - d0) / (d1 - d0)) * (r1 - r0);\n}\n\n/**\n * Series colors that stay on-theme: the accent, then the highlight, then `color-mix` blends of the two with the\n * foreground and with transparency.\n */\nexport function palette(accent: string, highlight: string, foreground: string, count: number): string[] {\n  const recipes: [string, number, string][] = [\n    [accent, 50, highlight],\n    [accent, 55, foreground],\n    [highlight, 55, foreground],\n    [accent, 60, \"transparent\"],\n    [highlight, 60, \"transparent\"],\n    [foreground, 50, \"transparent\"],\n  ];\n  const colors: string[] = [];\n  for (let i = 0; i < count; i++) {\n    if (i === 0) colors.push(accent);\n    else if (i === 1) colors.push(highlight);\n    else {\n      const [a, weight, b] = recipes[(i - 2) % recipes.length];\n      const round = Math.floor((i - 2) / recipes.length);\n      colors.push(`color-mix(in srgb, ${a} ${Math.max(10, weight - round * 20)}%, ${b})`);\n    }\n  }\n  return colors;\n}\n\n/** Decimal places needed to write every value exactly, capped at 3. */\nexport function decimals(values: number[]): number {\n  let most = 0;\n  for (const value of values) {\n    if (!isFinite(value)) continue;\n    const text = String(Math.abs(value));\n    const exponent = text.indexOf(\"e-\");\n    const dot = text.indexOf(\".\");\n    const places = exponent >= 0 ? Number(text.slice(exponent + 2)) : dot >= 0 ? text.length - dot - 1 : 0;\n    most = Math.max(most, places);\n  }\n  return Math.min(most, 3);\n}\n\n/**\n * Number formatter for animated labels. Without `format` it holds the precision of `values`, so a label counting up\n * to 12.5 reads 3.0, 7.4, 12.5 instead of jumping between 3, 7.41 and 12.5.\n */\nexport function formatter(\n  values: number[],\n  locale?: string,\n  format?: Intl.NumberFormatOptions,\n): (value: number) => string {\n  const places = decimals(values);\n  const numberFormat = new Intl.NumberFormat(\n    locale,\n    format ?? { minimumFractionDigits: places, maximumFractionDigits: places },\n  );\n  return (value) => numberFormat.format(value);\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/chart-scale.ts"
+    }
+  ],
+  "meta": {
+    "use": [],
+    "avoid": [],
+    "tags": [
+      "chart",
+      "axis",
+      "ticks",
+      "scale",
+      "palette",
+      "format"
+    ]
+  },
+  "docs": "Usage:\n\nconst ticks = niceTicks(0, 87); // [0, 20, 40, 60, 80, 100]\nconst y = scaleLinear([ticks[0], ticks[ticks.length - 1]], [400, 0]);\nconst colors = palette(theme.colors.accent, theme.colors.highlight, theme.colors.foreground, 4);\nconst label = formatter([12.5, 40], \"en-US\")(12.5); // \"12.5\"",
+  "categories": [
+    "lib"
+  ],
+  "type": "registry:item"
+}
