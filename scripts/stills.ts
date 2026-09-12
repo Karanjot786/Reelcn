@@ -1,10 +1,12 @@
 // Usage:
 //   node scripts/stills.ts smoke [filter]                 render 3 frames of every demo composition
-//   node scripts/stills.ts sheets [filter] [--theme=neon]  render the 6-frame contact sheets
-import { mkdirSync } from "node:fs";
+//   node scripts/stills.ts sheets [filter] [--theme=neon]  render the 9-frame contact sheets
+import { createHash } from "node:crypto";
+import { mkdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { bundle } from "@remotion/bundler";
 import { getCompositions, openBrowser, renderStill } from "@remotion/renderer";
+import { themeNamesFromSource } from "./build-registry.ts";
 
 const args = process.argv.slice(2);
 const positional = args.filter((arg) => !arg.startsWith("--"));
@@ -14,6 +16,10 @@ const theme = args.find((arg) => arg.startsWith("--theme="))?.slice("--theme=".l
 
 if (mode !== "smoke" && mode !== "sheets") {
   throw new Error(`mode must be "smoke" or "sheets", got "${mode}"`);
+}
+const themes = themeNamesFromSource();
+if (theme && !themes.includes(theme)) {
+  throw new Error(`unknown --theme "${theme}" (expected one of ${themes.join(", ")})`);
 }
 
 const outDir = path.join("out", mode);
@@ -35,6 +41,8 @@ for (const composition of wanted) {
     mode === "sheets"
       ? [0]
       : [...new Set([0, Math.floor(composition.durationInFrames / 2), composition.durationInFrames - 1])];
+  const hashes = new Set<string>();
+  let rendered = 0;
   for (const frame of frames) {
     const suffix = mode === "smoke" ? `-f${frame}` : "";
     const output = path.join(outDir, `${composition.id}${suffix}${theme ? `-${theme}` : ""}.png`);
@@ -48,11 +56,18 @@ for (const composition of wanted) {
         scale: 0.25,
         puppeteerInstance: browser,
       });
+      hashes.add(createHash("sha256").update(readFileSync(output)).digest("hex"));
+      rendered++;
       console.log(`ok   ${output}`);
     } catch (error) {
       failures++;
       console.error(`FAIL ${composition.id} @ frame ${frame}: ${(error as Error).message}`);
     }
+  }
+  // Identical first, middle and last frames mean the demo renders nothing, or never moves.
+  if (mode === "smoke" && rendered === frames.length && frames.length > 1 && hashes.size === 1) {
+    failures++;
+    console.error(`FAIL ${composition.id}: frames ${frames.join(", ")} are pixel-identical — blank or static demo`);
   }
 }
 

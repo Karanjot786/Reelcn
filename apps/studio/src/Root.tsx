@@ -38,17 +38,18 @@ function DemoView({ demo, theme }: z.infer<typeof demoSchema>) {
   );
 }
 
-const SHEET_CELLS = 6;
+const SHEET_CELLS = 9;
 const SHEET_COLUMNS = 3;
 
-/** One still holding six frozen frames, so motion can be reviewed without watching a render. */
+/** One still holding nine frozen frames, so motion can be reviewed without watching a render. */
 function ContactSheet({ demo, theme, format }: z.infer<typeof sheetSchema>) {
   const [width, height] = FORMATS[format];
   const { duration } = lookup(demo);
   return (
     <AbsoluteFill style={{ background: "#1c1c1c" }}>
       {Array.from({ length: SHEET_CELLS }, (_, cell) => {
-        const frame = Math.round((cell * (duration - 1)) / (SHEET_CELLS - 1));
+        // Skip frame 0 and the last frame: auto-exiting items are invisible on both.
+        const frame = Math.round(1 + (cell * Math.max(duration - 3, 0)) / (SHEET_CELLS - 1));
         return (
           <div
             key={cell}
