@@ -1,0 +1,43 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "stagger",
+  "title": "Stagger",
+  "description": "Lays out its children in a row or column and gives each one an `animate` entrance a few frames after the last.",
+  "dependencies": [
+    "remotion"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/animate.json",
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/stagger.tsx",
+      "content": "/**\n * @title Stagger\n * @category motion\n * @description Lays out its children in a row or column and gives each one an `animate` entrance a few frames after the last.\n * @duration data-driven\n * @use Feature lists, logo rows, bullet points and card groups that should arrive one by one\n * @use Any set of elements that should read as a sequence rather than a block\n * @avoid Staggering the words of a single headline, use `text-reveal`\n * @tags stagger, sequence, list, cascade, entrance\n * @example\n * <Center>\n *   <Stagger effect=\"pop\" gap={48}>\n *     <Img src={staticFile(\"logo-1.png\")} />\n *     <Img src={staticFile(\"logo-2.png\")} />\n *     <Img src={staticFile(\"logo-3.png\")} />\n *   </Stagger>\n * </Center>\n */\nimport type React from \"react\";\nimport { Children } from \"react\";\nimport { useVideoConfig } from \"remotion\";\nimport { Animate, type AnimateEffect } from \"./animate\";\nimport { type MotionProps, useViewport } from \"./core\";\n\nexport type StaggerProps = MotionProps & {\n  children?: React.ReactNode;\n  effect?: AnimateEffect;\n  exitEffect?: AnimateEffect;\n  /** Frames between one child's entrance and the next. Defaults to 0.08s. */\n  step?: number;\n  /** `auto` lays out a row in landscape and square, a column in portrait. */\n  direction?: \"row\" | \"column\" | \"auto\";\n  /** Space between children, in design units. */\n  gap?: number;\n  /** Cross-axis alignment of the children. */\n  align?: \"start\" | \"center\" | \"end\";\n  /** Let a row wrap onto more lines when it runs out of width. */\n  wrap?: boolean;\n  /** Travel distance for directional effects, in design units. */\n  distance?: number;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\nconst flexAlign = { start: \"flex-start\", center: \"center\", end: \"flex-end\" } as const;\n\nexport function Stagger({\n  children,\n  effect = \"up\",\n  exitEffect = \"fade\",\n  step,\n  direction = \"auto\",\n  gap = 24,\n  align = \"center\",\n  wrap = false,\n  distance,\n  delay = 0,\n  style,\n  className,\n  ...motion\n}: StaggerProps) {\n  const { fps } = useVideoConfig();\n  const { u, isPortrait } = useViewport();\n  const frames = step ?? Math.round(fps * 0.08);\n  const flow = direction === \"auto\" ? (isPortrait ? \"column\" : \"row\") : direction;\n  return (\n    <div\n      className={className}\n      style={{\n        display: \"flex\",\n        flexDirection: flow,\n        flexWrap: wrap ? \"wrap\" : \"nowrap\",\n        alignItems: flexAlign[align],\n        justifyContent: \"center\",\n        gap: u(gap),\n        ...style,\n      }}\n    >\n      {Children.toArray(children).map((child, index) => (\n        <Animate\n          key={index}\n          effect={effect}\n          exitEffect={exitEffect}\n          distance={distance}\n          delay={delay + index * frames}\n          {...motion}\n        >\n          {child}\n        </Animate>\n      ))}\n    </div>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/stagger.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "Feature lists, logo rows, bullet points and card groups that should arrive one by one",
+      "Any set of elements that should read as a sequence rather than a block"
+    ],
+    "avoid": [
+      "Staggering the words of a single headline, use `text-reveal`"
+    ],
+    "tags": [
+      "stagger",
+      "sequence",
+      "list",
+      "cascade",
+      "entrance"
+    ]
+  },
+  "docs": "Usage:\n\n<Center>\n  <Stagger effect=\"pop\" gap={48}>\n    <Img src={staticFile(\"logo-1.png\")} />\n    <Img src={staticFile(\"logo-2.png\")} />\n    <Img src={staticFile(\"logo-3.png\")} />\n  </Stagger>\n</Center>",
+  "categories": [
+    "motion"
+  ],
+  "type": "registry:item"
+}

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "split-screen",
+  "title": "Split Screen",
+  "description": "Two to four full-bleed panes that wipe in one after another, each laid out as if it were its own canvas.",
+  "dependencies": [
+    "remotion"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/split-screen.tsx",
+      "content": "/**\n * @title Split Screen\n * @category motion\n * @description Two to four full-bleed panes that wipe in one after another, each laid out as if it were its own canvas.\n * @duration 30\n * @use Before and after, side-by-side comparisons, reaction layouts and multi-angle shots\n * @use Showing the same component at two sizes, since each pane has its own viewport\n * @avoid Arranging several small cards on one canvas, use `bento-grid`\n * @tags split, compare, panes, side by side, grid\n * @example\n * <SplitScreen labels={[\"Before\", \"After\"]}>\n *   <Img src={staticFile(\"before.png\")} style={{ width: \"100%\", height: \"100%\", objectFit: \"cover\" }} />\n *   <Img src={staticFile(\"after.png\")} style={{ width: \"100%\", height: \"100%\", objectFit: \"cover\" }} />\n * </SplitScreen>\n */\nimport type React from \"react\";\nimport { Children } from \"react\";\nimport { AbsoluteFill } from \"remotion\";\nimport { alpha, type MotionProps, tween, useMotion, useTheme, useViewport, Viewport } from \"./core\";\n\nexport type SplitScreenProps = MotionProps & {\n  /** Two to four panes. Extra children are ignored. */\n  children: React.ReactNode;\n  /** One label per pane, shown in its top-left corner. */\n  labels?: string[];\n  /** `auto` puts two or three panes side by side (stacked in portrait) and four in a 2×2 grid. */\n  layout?: \"auto\" | \"row\" | \"column\" | \"grid\";\n  /** Frames between one pane's wipe and the next. Defaults to 0.12s. */\n  step?: number;\n  /** Pane fill behind the children. Defaults to the theme surface. */\n  background?: string;\n  /** Hairline between panes. Defaults to the theme border. */\n  dividerColor?: string;\n  /** Label text. Defaults to the theme foreground. */\n  labelColor?: string;\n  /** Label fill. Defaults to the theme background at 70%. */\n  labelBackground?: string;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\ntype Rect = { left: number; top: number; width: number; height: number; row: number; column: number };\n\n/** Pixel rectangles for each pane; a short last row stretches to fill the width. */\nfunction paneRects(count: number, columns: number, width: number, height: number): Rect[] {\n  const rows = Math.ceil(count / columns);\n  const rects: Rect[] = [];\n  for (let index = 0; index < count; index++) {\n    const row = Math.floor(index / columns);\n    const column = index % columns;\n    const inRow = Math.min(columns, count - row * columns);\n    const paneWidth = width / inRow;\n    rects.push({\n      left: column * paneWidth,\n      top: (row * height) / rows,\n      width: paneWidth,\n      height: height / rows,\n      row,\n      column,\n    });\n  }\n  return rects;\n}\n\nexport function SplitScreen({\n  children,\n  labels = [],\n  layout = \"auto\",\n  step,\n  background,\n  dividerColor,\n  labelColor,\n  labelBackground,\n  style,\n  className,\n  ...motion\n}: SplitScreenProps) {\n  const theme = useTheme();\n  const { width, height, u, safe, isPortrait } = useViewport();\n  const m = useMotion(motion);\n  const panes = Children.toArray(children).slice(0, 4);\n  const shape = layout === \"auto\" ? (panes.length === 4 ? \"grid\" : isPortrait ? \"column\" : \"row\") : layout;\n  const columns = shape === \"grid\" ? 2 : shape === \"row\" ? panes.length : 1;\n  const rects = paneRects(panes.length, columns, width, height);\n  const frames = step ?? Math.round(m.fps * 0.12);\n  // Side-by-side panes wipe downward; stacked panes wipe across.\n  const vertical = columns > 1;\n\n  return (\n    <AbsoluteFill className={className} style={{ fontFamily: theme.fonts.body, ...style }}>\n      {panes.map((pane, index) => {\n        const rect = rects[index];\n        const p = tween(m.frame, m.fps, { from: m.delay + index * frames, duration: m.enterFrames, motion: m.preset });\n        const shown = Math.min(Math.max(p, 0), 1);\n        const labelIn = tween(m.frame, m.fps, {\n          from: m.delay + index * frames + m.enterFrames * 0.4,\n          duration: m.enterFrames,\n          motion: m.preset,\n        });\n        const enterEdge = `${(1 - shown) * 100}%`;\n        const exitEdge = `${m.exit * 100}%`;\n        return (\n          <div\n            key={index}\n            style={{\n              position: \"absolute\",\n              left: rect.left,\n              top: rect.top,\n              width: rect.width,\n              height: rect.height,\n              overflow: \"hidden\",\n              background: background ?? theme.colors.surface,\n              // Enter wipes in from the leading edge; exit carries the same wipe on through the far edge.\n              clipPath: vertical ? `inset(${exitEdge} 0 ${enterEdge} 0)` : `inset(0 ${enterEdge} 0 ${exitEdge})`,\n            }}\n          >\n            <div\n              style={{\n                position: \"absolute\",\n                inset: 0,\n                scale: String(1 + 0.08 * (1 - shown)),\n              }}\n            >\n              <Viewport width={rect.width} height={rect.height}>\n                {pane}\n              </Viewport>\n            </div>\n            {rect.column > 0 && (\n              <div\n                style={{\n                  position: \"absolute\",\n                  left: 0,\n                  top: 0,\n                  bottom: 0,\n                  width: 1,\n                  background: dividerColor ?? theme.colors.border,\n                }}\n              />\n            )}\n            {rect.row > 0 && (\n              <div\n                style={{\n                  position: \"absolute\",\n                  left: 0,\n                  right: 0,\n                  top: 0,\n                  height: 1,\n                  background: dividerColor ?? theme.colors.border,\n                }}\n              />\n            )}\n            {labels[index] && (\n              <div\n                style={{\n                  position: \"absolute\",\n                  left: u(40),\n                  top: isPortrait && rect.row === 0 ? safe.top : u(40),\n                  padding: `${u(10)}px ${u(22)}px`,\n                  borderRadius: u(theme.radius),\n                  border: `1px solid ${dividerColor ?? theme.colors.border}`,\n                  background: labelBackground ?? alpha(theme.colors.background, 0.7),\n                  color: labelColor ?? theme.colors.foreground,\n                  fontSize: u(28),\n                  fontWeight: 600,\n                  letterSpacing: \"0.01em\",\n                  opacity: Math.min(Math.max(labelIn, 0), 1),\n                  translate: `0 ${(1 - labelIn) * u(16)}px`,\n                }}\n              >\n                {labels[index]}\n              </div>\n            )}\n          </div>\n        );\n      })}\n    </AbsoluteFill>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/split-screen.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "30",
+    "use": [
+      "Before and after, side-by-side comparisons, reaction layouts and multi-angle shots",
+      "Showing the same component at two sizes, since each pane has its own viewport"
+    ],
+    "avoid": [
+      "Arranging several small cards on one canvas, use `bento-grid`"
+    ],
+    "tags": [
+      "split",
+      "compare",
+      "panes",
+      "side by side",
+      "grid"
+    ]
+  },
+  "docs": "Usage:\n\n<SplitScreen labels={[\"Before\", \"After\"]}>\n  <Img src={staticFile(\"before.png\")} style={{ width: \"100%\", height: \"100%\", objectFit: \"cover\" }} />\n  <Img src={staticFile(\"after.png\")} style={{ width: \"100%\", height: \"100%\", objectFit: \"cover\" }} />\n</SplitScreen>",
+  "categories": [
+    "motion"
+  ],
+  "type": "registry:item"
+}
