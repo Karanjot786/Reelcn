@@ -38,9 +38,12 @@
   --edge: #d9a04a;
 }
 
-/* Fumadocs reads these, so the docs and the landing share one palette. */
+/* Fumadocs reads these, so the docs and the landing share one palette.
+   `.dark #nd-sidebar` is included because fumadocs neutral.css's own `.dark #nd-sidebar` rule
+   outranks a plain `.dark` selector and reintroduces its hsl greys in the dark sidebar. */
 :root,
-.dark {
+.dark,
+.dark #nd-sidebar {
   --color-fd-background: var(--paper);
   --color-fd-foreground: var(--ink);
   --color-fd-muted: var(--well);

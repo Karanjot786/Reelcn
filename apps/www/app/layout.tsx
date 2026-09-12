@@ -16,7 +16,7 @@ export default function Layout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${archivo.variable} ${caveat.variable}`} suppressHydrationWarning>
       <body className="flex min-h-screen flex-col">
-        <RootProvider>{children}</RootProvider>
+        <RootProvider search={{ options: { type: "static" } }}>{children}</RootProvider>
       </body>
     </html>
   );
