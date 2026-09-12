@@ -6,6 +6,8 @@
   "packageManager": "pnpm@9.15.9",
   "scripts": {
     "studio": "pnpm --filter @reelcn/studio studio",
+    "site": "pnpm --filter @reelcn/www dev",
+    "site:build": "pnpm --filter @reelcn/www build",
     "typecheck": "tsc --noEmit",
     "typecheck:user": "tsc -p tsconfig.user.json",
     "lint": "biome check",

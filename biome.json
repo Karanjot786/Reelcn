@@ -1,7 +1,15 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.5.13/schema.json",
   "files": {
-    "includes": ["**", "!**/node_modules", "!out", "!apps/www/public/r", "!registry.json"]
+    "includes": [
+      "**",
+      "!**/node_modules",
+      "!out",
+      "!apps/www/public/r",
+      "!registry.json",
+      "!**/.next",
+      "!**/next-env.d.ts"
+    ]
   },
   "formatter": { "indentStyle": "space", "lineWidth": 120 },
   "linter": {

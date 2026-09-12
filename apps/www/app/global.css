@@ -1,0 +1,295 @@
+@import "tailwindcss";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
+
+/* Contact-sheet tokens (site spec §3). */
+:root {
+  --paper: #e4e5e1;
+  --paper-2: #d9dad5;
+  --well: #d5d7d2;
+  --ink: #1b1d1c;
+  --muted: #3d403e;
+  --rule: #b9bbb6;
+  --film: #0a0a0a;
+  --sprocket: #c9cbc6;
+  --grease: #d7262f;
+  --edge: #c98a2b;
+
+  /* Motion tokens (site spec §5). Enter uses the same curve as reelcn's `smooth` preset. */
+  --dur-1: 120ms;
+  --dur-2: 200ms;
+  --dur-3: 320ms;
+  --dur-4: 650ms;
+  --dur-5: 900ms;
+  --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-draw: cubic-bezier(0.55, 0, 0.45, 1);
+}
+
+.dark {
+  --paper: #161716;
+  --paper-2: #1e1f1e;
+  --well: #262826;
+  --ink: #e6e7e3;
+  --muted: #a3a7a2;
+  --rule: #3a3c3a;
+  --film: #000000;
+  --sprocket: #5a5c5a;
+  --grease: #f0444b;
+  --edge: #d9a04a;
+}
+
+/* Fumadocs reads these, so the docs and the landing share one palette. */
+:root,
+.dark {
+  --color-fd-background: var(--paper);
+  --color-fd-foreground: var(--ink);
+  --color-fd-muted: var(--well);
+  --color-fd-muted-foreground: var(--muted);
+  --color-fd-card: var(--paper-2);
+  --color-fd-card-foreground: var(--ink);
+  --color-fd-popover: var(--paper-2);
+  --color-fd-popover-foreground: var(--ink);
+  --color-fd-border: var(--rule);
+  --color-fd-primary: var(--ink);
+  --color-fd-primary-foreground: var(--paper);
+  --color-fd-secondary: var(--well);
+  --color-fd-secondary-foreground: var(--ink);
+  --color-fd-accent: var(--well);
+  --color-fd-accent-foreground: var(--ink);
+  --color-fd-ring: var(--grease);
+}
+
+html {
+  scrollbar-gutter: stable;
+}
+
+html > body[data-scroll-locked] {
+  margin-right: 0px !important;
+  --removed-body-scroll-bar-size: 0px !important;
+}
+
+body {
+  font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+}
+
+:focus-visible {
+  outline: 2px solid var(--grease);
+  outline-offset: 3px;
+}
+
+/* Copy command */
+.copy-command {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 44px;
+  padding: 10px 16px;
+  border-radius: 6px;
+  background: var(--well);
+  color: var(--muted);
+  font:
+    14px / 1.4 ui-monospace,
+    Menlo,
+    monospace;
+  text-align: left;
+  cursor: pointer;
+  transition: transform var(--dur-1) ease-out;
+}
+.copy-command:active {
+  transform: scale(0.97);
+}
+.copy-command code {
+  font: inherit;
+  overflow-wrap: anywhere;
+}
+.copy-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+.copy-icon[data-copied="true"] {
+  color: var(--grease);
+}
+.copy-icon[data-copied="true"] path {
+  stroke-dasharray: 1;
+  animation: draw 250ms var(--ease-draw) both;
+}
+
+/* Player and its toggles */
+.player-well {
+  display: flex;
+  justify-content: center;
+  padding: clamp(12px, 3vw, 32px);
+  border-radius: 4px;
+  background: var(--film);
+  view-transition-name: player;
+}
+.player-frame {
+  width: 100%;
+  background: var(--film);
+}
+.format-switch {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.format-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+}
+.toggle-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.toggle {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 6px;
+  background: var(--well);
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: transform var(--dur-1) ease-out;
+}
+.toggle:active {
+  transform: scale(0.97);
+}
+.toggle[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--paper);
+}
+.swatch {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  cursor: pointer;
+}
+.swatch::after {
+  content: "";
+  width: 14px;
+  height: 4px;
+  background: currentColor;
+}
+.swatch[aria-pressed="true"] {
+  outline: 2px solid var(--grease);
+  outline-offset: 3px;
+}
+
+/* Catalog */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 6px;
+  background: var(--well);
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: none;
+}
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  margin: 16px 0 40px;
+}
+.catalog-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.catalog-tile:focus-visible {
+  outline: none;
+}
+.catalog-frame {
+  display: block;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--film);
+  outline: 3px solid transparent;
+  outline-offset: 3px;
+  transition:
+    transform 220ms var(--ease-enter),
+    outline-color 160ms ease-out;
+}
+.catalog-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.catalog-tile:hover .catalog-frame,
+.catalog-tile:focus-visible .catalog-frame {
+  transform: scale(1.05);
+  outline-color: var(--grease);
+}
+.catalog-title {
+  font-size: 15px;
+  font-weight: 650;
+}
+.catalog-lib {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  color: var(--sprocket);
+  font:
+    600 14px ui-monospace,
+    Menlo,
+    monospace;
+}
+
+/* Grease pencil: SVG paths drawn with pathLength="1". */
+.grease path {
+  fill: none;
+  stroke: var(--grease);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* biome-ignore lint/correctness/noUnknownTypeSelector: `player` is a view-transition-name, not a type selector */
+::view-transition-group(player) {
+  animation-duration: var(--dur-3);
+  animation-timing-function: var(--ease-enter);
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--dur-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
