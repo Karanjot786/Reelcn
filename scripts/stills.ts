@@ -40,13 +40,13 @@ for (const composition of wanted) {
     const output = path.join(outDir, `${composition.id}${suffix}${theme ? `-${theme}` : ""}.png`);
     try {
       await renderStill({
-        composition,
+        // renderStill renders composition.props; its inputProps option only feeds calculateMetadata.
+        composition: theme ? { ...composition, props: { ...composition.props, theme } } : composition,
         serveUrl,
         frame,
         output,
         scale: 0.25,
         puppeteerInstance: browser,
-        inputProps: { ...composition.props, ...(theme ? { theme } : {}) },
       });
       console.log(`ok   ${output}`);
     } catch (error) {
