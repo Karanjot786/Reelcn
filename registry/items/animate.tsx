@@ -69,7 +69,10 @@ export function Animate({
   const { opacity: enterOpacity = 1, ...enter } = effectStyle(effect, m.enter, u(distance));
   const { opacity: exitOpacity = 1, ...exit } = effectStyle(exitEffect, 1 - m.exit, u(distance));
   return (
-    <div className={className} style={{ ...style, opacity: Number(enterOpacity) * Number(exitOpacity) }}>
+    <div
+      className={className}
+      style={{ ...style, opacity: Number(style?.opacity ?? 1) * Number(enterOpacity) * Number(exitOpacity) }}
+    >
       <div style={exit}>
         <div style={enter}>{children}</div>
       </div>

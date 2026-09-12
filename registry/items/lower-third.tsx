@@ -97,7 +97,8 @@ export function LowerThird({
             borderRadius: radiusPx,
             padding: `${u(24)}px ${u(34)}px`,
             boxShadow: `0 ${u(18)}px ${u(54)}px ${alpha("#000000", 0.3)}`,
-            clipPath: revealClip(lineProgress, side, radiusPx),
+            // The clip only animates the reveal; dropping it afterwards lets the card's shadow show.
+            clipPath: lineProgress < 1 ? revealClip(lineProgress, side, radiusPx) : undefined,
           }),
         }}
       >

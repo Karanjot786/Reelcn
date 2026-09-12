@@ -11,7 +11,9 @@ const { items } = JSON.parse(readFileSync("registry.json", "utf8")) as { items: 
 if (items.length === 0) throw new Error("registry.json has no items — run pnpm registry:build first");
 
 // ponytail: python3's http.server serves the registry; no hand-rolled static server.
-const server = spawn("python3", ["-m", "http.server", String(PORT), "--directory", publicDir], { stdio: "ignore" });
+const server = spawn("python3", ["-m", "http.server", String(PORT), "--bind", "127.0.0.1", "--directory", publicDir], {
+  stdio: "ignore",
+});
 const probeUrl = `http://localhost:${PORT}/r/${items[0].name}.json`;
 for (let attempt = 0; ; attempt++) {
   try {
