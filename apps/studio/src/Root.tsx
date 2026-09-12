@@ -1,6 +1,6 @@
 import { demos } from "@reelcn/registry/demos";
 import { Stage, type ThemeName, ThemeProvider, themeNames, Viewport } from "@reelcn/registry/items/core";
-import { AbsoluteFill, Composition, Folder, Freeze, Sequence, Still } from "remotion";
+import { AbsoluteFill, Composition, Folder, Freeze, Sequence } from "remotion";
 import { z } from "zod";
 import { SelfTest } from "./self-test";
 
@@ -118,12 +118,16 @@ export function Root() {
       <Folder name="sheets">
         {demos.flatMap((demo) =>
           formats.map((format) => (
-            <Still
+            <Composition
               key={`${demo.id}-${format}`}
               id={`sheet-${demo.id}-${format}`}
               component={ContactSheet}
               schema={sheetSchema}
               defaultProps={{ demo: demo.id, theme: "midnight" as ThemeName, format }}
+              // Not a <Still>: that reports fps 1 and durationInFrames 1, which clamps every cell's Sequence
+              // to a single frame, leaving <Freeze> nothing to freeze. Only frame 0 is ever rendered.
+              durationInFrames={demo.duration}
+              fps={30}
               width={FORMATS[format][0] * SHEET_COLUMNS}
               height={FORMATS[format][1] * (SHEET_CELLS / SHEET_COLUMNS)}
             />

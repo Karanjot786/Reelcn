@@ -42,6 +42,18 @@ function EnterCase() {
   const m = useMotion({ delay: 5 });
   check(m.enter === 0, `enter at frame 0 with delay 5 is ${m.enter}, expected 0`);
   check(m.exit === 0, `exit at frame 0 is ${m.exit}, expected 0`);
+  // A zero-length exit must be inert, not a degenerate interpolate range.
+  check(useMotion({ exit: 0 }).exit === 0, "exit={0} must never leave");
+  return null;
+}
+
+/**
+ * Rendered inside a single-frame Sequence, the way a `<Still>` or a contact-sheet cell renders one.
+ * There is no room for an exit there, so nothing may have left yet.
+ */
+function SingleFrameCase() {
+  const m = useMotion();
+  check(m.exit === 0, `exit in a 1-frame sequence is ${m.exit}, expected 0`);
   return null;
 }
 
@@ -79,6 +91,9 @@ export function SelfTest() {
       </Sequence>
       <Sequence durationInFrames={40}>
         <EnterCase />
+      </Sequence>
+      <Sequence durationInFrames={1}>
+        <SingleFrameCase />
       </Sequence>
       <div style={{ font: "600 64px sans-serif", color: "#0a0", padding: 64 }}>self-test ok</div>
     </>

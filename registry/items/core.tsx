@@ -288,9 +288,11 @@ export function useMotion({ delay = 0, duration, exit = true, motion }: MotionPr
   const exitFrames = typeof exit === "number" ? exit : Math.round(fps * 0.35);
   const enter = tween(frame, fps, { from: delay, duration: enterFrames, motion: preset });
   // The last rendered frame is durationInFrames - 1, so the exit has to finish there.
+  // A single-frame sequence (a Still, a contact-sheet cell) or a zero-length exit has no room to leave,
+  // and would otherwise ask interpolate for a degenerate range.
   const lastFrame = durationInFrames - 1;
   const out =
-    exit === false
+    exit === false || exitFrames <= 0 || lastFrame <= 0
       ? 0
       : interpolate(frame, [lastFrame - exitFrames, lastFrame], [0, 1], {
           ...CLAMP,
