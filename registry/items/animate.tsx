@@ -8,7 +8,7 @@
  *   <Img src={staticFile("logo.png")} />
  * </Animate>
  */
-import React from "react";
+import type React from "react";
 import { type MotionProps, useMotion, useViewport } from "./core";
 
 export type AnimateEffect = "fade" | "up" | "down" | "left" | "right" | "scale" | "pop" | "blur" | "zoom" | "none";
@@ -20,6 +20,7 @@ export type AnimateProps = MotionProps & {
   distance?: number;
   children?: React.ReactNode;
   style?: React.CSSProperties;
+  className?: string;
 };
 
 /** Style at progress `p` (0 = hidden, 1 = shown). */
@@ -50,13 +51,21 @@ export function effectStyle(effect: AnimateEffect, p: number, travel: number): R
   }
 }
 
-export function Animate({ effect = "up", exitEffect = "fade", distance = 60, children, style, ...motion }: AnimateProps) {
+export function Animate({
+  effect = "up",
+  exitEffect = "fade",
+  distance = 60,
+  children,
+  style,
+  className,
+  ...motion
+}: AnimateProps) {
   const { u } = useViewport();
   const m = useMotion(motion);
   const { opacity: enterOpacity = 1, ...enter } = effectStyle(effect, m.enter, u(distance));
   const { opacity: exitOpacity = 1, ...exit } = effectStyle(exitEffect, 1 - m.exit, u(distance));
   return (
-    <div style={{ ...style, opacity: Number(enterOpacity) * Number(exitOpacity) }}>
+    <div className={className} style={{ ...style, opacity: Number(enterOpacity) * Number(exitOpacity) }}>
       <div style={exit}>
         <div style={enter}>{children}</div>
       </div>

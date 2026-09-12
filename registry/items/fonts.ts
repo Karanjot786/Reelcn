@@ -2,6 +2,10 @@
  * @title Fonts
  * @category lib
  * @description Loads the curated font set used by the built-in themes, so renders look identical on every machine.
+ * @example
+ * import { fonts } from "./fonts";
+ *
+ * const heading = `${fonts.instrumentSerif}, ui-serif, Georgia, serif`;
  */
 import { loadFont as loadBricolage } from "@remotion/google-fonts/BricolageGrotesque";
 import { loadFont as loadInstrumentSerif } from "@remotion/google-fonts/InstrumentSerif";
@@ -9,7 +13,7 @@ import { loadFont as loadInter } from "@remotion/google-fonts/Inter";
 import { loadFont as loadJetBrainsMono } from "@remotion/google-fonts/JetBrainsMono";
 import { loadFont as loadSpaceGrotesk } from "@remotion/google-fonts/SpaceGrotesk";
 
-const latin = { subsets: ["latin"] };
+const latin = { subsets: ["latin" as const] };
 
 // ponytail: loads all five families up front. Split per theme if render start-up time ever matters.
 loadInstrumentSerif("italic", { weights: ["400"], ...latin });

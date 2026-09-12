@@ -9,7 +9,8 @@
  *   </Stage>
  * </ThemeProvider>
  */
-import React, { createContext, useContext } from "react";
+import type React from "react";
+import { createContext, useContext } from "react";
 import { AbsoluteFill, Easing, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { fonts } from "./fonts";
 
@@ -94,7 +95,9 @@ export const themes = {
       accentForeground: "#ffffff",
       highlight: "#ffd166",
     },
+    // paper — Instrument Serif has a single 400 weight; faux-bolding it looks broken
     fonts: { heading: serif(fonts.instrumentSerif), body: sans(fonts.inter), mono },
+    headingWeight: 400,
     radius: 8,
     motion: "gentle",
   },
@@ -111,6 +114,7 @@ export const themes = {
       highlight: "#ff2fb9",
     },
     fonts: { heading: sans(fonts.spaceGrotesk), body: sans(fonts.spaceGrotesk), mono },
+    headingWeight: 700,
     radius: 14,
     motion: "snappy",
   },
@@ -144,6 +148,7 @@ export const themes = {
       highlight: "#ffc857",
     },
     fonts: { heading: sans(fonts.bricolage), body: sans(fonts.inter), mono },
+    headingWeight: 800,
     radius: 28,
     motion: "bouncy",
   },
@@ -194,15 +199,7 @@ export type Orientation = "landscape" | "portrait" | "square";
 const ViewportContext = createContext<{ width: number; height: number } | null>(null);
 
 /** Make children lay out as if the canvas were this size (picture-in-picture, split screens, contact sheets). */
-export function Viewport({
-  width,
-  height,
-  children,
-}: {
-  width: number;
-  height: number;
-  children: React.ReactNode;
-}) {
+export function Viewport({ width, height, children }: { width: number; height: number; children: React.ReactNode }) {
   return <ViewportContext.Provider value={{ width, height }}>{children}</ViewportContext.Provider>;
 }
 
@@ -317,15 +314,23 @@ export function Stage({
   children,
   background,
   style,
+  className,
 }: {
   children?: React.ReactNode;
   background?: string;
   style?: React.CSSProperties;
+  className?: string;
 }) {
   const t = useTheme();
   return (
     <AbsoluteFill
-      style={{ background: background ?? t.colors.background, color: t.colors.foreground, fontFamily: t.fonts.body, ...style }}
+      className={className}
+      style={{
+        background: background ?? t.colors.background,
+        color: t.colors.foreground,
+        fontFamily: t.fonts.body,
+        ...style,
+      }}
     >
       {children}
     </AbsoluteFill>
@@ -333,10 +338,19 @@ export function Stage({
 }
 
 /** Centers children inside the safe zone. */
-export function Center({ children, style }: { children?: React.ReactNode; style?: React.CSSProperties }) {
+export function Center({
+  children,
+  style,
+  className,
+}: {
+  children?: React.ReactNode;
+  style?: React.CSSProperties;
+  className?: string;
+}) {
   const { safe } = useViewport();
   return (
     <AbsoluteFill
+      className={className}
       style={{
         alignItems: "center",
         justifyContent: "center",
@@ -351,7 +365,10 @@ export function Center({ children, style }: { children?: React.ReactNode; style?
 
 /* ────────────────────────────── Text ────────────────────────────── */
 
-const segmenter = typeof Intl !== "undefined" && "Segmenter" in Intl ? new Intl.Segmenter(undefined, { granularity: "grapheme" }) : null;
+const segmenter =
+  typeof Intl !== "undefined" && "Segmenter" in Intl
+    ? new Intl.Segmenter(undefined, { granularity: "grapheme" })
+    : null;
 
 /** Split into user-perceived characters, so emoji and accents never break apart. */
 export const graphemes = (text: string) =>

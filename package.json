@@ -3,35 +3,24 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@9.15.9",
   "scripts": {
-    "studio": "remotion studio src/index.ts",
+    "studio": "pnpm --filter @reelcn/studio studio",
     "typecheck": "tsc --noEmit",
-    "registry:build": "shadcn build registry.json --output public/r"
-  },
-  "dependencies": {
-    "@remotion/captions": "4.0.523",
-    "@remotion/cli": "4.0.523",
-    "@remotion/google-fonts": "4.0.523",
-    "@remotion/layout-utils": "4.0.523",
-    "@remotion/media": "4.0.523",
-    "@remotion/media-utils": "4.0.523",
-    "@remotion/noise": "4.0.523",
-    "@remotion/paths": "4.0.523",
-    "@remotion/player": "4.0.523",
-    "@remotion/renderer": "4.0.523",
-    "@remotion/shapes": "4.0.523",
-    "@remotion/transitions": "4.0.523",
-    "@remotion/zod-types": "4.0.523",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
-    "remotion": "4.0.523",
-    "zod": "4.5.4"
+    "lint": "biome check",
+    "format": "biome check --write",
+    "test": "node --test \"scripts/*.test.ts\"",
+    "test:self": "pnpm --filter @reelcn/studio exec remotion still src/index.ts self-test ../../out/self-test.png --log=error",
+    "registry:build": "node scripts/build-registry.ts",
+    "stills": "node scripts/stills.ts",
+    "e2e": "node scripts/e2e.ts"
   },
   "devDependencies": {
-    "@types/node": "^22.20.2",
-    "@types/react": "^19.3.0",
-    "@types/react-dom": "^19.3.0",
+    "@biomejs/biome": "2.5.13",
+    "@remotion/bundler": "catalog:",
+    "@remotion/renderer": "catalog:",
+    "@types/node": "24.13.4",
     "shadcn": "4.21.0",
-    "typescript": "^7.0.2"
+    "typescript": "5.9.3"
   }
 }

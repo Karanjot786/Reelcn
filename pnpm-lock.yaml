@@ -4,77 +4,105 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    '@remotion/bundler':
+      specifier: 4.0.523
+      version: 4.0.523
+    '@remotion/cli':
+      specifier: 4.0.523
+      version: 4.0.523
+    '@remotion/google-fonts':
+      specifier: 4.0.523
+      version: 4.0.523
+    '@remotion/renderer':
+      specifier: 4.0.523
+      version: 4.0.523
+    react:
+      specifier: 19.2.4
+      version: 19.2.4
+    react-dom:
+      specifier: 19.2.4
+      version: 19.2.4
+    remotion:
+      specifier: 4.0.523
+      version: 4.0.523
+    zod:
+      specifier: 4.5.4
+      version: 4.5.4
+
 importers:
 
   .:
-    dependencies:
-      '@remotion/captions':
-        specifier: 4.0.523
-        version: 4.0.523
-      '@remotion/cli':
-        specifier: 4.0.523
-        version: 4.0.523(postcss@8.5.28)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@7.0.2)
-      '@remotion/google-fonts':
-        specifier: 4.0.523
-        version: 4.0.523(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@remotion/layout-utils':
-        specifier: 4.0.523
-        version: 4.0.523
-      '@remotion/media':
-        specifier: 4.0.523
-        version: 4.0.523(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@remotion/media-utils':
-        specifier: 4.0.523
-        version: 4.0.523(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@remotion/noise':
-        specifier: 4.0.523
-        version: 4.0.523(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@remotion/paths':
-        specifier: 4.0.523
-        version: 4.0.523
-      '@remotion/player':
-        specifier: 4.0.523
-        version: 4.0.523(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@remotion/renderer':
-        specifier: 4.0.523
-        version: 4.0.523(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@remotion/shapes':
-        specifier: 4.0.523
-        version: 4.0.523(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@remotion/transitions':
-        specifier: 4.0.523
-        version: 4.0.523(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@remotion/zod-types':
-        specifier: 4.0.523
-        version: 4.0.523(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      react:
-        specifier: 19.2.4
-        version: 19.2.4
-      react-dom:
-        specifier: 19.2.4
-        version: 19.2.4(react@19.2.4)
-      remotion:
-        specifier: 4.0.523
-        version: 4.0.523(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      zod:
-        specifier: 4.5.4
-        version: 4.5.4
     devDependencies:
+      '@biomejs/biome':
+        specifier: 2.5.13
+        version: 2.5.13
+      '@remotion/bundler':
+        specifier: 'catalog:'
+        version: 4.0.523(postcss@8.5.28)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@remotion/renderer':
+        specifier: 'catalog:'
+        version: 4.0.523(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@types/node':
-        specifier: ^22.20.2
-        version: 22.20.2
-      '@types/react':
-        specifier: ^19.3.0
-        version: 19.3.0
-      '@types/react-dom':
-        specifier: ^19.3.0
-        version: 19.3.0(@types/react@19.3.0)
+        specifier: 24.13.4
+        version: 24.13.4
       shadcn:
         specifier: 4.21.0
-        version: 4.21.0(typescript@7.0.2)
+        version: 4.21.0(typescript@5.9.3)
       typescript:
-        specifier: ^7.0.2
-        version: 7.0.2
+        specifier: 5.9.3
+        version: 5.9.3
+
+  apps/studio:
+    dependencies:
+      '@reelcn/registry':
+        specifier: workspace:*
+        version: link:../../registry
+      '@remotion/cli':
+        specifier: 'catalog:'
+        version: 4.0.523(postcss@8.5.28)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@7.0.2)
+      react:
+        specifier: 'catalog:'
+        version: 19.2.4
+      react-dom:
+        specifier: 'catalog:'
+        version: 19.2.4(react@19.2.4)
+      remotion:
+        specifier: 'catalog:'
+        version: 4.0.523(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      zod:
+        specifier: 'catalog:'
+        version: 4.5.4
+    devDependencies:
+      '@types/react':
+        specifier: 19.3.0
+        version: 19.3.0
+      '@types/react-dom':
+        specifier: ^19.0.0
+        version: 19.3.0(@types/react@19.3.0)
+
+  registry:
+    dependencies:
+      '@remotion/google-fonts':
+        specifier: 'catalog:'
+        version: 4.0.523(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      react:
+        specifier: 'catalog:'
+        version: 19.2.4
+      react-dom:
+        specifier: 'catalog:'
+        version: 19.2.4(react@19.2.4)
+      remotion:
+        specifier: 'catalog:'
+        version: 4.0.523(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+    devDependencies:
+      '@types/react':
+        specifier: 19.3.0
+        version: 19.3.0
+      '@types/react-dom':
+        specifier: ^19.0.0
+        version: 19.3.0(@types/react@19.3.0)
 
 packages:
 
@@ -215,6 +243,59 @@ packages:
   '@babel/types@7.29.8':
     resolution: {integrity: sha512-Vj1jF3cPfxg7OAfoI7QnVKLoILlm2JF9pnVHrX8qx7AHMiYWT+NDAA7jChlNgRS4WTLc/fD1lXLmPixluj+3Gg==}
     engines: {node: '>=6.9.0'}
+
+  '@biomejs/biome@2.5.13':
+    resolution: {integrity: sha512-+SEC/mFk1a+5mvUANZgbZTaiZXs1nj4iMhL/PHiqDT5TPUEPFIlliEtkKKZB4N862yylHC3UI+/Sj2I0HJEqhA==}
+    engines: {node: '>=14.21.3'}
+    hasBin: true
+
+  '@biomejs/cli-darwin-arm64@2.5.13':
+    resolution: {integrity: sha512-nYSuDJ6zgVqZUkAkJkvhXxsF2PYIrUk/g638K4voCXz7foI9f7b6C2/7+oAihsHQlivZNMUrm/y8ywlcHQtZOw==}
+    engines: {node: '>=14.21.3'}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@biomejs/cli-darwin-x64@2.5.13':
+    resolution: {integrity: sha512-KVy1ceEDuJ3AzFxjT9kkxbVy+UANw1pjEMUS6lvKfxjJ+fmkRvc7sQn1Xo6ETgseEI7wUQoV03KSga3XfE8YRQ==}
+    engines: {node: '>=14.21.3'}
+    cpu: [x64]
+    os: [darwin]
+
+  '@biomejs/cli-linux-arm64-musl@2.5.13':
+    resolution: {integrity: sha512-CH32xpep3dNS5EVJpAHlYchkBYznxyVZQrx0b6YYYlPL9u9ZeD2NtqiK/6s64+HFS2a7hGnryLlqqZAOh8ax5g==}
+    engines: {node: '>=14.21.3'}
+    cpu: [arm64]
+    os: [linux]
+
+  '@biomejs/cli-linux-arm64@2.5.13':
+    resolution: {integrity: sha512-VlNMtoxOqs0dUR6drxxHr18SNUvI7xxAuHZlH4s/dstYSf3g6RaqVgo8JRnhcOhKz9afWrvtJTboNG1JuYlIDQ==}
+    engines: {node: '>=14.21.3'}
+    cpu: [arm64]
+    os: [linux]
+
+  '@biomejs/cli-linux-x64-musl@2.5.13':
+    resolution: {integrity: sha512-F3pmwl+VHoUuVJN/tbNLKeLt0SVK3EIyN1jXlMcNyQGYRQQTVqXF+GgkP0/CjGXFN87e/mv0sBfUnWqWza5PKQ==}
+    engines: {node: '>=14.21.3'}
+    cpu: [x64]
+    os: [linux]
+
+  '@biomejs/cli-linux-x64@2.5.13':
+    resolution: {integrity: sha512-Fi6gIxbUaJ3ZCIXeG3ggIBPF76O2DjDN67WrPX/ODRv54GeXPm2gbEPC96Yb0yrJoiH0Eax1JLx1Pi0XbsNFZQ==}
+    engines: {node: '>=14.21.3'}
+    cpu: [x64]
+    os: [linux]
+
+  '@biomejs/cli-win32-arm64@2.5.13':
+    resolution: {integrity: sha512-+WD13qshXrr0Icv4BfsAdzm8Fs3TL+nZ59zEQxsYNd8lcgZJ0A5+OrlwsL1PipVCmWeRpxgIPD6DAcEd7smkCQ==}
+    engines: {node: '>=14.21.3'}
+    cpu: [arm64]
+    os: [win32]
+
+  '@biomejs/cli-win32-x64@2.5.13':
+    resolution: {integrity: sha512-VOofU/nW761XWzUeUNE8zzYNyPrxuMuNFMizL0qz7J75yeV8N7WFheUlk1/K6dOkaFpH9wJ+lDKlwjAbw0346w==}
+    engines: {node: '>=14.21.3'}
+    cpu: [x64]
+    os: [win32]
 
   '@dotenvx/dotenvx@1.75.1':
     resolution: {integrity: sha512-/BITOC9dmS/edY2zQwZNicQ059O6RKabtQfyEafV0nGtfYRNHYy1DIPiYVcov40+tob9hfmBnbR963dS+EQ1DQ==}
@@ -531,9 +612,6 @@ packages:
   '@remotion/google-fonts@4.0.523':
     resolution: {integrity: sha512-XECkNxGJRz559uVbEEz3sMGaol4HBaU8XZuYqhuZAMjqrm2/ZkemheHR4EQYlpuu0/oT9or91KMaOmSen4Yqpw==}
 
-  '@remotion/layout-utils@4.0.523':
-    resolution: {integrity: sha512-QmWD9Vgeal03qrtx2onXnSe4yQ+6GYpSwGxrLTkxYcsBpbq6y5bYm+gX9Ctp5FJlXwXan/2vv+L/PrzY1XZ0cQ==}
-
   '@remotion/licensing@4.0.523':
     resolution: {integrity: sha512-kjhF1B8oKNNnHq7QQScO39howrSv8fbdMyVFdOMgIaqwb1CMdwjrtdGUjlUKcXVoCW5SBlTFEICuq9d4l0iEMw==}
 
@@ -552,12 +630,6 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
 
-  '@remotion/noise@4.0.523':
-    resolution: {integrity: sha512-woq7R49QBpBtCNgZHDPReNa1+zUP9JapxOj3L+15/4H29lo+oRGDGqTNi9kKah7sFNgE7XqrXAt12rtqY1QTFw==}
-
-  '@remotion/paths@4.0.523':
-    resolution: {integrity: sha512-BUm/MZXChjc2FCqZFxAIoXl/Cs8dJp3mu4/nzYfNmdhQujAAiFLyOdqHbOH2p4Tqw+vVOKSCv9xeBvHOV3sTog==}
-
   '@remotion/player@4.0.523':
     resolution: {integrity: sha512-k9A8TCh5IRWaIIQBcw9ELIMi9Gf/IVapU1UNJI3XWpYXB2nYjyrEPvY2nh7YQnocNHbPpc8S4yfNPKlooUu8GA==}
     peerDependencies:
@@ -566,12 +638,6 @@ packages:
 
   '@remotion/renderer@4.0.523':
     resolution: {integrity: sha512-ZkKCh5RBXPZOvR+nGYSItjLSMKYgn1fr2qimAdeJqmAaFKo9W6Dl4QXZizL4SsadcxyEH/ka5kpsbAQ43wedyw==}
-    peerDependencies:
-      react: '>=16.8.0'
-      react-dom: '>=16.8.0'
-
-  '@remotion/shapes@4.0.523':
-    resolution: {integrity: sha512-rK9TwOLKblb7C1xpuuuecQuaa4yTeEZfBRVek4rVc15UuDuds4hpG7HdkBA29HforakmXgiFF/V88j+VG4QFmQ==}
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
@@ -606,12 +672,6 @@ packages:
 
   '@remotion/timeline-utils@4.0.523':
     resolution: {integrity: sha512-FJ1C4ib7eOxwTjf+rIrv1o6hD6D3bDSJloJgi+l4JNSESp4pnXIeXwBCWq6fiqFIAqpSc6xJDjAiczNMRrW32g==}
-
-  '@remotion/transitions@4.0.523':
-    resolution: {integrity: sha512-o2ITgGWWxvnEyJyypwYe/5avFNDtpLH3wiCHTB6ncs8Z01pzkT0ocN2n78HFVmdsdrN8nLiPGw1r2vtnD/8p4Q==}
-    peerDependencies:
-      react: '>=16.8.0'
-      react-dom: '>=16.8.0'
 
   '@remotion/web-renderer@4.0.523':
     resolution: {integrity: sha512-u/lTIE0rwxDF0iEiqTdB1bnlWZToq5b4EWtsAN/81+juq1RmnSXC3/5tzK7LmTPysN9jPXvBCrSNegBZHQx5qQ==}
@@ -803,8 +863,8 @@ packages:
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
-  '@types/node@22.20.2':
-    resolution: {integrity: sha512-xlvWf4Vs9n1PEVYwP1n4vvG07M6y8WgvJ2t0vbrWTmijsIHp1cS+uJ2kMIRdY3nHZK0nCYKrPeD171+SzF4/zw==}
+  '@types/node@24.13.4':
+    resolution: {integrity: sha512-YJ7EqCstVTzIr0fMr7qul/977en+pQHrfmuKIo6Zr9i75Be21dr3MovcfvGtyvi2HAUrRerWps5sMO9I7WaxDw==}
 
   '@types/react-dom@19.3.0':
     resolution: {integrity: sha512-ZI7bU42mZXXKHn/qNLEw2IrbiINU7X5+vfgdixBHkCNpYWXjKgfQ/P+uyGb5CjOLB9UcnTeg3rylQtV2hym44Q==}
@@ -2127,9 +2187,6 @@ packages:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
 
-  simplex-noise@4.0.1:
-    resolution: {integrity: sha512-zl/+bdSqW7HJOQ0oDbxrNYaF4F5ik0i7M6YOYmEoIJNtg16NpvWaTTM1Y7oV/7T0jFljawLgYPS81Uu2rsfo1A==}
-
   sisteransi@1.0.5:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
 
@@ -2299,13 +2356,18 @@ packages:
     resolution: {integrity: sha512-faYHw0anBbc/kWF3zFTEnxSFOAGUX9GFbOBthvDdLsIlEoWOFOtS0zgCiQYwIskL9iGXZL3kAXD8OoZ4GmMATA==}
     engines: {node: '>= 18'}
 
+  typescript@5.9.3:
+    resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
   typescript@7.0.2:
     resolution: {integrity: sha512-8FYau96o3NKOhbjKi/qNvG/W5jhzxkbdm5sj9AbZ/5T5sWqn3hJgLfGx27sRKZWTvyzCP8dLRBTf5tBTSRVUNA==}
     engines: {node: '>=16.20.0'}
     hasBin: true
 
-  undici-types@6.21.0:
-    resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
+  undici-types@7.18.2:
+    resolution: {integrity: sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w==}
 
   undici@7.29.1:
     resolution: {integrity: sha512-RYONW2MeafgYlkVOKYKkA/Ag7BmXqgIWCa8t1m0JcxrQg9pI9lEqRhAOruOBCbAohOa/gkCF+iPi9hrgvTzu6Q==}
@@ -2609,6 +2671,41 @@ snapshots:
     dependencies:
       '@babel/helper-string-parser': 7.29.7
       '@babel/helper-validator-identifier': 7.29.7
+
+  '@biomejs/biome@2.5.13':
+    optionalDependencies:
+      '@biomejs/cli-darwin-arm64': 2.5.13
+      '@biomejs/cli-darwin-x64': 2.5.13
+      '@biomejs/cli-linux-arm64': 2.5.13
+      '@biomejs/cli-linux-arm64-musl': 2.5.13
+      '@biomejs/cli-linux-x64': 2.5.13
+      '@biomejs/cli-linux-x64-musl': 2.5.13
+      '@biomejs/cli-win32-arm64': 2.5.13
+      '@biomejs/cli-win32-x64': 2.5.13
+
+  '@biomejs/cli-darwin-arm64@2.5.13':
+    optional: true
+
+  '@biomejs/cli-darwin-x64@2.5.13':
+    optional: true
+
+  '@biomejs/cli-linux-arm64-musl@2.5.13':
+    optional: true
+
+  '@biomejs/cli-linux-arm64@2.5.13':
+    optional: true
+
+  '@biomejs/cli-linux-x64-musl@2.5.13':
+    optional: true
+
+  '@biomejs/cli-linux-x64@2.5.13':
+    optional: true
+
+  '@biomejs/cli-win32-arm64@2.5.13':
+    optional: true
+
+  '@biomejs/cli-win32-x64@2.5.13':
+    optional: true
 
   '@dotenvx/dotenvx@1.75.1':
     dependencies:
@@ -2943,8 +3040,6 @@ snapshots:
       - react
       - react-dom
 
-  '@remotion/layout-utils@4.0.523': {}
-
   '@remotion/licensing@4.0.523': {}
 
   '@remotion/media-parser@4.0.523': {}
@@ -2963,16 +3058,6 @@ snapshots:
       react-dom: 19.2.4(react@19.2.4)
       remotion: 4.0.523(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       zod: 4.5.4
-
-  '@remotion/noise@4.0.523(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
-    dependencies:
-      remotion: 4.0.523(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      simplex-noise: 4.0.1
-    transitivePeerDependencies:
-      - react
-      - react-dom
-
-  '@remotion/paths@4.0.523': {}
 
   '@remotion/player@4.0.523(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
@@ -3001,13 +3086,6 @@ snapshots:
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
-
-  '@remotion/shapes@4.0.523(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
-    dependencies:
-      '@remotion/paths': 4.0.523
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
-      remotion: 4.0.523(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
 
   '@remotion/streaming@4.0.523': {}
 
@@ -3113,14 +3191,6 @@ snapshots:
     transitivePeerDependencies:
       - react
       - react-dom
-
-  '@remotion/transitions@4.0.523(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
-    dependencies:
-      '@remotion/paths': 4.0.523
-      '@remotion/shapes': 4.0.523(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
-      remotion: 4.0.523(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
 
   '@remotion/web-renderer@4.0.523(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
@@ -3260,7 +3330,7 @@ snapshots:
 
   '@svgr/hast-util-to-babel-ast@8.0.0':
     dependencies:
-      '@babel/types': 7.24.0
+      '@babel/types': 7.29.8
       entities: 4.5.0
 
   '@svgr/plugin-jsx@8.1.0(@svgr/core@8.1.0(typescript@7.0.2))':
@@ -3312,9 +3382,9 @@ snapshots:
 
   '@types/json-schema@7.0.15': {}
 
-  '@types/node@22.20.2':
+  '@types/node@24.13.4':
     dependencies:
-      undici-types: 6.21.0
+      undici-types: 7.18.2
 
   '@types/react-dom@19.3.0(@types/react@19.3.0)':
     dependencies:
@@ -3632,14 +3702,14 @@ snapshots:
     optionalDependencies:
       typescript: 7.0.2
 
-  cosmiconfig@9.0.2(typescript@7.0.2):
+  cosmiconfig@9.0.2(typescript@5.9.3):
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.1
       js-yaml: 4.3.2
       parse-json: 5.2.0
     optionalDependencies:
-      typescript: 7.0.2
+      typescript: 5.9.3
 
   cross-spawn@7.0.6:
     dependencies:
@@ -4074,7 +4144,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 22.20.2
+      '@types/node': 24.13.4
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -4475,7 +4545,7 @@ snapshots:
 
   setprototypeof@1.2.0: {}
 
-  shadcn@4.21.0(typescript@7.0.2):
+  shadcn@4.21.0(typescript@5.9.3):
     dependencies:
       '@babel/core': 7.29.7
       '@babel/parser': 7.29.8
@@ -4487,7 +4557,7 @@ snapshots:
       browserslist: 4.28.9
       cn: 0.2.6
       commander: 14.0.3
-      cosmiconfig: 9.0.2(typescript@7.0.2)
+      cosmiconfig: 9.0.2(typescript@5.9.3)
       dedent: 1.7.2
       deepmerge: 4.3.1
       diff: 8.0.4
@@ -4553,8 +4623,6 @@ snapshots:
   signal-exit@3.0.7: {}
 
   signal-exit@4.1.0: {}
-
-  simplex-noise@4.0.1: {}
 
   sisteransi@1.0.5: {}
 
@@ -4674,6 +4742,8 @@ snapshots:
       media-typer: 1.1.1
       mime-types: 3.0.2
 
+  typescript@5.9.3: {}
+
   typescript@7.0.2:
     optionalDependencies:
       '@typescript/typescript-aix-ppc64': 7.0.2
@@ -4696,8 +4766,9 @@ snapshots:
       '@typescript/typescript-sunos-x64': 7.0.2
       '@typescript/typescript-win32-arm64': 7.0.2
       '@typescript/typescript-win32-x64': 7.0.2
+    optional: true
 
-  undici-types@6.21.0: {}
+  undici-types@7.18.2: {}
 
   undici@7.29.1: {}
 
