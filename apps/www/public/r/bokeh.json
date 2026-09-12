@@ -1,0 +1,42 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "bokeh",
+  "title": "Bokeh",
+  "description": "Seeded out-of-focus light discs floating upward, larger and softer ones moving faster for depth.",
+  "dependencies": [
+    "remotion"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/bokeh.tsx",
+      "content": "/**\n * @title Bokeh\n * @category backgrounds\n * @description Seeded out-of-focus light discs floating upward, larger and softer ones moving faster for depth.\n * @duration sustained\n * @use Warm, celebratory or lifestyle scenes: holidays, thank-yous, testimonials\n * @use A soft, cinematic backdrop behind quotes and names\n * @avoid Tiny pin-sharp points of light — use `starfield`\n * @tags bokeh, lights, blur, depth, particles\n * @example\n * <AbsoluteFill>\n *   <Bokeh />\n *   <Center><TextReveal text=\"Hello\" /></Center>\n * </AbsoluteFill>\n */\nimport type React from \"react\";\nimport { useMemo } from \"react\";\nimport { AbsoluteFill, random } from \"remotion\";\nimport { alpha, type MotionProps, useMotion, useTheme, useViewport } from \"./core\";\n\nexport type BokehProps = MotionProps & {\n  /** Base fill. Defaults to the theme background. */\n  background?: string;\n  /** Disc colors, picked per disc by seed. Defaults to accent and highlight. */\n  colors?: string[];\n  count?: number;\n  /** Largest disc diameter in design units. */\n  size?: number;\n  /** Opacity of the nearest, brightest disc, 0–1. */\n  intensity?: number;\n  /** Same seed, same layout. */\n  seed?: number | string;\n  /** Float speed multiplier. 0 holds the discs in place. */\n  speed?: number;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\nconst clamp01 = (value: number) => Math.min(Math.max(value, 0), 1);\n\nexport function Bokeh({\n  background,\n  colors,\n  count = 22,\n  size = 280,\n  intensity = 0.3,\n  seed = 1,\n  speed = 1,\n  style,\n  className,\n  ...motion\n}: BokehProps) {\n  const theme = useTheme();\n  const { width, height, u } = useViewport();\n  const m = useMotion(motion);\n  const palette = colors ?? [theme.colors.accent, theme.colors.highlight];\n  const discs = useMemo(\n    () =>\n      Array.from({ length: Math.max(0, Math.round(count)) }, (_, i) => ({\n        depth: random(`${seed}-d-${i}`),\n        x: random(`${seed}-x-${i}`),\n        y: random(`${seed}-y-${i}`),\n        phase: random(`${seed}-p-${i}`) * Math.PI * 2,\n        pick: random(`${seed}-c-${i}`),\n      })).sort((a, b) => a.depth - b.depth),\n    [count, seed],\n  );\n  const seconds = (m.frame / m.fps) * speed;\n  const clock = m.frame / m.fps;\n  const largest = u(size);\n  const span = height + largest * 2;\n\n  return (\n    <AbsoluteFill\n      className={className}\n      style={{ background: background ?? theme.colors.background, overflow: \"hidden\", ...style }}\n    >\n      {discs.map((disc, i) => {\n        // Nearer discs are bigger, faster, dimmer and softer, like a real shallow depth of field.\n        const diameter = largest * (0.25 + 0.75 * disc.depth);\n        const rise = seconds * u(22 + 60 * disc.depth);\n        const top = ((((disc.y * span - rise) % span) + span) % span) - largest;\n        const left = disc.x * width + Math.sin(clock * (0.3 + 0.2 * disc.depth) + disc.phase) * u(24) - diameter / 2;\n        const color = palette[Math.floor(disc.pick * palette.length) % palette.length];\n        const k = intensity * m.presence * (1 - 0.45 * disc.depth) * (0.82 + 0.18 * Math.sin(clock * 0.8 + disc.phase));\n        const stop = (share: number) => alpha(color, clamp01(k * share));\n        const edge = 80 - 25 * disc.depth;\n        return (\n          <div\n            key={i}\n            style={{\n              position: \"absolute\",\n              left,\n              top,\n              width: diameter,\n              height: diameter,\n              background: `radial-gradient(circle closest-side, ${stop(0.6)} 0%, ${stop(0.75)} ${edge * 0.75}%, ${stop(0.9)} ${edge}%, ${stop(0)} 100%)`,\n            }}\n          />\n        );\n      })}\n    </AbsoluteFill>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/bokeh.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "sustained",
+    "use": [
+      "Warm, celebratory or lifestyle scenes: holidays, thank-yous, testimonials",
+      "A soft, cinematic backdrop behind quotes and names"
+    ],
+    "avoid": [
+      "Tiny pin-sharp points of light — use `starfield`"
+    ],
+    "tags": [
+      "bokeh",
+      "lights",
+      "blur",
+      "depth",
+      "particles"
+    ]
+  },
+  "docs": "Usage:\n\n<AbsoluteFill>\n  <Bokeh />\n  <Center><TextReveal text=\"Hello\" /></Center>\n</AbsoluteFill>",
+  "categories": [
+    "backgrounds"
+  ],
+  "type": "registry:item"
+}

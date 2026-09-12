@@ -1,0 +1,40 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "grain",
+  "title": "Grain",
+  "description": "Animated film-grain overlay from SVG noise that re-seeds every few frames; place it last, over anything.",
+  "dependencies": [
+    "remotion"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/grain.tsx",
+      "content": "/**\n * @title Grain\n * @category backgrounds\n * @description Animated film-grain overlay from SVG noise that re-seeds every few frames; place it last, over anything.\n * @duration sustained\n * @use A filmic, tactile finish over gradients, footage and flat color\n * @use Breaking up banding in dark gradients such as `gradient-mesh` or `aurora`\n * @tags grain, noise, film, texture, overlay\n * @example\n * <AbsoluteFill>\n *   <GradientMesh />\n *   <Center><TextReveal text=\"Hello\" /></Center>\n *   <Grain />\n * </AbsoluteFill>\n */\nimport type React from \"react\";\nimport { useId } from \"react\";\nimport { AbsoluteFill, useCurrentFrame } from \"remotion\";\nimport { useViewport } from \"./core\";\n\nexport type GrainProps = {\n  /** Overall strength, 0–1. */\n  opacity?: number;\n  /** How the grain combines with what is under it. `overlay` and `soft-light` suit mid-tone footage. */\n  blend?: React.CSSProperties[\"mixBlendMode\"];\n  /** Grain size in design units. */\n  size?: number;\n  /** Frames each grain pattern holds before re-seeding; 1 boils every frame. */\n  every?: number;\n  /** Starting seed; change it to get a different grain sequence. */\n  seed?: number;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\n// Luminance to all three channels with an opaque alpha: gray, not colored, noise.\nconst GRAY = \"0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0 0 0 0 1\";\n// fractalNoise clusters around mid-gray; stretch it so the grain spans dark to light.\nconst CONTRAST = { type: \"linear\", slope: 2.4, intercept: -0.7 } as const;\n\nexport function Grain({\n  opacity = 0.08,\n  blend = \"normal\",\n  size = 1.4,\n  every = 2,\n  seed = 0,\n  style,\n  className,\n}: GrainProps) {\n  const frame = useCurrentFrame();\n  const { u } = useViewport();\n  // useId output contains characters that break url(#...) references in some React versions.\n  const id = `reelcn-grain-${useId().replace(/[^a-zA-Z0-9_-]/g, \"\")}`;\n  const step = Math.floor(frame / Math.max(1, Math.round(every)));\n\n  return (\n    <AbsoluteFill\n      className={className}\n      style={{ pointerEvents: \"none\", opacity: Math.min(Math.max(opacity, 0), 1), mixBlendMode: blend, ...style }}\n    >\n      <svg width=\"100%\" height=\"100%\" aria-hidden=\"true\">\n        <filter id={id} x=\"0\" y=\"0\" width=\"100%\" height=\"100%\" colorInterpolationFilters=\"sRGB\">\n          <feTurbulence\n            type=\"fractalNoise\"\n            baseFrequency={0.7 / Math.max(u(size), 0.25)}\n            numOctaves={2}\n            seed={seed + step}\n            stitchTiles=\"stitch\"\n          />\n          <feColorMatrix type=\"matrix\" values={GRAY} />\n          <feComponentTransfer>\n            <feFuncR {...CONTRAST} />\n            <feFuncG {...CONTRAST} />\n            <feFuncB {...CONTRAST} />\n          </feComponentTransfer>\n        </filter>\n        <rect width=\"100%\" height=\"100%\" filter={`url(#${id})`} />\n      </svg>\n    </AbsoluteFill>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/grain.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "sustained",
+    "use": [
+      "A filmic, tactile finish over gradients, footage and flat color",
+      "Breaking up banding in dark gradients such as `gradient-mesh` or `aurora`"
+    ],
+    "avoid": [],
+    "tags": [
+      "grain",
+      "noise",
+      "film",
+      "texture",
+      "overlay"
+    ]
+  },
+  "docs": "Usage:\n\n<AbsoluteFill>\n  <GradientMesh />\n  <Center><TextReveal text=\"Hello\" /></Center>\n  <Grain />\n</AbsoluteFill>",
+  "categories": [
+    "backgrounds"
+  ],
+  "type": "registry:item"
+}

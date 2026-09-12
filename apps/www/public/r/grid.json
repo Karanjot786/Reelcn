@@ -1,0 +1,43 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "grid",
+  "title": "Grid",
+  "description": "Line grid that pans slowly, or a perspective floor that scrolls toward the viewer and fades into a glowing horizon.",
+  "dependencies": [
+    "remotion"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/grid.tsx",
+      "content": "/**\n * @title Grid\n * @category backgrounds\n * @description Line grid that pans slowly, or a perspective floor that scrolls toward the viewer and fades into a glowing horizon.\n * @duration sustained\n * @use Tech, developer and product scenes that want structure behind the content\n * @use Retro or futuristic openers with the perspective floor\n * @avoid A soft dotted texture — use `dots`\n * @tags grid, lines, blueprint, perspective, synthwave, floor\n * @example\n * <AbsoluteFill>\n *   <Grid perspective />\n *   <Center><TextReveal text=\"Hello\" /></Center>\n * </AbsoluteFill>\n */\nimport type React from \"react\";\nimport { AbsoluteFill } from \"remotion\";\nimport { alpha, type MotionProps, useMotion, useTheme, useViewport } from \"./core\";\n\nexport type GridProps = MotionProps & {\n  /** Base fill. Defaults to the theme background. */\n  background?: string;\n  /** Line color. Defaults to the theme border (flat) or a translucent accent (perspective). */\n  color?: string;\n  /** Draw a 3D floor receding to a horizon instead of a flat panning grid. */\n  perspective?: boolean;\n  /** Cell size in design units. Defaults to 80 flat, 110 in perspective. */\n  cell?: number;\n  /** Line width in design units. */\n  lineWidth?: number;\n  /** Horizon height as a share of the canvas height (perspective only). */\n  horizon?: number;\n  /** Glow along the horizon (perspective only). Defaults to the theme accent; pass \"transparent\" to remove it. */\n  glowColor?: string;\n  /** How strongly the grid fades toward the edges (flat) or into the horizon (perspective), 0–1. */\n  fade?: number;\n  /** Line opacity multiplier, 0–1. */\n  opacity?: number;\n  /** Pan or scroll speed multiplier. 0 holds the grid still. */\n  speed?: number;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\nconst clamp01 = (value: number) => Math.min(Math.max(value, 0), 1);\nconst n = (value: number) => value.toFixed(2);\n\n/** Share of the floor depth below which lines are dropped; the fog is fully opaque there, so nothing pops. */\nconst NEAREST_REL = 0.1;\n\nfunction flatPath(width: number, height: number, cellPx: number, seconds: number) {\n  // Lines stay centered on the canvas and drift diagonally by a fraction of a cell each second.\n  const shift = (seconds * 0.3 * cellPx) % cellPx;\n  const startX = ((width / 2 + shift) % cellPx) - cellPx;\n  const startY = ((height / 2 + shift * 0.6) % cellPx) - cellPx;\n  let d = \"\";\n  for (let x = startX; x <= width + cellPx; x += cellPx) d += `M${n(x)} 0V${n(height)}`;\n  for (let y = startY; y <= height + cellPx; y += cellPx) d += `M0 ${n(y)}H${n(width)}`;\n  return d;\n}\n\nfunction floorPath(width: number, height: number, cellPx: number, horizonY: number, seconds: number) {\n  // Pinhole projection of a flat floor: the bottom edge of the canvas is depth 0, the horizon is infinitely far.\n  const eye = height - horizonY;\n  const focal = eye;\n  const maxDepth = focal * (1 / NEAREST_REL - 1);\n  const phase = (seconds * 0.6) % 1;\n  const cx = width / 2;\n  let d = \"\";\n  for (let k = 0; ; k++) {\n    const z = (k - phase) * cellPx;\n    if (z > maxDepth) break;\n    if (z < 0) continue;\n    const y = horizonY + (eye * focal) / (focal + z);\n    d += `M0 ${n(y)}H${n(width)}`;\n  }\n  const columns = Math.ceil(width / 2 / NEAREST_REL / cellPx) + 1;\n  for (let j = -columns; j <= columns; j++) {\n    const x = j * cellPx;\n    d += `M${n(cx + x)} ${n(height)}L${n(cx + x * NEAREST_REL)} ${n(horizonY + eye * NEAREST_REL)}`;\n  }\n  return d;\n}\n\nexport function Grid({\n  background,\n  color,\n  perspective = false,\n  cell,\n  lineWidth = 2,\n  horizon = 0.5,\n  glowColor,\n  fade = 0.6,\n  opacity = 1,\n  speed = 1,\n  style,\n  className,\n  ...motion\n}: GridProps) {\n  const theme = useTheme();\n  const { width, height, u } = useViewport();\n  const m = useMotion(motion);\n  const base = background ?? theme.colors.background;\n  const seconds = (m.frame / m.fps) * speed;\n  const cellPx = Math.max(u(cell ?? (perspective ? 110 : 80)), 4);\n  const stroke = color ?? (perspective ? alpha(theme.colors.accent, 0.55) : theme.colors.border);\n  const lineOpacity = clamp01(opacity) * m.presence;\n\n  if (!perspective) {\n    const inner = (1 - clamp01(fade)) * 90;\n    const mask =\n      fade > 0 ? `radial-gradient(ellipse farthest-corner at 50% 50%, black ${inner}%, transparent 100%)` : undefined;\n    return (\n      <AbsoluteFill className={className} style={{ background: base, ...style }}>\n        <svg\n          width={width}\n          height={height}\n          aria-hidden=\"true\"\n          style={{ position: \"absolute\", inset: 0, WebkitMaskImage: mask, maskImage: mask }}\n        >\n          <path\n            d={flatPath(width, height, cellPx, seconds)}\n            fill=\"none\"\n            stroke={stroke}\n            strokeWidth={u(lineWidth)}\n            opacity={lineOpacity}\n          />\n        </svg>\n      </AbsoluteFill>\n    );\n  }\n\n  const horizonY = height * horizon;\n  const eye = height - horizonY;\n  // Fog in the background color hides the densest far lines; `fade` stretches it toward the viewer.\n  const fogEnd = 16 + clamp01(fade) * 44;\n  const glow = alpha(glowColor ?? theme.colors.accent, 0.3 * m.presence);\n\n  return (\n    <AbsoluteFill className={className} style={{ background: base, ...style }}>\n      <svg width={width} height={height} aria-hidden=\"true\" style={{ position: \"absolute\", inset: 0 }}>\n        <path\n          d={floorPath(width, height, cellPx, horizonY, seconds)}\n          fill=\"none\"\n          stroke={stroke}\n          strokeWidth={u(lineWidth)}\n          opacity={lineOpacity}\n        />\n      </svg>\n      <div\n        style={{\n          position: \"absolute\",\n          left: 0,\n          right: 0,\n          top: horizonY - 1,\n          height: eye + 1,\n          background: `linear-gradient(180deg, ${base} 0%, ${base} 14%, ${alpha(base, 0)} ${fogEnd}%)`,\n        }}\n      />\n      <AbsoluteFill\n        style={{\n          background: `radial-gradient(ellipse ${width * 0.55}px ${eye * 0.45}px at 50% ${horizonY}px, ${glow} 0%, ${alpha(glowColor ?? theme.colors.accent, 0)} 100%)`,\n        }}\n      />\n    </AbsoluteFill>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/grid.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "sustained",
+    "use": [
+      "Tech, developer and product scenes that want structure behind the content",
+      "Retro or futuristic openers with the perspective floor"
+    ],
+    "avoid": [
+      "A soft dotted texture — use `dots`"
+    ],
+    "tags": [
+      "grid",
+      "lines",
+      "blueprint",
+      "perspective",
+      "synthwave",
+      "floor"
+    ]
+  },
+  "docs": "Usage:\n\n<AbsoluteFill>\n  <Grid perspective />\n  <Center><TextReveal text=\"Hello\" /></Center>\n</AbsoluteFill>",
+  "categories": [
+    "backgrounds"
+  ],
+  "type": "registry:item"
+}

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "dots",
+  "title": "Dots",
+  "description": "Dot matrix with a soft wave of brighter, larger dots sweeping or rippling across it.",
+  "dependencies": [
+    "remotion"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/dots.tsx",
+      "content": "/**\n * @title Dots\n * @category backgrounds\n * @description Dot matrix with a soft wave of brighter, larger dots sweeping or rippling across it.\n * @duration sustained\n * @use Clean tech, SaaS and data scenes that want texture without lines\n * @use Behind charts, code blocks and UI mockups\n * @avoid A structured line pattern or a perspective floor — use `grid`\n * @tags dots, dot matrix, halftone, pattern, wave\n * @example\n * <AbsoluteFill>\n *   <Dots wave=\"ripple\" />\n *   <Center><TextReveal text=\"Hello\" /></Center>\n * </AbsoluteFill>\n */\nimport type React from \"react\";\nimport { AbsoluteFill } from \"remotion\";\nimport { alpha, type MotionProps, useMotion, useTheme, useViewport } from \"./core\";\n\nexport type DotsProps = MotionProps & {\n  /** Base fill. Defaults to the theme background. */\n  background?: string;\n  /** Resting dot color. Defaults to the theme foreground at low opacity. */\n  color?: string;\n  /** Dot color at the crest of the wave. Defaults to the theme accent. */\n  waveColor?: string;\n  /** Distance between dots in design units. */\n  spacing?: number;\n  /** Resting dot radius in design units; crest dots are about twice as large. */\n  size?: number;\n  /** `sweep` sends diagonal bands across the frame, `ripple` sends rings out from the center. */\n  wave?: \"sweep\" | \"ripple\" | \"none\";\n  /** Dot opacity multiplier, 0–1. */\n  intensity?: number;\n  /** How strongly dots fade toward the edges, 0–1. */\n  fade?: number;\n  /** Wave speed multiplier. */\n  speed?: number;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\nconst clamp01 = (value: number) => Math.min(Math.max(value, 0), 1);\n\nexport function Dots({\n  background,\n  color,\n  waveColor,\n  spacing = 40,\n  size = 2.5,\n  wave = \"sweep\",\n  intensity = 1,\n  fade = 0.6,\n  speed = 1,\n  style,\n  className,\n  ...motion\n}: DotsProps) {\n  const theme = useTheme();\n  const { width, height, u } = useViewport();\n  const m = useMotion(motion);\n  const base = background ?? theme.colors.background;\n  // Whole-pixel tiles: fractional background sizes drift against the device grid and show seams.\n  const tile = Math.max(Math.round(u(spacing)), 4);\n  const radius = Math.max(u(size), 0.75);\n  const soft = Math.max(u(1), 0.75);\n  const strength = clamp01(intensity) * m.presence;\n  // Put one dot exactly on the canvas center; the pattern repeats outward from there.\n  const offset = `${width / 2 - tile / 2}px ${height / 2 - tile / 2}px`;\n  const dotLayer = (fill: string, r: number): React.CSSProperties => ({\n    position: \"absolute\",\n    inset: 0,\n    backgroundImage: `radial-gradient(circle, ${fill} 0px, ${fill} ${r}px, ${alpha(fill, 0)} ${r + soft}px)`,\n    backgroundSize: `${tile}px ${tile}px`,\n    backgroundPosition: offset,\n  });\n\n  // The crest is a second, brighter dot layer revealed through a moving repeating mask.\n  const wavelength = u(720);\n  const travel = ((m.frame / m.fps) * speed * (wavelength / 3.2)) % wavelength;\n  const stops = [\n    `transparent ${travel}px`,\n    `transparent ${travel + wavelength * 0.3}px`,\n    `rgba(0,0,0,0.35) ${travel + wavelength * 0.4}px`,\n    `black ${travel + wavelength * 0.5}px`,\n    `rgba(0,0,0,0.35) ${travel + wavelength * 0.6}px`,\n    `transparent ${travel + wavelength * 0.7}px`,\n    `transparent ${travel + wavelength}px`,\n  ].join(\", \");\n  const crestMask =\n    wave === \"ripple\"\n      ? `repeating-radial-gradient(circle at 50% 50%, ${stops})`\n      : `repeating-linear-gradient(115deg, ${stops})`;\n  const inner = (1 - clamp01(fade)) * 90;\n\n  return (\n    <AbsoluteFill className={className} style={{ background: base, ...style }}>\n      <div style={{ ...dotLayer(color ?? alpha(theme.colors.foreground, 0.16), radius), opacity: strength }} />\n      {wave !== \"none\" && (\n        <div\n          style={{\n            ...dotLayer(waveColor ?? alpha(theme.colors.accent, 0.85), radius * 1.9),\n            opacity: strength,\n            WebkitMaskImage: crestMask,\n            maskImage: crestMask,\n          }}\n        />\n      )}\n      {fade > 0 && (\n        <AbsoluteFill\n          style={{\n            background: `radial-gradient(ellipse farthest-corner at 50% 50%, ${alpha(base, 0)} ${inner}%, ${base} 100%)`,\n          }}\n        />\n      )}\n    </AbsoluteFill>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/dots.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "sustained",
+    "use": [
+      "Clean tech, SaaS and data scenes that want texture without lines",
+      "Behind charts, code blocks and UI mockups"
+    ],
+    "avoid": [
+      "A structured line pattern or a perspective floor — use `grid`"
+    ],
+    "tags": [
+      "dots",
+      "dot matrix",
+      "halftone",
+      "pattern",
+      "wave"
+    ]
+  },
+  "docs": "Usage:\n\n<AbsoluteFill>\n  <Dots wave=\"ripple\" />\n  <Center><TextReveal text=\"Hello\" /></Center>\n</AbsoluteFill>",
+  "categories": [
+    "backgrounds"
+  ],
+  "type": "registry:item"
+}

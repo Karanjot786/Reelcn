@@ -1,0 +1,42 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "brand-solid",
+  "title": "Brand Solid",
+  "description": "Theme background with a slow, breathing radial tint of the accent color for clean brand scenes.",
+  "dependencies": [
+    "remotion"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/brand-solid.tsx",
+      "content": "/**\n * @title Brand Solid\n * @category backgrounds\n * @description Theme background with a slow, breathing radial tint of the accent color for clean brand scenes.\n * @duration sustained\n * @use Title cards, logo reveals and end screens that need a calm, on-brand canvas\n * @use Text-heavy scenes where a busier background would compete with the words\n * @avoid Scenes that need visible movement behind them — use `gradient-mesh`\n * @tags solid, brand, tint, minimal, calm\n * @example\n * <AbsoluteFill>\n *   <BrandSolid />\n *   <Center><TextReveal text=\"Hello\" /></Center>\n * </AbsoluteFill>\n */\nimport type React from \"react\";\nimport { AbsoluteFill } from \"remotion\";\nimport { alpha, type MotionProps, useMotion, useTheme, useViewport } from \"./core\";\n\nexport type BrandSolidProps = MotionProps & {\n  /** Base fill. Defaults to the theme background. */\n  background?: string;\n  /** Tint color. Defaults to the theme accent. */\n  color?: string;\n  /** Peak tint opacity, 0–1. */\n  intensity?: number;\n  /** Tint center as fractions of the canvas (0–1). */\n  position?: { x: number; y: number };\n  /** One breath takes 6 seconds at speed 1. */\n  speed?: number;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\nconst clamp01 = (value: number) => Math.min(Math.max(value, 0), 1);\n\nexport function BrandSolid({\n  background,\n  color,\n  intensity = 0.22,\n  position = { x: 0.5, y: 0.6 },\n  speed = 1,\n  style,\n  className,\n  ...motion\n}: BrandSolidProps) {\n  const theme = useTheme();\n  const { width, height } = useViewport();\n  const m = useMotion(motion);\n  const tint = color ?? theme.colors.accent;\n  const seconds = (m.frame / m.fps) * speed;\n  // Starts at the bottom of a breath so the entrance and the first inhale read as one gesture.\n  const breath = 0.5 - 0.5 * Math.cos((seconds / 6) * Math.PI * 2);\n  const strength = intensity * m.presence * (0.7 + 0.3 * breath);\n  const radius = Math.max(width, height) * (0.55 + 0.06 * breath);\n  const at = `${position.x * 100}% ${position.y * 100}%`;\n  const stop = (share: number) => alpha(tint, clamp01(strength * share));\n\n  return (\n    <AbsoluteFill\n      className={className}\n      style={{\n        backgroundColor: background ?? theme.colors.background,\n        backgroundImage: `radial-gradient(circle ${radius}px at ${at}, ${stop(1)} 0%, ${stop(0.62)} 30%, ${stop(0.25)} 62%, ${stop(0.06)} 85%, ${stop(0)} 100%)`,\n        ...style,\n      }}\n    />\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/brand-solid.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "sustained",
+    "use": [
+      "Title cards, logo reveals and end screens that need a calm, on-brand canvas",
+      "Text-heavy scenes where a busier background would compete with the words"
+    ],
+    "avoid": [
+      "Scenes that need visible movement behind them — use `gradient-mesh`"
+    ],
+    "tags": [
+      "solid",
+      "brand",
+      "tint",
+      "minimal",
+      "calm"
+    ]
+  },
+  "docs": "Usage:\n\n<AbsoluteFill>\n  <BrandSolid />\n  <Center><TextReveal text=\"Hello\" /></Center>\n</AbsoluteFill>",
+  "categories": [
+    "backgrounds"
+  ],
+  "type": "registry:item"
+}

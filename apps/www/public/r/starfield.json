@@ -1,0 +1,42 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "starfield",
+  "title": "Starfield",
+  "description": "Seeded field of twinkling stars that drifts sideways with depth parallax or flies slowly toward the viewer.",
+  "dependencies": [
+    "remotion"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/starfield.tsx",
+      "content": "/**\n * @title Starfield\n * @category backgrounds\n * @description Seeded field of twinkling stars that drifts sideways with depth parallax or flies slowly toward the viewer.\n * @duration sustained\n * @use Space, AI and \"big idea\" openers, countdowns and launch intros\n * @use A dark, quiet backdrop with a sense of depth\n * @avoid Large soft out-of-focus discs — use `bokeh`\n * @tags stars, space, night, parallax, particles\n * @example\n * <AbsoluteFill>\n *   <Starfield travel=\"toward\" />\n *   <Center><TextReveal text=\"Hello\" /></Center>\n * </AbsoluteFill>\n */\nimport type React from \"react\";\nimport { useMemo } from \"react\";\nimport { AbsoluteFill, random } from \"remotion\";\nimport { type MotionProps, useMotion, useTheme, useViewport } from \"./core\";\n\nexport type StarfieldProps = MotionProps & {\n  /** Base fill. Defaults to the theme background. */\n  background?: string;\n  /** Star color. Defaults to the theme foreground. */\n  color?: string;\n  /** Color for roughly one star in eight. Defaults to the theme accent. */\n  accentColor?: string;\n  count?: number;\n  /** `across` drifts sideways with parallax, `toward` flies slowly into the field. */\n  travel?: \"across\" | \"toward\";\n  /** Largest star radius in design units. */\n  size?: number;\n  /** Star opacity multiplier, 0–1. */\n  intensity?: number;\n  /** Twinkle depth, 0–1. 0 keeps every star steady. */\n  twinkle?: number;\n  /** Same seed, same sky. */\n  seed?: number | string;\n  /** Travel speed multiplier. Twinkle keeps its own pace, so 0 gives a still, twinkling sky. */\n  speed?: number;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\n/** Far and near limits of a star's depth cycle in `toward` mode. */\nconst FAR = 1.15;\nconst NEAR = 0.15;\n\nconst clamp01 = (value: number) => Math.min(Math.max(value, 0), 1);\n\nexport function Starfield({\n  background,\n  color,\n  accentColor,\n  count = 180,\n  travel = \"across\",\n  size = 3,\n  intensity = 1,\n  twinkle = 0.35,\n  seed = 1,\n  speed = 1,\n  style,\n  className,\n  ...motion\n}: StarfieldProps) {\n  const theme = useTheme();\n  const { width, height, u } = useViewport();\n  const m = useMotion(motion);\n  const stars = useMemo(\n    () =>\n      Array.from({ length: Math.max(0, Math.round(count)) }, (_, i) => ({\n        x: random(`${seed}-x-${i}`),\n        y: random(`${seed}-y-${i}`),\n        depth: random(`${seed}-z-${i}`),\n        phase: random(`${seed}-p-${i}`) * Math.PI * 2,\n        rate: 0.8 + random(`${seed}-r-${i}`) * 1.6,\n        tinted: random(`${seed}-c-${i}`) < 0.12,\n      })),\n    [count, seed],\n  );\n  const clock = m.frame / m.fps;\n  const seconds = clock * speed;\n  const maxRadius = u(size);\n  const margin = maxRadius * 4;\n  const star = color ?? theme.colors.foreground;\n  const tint = accentColor ?? theme.colors.accent;\n  const reach = Math.max(width, height) * 0.22;\n\n  return (\n    <AbsoluteFill className={className} style={{ background: background ?? theme.colors.background, ...style }}>\n      <svg width={width} height={height} aria-hidden=\"true\" style={{ position: \"absolute\", inset: 0 }}>\n        {stars.map((s, i) => {\n          const shimmer = 1 - clamp01(twinkle) * (0.5 + 0.5 * Math.sin(clock * s.rate * 2 + s.phase));\n          let cx: number;\n          let cy: number;\n          let r: number;\n          let visible: number;\n          if (travel === \"toward\") {\n            // Each star loops from far to near; projection spreads it outward and grows it as it approaches.\n            const cycle = (((s.depth - seconds * 0.08) % 1) + 1) % 1;\n            const z = NEAR + cycle * (FAR - NEAR);\n            const spreadX = (s.x * 2 - 1) * reach;\n            const spreadY = (s.y * 2 - 1) * reach;\n            cx = width / 2 + spreadX / z;\n            cy = height / 2 + spreadY / z;\n            r = Math.min(maxRadius * 0.35 * (1 / z), maxRadius * 1.4);\n            // Fade in from the far end and out at the near end so wrapping never pops.\n            visible = clamp01((FAR - z) / 0.25) * clamp01((z - NEAR) / 0.15);\n          } else {\n            const near = 0.25 + 0.75 * s.depth;\n            const span = width + margin * 2;\n            const drift = seconds * u(30) * near;\n            cx = ((((s.x * span - drift) % span) + span) % span) - margin;\n            cy = s.y * height;\n            r = maxRadius * (0.3 + 0.7 * near * near);\n            visible = 0.35 + 0.65 * near;\n          }\n          return (\n            <circle\n              key={i}\n              cx={cx}\n              cy={cy}\n              r={Math.max(r, 0.5)}\n              fill={s.tinted ? tint : star}\n              opacity={clamp01(intensity) * visible * shimmer * m.presence}\n            />\n          );\n        })}\n      </svg>\n    </AbsoluteFill>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/starfield.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "sustained",
+    "use": [
+      "Space, AI and \"big idea\" openers, countdowns and launch intros",
+      "A dark, quiet backdrop with a sense of depth"
+    ],
+    "avoid": [
+      "Large soft out-of-focus discs — use `bokeh`"
+    ],
+    "tags": [
+      "stars",
+      "space",
+      "night",
+      "parallax",
+      "particles"
+    ]
+  },
+  "docs": "Usage:\n\n<AbsoluteFill>\n  <Starfield travel=\"toward\" />\n  <Center><TextReveal text=\"Hello\" /></Center>\n</AbsoluteFill>",
+  "categories": [
+    "backgrounds"
+  ],
+  "type": "registry:item"
+}
