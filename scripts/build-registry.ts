@@ -3,7 +3,6 @@
 import { execFileSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 
 export const CATEGORIES = [
   "lib",
@@ -211,5 +210,6 @@ function main() {
   console.log(`built ${items.length} items for ${base}`);
 }
 
-// Importing this file (the unit tests do) must not run the build.
-if (process.argv[1] === fileURLToPath(import.meta.url)) main();
+// Importing this file (the unit tests do) must not run the build. import.meta.main, unlike comparing
+// process.argv[1] to the module URL, is still true when the script is run through a symlinked path.
+if (import.meta.main) main();

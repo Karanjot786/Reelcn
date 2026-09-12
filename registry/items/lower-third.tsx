@@ -21,7 +21,16 @@ export type LowerThirdProps = MotionProps & {
   variant?: "bar" | "card" | "minimal";
   /** Defaults to `left`, or `center` in portrait. */
   align?: "left" | "center" | "right";
-  accent?: string;
+  /** Name color. Defaults to the theme foreground. */
+  color?: string;
+  /** Title color. Defaults to the theme muted color. */
+  mutedColor?: string;
+  /** Bar and rule color. Defaults to the theme accent. */
+  accentColor?: string;
+  /** Card fill for the `card` variant. Defaults to the theme surface. */
+  background?: string;
+  /** Card border for the `card` variant. Defaults to the theme border. */
+  borderColor?: string;
   style?: React.CSSProperties;
   className?: string;
 };
@@ -39,7 +48,11 @@ export function LowerThird({
   title,
   variant = "bar",
   align,
-  accent,
+  color,
+  mutedColor,
+  accentColor,
+  background,
+  borderColor,
   style,
   className,
   ...motion
@@ -48,7 +61,7 @@ export function LowerThird({
   const { u, safe, isPortrait } = useViewport();
   const m = useMotion(motion);
   const side = align ?? (isPortrait ? "center" : "left");
-  const accentColor = accent ?? theme.colors.accent;
+  const accent = accentColor ?? theme.colors.accent;
   const at = (offset: number) =>
     tween(m.frame, m.fps, { from: m.delay + m.enterFrames * offset, duration: m.enterFrames, motion: m.preset });
   const lineProgress = at(0);
@@ -65,6 +78,7 @@ export function LowerThird({
         justifyContent: "flex-end",
         alignItems: side === "left" ? "flex-start" : side === "right" ? "flex-end" : "center",
         padding: `0 ${safe.x}px ${safe.bottom}px`,
+        fontFamily: theme.fonts.body,
         ...style,
       }}
     >
@@ -78,8 +92,8 @@ export function LowerThird({
           opacity: 1 - m.exit,
           translate: `${(side === "right" ? 1 : -1) * m.exit * u(40)}px 0`,
           ...(variant === "card" && {
-            background: alpha(theme.colors.surface, 0.92),
-            border: `1px solid ${theme.colors.border}`,
+            background: background ?? alpha(theme.colors.surface, 0.92),
+            border: `1px solid ${borderColor ?? theme.colors.border}`,
             borderRadius: radiusPx,
             padding: `${u(24)}px ${u(34)}px`,
             boxShadow: `0 ${u(18)}px ${u(54)}px ${alpha("#000000", 0.3)}`,
@@ -92,7 +106,7 @@ export function LowerThird({
             style={{
               width: u(8),
               borderRadius: u(4),
-              background: accentColor,
+              background: accent,
               scale: `1 ${Math.min(lineProgress, 1)}`,
               transformOrigin: "bottom",
             }}
@@ -107,7 +121,7 @@ export function LowerThird({
                 fontSize: u(isPortrait ? 64 : 56),
                 lineHeight: 1.1,
                 letterSpacing: "-0.02em",
-                color: theme.colors.foreground,
+                color: color ?? theme.colors.foreground,
                 translate: `0 ${(1 - nameProgress) * 110}%`,
               }}
             >
@@ -118,7 +132,7 @@ export function LowerThird({
             <div
               style={{
                 fontSize: u(isPortrait ? 34 : 30),
-                color: theme.colors.muted,
+                color: mutedColor ?? theme.colors.muted,
                 marginTop: u(6),
                 opacity: Math.min(Math.max(titleProgress, 0), 1),
                 translate: `0 ${(1 - titleProgress) * u(16)}px`,
@@ -132,7 +146,7 @@ export function LowerThird({
               style={{
                 height: u(5),
                 borderRadius: u(3),
-                background: accentColor,
+                background: accent,
                 marginTop: u(14),
                 scale: `${Math.min(lineProgress, 1)} 1`,
                 transformOrigin: side === "right" ? "right" : side === "center" ? "center" : "left",
