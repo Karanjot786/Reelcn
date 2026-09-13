@@ -15,7 +15,7 @@
     "test": "node --test \"scripts/*.test.ts\" \"apps/www/lib/*.test.ts\"",
     "test:self": "pnpm --filter @reelcn/studio exec remotion still src/index.ts self-test ../../out/self-test.png --log=error",
     "registry:build": "node scripts/build-registry.ts",
-    "check:drift": "test -z \"$(git status --porcelain -- registry.json apps/www/public)\" || (echo 'Generated files differ from the commit. Run pnpm registry:build and commit the result:' && git status --porcelain -- registry.json apps/www/public && exit 1)",
+    "check:drift": "test -z \"$(git status --porcelain -- registry.json apps/www/public README.md skills)\" || (echo 'Generated files differ from the commit. Run pnpm registry:build and commit the result:' && git status --porcelain -- registry.json apps/www/public README.md skills && exit 1)",
     "stills": "node scripts/stills.ts",
     "thumbs": "node scripts/thumbs.ts",
     "demo-audio": "node scripts/demo-audio.ts",

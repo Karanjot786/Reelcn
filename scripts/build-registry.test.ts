@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { parseHeader, parseImports, themeNamesFromSource } from "./build-registry.ts";
+import { parseHeader, parseImports, replaceBlock, themeNamesFromSource } from "./build-registry.ts";
 
 const source = `/**
  * @title Text Reveal
@@ -117,4 +117,12 @@ export const x = 1;
 `;
   assert.deepEqual(parseHeader(tool, "transcribe.ts").env, ["OPENAI_API_KEY"]);
   assert.deepEqual(parseHeader(source, "text-reveal.tsx").env, []);
+});
+
+test("replaceBlock swaps the text between named markers and keeps everything else", () => {
+  const readme = "# Title\n<!-- install:start -->\nold\n<!-- install:end -->\ntail\n";
+  const once = replaceBlock(readme, "install", "new line");
+  assert.equal(once, "# Title\n<!-- install:start -->\nnew line\n<!-- install:end -->\ntail\n");
+  assert.equal(replaceBlock(once, "install", "new line"), once);
+  assert.throws(() => replaceBlock("# no markers", "install", "x"), /install:start/);
 });
