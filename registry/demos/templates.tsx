@@ -19,6 +19,7 @@ import { YoutubeIntro, youtubeIntroDefaults, youtubeIntroStory } from "../items/
 import { YOUTUBE_OUTRO_FRAMES, YoutubeOutro, youtubeOutroDefaults } from "../items/youtube-outro";
 import { captionFixture } from "./captions-fixture";
 import type { Demo } from "./index";
+import { sceneMarks } from "./scene-marks";
 import { sampleStory, sceneTour } from "./story-samples";
 
 const storyboardDemos: Demo[] = [
@@ -26,6 +27,7 @@ const storyboardDemos: Demo[] = [
     id: "storyboard",
     duration: storyFrames(sampleStory),
     bare: true,
+    scenes: sceneMarks(sampleStory),
     component: () => <Storyboard story={sampleStory} />,
   },
   ...sceneTour.map(
@@ -33,6 +35,7 @@ const storyboardDemos: Demo[] = [
       id: `storyboard-tour-${index + 1}`,
       duration: storyFrames(story),
       bare: true,
+      scenes: sceneMarks(story),
       component: () => <Storyboard story={story} />,
     }),
   ),
@@ -45,7 +48,14 @@ function storyDemo<P extends object>(
   toStory: (props: P) => Story,
   props: P,
 ): Demo {
-  return { id, duration: storyFrames(toStory(props)), bare: true, component: () => <Template {...props} /> };
+  const story = toStory(props);
+  return {
+    id,
+    duration: storyFrames(story),
+    bare: true,
+    scenes: sceneMarks(story),
+    component: () => <Template {...props} />,
+  };
 }
 
 const productDemos: Demo[] = [

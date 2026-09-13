@@ -5,6 +5,7 @@ import data from "./data";
 import motion from "./motion";
 import overlays from "./overlays";
 import product from "./product";
+import type { SceneMark } from "./scene-marks";
 import social from "./social";
 import templates from "./templates";
 import text from "./text";
@@ -21,6 +22,8 @@ export type Demo = {
   bare?: boolean;
   /** Frame the thumbnail script stills instead of the midpoint, for demos whose midpoint is a blank/solid frame. */
   thumbFrame?: number;
+  /** Scene starts for story-built demos; the site marks them on its scrubber. */
+  scenes?: SceneMark[];
 };
 
 // Each category adds one entry. Tasks 3-5 and later plans extend this map.
