@@ -5,6 +5,7 @@
       "**",
       "!**/node_modules",
       "!out",
+      "!docs",
       "!apps/www/public/r",
       "!registry.json",
       "!**/.next",

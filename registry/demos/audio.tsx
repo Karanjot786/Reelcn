@@ -46,7 +46,7 @@ export default [
     component: () => (
       <Center>
         {/* biome-ignore lint/a11y/useValidAriaRole: SpeakerCardProps.role is a job title, not an ARIA role */}
-        <SpeakerCard src={voice} name="Ada Lovelace" role="Founder, Analytical Engines" />
+        <SpeakerCard src={voice} name="Maya Chen" role="Founder, Northwind" />
       </Center>
     ),
   },

@@ -2,20 +2,46 @@
 @import "fumadocs-ui/css/neutral.css";
 @import "fumadocs-ui/css/preset.css";
 
-/* Contact-sheet tokens (site spec §3). */
+/* Editing-suite tokens (Plan 7), from assets/reelcn-07/tokens.css. Fonts come from next/font. */
 :root {
-  --paper: #e4e5e1;
-  --paper-2: #d9dad5;
-  --well: #d5d7d2;
-  --ink: #1b1d1c;
-  --muted: #3d403e;
-  --rule: #b9bbb6;
-  --film: #0a0a0a;
-  --sprocket: #c9cbc6;
-  --grease: #d7262f;
-  --edge: #c98a2b;
+  --bg: #0a0b0d;
+  --panel: #111316;
+  --panel2: #171a1e;
+  --panel3: #1d2126;
+  --line: #24272d;
+  --line2: #1b1e23;
+  --text: #edeef0;
+  --muted: #9097a1;
+  --dim: #7a818b;
+  --play: #ffb224;
+  --play-soft: rgba(255, 178, 36, 0.14);
+  --sel: #7c9cff;
+  --keeper: #f0484e;
+  --r1: 4px;
+  --r2: 8px;
+  --r3: 12px;
+  --r4: 16px;
+  --e-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --t1: 150ms;
+  --t2: 240ms;
+  --t3: 320ms;
+  --display: var(--font-display), "Arial Narrow", system-ui, sans-serif;
+  --sans: var(--font-sans), system-ui, -apple-system, sans-serif;
+  --mono: var(--font-mono), ui-monospace, Menlo, monospace;
+  color-scheme: dark;
 
-  /* Motion tokens (site spec §5). Enter uses the same curve as reelcn's `smooth` preset. */
+  /* ponytail: old contact-sheet names alias the new tokens, so copy-command, catalog-tile and not-found keep working untouched. */
+  --paper: var(--bg);
+  --paper-2: var(--panel);
+  --well: var(--panel2);
+  --ink: var(--text);
+  --rule: var(--line);
+  --film: #000;
+  --sprocket: var(--dim);
+  --grease: var(--play);
+  --edge: var(--play);
+
+  /* Motion tokens (site spec §5), still read by existing CSS. */
   --dur-1: 120ms;
   --dur-2: 200ms;
   --dur-3: 320ms;
@@ -23,19 +49,6 @@
   --dur-5: 900ms;
   --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-draw: cubic-bezier(0.55, 0, 0.45, 1);
-}
-
-.dark {
-  --paper: #161716;
-  --paper-2: #1e1f1e;
-  --well: #262826;
-  --ink: #e6e7e3;
-  --muted: #a3a7a2;
-  --rule: #3a3c3a;
-  --film: #000000;
-  --sprocket: #5a5c5a;
-  --grease: #f0444b;
-  --edge: #d9a04a;
 }
 
 /* Fumadocs reads these, so the docs and the landing share one palette.
@@ -53,8 +66,8 @@
   --color-fd-popover: var(--paper-2);
   --color-fd-popover-foreground: var(--ink);
   --color-fd-border: var(--rule);
-  --color-fd-primary: var(--ink);
-  --color-fd-primary-foreground: var(--paper);
+  --color-fd-primary: var(--play);
+  --color-fd-primary-foreground: var(--bg);
   --color-fd-secondary: var(--well);
   --color-fd-secondary-foreground: var(--ink);
   --color-fd-accent: var(--well);
@@ -72,7 +85,10 @@ html > body[data-scroll-locked] {
 }
 
 body {
-  font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
 }
 
 :focus-visible {

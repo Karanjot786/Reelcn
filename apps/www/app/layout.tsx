@@ -1,11 +1,12 @@
 import { RootProvider } from "fumadocs-ui/provider/next";
 import type { Metadata } from "next";
-import { Archivo, Caveat } from "next/font/google";
+import { IBM_Plex_Mono, IBM_Plex_Sans, IBM_Plex_Sans_Condensed } from "next/font/google";
 import { SITE_URL } from "@/lib/registry";
 import "./global.css";
 
-const archivo = Archivo({ subsets: ["latin"], axes: ["wdth"], variable: "--font-archivo" });
-const caveat = Caveat({ subsets: ["latin"], weight: "600", variable: "--font-caveat" });
+const sans = IBM_Plex_Sans({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-sans" });
+const display = IBM_Plex_Sans_Condensed({ subsets: ["latin"], weight: ["500", "600"], variable: "--font-display" });
+const mono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-mono" });
 
 export const metadata: Metadata = {
   // Makes og:image absolute. SITE_URL is registry.json's homepage (https://www.reelcn.dev after Task 12).
@@ -19,9 +20,11 @@ export const metadata: Metadata = {
 
 export default function Layout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${archivo.variable} ${caveat.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`dark ${sans.variable} ${display.variable} ${mono.variable}`} suppressHydrationWarning>
       <body className="flex min-h-screen flex-col">
-        <RootProvider search={{ options: { type: "static" } }}>{children}</RootProvider>
+        <RootProvider theme={{ defaultTheme: "dark", forcedTheme: "dark" }} search={{ options: { type: "static" } }}>
+          {children}
+        </RootProvider>
       </body>
     </html>
   );

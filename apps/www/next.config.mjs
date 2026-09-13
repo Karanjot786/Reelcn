@@ -5,6 +5,7 @@ const withMDX = createMDX();
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
+  agentRules: false,
   // Registry items ship as TypeScript source; the site compiles them like its own files.
   transpilePackages: ["@reelcn/registry"],
 };

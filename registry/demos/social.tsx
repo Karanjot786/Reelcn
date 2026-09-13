@@ -17,7 +17,7 @@ const lowerThirdDemos: Demo[] = (["bar", "card", "minimal"] as const).map(
   (variant): Demo => ({
     id: `lower-third-${variant}`,
     duration: 90,
-    component: () => <LowerThird name="Ada Lovelace" title="Founder, Analytical Engines" variant={variant} />,
+    component: () => <LowerThird name="Maya Chen" title="Founder, Northwind" variant={variant} />,
   }),
 );
 
@@ -66,8 +66,8 @@ const socialDemos: Demo[] = [
     component: () => (
       <Center>
         <PostCard
-          name="Ada Lovelace"
-          handle="@ada"
+          name="Maya Chen"
+          handle="@mayachen"
           time="2h"
           text="Shipped the first render pipeline today. One timeline, three formats, no re-cuts."
           metrics={{ likes: 1248, comments: 86, shares: 210 }}
@@ -110,7 +110,7 @@ const socialDemos: Demo[] = [
     duration: 110,
     component: () => (
       <Center>
-        <FollowCard name="Ada Lovelace" handle="@ada" followers="24.8k" />
+        <FollowCard name="Maya Chen" handle="@mayachen" followers="24.8k" />
       </Center>
     ),
   },
