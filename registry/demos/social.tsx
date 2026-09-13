@@ -80,6 +80,7 @@ const socialDemos: Demo[] = [
     duration: 110,
     component: () => (
       <Center>
+        {/* biome-ignore lint/a11y/useValidAriaRole: role is QuoteCard's job-title prop, not an ARIA role */}
         <QuoteCard
           quote="We cut a week of editing down to an afternoon."
           name="Grace Hopper"
