@@ -23,6 +23,8 @@ jobs:
         run: pnpm typecheck:user
       - run: pnpm lint
       - run: pnpm test
+      - name: Sound effects are CC0 and listed
+        run: pnpm sfx:check
       - run: pnpm registry:build
       - name: Generated files must be committed
         run: pnpm check:drift

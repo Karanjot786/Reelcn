@@ -19,6 +19,8 @@
     "stills": "node scripts/stills.ts",
     "thumbs": "node scripts/thumbs.ts",
     "demo-audio": "node scripts/demo-audio.ts",
+    "sfx:build": "node scripts/sfx-build.ts",
+    "sfx:check": "node scripts/check-sfx-licenses.ts",
     "e2e": "node scripts/e2e.ts"
   },
   "devDependencies": {
