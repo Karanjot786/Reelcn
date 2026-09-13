@@ -31,5 +31,9 @@ for (const name of names) {
 }
 
 const source = readFileSync(ITEM, "utf8");
-writeFileSync(ITEM, source.replace("export const SFX_LOCAL = false;", "export const SFX_LOCAL = true;"));
+const flag = "export const SFX_LOCAL: boolean = false;";
+if (!source.includes(flag)) {
+  throw new Error(`expected to find "${flag}" in ${ITEM} — is the sfx item installed and unmodified?`);
+}
+writeFileSync(ITEM, source.replace(flag, "export const SFX_LOCAL: boolean = true;"));
 console.log(`${names.length} sounds in ${OUT}; SFX_LOCAL is now true, so renders read them from disk.`);
