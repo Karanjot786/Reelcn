@@ -18,6 +18,7 @@
     "check:drift": "test -z \"$(git status --porcelain -- registry.json apps/www/public)\" || (echo 'Generated files differ from the commit. Run pnpm registry:build and commit the result:' && git status --porcelain -- registry.json apps/www/public && exit 1)",
     "stills": "node scripts/stills.ts",
     "thumbs": "node scripts/thumbs.ts",
+    "demo-audio": "node scripts/demo-audio.ts",
     "e2e": "node scripts/e2e.ts"
   },
   "devDependencies": {
