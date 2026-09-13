@@ -6,6 +6,7 @@ import { propsTable } from "./props-table.ts";
 
 const repoRoot = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
 const ITEM_PATH = path.join(repoRoot, "registry/items/lower-third.tsx");
+const TOOL_PATH = path.join(repoRoot, "registry/tools/sfx-pull.ts");
 
 test("propsTable reads name, type, required, default and JSDoc from LowerThirdProps", () => {
   const rows = propsTable(ITEM_PATH);
@@ -27,4 +28,8 @@ test("propsTable reads name, type, required, default and JSDoc from LowerThirdPr
   // because `LowerThirdProps = MotionProps & { ... }` is an intersection.
   const delay = byName.get("delay");
   assert.match(delay?.description ?? "", /Frames to wait/);
+});
+
+test("propsTable returns an empty array for a tools file, which has no <Name>Props alias", () => {
+  assert.deepEqual(propsTable(TOOL_PATH), []);
 });

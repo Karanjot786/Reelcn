@@ -17,18 +17,20 @@ const COMPILER_OPTIONS: ts.CompilerOptions = {
 };
 
 type Compiled = { program: ts.Program; checker: ts.TypeChecker };
-let cached: Compiled | undefined;
+// One `ts.Program` per source directory, built once each so every item page in that directory
+// (registry/items or registry/tools) shares one type-check.
+const cached = new Map<string, Compiled>();
 
-/** One `ts.Program` over every item file in `dir`, built once so 81 item pages share one type-check.
- * ponytail: cached once, not per directory — every caller passes a file in registry/items. */
 function compile(dir: string): Compiled {
-  if (cached) return cached;
+  const hit = cached.get(dir);
+  if (hit) return hit;
   const files = readdirSync(dir)
     .filter((file) => /\.tsx?$/.test(file))
     .map((file) => path.join(dir, file));
   const program = ts.createProgram(files, COMPILER_OPTIONS);
-  cached = { program, checker: program.getTypeChecker() };
-  return cached;
+  const compiled = { program, checker: program.getTypeChecker() };
+  cached.set(dir, compiled);
+  return compiled;
 }
 
 /** `{ prop = default }` on the file's top-level function declaration's first (destructured) parameter. */
