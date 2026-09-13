@@ -80,8 +80,9 @@ export function categoryOf(item: Item): string {
   return item.categories[0];
 }
 
+// ponytail: lib and tools items ship no demo; rename to hasNoDemo if a third category ever needs it
 export function isLib(item: Item): boolean {
-  return categoryOf(item) === "lib";
+  return categoryOf(item) === "lib" || categoryOf(item) === "tools";
 }
 
 export const categories: Category[] = categoryOrder.map((id) => ({
