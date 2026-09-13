@@ -14,6 +14,7 @@ const fixed: Job[] = [
   ...[1, 12, 23, 34, 45, 55].map((frame, i) => ({ id: "lower-third-bar-9x16", out: `hero-l${i + 1}`, frame })),
   ...["16x9", "9x16", "1x1"].map((format) => ({ id: `lower-third-card-${format}`, out: `fmt-${format}` })),
   ...themeNamesFromSource().map((theme) => ({ id: "text-reveal-blur-16x9", out: `theme-${theme}`, frame: 28, theme })),
+  { id: "product-launch-16x9", out: "hero-launch", frame: 40 },
 ];
 
 rmSync(OUT, { recursive: true, force: true });

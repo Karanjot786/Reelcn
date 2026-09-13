@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { FilmStrip } from "@/components/film-strip";
-import "./landing.css";
+import "./not-found.css";
 
 // Blank leader: four unexposed frames, the third circled.
 const leader = [{}, {}, {}, {}];
