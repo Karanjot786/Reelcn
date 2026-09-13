@@ -1,0 +1,43 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "changelog",
+  "title": "Changelog",
+  "description": "Release video listing what is new, improved and fixed in a version, three changes per card set.",
+  "dependencies": [
+    "zod"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/story.json",
+    "http://localhost:3000/r/storyboard.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/changelog.tsx",
+      "content": "/**\n * @title Changelog\n * @category templates\n * @description Release video listing what is new, improved and fixed in a version, three changes per card set.\n * @duration data-driven\n * @use Monthly or per-release update videos\n * @use Turning a changelog page into something people watch\n * @avoid A whole product story — use `product-launch`\n * @tags changelog, release, updates, product, template\n * @example\n * <Composition\n *   id=\"Changelog\"\n *   component={Changelog}\n *   schema={changelogSchema}\n *   defaultProps={changelogDefaults}\n *   calculateMetadata={changelogMetadata}\n *   width={1920}\n *   height={1080}\n *   fps={30}\n *   durationInFrames={1}\n * />\n */\nimport { z } from \"zod\";\nimport type { Scene, Story } from \"./story\";\nimport { chunk, Storyboard, templateMetadata, templateSchema, templateStory } from \"./storyboard\";\n\nconst LABELS = { new: \"New\", improved: \"Improved\", fixed: \"Fixed\" } as const;\n\nexport const changelogSchema = templateSchema.extend({\n  version: z.string(),\n  date: z.string(),\n  items: z.array(z.object({ type: z.enum([\"new\", \"improved\", \"fixed\"]), text: z.string() })).min(1),\n  url: z.string().optional(),\n});\n\nexport type ChangelogProps = z.infer<typeof changelogSchema>;\n\nexport const changelogDefaults: ChangelogProps = {\n  version: \"2.4\",\n  date: \"September 2026\",\n  items: [\n    { type: \"new\", text: \"Scheduled releases\" },\n    { type: \"new\", text: \"A weekly digest in your team chat\" },\n    { type: \"improved\", text: \"The editor opens twice as fast\" },\n    { type: \"improved\", text: \"A calmer diff view\" },\n    { type: \"fixed\", text: \"Links in footnotes open correctly\" },\n  ],\n  url: \"relay.example.com/changelog\",\n};\n\nexport function changelogStory(props: ChangelogProps): Story {\n  const { version, date, items, url } = props;\n  return templateStory(props, [\n    { type: \"title\", kicker: \"Changelog\", title: `Version ${version}`, subtitle: date, background: \"grid\" },\n    ...chunk(items, 3).map(\n      (group): Scene => ({\n        type: \"bullets\",\n        items: group.map((item) => ({ text: item.text, badge: LABELS[item.type] })),\n      }),\n    ),\n    { type: \"cta\", title: \"Available today\", url },\n  ]);\n}\n\nexport function Changelog(props: ChangelogProps) {\n  return <Storyboard story={changelogStory(props)} />;\n}\n\nexport const changelogMetadata = templateMetadata(changelogStory);\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/changelog.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "Monthly or per-release update videos",
+      "Turning a changelog page into something people watch"
+    ],
+    "avoid": [
+      "A whole product story — use `product-launch`"
+    ],
+    "tags": [
+      "changelog",
+      "release",
+      "updates",
+      "product",
+      "template"
+    ]
+  },
+  "docs": "Usage:\n\n<Composition\n  id=\"Changelog\"\n  component={Changelog}\n  schema={changelogSchema}\n  defaultProps={changelogDefaults}\n  calculateMetadata={changelogMetadata}\n  width={1920}\n  height={1080}\n  fps={30}\n  durationInFrames={1}\n/>",
+  "categories": [
+    "templates"
+  ],
+  "type": "registry:item"
+}

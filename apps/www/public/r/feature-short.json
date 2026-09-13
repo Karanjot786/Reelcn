@@ -1,0 +1,43 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "feature-short",
+  "title": "Feature Short",
+  "description": "Vertical short about one feature: a hook, the feature in a line, the feature running on a phone, and a call to action.",
+  "dependencies": [
+    "zod"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/story.json",
+    "http://localhost:3000/r/storyboard.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/feature-short.tsx",
+      "content": "/**\n * @title Feature Short\n * @category templates\n * @description Vertical short about one feature: a hook, the feature in a line, the feature running on a phone, and a call to action.\n * @duration data-driven\n * @use Social shorts that show off a single feature\n * @use Weekly \"did you know\" clips for a product\n * @avoid A full product story — use `product-launch`\n * @tags short, feature, product, vertical, template\n * @example\n * <Composition\n *   id=\"FeatureShort\"\n *   component={FeatureShort}\n *   schema={featureShortSchema}\n *   defaultProps={featureShortDefaults}\n *   calculateMetadata={featureShortMetadata}\n *   width={1080}\n *   height={1920}\n *   fps={30}\n *   durationInFrames={1}\n * />\n */\nimport { z } from \"zod\";\nimport type { Story } from \"./story\";\nimport { Storyboard, templateMetadata, templateSchema, templateStory } from \"./storyboard\";\n\nexport const featureShortSchema = templateSchema.extend({\n  /** First line on screen; it has three seconds to earn the next. */\n  hook: z.string(),\n  feature: z.string(),\n  /** Screen recording or screenshot of the feature. A placeholder screen stands in when omitted. */\n  demo: z.string().optional(),\n  cta: z.string(),\n});\n\nexport type FeatureShortProps = z.infer<typeof featureShortSchema>;\n\nexport const featureShortDefaults: FeatureShortProps = {\n  hook: \"Stop writing release notes by hand\",\n  feature: \"Relay drafts them from your merged pull requests\",\n  cta: \"Try Relay free\",\n};\n\nexport function featureShortStory(props: FeatureShortProps): Story {\n  return templateStory(props, [\n    { type: \"text\", text: props.hook, background: \"aurora\" },\n    { type: \"title\", title: props.feature },\n    { type: \"device\", device: \"phone\", src: props.demo },\n    { type: \"cta\", title: props.cta },\n  ]);\n}\n\nexport function FeatureShort(props: FeatureShortProps) {\n  return <Storyboard story={featureShortStory(props)} />;\n}\n\nexport const featureShortMetadata = templateMetadata(featureShortStory);\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/feature-short.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "Social shorts that show off a single feature",
+      "Weekly \"did you know\" clips for a product"
+    ],
+    "avoid": [
+      "A full product story — use `product-launch`"
+    ],
+    "tags": [
+      "short",
+      "feature",
+      "product",
+      "vertical",
+      "template"
+    ]
+  },
+  "docs": "Usage:\n\n<Composition\n  id=\"FeatureShort\"\n  component={FeatureShort}\n  schema={featureShortSchema}\n  defaultProps={featureShortDefaults}\n  calculateMetadata={featureShortMetadata}\n  width={1080}\n  height={1920}\n  fps={30}\n  durationInFrames={1}\n/>",
+  "categories": [
+    "templates"
+  ],
+  "type": "registry:item"
+}

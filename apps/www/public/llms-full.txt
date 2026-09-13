@@ -1081,6 +1081,70 @@ const { pulse, beat } = useBeat({ bpm: 120 });
 
 ## templates
 
+- [App Promo](http://localhost:3000/r/app-promo.json): Vertical app ad: the app's name and promise, its screens on a phone or laptop, its rating, and a download call. (length data-driven · use for App store previews and paid social ads; Showing a mobile or desktop app screen by screen · avoid A web product in a browser window — use `product-launch`)
+
+```tsx
+<Composition
+  id="AppPromo"
+  component={AppPromo}
+  schema={appPromoSchema}
+  defaultProps={appPromoDefaults}
+  calculateMetadata={appPromoMetadata}
+  width={1080}
+  height={1920}
+  fps={30}
+  durationInFrames={1}
+/>
+```
+
+- [Changelog](http://localhost:3000/r/changelog.json): Release video listing what is new, improved and fixed in a version, three changes per card set. (length data-driven · use for Monthly or per-release update videos; Turning a changelog page into something people watch · avoid A whole product story — use `product-launch`)
+
+```tsx
+<Composition
+  id="Changelog"
+  component={Changelog}
+  schema={changelogSchema}
+  defaultProps={changelogDefaults}
+  calculateMetadata={changelogMetadata}
+  width={1920}
+  height={1080}
+  fps={30}
+  durationInFrames={1}
+/>
+```
+
+- [Feature Short](http://localhost:3000/r/feature-short.json): Vertical short about one feature: a hook, the feature in a line, the feature running on a phone, and a call to action. (length data-driven · use for Social shorts that show off a single feature; Weekly "did you know" clips for a product · avoid A full product story — use `product-launch`)
+
+```tsx
+<Composition
+  id="FeatureShort"
+  component={FeatureShort}
+  schema={featureShortSchema}
+  defaultProps={featureShortDefaults}
+  calculateMetadata={featureShortMetadata}
+  width={1080}
+  height={1920}
+  fps={30}
+  durationInFrames={1}
+/>
+```
+
+- [Product Launch](http://localhost:3000/r/product-launch.json): Launch video for a product: name and tagline, feature cards, screenshots in a browser window, and a call to action. (length data-driven · use for Announcing a new product or a major version; A hero video for a landing page · avoid One feature in a vertical short — use `feature-short`)
+
+```tsx
+<Composition
+  id="ProductLaunch"
+  component={ProductLaunch}
+  schema={productLaunchSchema}
+  defaultProps={productLaunchDefaults}
+  calculateMetadata={productLaunchMetadata}
+  width={1920}
+  height={1080}
+  fps={30}
+  durationInFrames={1}
+/>
+```
+
 - [Storyboard](http://localhost:3000/r/storyboard.json): Turns a JSON story (theme, brand, audio and a list of scenes) into a finished video whose length comes from its content. (length data-driven · use for Whole videos written as data, by hand or by an agent; Rendering one story at 16:9, 9:16 and 1:1 · avoid Scenes you lay out by hand in JSX — use `scenes`)
 
 ```tsx

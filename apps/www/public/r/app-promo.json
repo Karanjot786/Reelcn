@@ -1,0 +1,43 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "app-promo",
+  "title": "App Promo",
+  "description": "Vertical app ad: the app's name and promise, its screens on a phone or laptop, its rating, and a download call.",
+  "dependencies": [
+    "zod"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/story.json",
+    "http://localhost:3000/r/storyboard.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/app-promo.tsx",
+      "content": "/**\n * @title App Promo\n * @category templates\n * @description Vertical app ad: the app's name and promise, its screens on a phone or laptop, its rating, and a download call.\n * @duration data-driven\n * @use App store previews and paid social ads\n * @use Showing a mobile or desktop app screen by screen\n * @avoid A web product in a browser window — use `product-launch`\n * @tags app, promo, mobile, ad, template\n * @example\n * <Composition\n *   id=\"AppPromo\"\n *   component={AppPromo}\n *   schema={appPromoSchema}\n *   defaultProps={appPromoDefaults}\n *   calculateMetadata={appPromoMetadata}\n *   width={1080}\n *   height={1920}\n *   fps={30}\n *   durationInFrames={1}\n * />\n */\nimport { z } from \"zod\";\nimport type { Scene, Story } from \"./story\";\nimport { Storyboard, templateMetadata, templateSchema, templateStory } from \"./storyboard\";\n\nexport const appPromoSchema = templateSchema.extend({\n  appName: z.string(),\n  tagline: z.string().optional(),\n  /** Screenshot or screen-recording URLs, one scene each. A placeholder screen stands in when empty. */\n  screens: z.array(z.string()),\n  device: z.enum([\"phone\", \"laptop\"]),\n  /** Average rating out of 5. */\n  rating: z.number().min(0).max(5).optional(),\n  cta: z.string(),\n});\n\nexport type AppPromoProps = z.infer<typeof appPromoSchema>;\n\nexport const appPromoDefaults: AppPromoProps = {\n  appName: \"Pace\",\n  tagline: \"Training plans that bend around your week\",\n  screens: [],\n  device: \"phone\",\n  rating: 4.8,\n  cta: \"Download Pace\",\n};\n\nexport function appPromoStory(props: AppPromoProps): Story {\n  const { appName, tagline, screens, device, rating, cta } = props;\n  const shown: (string | undefined)[] = screens.length > 0 ? screens : [undefined];\n  const stars: Scene[] =\n    rating === undefined ? [] : [{ type: \"stat\", label: \"Average rating\", value: rating, suffix: \" / 5\" }];\n  return templateStory(props, [\n    { type: \"title\", title: appName, subtitle: tagline, background: \"bokeh\" },\n    ...shown.map((src): Scene => ({ type: \"device\", device, src })),\n    ...stars,\n    { type: \"cta\", title: cta },\n  ]);\n}\n\nexport function AppPromo(props: AppPromoProps) {\n  return <Storyboard story={appPromoStory(props)} />;\n}\n\nexport const appPromoMetadata = templateMetadata(appPromoStory);\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/app-promo.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "App store previews and paid social ads",
+      "Showing a mobile or desktop app screen by screen"
+    ],
+    "avoid": [
+      "A web product in a browser window — use `product-launch`"
+    ],
+    "tags": [
+      "app",
+      "promo",
+      "mobile",
+      "ad",
+      "template"
+    ]
+  },
+  "docs": "Usage:\n\n<Composition\n  id=\"AppPromo\"\n  component={AppPromo}\n  schema={appPromoSchema}\n  defaultProps={appPromoDefaults}\n  calculateMetadata={appPromoMetadata}\n  width={1080}\n  height={1920}\n  fps={30}\n  durationInFrames={1}\n/>",
+  "categories": [
+    "templates"
+  ],
+  "type": "registry:item"
+}

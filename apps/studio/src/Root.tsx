@@ -1,7 +1,21 @@
 import { demos } from "@reelcn/registry/demos";
 import { sampleStory } from "@reelcn/registry/demos/story-samples";
 import { DemoFrame } from "@reelcn/registry/demos/view";
+import { AppPromo, appPromoDefaults, appPromoMetadata, appPromoSchema } from "@reelcn/registry/items/app-promo";
+import { Changelog, changelogDefaults, changelogMetadata, changelogSchema } from "@reelcn/registry/items/changelog";
 import { type ThemeName, themeNames, Viewport } from "@reelcn/registry/items/core";
+import {
+  FeatureShort,
+  featureShortDefaults,
+  featureShortMetadata,
+  featureShortSchema,
+} from "@reelcn/registry/items/feature-short";
+import {
+  ProductLaunch,
+  productLaunchDefaults,
+  productLaunchMetadata,
+  productLaunchSchema,
+} from "@reelcn/registry/items/product-launch";
 import { StoryVideo, storyMetadata, storySchema } from "@reelcn/registry/items/storyboard";
 import { AbsoluteFill, Composition, Folder, Freeze, Sequence } from "remotion";
 import { z } from "zod";
@@ -102,6 +116,38 @@ export function Root() {
           defaultProps={sampleStory}
           calculateMetadata={storyMetadata}
           {...templateSize("16x9")}
+        />
+        <Composition
+          id="ProductLaunch"
+          component={ProductLaunch}
+          schema={productLaunchSchema}
+          defaultProps={productLaunchDefaults}
+          calculateMetadata={productLaunchMetadata}
+          {...templateSize("16x9")}
+        />
+        <Composition
+          id="FeatureShort"
+          component={FeatureShort}
+          schema={featureShortSchema}
+          defaultProps={featureShortDefaults}
+          calculateMetadata={featureShortMetadata}
+          {...templateSize("9x16")}
+        />
+        <Composition
+          id="Changelog"
+          component={Changelog}
+          schema={changelogSchema}
+          defaultProps={changelogDefaults}
+          calculateMetadata={changelogMetadata}
+          {...templateSize("16x9")}
+        />
+        <Composition
+          id="AppPromo"
+          component={AppPromo}
+          schema={appPromoSchema}
+          defaultProps={appPromoDefaults}
+          calculateMetadata={appPromoMetadata}
+          {...templateSize("9x16")}
         />
       </Folder>
       {formats.map((format) => (

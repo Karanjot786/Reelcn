@@ -42,6 +42,47 @@
       }
     },
     {
+      "name": "app-promo",
+      "type": "registry:item",
+      "title": "App Promo",
+      "description": "Vertical app ad: the app's name and promise, its screens on a phone or laptop, its rating, and a download call.",
+      "categories": [
+        "templates"
+      ],
+      "dependencies": [
+        "zod"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/story.json",
+        "http://localhost:3000/r/storyboard.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/app-promo.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/app-promo.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Composition\n  id=\"AppPromo\"\n  component={AppPromo}\n  schema={appPromoSchema}\n  defaultProps={appPromoDefaults}\n  calculateMetadata={appPromoMetadata}\n  width={1080}\n  height={1920}\n  fps={30}\n  durationInFrames={1}\n/>",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "App store previews and paid social ads",
+          "Showing a mobile or desktop app screen by screen"
+        ],
+        "avoid": [
+          "A web product in a browser window — use `product-launch`"
+        ],
+        "tags": [
+          "app",
+          "promo",
+          "mobile",
+          "ad",
+          "template"
+        ]
+      }
+    },
+    {
       "name": "app-window",
       "type": "registry:item",
       "title": "App Window",
@@ -1073,6 +1114,47 @@
       }
     },
     {
+      "name": "changelog",
+      "type": "registry:item",
+      "title": "Changelog",
+      "description": "Release video listing what is new, improved and fixed in a version, three changes per card set.",
+      "categories": [
+        "templates"
+      ],
+      "dependencies": [
+        "zod"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/story.json",
+        "http://localhost:3000/r/storyboard.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/changelog.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/changelog.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Composition\n  id=\"Changelog\"\n  component={Changelog}\n  schema={changelogSchema}\n  defaultProps={changelogDefaults}\n  calculateMetadata={changelogMetadata}\n  width={1920}\n  height={1080}\n  fps={30}\n  durationInFrames={1}\n/>",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "Monthly or per-release update videos",
+          "Turning a changelog page into something people watch"
+        ],
+        "avoid": [
+          "A whole product story — use `product-launch`"
+        ],
+        "tags": [
+          "changelog",
+          "release",
+          "updates",
+          "product",
+          "template"
+        ]
+      }
+    },
+    {
       "name": "chapter-title",
       "type": "registry:item",
       "title": "Chapter Title",
@@ -1784,6 +1866,47 @@
           "badge",
           "pricing",
           "plan"
+        ]
+      }
+    },
+    {
+      "name": "feature-short",
+      "type": "registry:item",
+      "title": "Feature Short",
+      "description": "Vertical short about one feature: a hook, the feature in a line, the feature running on a phone, and a call to action.",
+      "categories": [
+        "templates"
+      ],
+      "dependencies": [
+        "zod"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/story.json",
+        "http://localhost:3000/r/storyboard.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/feature-short.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/feature-short.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Composition\n  id=\"FeatureShort\"\n  component={FeatureShort}\n  schema={featureShortSchema}\n  defaultProps={featureShortDefaults}\n  calculateMetadata={featureShortMetadata}\n  width={1080}\n  height={1920}\n  fps={30}\n  durationInFrames={1}\n/>",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "Social shorts that show off a single feature",
+          "Weekly \"did you know\" clips for a product"
+        ],
+        "avoid": [
+          "A full product story — use `product-launch`"
+        ],
+        "tags": [
+          "short",
+          "feature",
+          "product",
+          "vertical",
+          "template"
         ]
       }
     },
@@ -2635,6 +2758,47 @@
           "social",
           "card",
           "quote"
+        ]
+      }
+    },
+    {
+      "name": "product-launch",
+      "type": "registry:item",
+      "title": "Product Launch",
+      "description": "Launch video for a product: name and tagline, feature cards, screenshots in a browser window, and a call to action.",
+      "categories": [
+        "templates"
+      ],
+      "dependencies": [
+        "zod"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/story.json",
+        "http://localhost:3000/r/storyboard.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/product-launch.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/product-launch.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Composition\n  id=\"ProductLaunch\"\n  component={ProductLaunch}\n  schema={productLaunchSchema}\n  defaultProps={productLaunchDefaults}\n  calculateMetadata={productLaunchMetadata}\n  width={1920}\n  height={1080}\n  fps={30}\n  durationInFrames={1}\n/>",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "Announcing a new product or a major version",
+          "A hero video for a landing page"
+        ],
+        "avoid": [
+          "One feature in a vertical short — use `feature-short`"
+        ],
+        "tags": [
+          "launch",
+          "product",
+          "saas",
+          "announcement",
+          "template"
         ]
       }
     },
