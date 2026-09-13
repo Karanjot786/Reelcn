@@ -6,10 +6,10 @@
   "dependencies": {
     "@remotion/captions": "catalog:",
     "@remotion/google-fonts": "catalog:",
-    "@remotion/install-whisper-cpp": "4.0.523",
+    "@remotion/install-whisper-cpp": "catalog:",
     "@remotion/media": "catalog:",
     "@remotion/media-utils": "catalog:",
-    "@remotion/openai-whisper": "4.0.523",
+    "@remotion/openai-whisper": "catalog:",
     "@remotion/transitions": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
