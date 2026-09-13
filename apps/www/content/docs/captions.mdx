@@ -1,0 +1,48 @@
+---
+title: Captions
+description: Word-synced captions, from a transcript to a burned-in style.
+---
+
+Captions are the difference between a short that works on mute and one that does not. reelcn ships one engine and eight styles on top of it.
+
+## 1. Get a transcript
+
+Install the tool, then run it on your clip:
+
+```bash
+npx shadcn@latest add https://reelcn.dev/r/transcribe.json
+node scripts/reelcn-transcribe.ts talk.mp4
+```
+
+It writes `public/captions/talk.json`: an array of words with start and end times. The first run downloads whisper.cpp and a model, then works offline. An existing `.srt` works too, and `--openai` uses the OpenAI API instead when `OPENAI_API_KEY` is set.
+
+## 2. Put them on screen
+
+```tsx
+import captions from "../../public/captions/talk.json";
+import { Captions } from "./reelcn/captions";
+
+export const Short = () => (
+  <AbsoluteFill>
+    <Video src={staticFile("talk.mp4")} />
+    <Captions captions={captions} emphasize={["free", "today"]} />
+  </AbsoluteFill>
+);
+```
+
+The engine pages the words, highlights the one being spoken, and pops anything in `emphasize` in the theme's highlight color.
+
+## Styles
+
+Each style is its own installable component: `captions-bold-pop`, `captions-karaoke`, `captions-boxed`, `captions-minimal`, `captions-neon`, `captions-word-stack`, `captions-subtitle-bar` and `captions-highlight-box`. They all take the same props as `captions` minus `variant`.
+
+## Props worth knowing
+
+- **`pageMs`** (default 1200): how much speech goes on one page. Lower means fewer words at a time.
+- **`maxWords`** (default 6): a hard cap; long pages split.
+- **`position`** (default `auto`): `auto` keeps captions above the platform UI in vertical video, and in the lower third elsewhere.
+- **`size`** (default 64): the starting size in design units. Long pages shrink from there, so captions never run past the safe area.
+
+## Timing
+
+Captions are `data-driven`: their length comes from the transcript, not from a `durationInFrames`. Put them next to your footage and they line up on their own, in every format.

@@ -18,6 +18,7 @@ export const FORMAT_SIZE: Record<Format, { width: number; height: number }> = {
 // Explicit per-category loaders: Turbopack needs a statically analyzable specifier for each dynamic
 // import(), so a template literal (`./demos/${category}`) can't be used here.
 const CATEGORY_LOADERS: Record<string, () => Promise<{ default: Demo[] }>> = {
+  audio: () => import("@reelcn/registry/demos/audio"),
   backgrounds: () => import("@reelcn/registry/demos/backgrounds"),
   data: () => import("@reelcn/registry/demos/data"),
   motion: () => import("@reelcn/registry/demos/motion"),

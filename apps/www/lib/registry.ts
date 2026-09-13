@@ -56,7 +56,9 @@ export const categoryOrder = [
   "overlays",
   "product",
   "data",
+  "audio",
   "social",
+  "tools",
   "lib",
 ] as const;
 
@@ -68,7 +70,9 @@ const CATEGORY_TITLES: Record<(typeof categoryOrder)[number], string> = {
   overlays: "Overlays",
   product: "Product",
   data: "Data",
+  audio: "Audio",
   social: "Social",
+  tools: "Tools",
   lib: "Libraries",
 };
 

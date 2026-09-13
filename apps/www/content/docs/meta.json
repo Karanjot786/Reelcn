@@ -1,4 +1,15 @@
 {
   "title": "Guides",
-  "pages": ["index", "installation", "theming", "motion", "formats", "determinism", "agents", "license"]
+  "pages": [
+    "index",
+    "installation",
+    "theming",
+    "motion",
+    "formats",
+    "captions",
+    "audio-and-sfx",
+    "determinism",
+    "agents",
+    "license"
+  ]
 }
