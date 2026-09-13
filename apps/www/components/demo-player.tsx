@@ -37,7 +37,7 @@ export function prefersReducedMotion() {
   return typeof window !== "undefined" && window.matchMedia(REDUCED_MOTION).matches;
 }
 
-function usePrefersReducedMotion() {
+export function usePrefersReducedMotion() {
   const [reduced, setReduced] = useState(false);
   useEffect(() => {
     const media = window.matchMedia(REDUCED_MOTION);
@@ -47,6 +47,34 @@ function usePrefersReducedMotion() {
     return () => media.removeEventListener("change", onChange);
   }, []);
   return reduced;
+}
+
+/** Loads one demo from its category chunk, client-side. `null` until it arrives or when the id is unknown. */
+export function useDemo(category: string, demoId: string): Demo | null {
+  const [demo, setDemo] = useState<Demo | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    setDemo(null);
+    const load = CATEGORY_LOADERS[category];
+    if (!load) return;
+    load().then((mod) => {
+      if (!cancelled) setDemo(mod.default.find((candidate) => candidate.id === demoId) ?? null);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [category, demoId]);
+  return demo;
+}
+
+/** A Player-ready component for a demo: the demo framed in the chosen theme. */
+export function useDemoScene(demo: Demo | null) {
+  return useMemo(() => {
+    if (!demo) return null;
+    return function DemoScene({ theme }: { theme: ThemeName }) {
+      return <DemoFrame demo={demo} theme={theme} />;
+    };
+  }, [demo]);
 }
 
 /**
@@ -68,34 +96,11 @@ export function DemoPlayer({
   autoPlay?: boolean;
   controls?: boolean;
 }) {
-  const [demo, setDemo] = useState<Demo | null>(null);
+  const demo = useDemo(category, demoId);
+  const Scene = useDemoScene(demo);
   const reducedMotion = usePrefersReducedMotion();
   const { width, height } = FORMAT_SIZE[format];
   const aspectRatio = `${width} / ${height}`;
-
-  useEffect(() => {
-    let cancelled = false;
-    setDemo(null);
-    const load = CATEGORY_LOADERS[category];
-    if (!load) return;
-    load().then((mod) => {
-      if (cancelled) return;
-      setDemo(mod.default.find((candidate) => candidate.id === demoId) ?? null);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [category, demoId]);
-
-  const Scene = useMemo(() => {
-    if (!demo) return null;
-    // ponytail: `theme` is typed as `string` at this boundary (callers read it from JSON/state); it's
-    // cast to `ThemeName` here rather than re-validated against `themeNames`, since every caller in this
-    // codebase sources it from `lib/demos.ts`'s `themeNames` or another `DemoPlayer`/`FormatSwitch` prop.
-    return function DemoPlayerScene({ theme: sceneTheme }: { theme: ThemeName }) {
-      return <DemoFrame demo={demo} theme={sceneTheme} />;
-    };
-  }, [demo]);
 
   if (!Scene || !demo) {
     return <div className="player-frame" style={{ aspectRatio }} aria-hidden="true" />;
@@ -104,6 +109,9 @@ export function DemoPlayer({
   return (
     <Player
       component={Scene}
+      // ponytail: `theme` is typed as `string` at this boundary (callers read it from JSON/state); it's
+      // cast to `ThemeName` here rather than re-validated against `themeNames`, since every caller in this
+      // codebase sources it from `lib/demos.ts`'s `themeNames` or another `DemoPlayer`/`FormatSwitch` prop.
       inputProps={{ theme: theme as ThemeName }}
       durationInFrames={demo.duration}
       fps={30}
