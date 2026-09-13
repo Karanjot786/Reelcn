@@ -15,12 +15,13 @@ pnpm site     # the docs site on localhost:3000
 ## Add an item
 
 1. Create `registry/items/<name>.tsx`. Copy the header from an item in the same category: `@title`, `@category`, `@description`, `@duration`, `@use`, `@example`.
-2. Follow the component contract (spec §7 in `docs/superpowers/specs/2026-09-12-reelcn-design.md`):
+2. Follow the component contract:
    - Sizes in `u()`.
    - Colors from `useTheme()`.
    - Canvas size from `useViewport()`.
    - No `Math.random`, `Date.now` or CSS animation.
    - ES2015 built-ins only.
+   - Correct at 16:9, 9:16 and 1:1.
 3. Add a demo to `registry/demos/<category>.tsx`. Its id starts with the item name, and its first, middle and last frames must differ.
 4. Run `pnpm registry:build` and commit the generated files with your item.
 5. Render its contact sheets with `pnpm stills sheets <name>` and look at them in `out/sheets/`.
@@ -33,7 +34,7 @@ pnpm format && pnpm typecheck && pnpm typecheck:user && pnpm lint && pnpm check:
 
 ## Rules
 
-- Open an issue before adding an npm dependency. Spec §4.2 lists the allowed ones.
+- Open an issue before adding an npm dependency. Items may only import packages already listed in `registry/package.json`.
 - No code copied from other component libraries. Ideas may overlap; code must be original.
 - No emoji and no brand lookalikes in items or demos.
 - Sound effects must be CC0 and listed in `sfx/LICENSES.md`.
