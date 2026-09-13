@@ -114,6 +114,10 @@ export function DemoPlayer({
       // already has an explicit toggle or the built-in scrub bar, so a click handler here would only
       // compete with the anchor's own click.
       clickToPlay={false}
+      // Remotion's default (true) calls the play button's `.focus()` on every `playing` change,
+      // including the initial autoplay on mount — that steals keyboard focus from the skip link at
+      // the top of the document. The scrub bar's own play/pause button is still fully operable.
+      spaceKeyToPlayOrPause={false}
       acknowledgeRemotionLicense
       className="player-frame"
       style={{ width: "100%", aspectRatio }}
