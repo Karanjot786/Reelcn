@@ -1,5 +1,6 @@
 // Generates the two demo tracks the audio items preview against, with the ffmpeg bundled in Remotion.
 // Run: node scripts/demo-audio.ts   (writes both apps' public/reelcn-demo/*.mp3; commit the result)
+// voice.mp3 needs a system ffmpeg on PATH: Remotion's bundled ffmpeg build lacks the anoisesrc filter.
 import { execFileSync } from "node:child_process";
 import { cpSync, mkdirSync } from "node:fs";
 import path from "node:path";
@@ -40,7 +41,16 @@ for (const track of tracks) {
     // Remotion's bundled ffmpeg is built without lavfi noise sources (no anoisesrc), so
     // voice.mp3's filter fails there. Fall back to the system ffmpeg with identical args.
     console.warn(`remotion ffmpeg failed for ${track.name}, falling back to system ffmpeg: ${(err as Error).message}`);
-    execFileSync("ffmpeg", ffmpegArgs, { stdio: "inherit" });
+    try {
+      execFileSync("ffmpeg", ffmpegArgs, { stdio: "inherit" });
+    } catch (fallbackErr) {
+      if ((fallbackErr as NodeJS.ErrnoException).code === "ENOENT") {
+        throw new Error(
+          "voice.mp3 needs ffmpeg on PATH (Remotion's bundled ffmpeg lacks anoisesrc) — install it, e.g. brew install ffmpeg",
+        );
+      }
+      throw fallbackErr;
+    }
   }
   cpSync(output, path.join(WWW, track.name));
   console.log(`ok   ${output} and ${path.join(WWW, track.name)}`);
