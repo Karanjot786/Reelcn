@@ -1,7 +1,7 @@
 // Serves the built registry, scaffolds a fresh Remotion project, installs every item, typechecks and renders.
 // Run: node scripts/e2e.ts
 import { execFileSync, spawn } from "node:child_process";
-import { cpSync, existsSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
@@ -9,7 +9,7 @@ const PORT = 3000;
 const localBase = `http://localhost:${PORT}`;
 const { homepage, items } = JSON.parse(readFileSync("registry.json", "utf8")) as {
   homepage: string;
-  items: { name: string }[];
+  items: { name: string; categories: string[] }[];
 };
 if (items.length === 0) throw new Error("registry.json has no items — run pnpm registry:build first");
 
@@ -84,6 +84,40 @@ registerRoot(() => (
 `,
   );
 
+  // One composition per template, exactly as each template's @example registers it, so the typecheck below covers
+  // them and the loop after it renders one still of each. Export names follow the item name: product-launch →
+  // ProductLaunch, productLaunchSchema, productLaunchDefaults, productLaunchMetadata.
+  const pascal = (name: string) => name.replace(/(^|-)([a-z])/g, (_, _dash, letter: string) => letter.toUpperCase());
+  const camel = (name: string) => pascal(name).replace(/^./, (letter) => letter.toLowerCase());
+  const templates = items
+    .filter((item) => item.categories[0] === "templates" && item.name !== "storyboard")
+    .map((item) => item.name);
+  const size = "width={1080} height={1080} fps={30} durationInFrames={1}";
+  writeFileSync(
+    path.join(project, "src", "reelcn-templates.tsx"),
+    `import { Composition, registerRoot } from "remotion";
+import { StoryVideo, storyMetadata, storySchema } from "./reelcn/storyboard";
+${templates
+  .map(
+    (name) =>
+      `import { ${pascal(name)}, ${camel(name)}Defaults, ${camel(name)}Metadata, ${camel(name)}Schema } from "./reelcn/${name}";`,
+  )
+  .join("\n")}
+
+registerRoot(() => (
+  <>
+    <Composition id="Storyboard" component={StoryVideo} schema={storySchema} calculateMetadata={storyMetadata} defaultProps={{ scenes: [{ type: "title", title: "Nightly check" }, { type: "stat", label: "Items installed", value: ${items.length} }] }} ${size} />
+${templates
+  .map(
+    (name) =>
+      `    <Composition id="${pascal(name)}" component={${pascal(name)}} schema={${camel(name)}Schema} defaultProps={${camel(name)}Defaults} calculateMetadata={${camel(name)}Metadata} ${size} />`,
+  )
+  .join("\n")}
+  </>
+));
+`,
+  );
+
   run("npx", ["tsc", "--noEmit"], project);
   // ponytail: the --blank template sets Config.setRspack(true), and in Remotion 4.0.523 that bundle never emits
   // bundle.js here — the template's own composition fails the same way. Drop the flag once upstream renders again.
@@ -94,7 +128,29 @@ registerRoot(() => (
   );
   // Frame 30: the headline has entered and the lower third is still on screen, so the still shows every item.
   if (!existsSync(path.join(project, "probe.png"))) throw new Error("probe.png was not written");
-  console.log(`e2e PASS — ${items.length} items installed, typechecked and rendered in ${project}`);
+  // ponytail: one `remotion still` per template re-bundles each time (~15 bundles). Fine nightly; switch to
+  // @remotion/renderer with one bundle if this job grows past its timeout.
+  mkdirSync(path.join(project, "stills"), { recursive: true });
+  for (const id of ["Storyboard", ...templates.map(pascal)]) {
+    run(
+      "npx",
+      [
+        "remotion",
+        "still",
+        "src/reelcn-templates.tsx",
+        id,
+        `stills/${id}.png`,
+        "--frame=20",
+        "--no-rspack",
+        "--log=error",
+      ],
+      project,
+    );
+    if (!existsSync(path.join(project, "stills", `${id}.png`))) throw new Error(`stills/${id}.png was not written`);
+  }
+  console.log(
+    `e2e PASS — ${items.length} items installed and typechecked, probe + ${templates.length + 1} template stills rendered in ${project}`,
+  );
 } finally {
   server.kill();
 }

@@ -1,0 +1,26 @@
+name: nightly
+
+# Installs every item into a fresh `create-video@latest` project (the newest Remotion) and renders every template.
+# Catches install breakage and Remotion version skew before users do (spec §15.3).
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+jobs:
+  e2e:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.9
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 26
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm registry:build
+      - name: Install every item into a fresh Remotion project, typecheck, render templates
+        run: pnpm e2e
