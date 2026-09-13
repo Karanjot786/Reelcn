@@ -1,4 +1,5 @@
 import type React from "react";
+import audio from "./audio";
 import backgrounds from "./backgrounds";
 import data from "./data";
 import motion from "./motion";
@@ -22,6 +23,16 @@ export type Demo = {
 };
 
 // Each category adds one entry. Tasks 3-5 and later plans extend this map.
-const groups: Record<string, Demo[]> = { backgrounds, data, motion, overlays, product, social, text, transitions };
+const groups: Record<string, Demo[]> = {
+  audio,
+  backgrounds,
+  data,
+  motion,
+  overlays,
+  product,
+  social,
+  text,
+  transitions,
+};
 
 export const demos = Object.entries(groups).flatMap(([category, list]) => list.map((demo) => ({ ...demo, category })));
