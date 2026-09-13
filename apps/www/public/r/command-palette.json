@@ -5,7 +5,7 @@
   "description": "Search panel that types a query, narrows the list live, glides its highlight to the surviving match and presses it.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/core.json"
+    "https://www.reelcn.dev/r/core.json"
   ],
   "files": [
     {

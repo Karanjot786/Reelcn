@@ -5,7 +5,7 @@
   "description": "A profile card whose follow button presses itself and flips to \"Following\", with the count ticking up.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/core.json"
+    "https://www.reelcn.dev/r/core.json"
   ],
   "files": [
     {

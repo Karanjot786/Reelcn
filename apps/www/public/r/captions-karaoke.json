@@ -5,7 +5,7 @@
   "description": "Captions that fill in word by word as they are spoken, and dim the words still to come.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/captions.json"
+    "https://www.reelcn.dev/r/captions.json"
   ],
   "files": [
     {

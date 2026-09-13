@@ -11,22 +11,22 @@
     "zod"
   ],
   "registryDependencies": [
-    "http://localhost:3000/r/brand-sweep.json",
-    "http://localhost:3000/r/captions.json",
-    "http://localhost:3000/r/card-push.json",
-    "http://localhost:3000/r/circle-burst.json",
-    "http://localhost:3000/r/core.json",
-    "http://localhost:3000/r/glitch.json",
-    "http://localhost:3000/r/light-flash.json",
-    "http://localhost:3000/r/scenes.json",
-    "http://localhost:3000/r/sfx.json",
-    "http://localhost:3000/r/shutter.json",
-    "http://localhost:3000/r/slice-slide.json",
-    "http://localhost:3000/r/split-doors.json",
-    "http://localhost:3000/r/story.json",
-    "http://localhost:3000/r/story-scenes.json",
-    "http://localhost:3000/r/stripe-wipe.json",
-    "http://localhost:3000/r/tile-reveal.json"
+    "https://www.reelcn.dev/r/brand-sweep.json",
+    "https://www.reelcn.dev/r/captions.json",
+    "https://www.reelcn.dev/r/card-push.json",
+    "https://www.reelcn.dev/r/circle-burst.json",
+    "https://www.reelcn.dev/r/core.json",
+    "https://www.reelcn.dev/r/glitch.json",
+    "https://www.reelcn.dev/r/light-flash.json",
+    "https://www.reelcn.dev/r/scenes.json",
+    "https://www.reelcn.dev/r/sfx.json",
+    "https://www.reelcn.dev/r/shutter.json",
+    "https://www.reelcn.dev/r/slice-slide.json",
+    "https://www.reelcn.dev/r/split-doors.json",
+    "https://www.reelcn.dev/r/story.json",
+    "https://www.reelcn.dev/r/story-scenes.json",
+    "https://www.reelcn.dev/r/stripe-wipe.json",
+    "https://www.reelcn.dev/r/tile-reveal.json"
   ],
   "files": [
     {

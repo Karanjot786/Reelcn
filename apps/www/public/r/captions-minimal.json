@@ -5,7 +5,7 @@
   "description": "Quiet captions: one line, no effects, with only the spoken word brightening.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/captions.json"
+    "https://www.reelcn.dev/r/captions.json"
   ],
   "files": [
     {

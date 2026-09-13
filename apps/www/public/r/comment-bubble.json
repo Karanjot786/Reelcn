@@ -5,7 +5,7 @@
   "description": "A viewer comment card, optionally marked as a reply, with a like count that ticks up.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/core.json"
+    "https://www.reelcn.dev/r/core.json"
   ],
   "files": [
     {

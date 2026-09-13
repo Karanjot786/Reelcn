@@ -5,7 +5,7 @@
   "description": "A short word or name whose characters rise in one after another.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/text-reveal.json"
+    "https://www.reelcn.dev/r/text-reveal.json"
   ],
   "files": [
     {

@@ -5,7 +5,7 @@
   "description": "Rounded phone body with a pill cutout at the top and a gesture bar at the bottom, clipping your screen content to the display's corners.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/core.json"
+    "https://www.reelcn.dev/r/core.json"
   ],
   "files": [
     {

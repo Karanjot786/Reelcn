@@ -9,12 +9,12 @@
     "zod"
   ],
   "registryDependencies": [
-    "http://localhost:3000/r/captions.json",
-    "http://localhost:3000/r/core.json",
-    "http://localhost:3000/r/gradient-mesh.json",
-    "http://localhost:3000/r/hook-title.json",
-    "http://localhost:3000/r/story.json",
-    "http://localhost:3000/r/storyboard.json"
+    "https://www.reelcn.dev/r/captions.json",
+    "https://www.reelcn.dev/r/core.json",
+    "https://www.reelcn.dev/r/gradient-mesh.json",
+    "https://www.reelcn.dev/r/hook-title.json",
+    "https://www.reelcn.dev/r/story.json",
+    "https://www.reelcn.dev/r/storyboard.json"
   ],
   "files": [
     {

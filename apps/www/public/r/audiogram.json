@@ -9,14 +9,14 @@
     "zod"
   ],
   "registryDependencies": [
-    "http://localhost:3000/r/animate.json",
-    "http://localhost:3000/r/captions.json",
-    "http://localhost:3000/r/core.json",
-    "http://localhost:3000/r/story.json",
-    "http://localhost:3000/r/storyboard.json",
-    "http://localhost:3000/r/text-reveal.json",
-    "http://localhost:3000/r/use-beat.json",
-    "http://localhost:3000/r/waveform.json"
+    "https://www.reelcn.dev/r/animate.json",
+    "https://www.reelcn.dev/r/captions.json",
+    "https://www.reelcn.dev/r/core.json",
+    "https://www.reelcn.dev/r/story.json",
+    "https://www.reelcn.dev/r/storyboard.json",
+    "https://www.reelcn.dev/r/text-reveal.json",
+    "https://www.reelcn.dev/r/use-beat.json",
+    "https://www.reelcn.dev/r/waveform.json"
   ],
   "files": [
     {

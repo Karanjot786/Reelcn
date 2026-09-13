@@ -5,7 +5,7 @@
   "description": "Headline that animates in by word, character or line with rise, blur, fade, scale, drop or mask effects.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/core.json"
+    "https://www.reelcn.dev/r/core.json"
   ],
   "files": [
     {

@@ -5,7 +5,7 @@
   "description": "Notification card with a status icon that slides in from an edge, holds, then slides back out.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/core.json"
+    "https://www.reelcn.dev/r/core.json"
   ],
   "files": [
     {

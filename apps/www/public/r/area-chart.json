@@ -5,7 +5,7 @@
   "description": "Line chart with a gradient fill that is revealed by a clip following each line as it draws.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/line-chart.json"
+    "https://www.reelcn.dev/r/line-chart.json"
   ],
   "files": [
     {

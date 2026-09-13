@@ -5,7 +5,7 @@
   "description": "Draws any set of SVG paths on stroke by stroke, staggered, with an optional fill fade once each finishes.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/core.json"
+    "https://www.reelcn.dev/r/core.json"
   ],
   "files": [
     {

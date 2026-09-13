@@ -5,7 +5,7 @@
   "description": "Each word in its own rounded chip, with the spoken chip filled in the accent color.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/captions.json"
+    "https://www.reelcn.dev/r/captions.json"
   ],
   "files": [
     {

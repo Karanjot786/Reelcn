@@ -5,7 +5,7 @@
   "description": "Heavy centered captions where the spoken word grows and lifts.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/captions.json"
+    "https://www.reelcn.dev/r/captions.json"
   ],
   "files": [
     {

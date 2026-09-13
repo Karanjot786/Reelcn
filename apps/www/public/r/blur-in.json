@@ -5,7 +5,7 @@
   "description": "Headline whose words fade up out of a soft blur, one after another.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/text-reveal.json"
+    "https://www.reelcn.dev/r/text-reveal.json"
   ],
   "files": [
     {

@@ -5,8 +5,8 @@
   "description": "Grid of themed feature tiles that reveal one after another and reflow to four, three or two columns by orientation.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/animate.json",
-    "http://localhost:3000/r/core.json"
+    "https://www.reelcn.dev/r/animate.json",
+    "https://www.reelcn.dev/r/core.json"
   ],
   "files": [
     {

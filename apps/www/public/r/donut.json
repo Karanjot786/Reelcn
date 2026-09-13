@@ -5,8 +5,8 @@
   "description": "Ring chart whose segments sweep in one after another around a counting total, with a legend beside it (below in portrait and square).",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/chart-scale.json",
-    "http://localhost:3000/r/core.json"
+    "https://www.reelcn.dev/r/chart-scale.json",
+    "https://www.reelcn.dev/r/core.json"
   ],
   "files": [
     {

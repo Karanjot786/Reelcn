@@ -7,7 +7,7 @@
     "remotion"
   ],
   "registryDependencies": [
-    "http://localhost:3000/r/fonts.json"
+    "https://www.reelcn.dev/r/fonts.json"
   ],
   "files": [
     {

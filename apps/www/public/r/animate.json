@@ -5,7 +5,7 @@
   "description": "Wrap anything (logo, screenshot, card, image) to give it a themed enter and exit. The swiss-army knife of reelcn.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/core.json"
+    "https://www.reelcn.dev/r/core.json"
   ],
   "files": [
     {

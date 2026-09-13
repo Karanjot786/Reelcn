@@ -5,7 +5,7 @@
   "description": "Milestones on a single axis whose line draws on while dots pop and labels rise in sequence; horizontal in landscape and square, vertical in portrait.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/core.json"
+    "https://www.reelcn.dev/r/core.json"
   ],
   "files": [
     {

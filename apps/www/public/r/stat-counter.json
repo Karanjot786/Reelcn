@@ -5,9 +5,9 @@
   "description": "Single metric: a label above a big counting number, an optional up/down delta badge beside it, and a caption underneath.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/chart-scale.json",
-    "http://localhost:3000/r/core.json",
-    "http://localhost:3000/r/counter.json"
+    "https://www.reelcn.dev/r/chart-scale.json",
+    "https://www.reelcn.dev/r/core.json",
+    "https://www.reelcn.dev/r/counter.json"
   ],
   "files": [
     {

@@ -5,7 +5,7 @@
   "description": "Types text out character by character, with pause markers and a caret that blinks once typing stops.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/core.json"
+    "https://www.reelcn.dev/r/core.json"
   ],
   "files": [
     {

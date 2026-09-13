@@ -8,7 +8,7 @@ const archivo = Archivo({ subsets: ["latin"], axes: ["wdth"], variable: "--font-
 const caveat = Caveat({ subsets: ["latin"], weight: "600", variable: "--font-caveat" });
 
 export const metadata: Metadata = {
-  // Makes og:image absolute. SITE_URL is registry.json's homepage (https://reelcn.dev after Task 12).
+  // Makes og:image absolute. SITE_URL is registry.json's homepage (https://www.reelcn.dev after Task 12).
   metadataBase: new URL(SITE_URL),
   // X falls back to og:image when twitter:image is missing; this makes it show large.
   twitter: { card: "summary_large_image" },

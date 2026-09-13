@@ -5,8 +5,8 @@
   "description": "Single percentage drawn as a round-capped ring that fills while the number in its center counts up.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/chart-scale.json",
-    "http://localhost:3000/r/core.json"
+    "https://www.reelcn.dev/r/chart-scale.json",
+    "https://www.reelcn.dev/r/core.json"
   ],
   "files": [
     {

@@ -13,12 +13,12 @@ Start a Remotion project, then add any item. Files land in `src/reelcn/`; no con
 
 ```bash
 npx create-video@latest
-npx shadcn@latest add http://localhost:3000/r/text-reveal.json
+npx shadcn@latest add https://www.reelcn.dev/r/text-reveal.json
 ```
 
-Browse every item with live previews at http://localhost:3000/docs/components.
+Browse every item with live previews at https://www.reelcn.dev/docs/components.
 
-Agents: `npx skills add Karanjot786/reelcn` installs the reelcn skill, and http://localhost:3000/llms.txt lists the whole catalog.
+Agents: `npx skills add Karanjot786/reelcn` installs the reelcn skill, and https://www.reelcn.dev/llms.txt lists the whole catalog.
 <!-- install:end -->
 
 ## What you get

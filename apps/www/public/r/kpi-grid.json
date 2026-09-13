@@ -5,8 +5,8 @@
   "description": "Two to six stat cards that pop in one after another, reflowing to up to four columns in landscape (never leaving a lone card on its own row), two in square, and one or two in portrait.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/core.json",
-    "http://localhost:3000/r/stat-counter.json"
+    "https://www.reelcn.dev/r/core.json",
+    "https://www.reelcn.dev/r/stat-counter.json"
   ],
   "files": [
     {

@@ -5,7 +5,7 @@
   "description": "A platform-neutral social post: avatar, name, handle, text and engagement counts that tick up.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/core.json"
+    "https://www.reelcn.dev/r/core.json"
   ],
   "files": [
     {

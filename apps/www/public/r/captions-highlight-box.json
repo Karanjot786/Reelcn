@@ -5,7 +5,7 @@
   "description": "A marker block travels word by word, like a highlighter following the speech.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/captions.json"
+    "https://www.reelcn.dev/r/captions.json"
   ],
   "files": [
     {

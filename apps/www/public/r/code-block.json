@@ -5,8 +5,8 @@
   "description": "Themed editor card with syntax colors, line numbers and a file tab that can type code out, focus lines and mark a diff.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/code-tokens.json",
-    "http://localhost:3000/r/core.json"
+    "https://www.reelcn.dev/r/code-tokens.json",
+    "https://www.reelcn.dev/r/core.json"
   ],
   "files": [
     {

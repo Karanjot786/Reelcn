@@ -5,7 +5,7 @@
   "description": "A pulled quote with its attribution, and an oversized quote mark drawn behind it.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/core.json"
+    "https://www.reelcn.dev/r/core.json"
   ],
   "files": [
     {

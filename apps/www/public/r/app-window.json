@@ -5,7 +5,7 @@
   "description": "Native desktop window with a title bar and no address bar, wrapped around any app content you pass as children.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/core.json"
+    "https://www.reelcn.dev/r/core.json"
   ],
   "files": [
     {

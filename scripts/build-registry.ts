@@ -273,7 +273,7 @@ function readmeCatalog(items: Item[]) {
 }
 
 function main() {
-  const base = (process.env.REELCN_URL ?? "http://localhost:3000").replace(/\/$/, "");
+  const base = (process.env.REELCN_URL ?? "https://www.reelcn.dev").replace(/\/$/, "");
   const items = collect(base);
   validate(items);
 

@@ -1,7 +1,7 @@
 /**
  * @title SFX
  * @category lib
- * @description Thirty CC0 sound effects, played from one component. Streams from reelcn.dev, or from your own public folder after `reelcn-sfx-pull`.
+ * @description Thirty CC0 sound effects, played from one component. Streams from www.reelcn.dev, or from your own public folder after `reelcn-sfx-pull`.
  * @example
  * <Sequence from={30}>
  *   <Sfx name="whoosh" />
@@ -48,7 +48,7 @@ export type SfxName = (typeof SFX_NAMES)[number];
 /** `reelcn-sfx-pull` sets this to true after copying the sounds into your public folder. */
 export const SFX_LOCAL: boolean = false;
 
-const SFX_BASE = "https://reelcn.dev/sfx";
+const SFX_BASE = "https://www.reelcn.dev/sfx";
 
 /** URL of one sound: hosted by default, local once pulled. */
 export function sfxSrc(name: SfxName): string {

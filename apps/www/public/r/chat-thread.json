@@ -5,7 +5,7 @@
   "description": "Message thread that shows three bouncing typing dots before a \"them\" reply, pops bubbles in, and scrolls up as it fills.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/core.json"
+    "https://www.reelcn.dev/r/core.json"
   ],
   "files": [
     {

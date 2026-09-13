@@ -5,8 +5,8 @@
   "description": "Two-column comparison: numbers become mirrored bars, booleans become check/cross marks, strings stay text, and the side with more wins is highlighted in the accent.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/chart-scale.json",
-    "http://localhost:3000/r/core.json"
+    "https://www.reelcn.dev/r/chart-scale.json",
+    "https://www.reelcn.dev/r/core.json"
   ],
   "files": [
     {

@@ -5,7 +5,7 @@
   "description": "Headline whose words drop in from above with a slight tilt that settles.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/text-reveal.json"
+    "https://www.reelcn.dev/r/text-reveal.json"
   ],
   "files": [
     {

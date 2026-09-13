@@ -5,7 +5,7 @@
   "description": "Multi-line statement where each line slides up from behind a mask, one line after another.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/text-reveal.json"
+    "https://www.reelcn.dev/r/text-reveal.json"
   ],
   "files": [
     {

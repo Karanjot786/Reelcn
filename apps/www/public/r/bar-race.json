@@ -5,8 +5,8 @@
   "description": "Ranked horizontal bars that grow and swap places smoothly as values change step by step, with a large step label.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/chart-scale.json",
-    "http://localhost:3000/r/core.json"
+    "https://www.reelcn.dev/r/chart-scale.json",
+    "https://www.reelcn.dev/r/core.json"
   ],
   "files": [
     {

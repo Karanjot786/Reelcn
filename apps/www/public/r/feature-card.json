@@ -5,8 +5,8 @@
   "description": "Icon, title, body copy and an optional badge on a themed card that rises into place.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/animate.json",
-    "http://localhost:3000/r/core.json"
+    "https://www.reelcn.dev/r/animate.json",
+    "https://www.reelcn.dev/r/core.json"
   ],
   "files": [
     {

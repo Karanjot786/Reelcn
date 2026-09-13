@@ -10,7 +10,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
-const BASE = "https://reelcn.dev/sfx";
+const BASE = "https://www.reelcn.dev/sfx";
 const OUT = path.join("public", "reelcn", "sfx");
 const ITEM = path.join("src", "reelcn", "sfx.tsx");
 

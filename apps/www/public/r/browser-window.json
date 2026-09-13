@@ -5,7 +5,7 @@
   "description": "Neutral browser chrome with back/forward arrows and a rounded url pill, wrapped around any page content you pass as children.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/core.json"
+    "https://www.reelcn.dev/r/core.json"
   ],
   "files": [
     {

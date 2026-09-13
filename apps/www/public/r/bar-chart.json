@@ -5,8 +5,8 @@
   "description": "Bars that grow in one by one over nice gridlines with counting value labels; vertical in landscape and square, horizontal in portrait.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/chart-scale.json",
-    "http://localhost:3000/r/core.json"
+    "https://www.reelcn.dev/r/chart-scale.json",
+    "https://www.reelcn.dev/r/core.json"
   ],
   "files": [
     {

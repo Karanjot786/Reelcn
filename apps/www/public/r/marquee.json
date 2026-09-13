@@ -5,7 +5,7 @@
   "description": "Endless ticker of words or logos that scrolls at a steady speed with softly faded edges.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/core.json"
+    "https://www.reelcn.dev/r/core.json"
   ],
   "files": [
     {

@@ -5,8 +5,8 @@
   "description": "A line that lands in one hit with a springy scale and a tilt that straightens as it settles.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/core.json",
-    "http://localhost:3000/r/text-reveal.json"
+    "https://www.reelcn.dev/r/core.json",
+    "https://www.reelcn.dev/r/text-reveal.json"
   ],
   "files": [
     {

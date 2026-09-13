@@ -5,7 +5,7 @@
   "description": "Sentence with one slot that cycles through a list of words by sliding, flipping or blurring them in place.",
   "dependencies": [],
   "registryDependencies": [
-    "http://localhost:3000/r/core.json"
+    "https://www.reelcn.dev/r/core.json"
   ],
   "files": [
     {
