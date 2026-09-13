@@ -29,6 +29,7 @@
     "@remotion/renderer": "catalog:",
     "@types/node": "24.13.4",
     "shadcn": "4.21.0",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "zod": "catalog:"
   }
 }

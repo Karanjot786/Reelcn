@@ -54,6 +54,19 @@ const heading = `${fonts.instrumentSerif}, ui-serif, Georgia, serif`;
 </Sequence>
 ```
 
+- [Story](http://localhost:3000/r/story.json): The storyboard's JSON schema and scene-length rules, as pure functions shared by `storyboard` and every template.
+
+```tsx
+import { storyFrames } from "./story";
+// 5 s of text + 3 s of image, minus a 15-frame fade: 225 frames at 30 fps.
+storyFrames({
+  scenes: [
+    { type: "text", text: "Ten words take a viewer about four seconds to read" },
+    { type: "image", src: "/shot.png" },
+  ],
+});
+```
+
 
 ## text
 

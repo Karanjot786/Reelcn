@@ -11,9 +11,11 @@
     "@remotion/media-utils": "catalog:",
     "@remotion/openai-whisper": "catalog:",
     "@remotion/transitions": "catalog:",
+    "mediabunny": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "remotion": "catalog:"
+    "remotion": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@types/react": "19.3.0",

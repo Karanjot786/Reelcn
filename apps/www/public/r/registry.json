@@ -3580,6 +3580,39 @@
       }
     },
     {
+      "name": "story",
+      "type": "registry:item",
+      "title": "Story",
+      "description": "The storyboard's JSON schema and scene-length rules, as pure functions shared by `storyboard` and every template.",
+      "categories": [
+        "lib"
+      ],
+      "dependencies": [
+        "zod"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/code-tokens.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/story.ts",
+          "type": "registry:file",
+          "target": "~/src/reelcn/story.ts"
+        }
+      ],
+      "docs": "Usage:\n\nimport { storyFrames } from \"./story\";\n// 5 s of text + 3 s of image, minus a 15-frame fade: 225 frames at 30 fps.\nstoryFrames({\n  scenes: [\n    { type: \"text\", text: \"Ten words take a viewer about four seconds to read\" },\n    { type: \"image\", src: \"/shot.png\" },\n  ],\n});",
+      "meta": {
+        "use": [],
+        "avoid": [],
+        "tags": [
+          "storyboard",
+          "schema",
+          "duration",
+          "zod"
+        ]
+      }
+    },
+    {
       "name": "stripe-wipe",
       "type": "registry:item",
       "title": "Stripe Wipe",

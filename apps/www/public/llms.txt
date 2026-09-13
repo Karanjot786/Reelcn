@@ -17,6 +17,7 @@ How they work:
 - [Core](http://localhost:3000/r/core.json): Theme tokens, responsive design units, platform safe zones and motion presets. Every reelcn component builds on this file.
 - [Fonts](http://localhost:3000/r/fonts.json): Loads the curated font set used by the built-in themes, so renders look identical on every machine.
 - [SFX](http://localhost:3000/r/sfx.json): Thirty CC0 sound effects, played from one component. Streams from reelcn.dev, or from your own public folder after `reelcn-sfx-pull`.
+- [Story](http://localhost:3000/r/story.json): The storyboard's JSON schema and scene-length rules, as pure functions shared by `storyboard` and every template.
 
 ## text
 
