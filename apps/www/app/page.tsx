@@ -83,7 +83,7 @@ export default function Home() {
         </nav>
       </header>
 
-      <main id="main">
+      <main id="main" tabIndex={-1}>
         <section className="hero" aria-labelledby="hero-title">
           <div className="hero-copy">
             <h1 id="hero-title">Every frame, already designed.</h1>
