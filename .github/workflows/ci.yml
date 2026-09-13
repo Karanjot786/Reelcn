@@ -22,6 +22,8 @@ jobs:
       - name: Typecheck items at the user's es2015 lib
         run: pnpm typecheck:user
       - run: pnpm lint
+      - name: No clock, randomness or CSS animation in components
+        run: pnpm check:determinism
       - run: pnpm test
       - name: Sound effects are CC0 and listed
         run: pnpm sfx:check

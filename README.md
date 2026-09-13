@@ -33,7 +33,7 @@ Agents: `npx skills add Karanjot786/reelcn` installs the reelcn skill, and http:
 ## Catalog
 
 <!-- catalog:start -->
-126 items.
+127 items.
 
 | Category | Items | Examples |
 |---|---|---|
@@ -48,7 +48,7 @@ Agents: `npx skills add Karanjot786/reelcn` installs the reelcn skill, and http:
 | data | 10 | `area-chart`, `bar-chart`, `bar-race`, `donut`, `kpi-grid`, … |
 | audio | 6 | `audio-reactive`, `radial-visualizer`, `speaker-card`, `spectrum`, `use-beat`, … |
 | templates | 15 | `app-promo`, `audiogram`, `changelog`, `data-story`, `feature-short`, … |
-| tools | 3 | `contact-sheet`, `sfx-pull`, `transcribe` |
+| tools | 4 | `check-determinism`, `contact-sheet`, `sfx-pull`, `transcribe` |
 <!-- catalog:end -->
 
 ## Develop

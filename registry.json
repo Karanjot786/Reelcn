@@ -4823,6 +4823,37 @@
       }
     },
     {
+      "name": "check-determinism",
+      "type": "registry:item",
+      "title": "Check Determinism",
+      "description": "Scans your source for code that renders differently each time: wall-clock time, unseeded randomness, CSS animation and direct canvas-size reads.",
+      "categories": [
+        "tools"
+      ],
+      "dependencies": [],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "registry/tools/check-determinism.ts",
+          "type": "registry:file",
+          "target": "~/scripts/reelcn-check-determinism.ts"
+        }
+      ],
+      "docs": "Usage:\n\nnode scripts/reelcn-check-determinism.ts\nnode scripts/reelcn-check-determinism.ts src remotion",
+      "meta": {
+        "use": [
+          "Before a final render, or as a CI step"
+        ],
+        "avoid": [],
+        "tags": [
+          "determinism",
+          "lint",
+          "ci",
+          "agent"
+        ]
+      }
+    },
+    {
       "name": "contact-sheet",
       "type": "registry:item",
       "title": "Contact Sheet",

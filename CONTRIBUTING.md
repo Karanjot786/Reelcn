@@ -28,7 +28,7 @@ pnpm site     # the docs site on localhost:3000
 ## Before you open a pull request
 
 ```bash
-pnpm format && pnpm typecheck && pnpm typecheck:user && pnpm lint && pnpm test && pnpm registry:build && pnpm check:drift && pnpm stills smoke <name>
+pnpm format && pnpm typecheck && pnpm typecheck:user && pnpm lint && pnpm check:determinism && pnpm test && pnpm registry:build && pnpm check:drift && pnpm stills smoke <name>
 ```
 
 ## Rules

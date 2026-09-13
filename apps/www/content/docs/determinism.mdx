@@ -26,6 +26,23 @@ Call `random` with the same seed on every frame of every render, and the "random
 
 `useVideoConfig().width` and `.height` return the real composition size. Reading them directly bakes that specific size into a component, so it silently breaks the moment someone renders it inside a `<Viewport>` override — a contact sheet, a picture-in-picture panel — that's a different size on purpose. `useViewport()` returns the size a component should actually lay out for, whether that's the real canvas or an override. See [Formats & safe zones](/docs/formats).
 
+## Check your project
+
+Install the scanner once, then run it before a final render or in CI:
+
+```bash
+npx shadcn@latest add @reelcn/check-determinism
+node scripts/reelcn-check-determinism.ts
+```
+
+It scans `src/` (or the folders you pass) and prints `file:line` for each problem:
+- `Math.random`, `Date.now` or `new Date()` with no argument.
+- CSS `animation` or `transition` with a duration.
+- Tailwind `animate-` or `transition-` classes.
+- Inside `src/reelcn/`, reading `useVideoConfig().width` or `.height`.
+
+It exits 1 when it finds anything.
+
 ## Next steps
 
 <Cards>

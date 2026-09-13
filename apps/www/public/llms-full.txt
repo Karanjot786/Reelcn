@@ -1325,6 +1325,13 @@ const { pulse, beat } = useBeat({ bpm: 120 });
 
 ## tools
 
+- [Check Determinism](http://localhost:3000/r/check-determinism.json): Scans your source for code that renders differently each time: wall-clock time, unseeded randomness, CSS animation and direct canvas-size reads. (use for Before a final render, or as a CI step)
+
+```tsx
+node scripts/reelcn-check-determinism.ts
+node scripts/reelcn-check-determinism.ts src remotion
+```
+
 - [Contact Sheet](http://localhost:3000/r/contact-sheet.json): Renders one PNG grid of evenly spaced frames from any composition, so a whole video can be reviewed in a single image.
 
 ```tsx
