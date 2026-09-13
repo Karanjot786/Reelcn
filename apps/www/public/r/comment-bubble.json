@@ -1,0 +1,39 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "comment-bubble",
+  "title": "Comment Bubble",
+  "description": "A viewer comment card, optionally marked as a reply, with a like count that ticks up.",
+  "dependencies": [],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/comment-bubble.tsx",
+      "content": "/**\n * @title Comment Bubble\n * @category social\n * @description A viewer comment card, optionally marked as a reply, with a like count that ticks up.\n * @duration 36\n * @use Answering a comment on camera\n * @use Showing the question a video is about to answer\n * @avoid A full post with author metrics — use `post-card`\n * @tags comment, reply, community, card\n * @example\n * <Center>\n *   <CommentBubble name=\"Katherine\" handle=\"@kj\" text=\"Which mic is that?\" replyTo=\"Ada\" likes={42} />\n * </Center>\n */\nimport type React from \"react\";\nimport { alpha, type MotionProps, tween, useMotion, useTheme, useViewport } from \"./core\";\n\nexport type CommentBubbleProps = MotionProps & {\n  name: string;\n  text: string;\n  handle?: string;\n  /** Name this comment answers; shown as a small \"Replying to\" line. */\n  replyTo?: string;\n  likes?: number;\n  /** Avatar image; pass an `<Img>`. Initials are drawn when omitted. */\n  avatar?: React.ReactNode;\n  width?: number;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\nexport function CommentBubble({\n  name,\n  text,\n  handle,\n  replyTo,\n  likes,\n  avatar,\n  width = 700,\n  style,\n  className,\n  ...motion\n}: CommentBubbleProps) {\n  const theme = useTheme();\n  const { u } = useViewport();\n  const m = useMotion(motion);\n  const enter = Math.min(m.enter, 1);\n  const count = tween(m.frame, m.fps, {\n    from: m.delay + Math.round(m.fps * 0.4),\n    duration: Math.round(m.fps * 0.9),\n    motion: \"gentle\",\n  });\n\n  return (\n    <div\n      className={className}\n      style={{\n        display: \"flex\",\n        gap: u(16),\n        width: u(width),\n        maxWidth: \"100%\",\n        color: theme.colors.foreground,\n        opacity: enter * (1 - m.exit),\n        translate: `${(1 - enter) * -u(18)}px 0`,\n        ...style,\n      }}\n    >\n      <div\n        style={{\n          width: u(56),\n          height: u(56),\n          borderRadius: \"50%\",\n          overflow: \"hidden\",\n          background: theme.colors.accent,\n          color: theme.colors.accentForeground,\n          display: \"grid\",\n          placeItems: \"center\",\n          fontSize: u(24),\n          fontWeight: 700,\n          flexShrink: 0,\n        }}\n      >\n        {avatar ?? name.slice(0, 1)}\n      </div>\n      <div\n        style={{\n          flexGrow: 1,\n          padding: u(20),\n          borderRadius: u(theme.radius),\n          background: alpha(theme.colors.surface, 0.95),\n          border: `1px solid ${theme.colors.border}`,\n        }}\n      >\n        {replyTo ? (\n          <div style={{ fontSize: u(18), color: theme.colors.accent, marginBottom: u(6) }}>Replying to {replyTo}</div>\n        ) : null}\n        <div style={{ display: \"flex\", alignItems: \"baseline\", gap: u(10) }}>\n          <span style={{ fontSize: u(24), fontWeight: 700 }}>{name}</span>\n          {handle ? <span style={{ fontSize: u(20), color: theme.colors.muted }}>{handle}</span> : null}\n        </div>\n        <div style={{ fontSize: u(26), lineHeight: 1.4, marginTop: u(8), textWrap: \"pretty\" }}>{text}</div>\n        {likes === undefined ? null : (\n          <div\n            style={{ display: \"flex\", alignItems: \"center\", gap: u(8), marginTop: u(14), color: theme.colors.muted }}\n          >\n            <svg width={u(20)} height={u(20)} viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\">\n              <path\n                d=\"M12 20s-7-4.5-7-9.5A3.5 3.5 0 0 1 12 8a3.5 3.5 0 0 1 7 2.5C19 15.5 12 20 12 20Z\"\n                stroke=\"currentColor\"\n                strokeWidth={1.8}\n                strokeLinejoin=\"round\"\n              />\n            </svg>\n            <span style={{ fontSize: u(20), fontVariantNumeric: \"tabular-nums\" }}>\n              {Math.round(likes * Math.min(count, 1))}\n            </span>\n          </div>\n        )}\n      </div>\n    </div>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/comment-bubble.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "36",
+    "use": [
+      "Answering a comment on camera",
+      "Showing the question a video is about to answer"
+    ],
+    "avoid": [
+      "A full post with author metrics — use `post-card`"
+    ],
+    "tags": [
+      "comment",
+      "reply",
+      "community",
+      "card"
+    ]
+  },
+  "docs": "Usage:\n\n<Center>\n  <CommentBubble name=\"Katherine\" handle=\"@kj\" text=\"Which mic is that?\" replyTo=\"Ada\" likes={42} />\n</Center>",
+  "categories": [
+    "social"
+  ],
+  "type": "registry:item"
+}

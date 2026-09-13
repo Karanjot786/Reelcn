@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "captions-bold-pop",
+  "title": "Captions: Bold Pop",
+  "description": "Heavy centered captions where the spoken word grows and lifts.",
+  "dependencies": [],
+  "registryDependencies": [
+    "http://localhost:3000/r/captions.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/captions-bold-pop.tsx",
+      "content": "/**\n * @title Captions: Bold Pop\n * @category social\n * @description Heavy centered captions where the spoken word grows and lifts.\n * @duration data-driven\n * @preset captions\n * @use Shorts and reels that need captions to carry the edit\n * @tags captions, shorts, bold\n * @example\n * <CaptionsBoldPop captions={captions} emphasize={[\"free\"]} />\n */\nimport { Captions, type CaptionsProps } from \"./captions\";\n\nexport type CaptionsBoldPopProps = Omit<CaptionsProps, \"variant\">;\n\nexport function CaptionsBoldPop(props: CaptionsBoldPopProps) {\n  return <Captions {...props} variant=\"bold-pop\" />;\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/captions-bold-pop.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "Shorts and reels that need captions to carry the edit"
+    ],
+    "avoid": [],
+    "tags": [
+      "captions",
+      "shorts",
+      "bold"
+    ],
+    "preset": "captions"
+  },
+  "docs": "Usage:\n\n<CaptionsBoldPop captions={captions} emphasize={[\"free\"]} />",
+  "categories": [
+    "social"
+  ],
+  "type": "registry:item"
+}

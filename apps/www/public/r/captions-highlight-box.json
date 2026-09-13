@@ -1,0 +1,37 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "captions-highlight-box",
+  "title": "Captions: Highlight Box",
+  "description": "A marker block travels word by word, like a highlighter following the speech.",
+  "dependencies": [],
+  "registryDependencies": [
+    "http://localhost:3000/r/captions.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/captions-highlight-box.tsx",
+      "content": "/**\n * @title Captions: Highlight Box\n * @category social\n * @description A marker block travels word by word, like a highlighter following the speech.\n * @duration data-driven\n * @preset captions\n * @use Explainers and teaching clips where the key word should be unmissable\n * @tags captions, highlight, marker, explainer\n * @example\n * <CaptionsHighlightBox captions={captions} emphasize={[\"never\"]} />\n */\nimport { Captions, type CaptionsProps } from \"./captions\";\n\nexport type CaptionsHighlightBoxProps = Omit<CaptionsProps, \"variant\">;\n\nexport function CaptionsHighlightBox(props: CaptionsHighlightBoxProps) {\n  return <Captions {...props} variant=\"highlight-box\" />;\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/captions-highlight-box.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "Explainers and teaching clips where the key word should be unmissable"
+    ],
+    "avoid": [],
+    "tags": [
+      "captions",
+      "highlight",
+      "marker",
+      "explainer"
+    ],
+    "preset": "captions"
+  },
+  "docs": "Usage:\n\n<CaptionsHighlightBox captions={captions} emphasize={[\"never\"]} />",
+  "categories": [
+    "social"
+  ],
+  "type": "registry:item"
+}

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "waveform",
+  "title": "Waveform",
+  "description": "The audio's shape, drawn as bars, a line or a mirrored band that moves with the sound.",
+  "dependencies": [
+    "@remotion/media-utils",
+    "remotion"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/waveform.tsx",
+      "content": "/**\n * @title Waveform\n * @category audio\n * @description The audio's shape, drawn as bars, a line or a mirrored band that moves with the sound.\n * @duration sustained\n * @use Audiograms and podcast clips\n * @use Any full-bleed band of motion tied to a voice or a track\n * @avoid A frequency view — use `spectrum`\n * @tags waveform, audiogram, podcast, audio\n * @example\n * <Waveform src={staticFile(\"episode.mp3\")} variant=\"mirror\" bars={64} />\n */\nimport { useWindowedAudioData, visualizeAudioWaveform } from \"@remotion/media-utils\";\nimport type React from \"react\";\nimport { useCurrentFrame, useVideoConfig } from \"remotion\";\nimport { alpha, useTheme, useViewport } from \"./core\";\n\nexport type WaveformProps = {\n  /** Audio file; `staticFile(\"…\")` or a URL. */\n  src: string;\n  variant?: \"bars\" | \"line\" | \"mirror\";\n  /** Number of bars or points across the width. */\n  bars?: number;\n  /** Height of the band, in design units. */\n  height?: number;\n  color?: string;\n  /** Seconds of audio loaded around the current frame. */\n  windowInSeconds?: number;\n  /** Rounded bar ends, in design units. */\n  radius?: number;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\nexport function Waveform({\n  src,\n  variant = \"bars\",\n  bars = 48,\n  height = 220,\n  color,\n  windowInSeconds = 10,\n  radius = 6,\n  style,\n  className,\n}: WaveformProps) {\n  const frame = useCurrentFrame();\n  const { fps } = useVideoConfig();\n  const { u, width } = useViewport();\n  const theme = useTheme();\n  const { audioData, dataOffsetInSeconds } = useWindowedAudioData({ src, frame, fps, windowInSeconds });\n\n  const samples = audioData\n    ? visualizeAudioWaveform({\n        fps,\n        frame,\n        audioData,\n        numberOfSamples: bars,\n        windowInSeconds: 1 / fps,\n        channel: 0,\n        dataOffsetInSeconds,\n      })\n    : new Array(bars).fill(0);\n\n  const tone = color ?? theme.colors.accent;\n  const band = u(height);\n  const gap = u(6);\n  const barWidth = Math.max(u(2), (width - u(120) - gap * (bars - 1)) / bars);\n  // Real mixes leave headroom well under full scale, so lift the raw amplitude\n  // to make a quiet track still read as a moving waveform.\n  const gain = 16;\n\n  if (variant === \"line\") {\n    const points = samples\n      .map((value, index) => {\n        const x = (index / (bars - 1)) * 100;\n        const y = 50 - Math.min(1, value * gain) * 45;\n        return `${x},${y}`;\n      })\n      .join(\" \");\n    return (\n      <div className={className} style={{ width: \"100%\", height: band, ...style }}>\n        <svg width=\"100%\" height=\"100%\" viewBox=\"0 0 100 100\" preserveAspectRatio=\"none\" aria-hidden=\"true\">\n          <polyline\n            points={points}\n            fill=\"none\"\n            stroke={tone}\n            strokeWidth={1.4}\n            strokeLinejoin=\"round\"\n            strokeLinecap=\"round\"\n          />\n        </svg>\n      </div>\n    );\n  }\n\n  return (\n    <div\n      className={className}\n      style={{\n        display: \"flex\",\n        alignItems: \"center\",\n        justifyContent: \"center\",\n        gap,\n        height: band,\n        ...style,\n      }}\n    >\n      {samples.map((value, index) => {\n        // `visualizeAudioWaveform`'s minus-one-to-one range alternates sign per index\n        // as a drawing convention, not a real polarity — bar height needs magnitude.\n        const size = Math.max(u(4), Math.min(1, Math.abs(value) * gain) * band);\n        return (\n          <div\n            key={index}\n            style={{\n              width: barWidth,\n              height: size,\n              alignSelf: variant === \"mirror\" ? \"center\" : \"flex-end\",\n              borderRadius: u(radius),\n              background: tone,\n              opacity: 0.55 + Math.min(1, Math.abs(value) * gain) * 0.45,\n              boxShadow: variant === \"mirror\" ? `0 0 ${u(12)}px ${alpha(tone, 0.35)}` : undefined,\n            }}\n          />\n        );\n      })}\n    </div>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/waveform.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "sustained",
+    "use": [
+      "Audiograms and podcast clips",
+      "Any full-bleed band of motion tied to a voice or a track"
+    ],
+    "avoid": [
+      "A frequency view — use `spectrum`"
+    ],
+    "tags": [
+      "waveform",
+      "audiogram",
+      "podcast",
+      "audio"
+    ]
+  },
+  "docs": "Usage:\n\n<Waveform src={staticFile(\"episode.mp3\")} variant=\"mirror\" bars={64} />",
+  "categories": [
+    "audio"
+  ],
+  "type": "registry:item"
+}

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "transcribe",
+  "title": "Transcribe",
+  "description": "Turns audio or video into word-level captions JSON for the caption components.",
+  "dependencies": [
+    "@remotion/captions",
+    "@remotion/install-whisper-cpp",
+    "@remotion/openai-whisper"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/tools/transcribe.ts",
+      "content": "/**\n * @title Transcribe\n * @category tools\n * @description Turns audio or video into word-level captions JSON for the caption components.\n * @env OPENAI_API_KEY\n * @use Captioning a talking-head short, a podcast clip or a tutorial\n * @use Converting an existing .srt into the caption format\n * @example\n * node scripts/reelcn-transcribe.ts talk.mp4\n * node scripts/reelcn-transcribe.ts talk.mp4 --openai --out public/captions/talk.json\n * node scripts/reelcn-transcribe.ts subtitles.srt\n */\nimport { execFileSync } from \"node:child_process\";\nimport { mkdirSync, readFileSync, writeFileSync } from \"node:fs\";\nimport path from \"node:path\";\nimport { parseSrt } from \"@remotion/captions\";\nimport {\n  downloadWhisperModel,\n  installWhisperCpp,\n  toCaptions,\n  transcribe,\n  type WhisperModel,\n} from \"@remotion/install-whisper-cpp\";\nimport { openAiWhisperApiToCaptions } from \"@remotion/openai-whisper\";\n\nconst args = process.argv.slice(2);\nconst input = args.find((arg) => !arg.startsWith(\"--\"));\nconst flag = (name: string) => args.find((arg) => arg.indexOf(`--${name}=`) === 0)?.slice(name.length + 3);\n\nif (!input) {\n  console.error(\n    \"usage: node scripts/reelcn-transcribe.ts <audio|video|srt> [--model=small.en] [--openai] [--out=path.json]\",\n  );\n  process.exit(1);\n}\n\nconst out = flag(\"out\") ?? path.join(\"public\", \"captions\", `${path.basename(input).replace(/\\.[^.]+$/, \"\")}.json`);\nconst model = (flag(\"model\") ?? \"small.en\") as WhisperModel;\nconst whisperCppVersion = \"1.5.5\";\nconst whisperDir = path.join(\".reelcn\", \"whisper\");\nmkdirSync(path.dirname(out), { recursive: true });\n\nconst write = (captions: unknown) => {\n  writeFileSync(out, `${JSON.stringify(captions, null, 2)}\\n`);\n  console.log(`${out}: ${(captions as unknown[]).length} captions`);\n};\n\nif (input.endsWith(\".srt\")) {\n  // .srt has no word timings, so each subtitle line becomes one caption.\n  const { captions } = parseSrt({ input: readFileSync(input, \"utf8\") });\n  write(captions);\n} else if (args.indexOf(\"--openai\") !== -1) {\n  const key = process.env.OPENAI_API_KEY;\n  if (!key) throw new Error(\"--openai needs OPENAI_API_KEY in the environment\");\n  const body = new FormData();\n  body.append(\"file\", new Blob([readFileSync(input)]), path.basename(input));\n  body.append(\"model\", \"whisper-1\");\n  body.append(\"response_format\", \"verbose_json\");\n  body.append(\"timestamp_granularities[]\", \"word\");\n  const response = await fetch(\"https://api.openai.com/v1/audio/transcriptions\", {\n    method: \"POST\",\n    headers: { Authorization: `Bearer ${key}` },\n    body,\n  });\n  if (!response.ok) throw new Error(`OpenAI: ${response.status} ${await response.text()}`);\n  const { captions } = openAiWhisperApiToCaptions({ transcription: await response.json() });\n  write(captions);\n} else {\n  // whisper.cpp wants 16kHz mono wav; Remotion ships the ffmpeg that makes one.\n  const wav = path.resolve(\".reelcn\", `${path.basename(input).replace(/\\.[^.]+$/, \"\")}-16k.wav`);\n  mkdirSync(path.dirname(wav), { recursive: true });\n  execFileSync(\"npx\", [\"remotion\", \"ffmpeg\", \"-y\", \"-i\", input, \"-ar\", \"16000\", \"-ac\", \"1\", wav], { stdio: \"inherit\" });\n\n  await installWhisperCpp({ to: whisperDir, version: whisperCppVersion });\n  await downloadWhisperModel({ model, folder: whisperDir });\n  const whisperCppOutput = await transcribe({\n    inputPath: wav,\n    whisperPath: whisperDir,\n    whisperCppVersion,\n    modelFolder: whisperDir,\n    model,\n    tokenLevelTimestamps: true,\n  });\n  const { captions } = toCaptions({ whisperCppOutput });\n  write(captions);\n}\n",
+      "type": "registry:file",
+      "target": "~/scripts/reelcn-transcribe.ts"
+    }
+  ],
+  "envVars": {
+    "OPENAI_API_KEY": ""
+  },
+  "meta": {
+    "use": [
+      "Captioning a talking-head short, a podcast clip or a tutorial",
+      "Converting an existing .srt into the caption format"
+    ],
+    "avoid": [],
+    "tags": []
+  },
+  "docs": "Usage:\n\nnode scripts/reelcn-transcribe.ts talk.mp4\nnode scripts/reelcn-transcribe.ts talk.mp4 --openai --out public/captions/talk.json\nnode scripts/reelcn-transcribe.ts subtitles.srt",
+  "categories": [
+    "tools"
+  ],
+  "type": "registry:item"
+}

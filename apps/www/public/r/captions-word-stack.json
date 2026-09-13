@@ -1,0 +1,37 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "captions-word-stack",
+  "title": "Captions: Word Stack",
+  "description": "Words stacked one per line, with the spoken word growing and lifting.",
+  "dependencies": [],
+  "registryDependencies": [
+    "http://localhost:3000/r/captions.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/captions-word-stack.tsx",
+      "content": "/**\n * @title Captions: Word Stack\n * @category social\n * @description Words stacked one per line, with the spoken word growing and lifting.\n * @duration data-driven\n * @preset captions\n * @use Vertical video where a wide caption block would crowd the frame\n * @tags captions, vertical, stack, shorts\n * @example\n * <CaptionsWordStack captions={captions} maxWords={3} />\n */\nimport { Captions, type CaptionsProps } from \"./captions\";\n\nexport type CaptionsWordStackProps = Omit<CaptionsProps, \"variant\">;\n\nexport function CaptionsWordStack(props: CaptionsWordStackProps) {\n  return <Captions {...props} variant=\"word-stack\" />;\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/captions-word-stack.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "Vertical video where a wide caption block would crowd the frame"
+    ],
+    "avoid": [],
+    "tags": [
+      "captions",
+      "vertical",
+      "stack",
+      "shorts"
+    ],
+    "preset": "captions"
+  },
+  "docs": "Usage:\n\n<CaptionsWordStack captions={captions} maxWords={3} />",
+  "categories": [
+    "social"
+  ],
+  "type": "registry:item"
+}

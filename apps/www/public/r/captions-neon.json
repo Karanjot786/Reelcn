@@ -1,0 +1,39 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "captions-neon",
+  "title": "Captions: Neon",
+  "description": "Captions where the spoken word glows in the accent color.",
+  "dependencies": [],
+  "registryDependencies": [
+    "http://localhost:3000/r/captions.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/captions-neon.tsx",
+      "content": "/**\n * @title Captions: Neon\n * @category social\n * @description Captions where the spoken word glows in the accent color.\n * @duration data-driven\n * @preset captions\n * @use Night-time and club footage, music clips\n * @avoid Corporate or documentary footage — use `captions-minimal`\n * @tags captions, neon, glow, music\n * @example\n * <CaptionsNeon captions={captions} />\n */\nimport { Captions, type CaptionsProps } from \"./captions\";\n\nexport type CaptionsNeonProps = Omit<CaptionsProps, \"variant\">;\n\nexport function CaptionsNeon(props: CaptionsNeonProps) {\n  return <Captions {...props} variant=\"neon\" />;\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/captions-neon.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "Night-time and club footage, music clips"
+    ],
+    "avoid": [
+      "Corporate or documentary footage — use `captions-minimal`"
+    ],
+    "tags": [
+      "captions",
+      "neon",
+      "glow",
+      "music"
+    ],
+    "preset": "captions"
+  },
+  "docs": "Usage:\n\n<CaptionsNeon captions={captions} />",
+  "categories": [
+    "social"
+  ],
+  "type": "registry:item"
+}

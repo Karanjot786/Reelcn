@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "captions-minimal",
+  "title": "Captions: Minimal",
+  "description": "Quiet captions: one line, no effects, with only the spoken word brightening.",
+  "dependencies": [],
+  "registryDependencies": [
+    "http://localhost:3000/r/captions.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/captions-minimal.tsx",
+      "content": "/**\n * @title Captions: Minimal\n * @category social\n * @description Quiet captions: one line, no effects, with only the spoken word brightening.\n * @duration data-driven\n * @preset captions\n * @use Interviews and documentary footage where captions should stay out of the way\n * @tags captions, minimal, interview\n * @example\n * <CaptionsMinimal captions={captions} />\n */\nimport { Captions, type CaptionsProps } from \"./captions\";\n\nexport type CaptionsMinimalProps = Omit<CaptionsProps, \"variant\">;\n\nexport function CaptionsMinimal(props: CaptionsMinimalProps) {\n  return <Captions {...props} variant=\"minimal\" />;\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/captions-minimal.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "Interviews and documentary footage where captions should stay out of the way"
+    ],
+    "avoid": [],
+    "tags": [
+      "captions",
+      "minimal",
+      "interview"
+    ],
+    "preset": "captions"
+  },
+  "docs": "Usage:\n\n<CaptionsMinimal captions={captions} />",
+  "categories": [
+    "social"
+  ],
+  "type": "registry:item"
+}

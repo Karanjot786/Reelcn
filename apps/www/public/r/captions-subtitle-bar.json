@@ -1,0 +1,37 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "captions-subtitle-bar",
+  "title": "Captions: Subtitle Bar",
+  "description": "Broadcast-style subtitles on a translucent bar, readable over anything.",
+  "dependencies": [],
+  "registryDependencies": [
+    "http://localhost:3000/r/captions.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/captions-subtitle-bar.tsx",
+      "content": "/**\n * @title Captions: Subtitle Bar\n * @category social\n * @description Broadcast-style subtitles on a translucent bar, readable over anything.\n * @duration data-driven\n * @preset captions\n * @use Long-form video, webinars and anything with a wide audience\n * @tags captions, subtitles, broadcast, accessibility\n * @example\n * <CaptionsSubtitleBar captions={captions} position=\"bottom\" />\n */\nimport { Captions, type CaptionsProps } from \"./captions\";\n\nexport type CaptionsSubtitleBarProps = Omit<CaptionsProps, \"variant\">;\n\nexport function CaptionsSubtitleBar(props: CaptionsSubtitleBarProps) {\n  return <Captions {...props} variant=\"subtitle-bar\" />;\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/captions-subtitle-bar.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "Long-form video, webinars and anything with a wide audience"
+    ],
+    "avoid": [],
+    "tags": [
+      "captions",
+      "subtitles",
+      "broadcast",
+      "accessibility"
+    ],
+    "preset": "captions"
+  },
+  "docs": "Usage:\n\n<CaptionsSubtitleBar captions={captions} position=\"bottom\" />",
+  "categories": [
+    "social"
+  ],
+  "type": "registry:item"
+}

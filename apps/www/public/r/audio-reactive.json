@@ -1,0 +1,42 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "audio-reactive",
+  "title": "Audio Reactive",
+  "description": "Wraps anything and drives its scale, or a glow, from how loud the audio is right now.",
+  "dependencies": [
+    "@remotion/media-utils",
+    "remotion"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/audio-reactive.tsx",
+      "content": "/**\n * @title Audio Reactive\n * @category audio\n * @description Wraps anything and drives its scale, or a glow, from how loud the audio is right now.\n * @duration sustained\n * @use Making a logo, headline or card move with the track\n * @use Reacting to a voice whose tempo you do not know\n * @avoid A known BPM, where pure math is steadier — use `use-beat`\n * @tags audio, reactive, pulse, wrapper\n * @example\n * <AudioReactive src={staticFile(\"track.mp3\")} effect=\"both\">\n *   <Img src={staticFile(\"logo.png\")} />\n * </AudioReactive>\n */\nimport { useWindowedAudioData, visualizeAudioWaveform } from \"@remotion/media-utils\";\nimport type React from \"react\";\nimport { useCurrentFrame, useVideoConfig } from \"remotion\";\nimport { alpha, useTheme, useViewport } from \"./core\";\n\nexport type AudioReactiveProps = {\n  /** Audio file; `staticFile(\"…\")` or a URL. */\n  src: string;\n  effect?: \"scale\" | \"glow\" | \"both\";\n  /** How far the effect travels at full volume. 1 is a 20% swell. */\n  intensity?: number;\n  color?: string;\n  windowInSeconds?: number;\n  children?: React.ReactNode;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\nexport function AudioReactive({\n  src,\n  effect = \"scale\",\n  intensity = 1,\n  color,\n  windowInSeconds = 10,\n  children,\n  style,\n  className,\n}: AudioReactiveProps) {\n  const frame = useCurrentFrame();\n  const { fps } = useVideoConfig();\n  const { u } = useViewport();\n  const theme = useTheme();\n  const { audioData, dataOffsetInSeconds } = useWindowedAudioData({ src, frame, fps, windowInSeconds });\n  const samples = audioData\n    ? visualizeAudioWaveform({\n        fps,\n        frame,\n        audioData,\n        numberOfSamples: 8,\n        windowInSeconds: 1 / fps,\n        channel: 0,\n        dataOffsetInSeconds,\n      })\n    : [0];\n  // `visualizeAudioWaveform`'s minus-one-to-one range alternates sign per index as a\n  // drawing convention, not a real polarity, so summing magnitudes (not raw values)\n  // keeps a silent clip from averaging out to a false zero. Real mixes leave headroom\n  // well under full scale, so the mean gets a bigger gain than a peak reading would need.\n  const level = Math.min(1, (samples.reduce((total, value) => total + Math.abs(value), 0) / samples.length) * 24);\n  const tone = color ?? theme.colors.accent;\n\n  return (\n    <div\n      className={className}\n      style={{\n        display: \"inline-block\",\n        scale: effect === \"glow\" ? \"1\" : String(1 + level * 0.2 * intensity),\n        filter: effect === \"scale\" ? undefined : `drop-shadow(0 0 ${u(30) * level * intensity}px ${alpha(tone, 0.75)})`,\n        ...style,\n      }}\n    >\n      {children}\n    </div>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/audio-reactive.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "sustained",
+    "use": [
+      "Making a logo, headline or card move with the track",
+      "Reacting to a voice whose tempo you do not know"
+    ],
+    "avoid": [
+      "A known BPM, where pure math is steadier — use `use-beat`"
+    ],
+    "tags": [
+      "audio",
+      "reactive",
+      "pulse",
+      "wrapper"
+    ]
+  },
+  "docs": "Usage:\n\n<AudioReactive src={staticFile(\"track.mp3\")} effect=\"both\">\n  <Img src={staticFile(\"logo.png\")} />\n</AudioReactive>",
+  "categories": [
+    "audio"
+  ],
+  "type": "registry:item"
+}

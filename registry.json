@@ -159,6 +159,46 @@
       }
     },
     {
+      "name": "audio-reactive",
+      "type": "registry:item",
+      "title": "Audio Reactive",
+      "description": "Wraps anything and drives its scale, or a glow, from how loud the audio is right now.",
+      "categories": [
+        "audio"
+      ],
+      "dependencies": [
+        "@remotion/media-utils",
+        "remotion"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/core.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/audio-reactive.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/audio-reactive.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<AudioReactive src={staticFile(\"track.mp3\")} effect=\"both\">\n  <Img src={staticFile(\"logo.png\")} />\n</AudioReactive>",
+      "meta": {
+        "duration": "sustained",
+        "use": [
+          "Making a logo, headline or card move with the track",
+          "Reacting to a voice whose tempo you do not know"
+        ],
+        "avoid": [
+          "A known BPM, where pure math is steadier — use `use-beat`"
+        ],
+        "tags": [
+          "audio",
+          "reactive",
+          "pulse",
+          "wrapper"
+        ]
+      }
+    },
+    {
       "name": "aurora",
       "type": "registry:item",
       "title": "Aurora",
@@ -675,6 +715,326 @@
       }
     },
     {
+      "name": "captions-bold-pop",
+      "type": "registry:item",
+      "title": "Captions: Bold Pop",
+      "description": "Heavy centered captions where the spoken word grows and lifts.",
+      "categories": [
+        "social"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "http://localhost:3000/r/captions.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/captions-bold-pop.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/captions-bold-pop.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<CaptionsBoldPop captions={captions} emphasize={[\"free\"]} />",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "Shorts and reels that need captions to carry the edit"
+        ],
+        "avoid": [],
+        "tags": [
+          "captions",
+          "shorts",
+          "bold"
+        ],
+        "preset": "captions"
+      }
+    },
+    {
+      "name": "captions-boxed",
+      "type": "registry:item",
+      "title": "Captions: Boxed",
+      "description": "Each word in its own rounded chip, with the spoken chip filled in the accent color.",
+      "categories": [
+        "social"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "http://localhost:3000/r/captions.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/captions-boxed.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/captions-boxed.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<CaptionsBoxed captions={captions} />",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "Busy footage where plain text would get lost"
+        ],
+        "avoid": [],
+        "tags": [
+          "captions",
+          "chips",
+          "contrast"
+        ],
+        "preset": "captions"
+      }
+    },
+    {
+      "name": "captions-highlight-box",
+      "type": "registry:item",
+      "title": "Captions: Highlight Box",
+      "description": "A marker block travels word by word, like a highlighter following the speech.",
+      "categories": [
+        "social"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "http://localhost:3000/r/captions.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/captions-highlight-box.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/captions-highlight-box.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<CaptionsHighlightBox captions={captions} emphasize={[\"never\"]} />",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "Explainers and teaching clips where the key word should be unmissable"
+        ],
+        "avoid": [],
+        "tags": [
+          "captions",
+          "highlight",
+          "marker",
+          "explainer"
+        ],
+        "preset": "captions"
+      }
+    },
+    {
+      "name": "captions-karaoke",
+      "type": "registry:item",
+      "title": "Captions: Karaoke",
+      "description": "Captions that fill in word by word as they are spoken, and dim the words still to come.",
+      "categories": [
+        "social"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "http://localhost:3000/r/captions.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/captions-karaoke.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/captions-karaoke.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<CaptionsKaraoke captions={captions} />",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "Lyric videos and sing-along clips",
+          "Tutorials where viewers follow along word by word"
+        ],
+        "avoid": [],
+        "tags": [
+          "captions",
+          "karaoke",
+          "lyrics"
+        ],
+        "preset": "captions"
+      }
+    },
+    {
+      "name": "captions-minimal",
+      "type": "registry:item",
+      "title": "Captions: Minimal",
+      "description": "Quiet captions: one line, no effects, with only the spoken word brightening.",
+      "categories": [
+        "social"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "http://localhost:3000/r/captions.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/captions-minimal.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/captions-minimal.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<CaptionsMinimal captions={captions} />",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "Interviews and documentary footage where captions should stay out of the way"
+        ],
+        "avoid": [],
+        "tags": [
+          "captions",
+          "minimal",
+          "interview"
+        ],
+        "preset": "captions"
+      }
+    },
+    {
+      "name": "captions-neon",
+      "type": "registry:item",
+      "title": "Captions: Neon",
+      "description": "Captions where the spoken word glows in the accent color.",
+      "categories": [
+        "social"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "http://localhost:3000/r/captions.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/captions-neon.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/captions-neon.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<CaptionsNeon captions={captions} />",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "Night-time and club footage, music clips"
+        ],
+        "avoid": [
+          "Corporate or documentary footage — use `captions-minimal`"
+        ],
+        "tags": [
+          "captions",
+          "neon",
+          "glow",
+          "music"
+        ],
+        "preset": "captions"
+      }
+    },
+    {
+      "name": "captions-subtitle-bar",
+      "type": "registry:item",
+      "title": "Captions: Subtitle Bar",
+      "description": "Broadcast-style subtitles on a translucent bar, readable over anything.",
+      "categories": [
+        "social"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "http://localhost:3000/r/captions.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/captions-subtitle-bar.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/captions-subtitle-bar.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<CaptionsSubtitleBar captions={captions} position=\"bottom\" />",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "Long-form video, webinars and anything with a wide audience"
+        ],
+        "avoid": [],
+        "tags": [
+          "captions",
+          "subtitles",
+          "broadcast",
+          "accessibility"
+        ],
+        "preset": "captions"
+      }
+    },
+    {
+      "name": "captions-word-stack",
+      "type": "registry:item",
+      "title": "Captions: Word Stack",
+      "description": "Words stacked one per line, with the spoken word growing and lifting.",
+      "categories": [
+        "social"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "http://localhost:3000/r/captions.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/captions-word-stack.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/captions-word-stack.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<CaptionsWordStack captions={captions} maxWords={3} />",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "Vertical video where a wide caption block would crowd the frame"
+        ],
+        "avoid": [],
+        "tags": [
+          "captions",
+          "vertical",
+          "stack",
+          "shorts"
+        ],
+        "preset": "captions"
+      }
+    },
+    {
+      "name": "captions",
+      "type": "registry:item",
+      "title": "Captions",
+      "description": "Word-synced captions that page like TikTok, highlight the spoken word and pop the words you choose.",
+      "categories": [
+        "social"
+      ],
+      "dependencies": [
+        "@remotion/captions",
+        "remotion"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/core.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/captions.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/captions.tsx"
+        }
+      ],
+      "docs": "Usage:\n\nimport captions from \"../../public/captions/talk.json\";\n\n<Captions captions={captions} emphasize={[\"free\", \"today\"]} variant=\"bold-pop\" />",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "Shorts, reels and talking-head videos that need burned-in captions",
+          "Podcast and tutorial clips watched without sound"
+        ],
+        "avoid": [
+          "A single static line of text — use `text-reveal`"
+        ],
+        "tags": [
+          "captions",
+          "subtitles",
+          "karaoke",
+          "shorts",
+          "accessibility"
+        ]
+      }
+    },
+    {
       "name": "card-push",
       "type": "registry:item",
       "title": "Card Push",
@@ -709,6 +1069,45 @@
           "deck",
           "push",
           "stack"
+        ]
+      }
+    },
+    {
+      "name": "chapter-title",
+      "type": "registry:item",
+      "title": "Chapter Title",
+      "description": "A numbered chapter card that wipes in over the footage and leaves again.",
+      "categories": [
+        "social"
+      ],
+      "dependencies": [
+        "remotion"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/core.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/chapter-title.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/chapter-title.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Sequence from={300} durationInFrames={110}>\n  <ChapterTitle number={2} title=\"Setting the key light\" />\n</Sequence>",
+      "meta": {
+        "duration": "36",
+        "use": [
+          "Section breaks in tutorials and long-form video",
+          "Naming the step a viewer is about to watch"
+        ],
+        "avoid": [
+          "A speaker's name — use `lower-third`"
+        ],
+        "tags": [
+          "chapter",
+          "section",
+          "divider",
+          "tutorial"
         ]
       }
     },
@@ -969,6 +1368,43 @@
       }
     },
     {
+      "name": "comment-bubble",
+      "type": "registry:item",
+      "title": "Comment Bubble",
+      "description": "A viewer comment card, optionally marked as a reply, with a like count that ticks up.",
+      "categories": [
+        "social"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "http://localhost:3000/r/core.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/comment-bubble.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/comment-bubble.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Center>\n  <CommentBubble name=\"Katherine\" handle=\"@kj\" text=\"Which mic is that?\" replyTo=\"Ada\" likes={42} />\n</Center>",
+      "meta": {
+        "duration": "36",
+        "use": [
+          "Answering a comment on camera",
+          "Showing the question a video is about to answer"
+        ],
+        "avoid": [
+          "A full post with author metrics — use `post-card`"
+        ],
+        "tags": [
+          "comment",
+          "reply",
+          "community",
+          "card"
+        ]
+      }
+    },
+    {
       "name": "confetti",
       "type": "registry:item",
       "title": "Confetti",
@@ -1034,6 +1470,43 @@
         "use": [],
         "avoid": [],
         "tags": []
+      }
+    },
+    {
+      "name": "countdown",
+      "type": "registry:item",
+      "title": "Countdown",
+      "description": "A ring that empties while the number counts down to zero.",
+      "categories": [
+        "social"
+      ],
+      "dependencies": [
+        "remotion"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/core.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/countdown.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/countdown.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Sequence durationInFrames={150}>\n  <Countdown seconds={5} label=\"Starting in\" />\n</Sequence>",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "Waiting rooms and \"starting soon\" cards for streams",
+          "Timed challenges inside a video"
+        ],
+        "avoid": [],
+        "tags": [
+          "countdown",
+          "timer",
+          "ring",
+          "stream"
+        ]
       }
     },
     {
@@ -1238,6 +1711,43 @@
       }
     },
     {
+      "name": "end-screen",
+      "type": "registry:item",
+      "title": "End Screen",
+      "description": "Closing screen with a next-video slot, a subscribe slot and a countdown.",
+      "categories": [
+        "social"
+      ],
+      "dependencies": [
+        "remotion"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/core.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/end-screen.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/end-screen.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Sequence from={900} durationInFrames={240}>\n  <EndScreen title=\"Watch this next\" nextTitle=\"How we cut render times in half\" seconds={8} />\n</Sequence>",
+      "meta": {
+        "duration": "60",
+        "use": [
+          "The last ten seconds of a long-form video",
+          "Handing viewers one clear next step"
+        ],
+        "avoid": [],
+        "tags": [
+          "end screen",
+          "outro",
+          "youtube",
+          "cta"
+        ]
+      }
+    },
+    {
       "name": "feature-card",
       "type": "registry:item",
       "title": "Feature Card",
@@ -1355,6 +1865,43 @@
           "beat",
           "hit",
           "cut"
+        ]
+      }
+    },
+    {
+      "name": "follow-card",
+      "type": "registry:item",
+      "title": "Follow Card",
+      "description": "A profile card whose follow button presses itself and flips to \"Following\", with the count ticking up.",
+      "categories": [
+        "social"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "http://localhost:3000/r/core.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/follow-card.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/follow-card.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Center>\n  <FollowCard name=\"Ada Lovelace\" handle=\"@ada\" followers=\"24.8k\" />\n</Center>",
+      "meta": {
+        "duration": "50",
+        "use": [
+          "Asking for a follow at the end of a short",
+          "Introducing a guest or a collaborator"
+        ],
+        "avoid": [
+          "A subscribe ask for long-form video — use `subscribe-cta`"
+        ],
+        "tags": [
+          "follow",
+          "profile",
+          "card",
+          "cta"
         ]
       }
     },
@@ -1580,6 +2127,45 @@
           "box",
           "emphasis",
           "annotate"
+        ]
+      }
+    },
+    {
+      "name": "hook-title",
+      "type": "registry:item",
+      "title": "Hook Title",
+      "description": "The opening line of a short, parked at the top of the frame with a drawn underline.",
+      "categories": [
+        "social"
+      ],
+      "dependencies": [
+        "remotion"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/core.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/hook-title.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/hook-title.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Sequence durationInFrames={90}>\n  <HookTitle text=\"Nobody tells you this about lighting\" kicker=\"Part 3\" />\n</Sequence>",
+      "meta": {
+        "duration": "30",
+        "use": [
+          "The first two seconds of a short, reel or TikTok",
+          "Restating the promise over b-roll halfway through"
+        ],
+        "avoid": [
+          "Full headlines in landscape video — use `text-reveal`"
+        ],
+        "tags": [
+          "hook",
+          "shorts",
+          "title",
+          "opening"
         ]
       }
     },
@@ -2016,6 +2602,43 @@
       }
     },
     {
+      "name": "post-card",
+      "type": "registry:item",
+      "title": "Post Card",
+      "description": "A platform-neutral social post: avatar, name, handle, text and engagement counts that tick up.",
+      "categories": [
+        "social"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "http://localhost:3000/r/core.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/post-card.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/post-card.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Center>\n  <PostCard name=\"Ada Lovelace\" handle=\"@ada\" time=\"2h\" text=\"One timeline, three formats.\" metrics={{ likes: 1248, comments: 86, shares: 210 }} />\n</Center>",
+      "meta": {
+        "duration": "40",
+        "use": [
+          "Turning a post into a video without copying any platform's interface",
+          "Showing praise or a quote in a shareable form"
+        ],
+        "avoid": [
+          "Attributed praise from a customer — use `quote-card`"
+        ],
+        "tags": [
+          "post",
+          "social",
+          "card",
+          "quote"
+        ]
+      }
+    },
+    {
       "name": "progress-bar",
       "type": "registry:item",
       "title": "Progress Bar",
@@ -2091,6 +2714,84 @@
           "percent",
           "goal",
           "data"
+        ]
+      }
+    },
+    {
+      "name": "quote-card",
+      "type": "registry:item",
+      "title": "Quote Card",
+      "description": "A pulled quote with its attribution, and an oversized quote mark drawn behind it.",
+      "categories": [
+        "social"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "http://localhost:3000/r/core.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/quote-card.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/quote-card.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Center>\n  <QuoteCard quote=\"We cut a week of editing down to an afternoon.\" name=\"Grace Hopper\" role=\"Head of Video\" />\n</Center>",
+      "meta": {
+        "duration": "40",
+        "use": [
+          "Customer praise and testimonials",
+          "Lifting one line out of an interview"
+        ],
+        "avoid": [
+          "A social post with engagement counts — use `post-card`"
+        ],
+        "tags": [
+          "quote",
+          "testimonial",
+          "praise",
+          "card"
+        ]
+      }
+    },
+    {
+      "name": "radial-visualizer",
+      "type": "registry:item",
+      "title": "Radial Visualizer",
+      "description": "Frequency bars arranged around a circle, for cover art and square posts.",
+      "categories": [
+        "audio"
+      ],
+      "dependencies": [
+        "@remotion/media-utils",
+        "remotion"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/core.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/radial-visualizer.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/radial-visualizer.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<RadialVisualizer src={staticFile(\"track.mp3\")}>\n  <Img src={staticFile(\"cover.jpg\")} style={{ width: \"100%\", borderRadius: \"50%\" }} />\n</RadialVisualizer>",
+      "meta": {
+        "duration": "sustained",
+        "use": [
+          "Square and vertical music posts built around cover art",
+          "A centred visual when a full-width band would not fit"
+        ],
+        "avoid": [
+          "Wide landscape banners — use `spectrum`"
+        ],
+        "tags": [
+          "radial",
+          "circular",
+          "music",
+          "visualizer",
+          "cover"
         ]
       }
     },
@@ -2373,6 +3074,33 @@
       }
     },
     {
+      "name": "sfx",
+      "type": "registry:item",
+      "title": "SFX",
+      "description": "Thirty CC0 sound effects, played from one component. Streams from reelcn.dev, or from your own public folder after `reelcn-sfx-pull`.",
+      "categories": [
+        "lib"
+      ],
+      "dependencies": [
+        "@remotion/media",
+        "remotion"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "registry/items/sfx.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/sfx.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Sequence from={30}>\n  <Sfx name=\"whoosh\" />\n</Sequence>",
+      "meta": {
+        "use": [],
+        "avoid": [],
+        "tags": []
+      }
+    },
+    {
       "name": "shutter",
       "type": "registry:item",
       "title": "Shutter",
@@ -2487,6 +3215,84 @@
           "twinkle",
           "emphasis",
           "accent"
+        ]
+      }
+    },
+    {
+      "name": "speaker-card",
+      "type": "registry:item",
+      "title": "Speaker Card",
+      "description": "A speaker's avatar and name, with a ring that swells while they talk.",
+      "categories": [
+        "audio"
+      ],
+      "dependencies": [
+        "@remotion/media-utils",
+        "remotion"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/core.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/speaker-card.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/speaker-card.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<SpeakerCard src={staticFile(\"episode.mp3\")} name=\"Ada Lovelace\" role=\"Founder\" />",
+      "meta": {
+        "duration": "sustained",
+        "use": [
+          "Podcast clips and audiograms with two or more voices",
+          "Showing who is speaking when there is no camera"
+        ],
+        "avoid": [],
+        "tags": [
+          "speaker",
+          "podcast",
+          "avatar",
+          "audiogram"
+        ]
+      }
+    },
+    {
+      "name": "spectrum",
+      "type": "registry:item",
+      "title": "Spectrum",
+      "description": "Frequency bars, from bass on the left to treble on the right, moving with the track.",
+      "categories": [
+        "audio"
+      ],
+      "dependencies": [
+        "@remotion/media-utils",
+        "remotion"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/core.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/spectrum.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/spectrum.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Spectrum src={staticFile(\"track.mp3\")} bars={48} />",
+      "meta": {
+        "duration": "sustained",
+        "use": [
+          "Music clips and visualisers",
+          "Any scene that should feel driven by the track"
+        ],
+        "avoid": [
+          "Speech, where a waveform reads better — use `waveform`"
+        ],
+        "tags": [
+          "spectrum",
+          "frequency",
+          "music",
+          "visualizer"
         ]
       }
     },
@@ -2812,6 +3618,45 @@
       }
     },
     {
+      "name": "subscribe-cta",
+      "type": "registry:item",
+      "title": "Subscribe CTA",
+      "description": "A subscribe button that presses itself, with a bell that rings once after the click.",
+      "categories": [
+        "social"
+      ],
+      "dependencies": [
+        "remotion"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/core.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/subscribe-cta.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/subscribe-cta.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Sequence from={120} durationInFrames={90}>\n  <SubscribeCta label=\"Subscribe\" note=\"New videos every Thursday\" />\n</Sequence>",
+      "meta": {
+        "duration": "45",
+        "use": [
+          "The last five seconds of a video, or right after a payoff",
+          "Any moment that asks for one specific action"
+        ],
+        "avoid": [
+          "Several competing asks at once — show one call to action"
+        ],
+        "tags": [
+          "cta",
+          "subscribe",
+          "bell",
+          "youtube"
+        ]
+      }
+    },
+    {
       "name": "svg-draw",
       "type": "registry:item",
       "title": "Svg Draw",
@@ -3081,6 +3926,44 @@
       }
     },
     {
+      "name": "use-beat",
+      "type": "registry:item",
+      "title": "Use Beat",
+      "description": "A pulse that follows a fixed tempo, with no audio analysis: pure math, so it renders identically every time.",
+      "categories": [
+        "audio"
+      ],
+      "dependencies": [
+        "remotion"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "registry/items/use-beat.ts",
+          "type": "registry:file",
+          "target": "~/src/reelcn/use-beat.ts"
+        }
+      ],
+      "docs": "Usage:\n\nconst { pulse, beat } = useBeat({ bpm: 120 });\n\n<div style={{ scale: String(1 + pulse * 0.2) }}>{beat}</div>",
+      "meta": {
+        "duration": "sustained",
+        "use": [
+          "Cutting, popping or shaking anything in time with a music bed",
+          "Beat-synced motion when you know the track's BPM"
+        ],
+        "avoid": [
+          "Reacting to a voice or an unknown track — use `audio-reactive`"
+        ],
+        "tags": [
+          "beat",
+          "bpm",
+          "rhythm",
+          "sync",
+          "hook"
+        ]
+      }
+    },
+    {
       "name": "versus",
       "type": "registry:item",
       "title": "Versus",
@@ -3121,6 +4004,46 @@
       }
     },
     {
+      "name": "waveform",
+      "type": "registry:item",
+      "title": "Waveform",
+      "description": "The audio's shape, drawn as bars, a line or a mirrored band that moves with the sound.",
+      "categories": [
+        "audio"
+      ],
+      "dependencies": [
+        "@remotion/media-utils",
+        "remotion"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/core.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/waveform.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/waveform.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Waveform src={staticFile(\"episode.mp3\")} variant=\"mirror\" bars={64} />",
+      "meta": {
+        "duration": "sustained",
+        "use": [
+          "Audiograms and podcast clips",
+          "Any full-bleed band of motion tied to a voice or a track"
+        ],
+        "avoid": [
+          "A frequency view — use `spectrum`"
+        ],
+        "tags": [
+          "waveform",
+          "audiogram",
+          "podcast",
+          "audio"
+        ]
+      }
+    },
+    {
       "name": "word-rotator",
       "type": "registry:item",
       "title": "Word Rotator",
@@ -3156,6 +4079,67 @@
           "words",
           "tagline"
         ]
+      }
+    },
+    {
+      "name": "sfx-pull",
+      "type": "registry:item",
+      "title": "SFX Pull",
+      "description": "Downloads the reelcn sound pack into your public folder so renders work offline.",
+      "categories": [
+        "tools"
+      ],
+      "dependencies": [],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "registry/tools/sfx-pull.ts",
+          "type": "registry:file",
+          "target": "~/scripts/reelcn-sfx-pull.ts"
+        }
+      ],
+      "docs": "Usage:\n\nnode scripts/reelcn-sfx-pull.ts",
+      "meta": {
+        "use": [
+          "Rendering on a machine with no network, or in CI",
+          "Pinning the sounds so a later reelcn release cannot change them"
+        ],
+        "avoid": [],
+        "tags": []
+      }
+    },
+    {
+      "name": "transcribe",
+      "type": "registry:item",
+      "title": "Transcribe",
+      "description": "Turns audio or video into word-level captions JSON for the caption components.",
+      "categories": [
+        "tools"
+      ],
+      "dependencies": [
+        "@remotion/captions",
+        "@remotion/install-whisper-cpp",
+        "@remotion/openai-whisper"
+      ],
+      "registryDependencies": [],
+      "envVars": {
+        "OPENAI_API_KEY": ""
+      },
+      "files": [
+        {
+          "path": "registry/tools/transcribe.ts",
+          "type": "registry:file",
+          "target": "~/scripts/reelcn-transcribe.ts"
+        }
+      ],
+      "docs": "Usage:\n\nnode scripts/reelcn-transcribe.ts talk.mp4\nnode scripts/reelcn-transcribe.ts talk.mp4 --openai --out public/captions/talk.json\nnode scripts/reelcn-transcribe.ts subtitles.srt",
+      "meta": {
+        "use": [
+          "Captioning a talking-head short, a podcast clip or a tutorial",
+          "Converting an existing .srt into the caption format"
+        ],
+        "avoid": [],
+        "tags": []
       }
     }
   ]

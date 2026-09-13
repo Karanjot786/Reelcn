@@ -1,0 +1,40 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-beat",
+  "title": "Use Beat",
+  "description": "A pulse that follows a fixed tempo, with no audio analysis: pure math, so it renders identically every time.",
+  "dependencies": [
+    "remotion"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/items/use-beat.ts",
+      "content": "/**\n * @title Use Beat\n * @category audio\n * @description A pulse that follows a fixed tempo, with no audio analysis: pure math, so it renders identically every time.\n * @duration sustained\n * @use Cutting, popping or shaking anything in time with a music bed\n * @use Beat-synced motion when you know the track's BPM\n * @avoid Reacting to a voice or an unknown track — use `audio-reactive`\n * @tags beat, bpm, rhythm, sync, hook\n * @example\n * const { pulse, beat } = useBeat({ bpm: 120 });\n *\n * <div style={{ scale: String(1 + pulse * 0.2) }}>{beat}</div>\n */\nimport { useCurrentFrame, useVideoConfig } from \"remotion\";\n\nexport type UseBeatOptions = {\n  /** Tempo of the track. */\n  bpm: number;\n  /** Seconds to shift the grid by, when the track does not start on a beat. */\n  offset?: number;\n  /** Seconds a pulse takes to fall back to zero. */\n  decay?: number;\n  /** 1 = every beat, 2 = every eighth, 4 = every sixteenth. */\n  subdivision?: number;\n};\n\nexport type Beat = {\n  /** 1 on the beat, falling to 0 over `decay` seconds. */\n  pulse: number;\n  /** Beat index since the start; negative before `offset`. */\n  beat: number;\n  /** Seconds since the last beat. */\n  sinceBeat: number;\n  /** Seconds between beats. */\n  beatLength: number;\n};\n\nexport function useBeat({ bpm, offset = 0, decay = 0.35, subdivision = 1 }: UseBeatOptions): Beat {\n  const frame = useCurrentFrame();\n  const { fps } = useVideoConfig();\n  const seconds = frame / fps - offset;\n  const beatLength = 60 / (bpm * subdivision);\n  const beat = Math.floor(seconds / beatLength);\n  const sinceBeat = seconds - beat * beatLength;\n  // Sharp attack, eased tail: a struck drum, not a sine.\n  const raw = seconds < 0 ? 0 : Math.max(0, 1 - sinceBeat / decay);\n  return { pulse: raw * raw, beat, sinceBeat, beatLength };\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/use-beat.ts"
+    }
+  ],
+  "meta": {
+    "duration": "sustained",
+    "use": [
+      "Cutting, popping or shaking anything in time with a music bed",
+      "Beat-synced motion when you know the track's BPM"
+    ],
+    "avoid": [
+      "Reacting to a voice or an unknown track — use `audio-reactive`"
+    ],
+    "tags": [
+      "beat",
+      "bpm",
+      "rhythm",
+      "sync",
+      "hook"
+    ]
+  },
+  "docs": "Usage:\n\nconst { pulse, beat } = useBeat({ bpm: 120 });\n\n<div style={{ scale: String(1 + pulse * 0.2) }}>{beat}</div>",
+  "categories": [
+    "audio"
+  ],
+  "type": "registry:item"
+}

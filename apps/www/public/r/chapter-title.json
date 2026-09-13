@@ -1,0 +1,41 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "chapter-title",
+  "title": "Chapter Title",
+  "description": "A numbered chapter card that wipes in over the footage and leaves again.",
+  "dependencies": [
+    "remotion"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/chapter-title.tsx",
+      "content": "/**\n * @title Chapter Title\n * @category social\n * @description A numbered chapter card that wipes in over the footage and leaves again.\n * @duration 36\n * @use Section breaks in tutorials and long-form video\n * @use Naming the step a viewer is about to watch\n * @avoid A speaker's name — use `lower-third`\n * @tags chapter, section, divider, tutorial\n * @example\n * <Sequence from={300} durationInFrames={110}>\n *   <ChapterTitle number={2} title=\"Setting the key light\" />\n * </Sequence>\n */\nimport type React from \"react\";\nimport { AbsoluteFill } from \"remotion\";\nimport { alpha, type MotionProps, tween, useMotion, useTheme, useViewport } from \"./core\";\n\nexport type ChapterTitleProps = MotionProps & {\n  title: string;\n  number?: number;\n  /** Where the card sits vertically. */\n  align?: \"center\" | \"bottom\";\n  color?: string;\n  accentColor?: string;\n  background?: string;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\nexport function ChapterTitle({\n  title,\n  number,\n  align = \"center\",\n  color,\n  accentColor,\n  background,\n  style,\n  className,\n  ...motion\n}: ChapterTitleProps) {\n  const theme = useTheme();\n  const { u, safe } = useViewport();\n  const m = useMotion(motion);\n  const wipe = Math.min(tween(m.frame, m.fps, { from: m.delay, duration: m.enterFrames, motion: m.preset }), 1);\n  const text = Math.min(\n    tween(m.frame, m.fps, { from: m.delay + Math.round(m.fps * 0.18), duration: m.enterFrames, motion: m.preset }),\n    1,\n  );\n\n  return (\n    <AbsoluteFill\n      className={className}\n      style={{\n        alignItems: \"flex-start\",\n        justifyContent: align === \"bottom\" ? \"flex-end\" : \"center\",\n        padding: `0 ${safe.x}px ${align === \"bottom\" ? safe.bottom : 0}px`,\n        opacity: 1 - m.exit,\n        ...style,\n      }}\n    >\n      <div\n        style={{\n          display: \"flex\",\n          alignItems: \"center\",\n          gap: u(20),\n          padding: `${u(18)}px ${u(28)}px`,\n          borderRadius: u(theme.radius),\n          background: background ?? alpha(theme.colors.surface, 0.92),\n          border: `1px solid ${theme.colors.border}`,\n          clipPath: `inset(0 ${(1 - wipe) * 100}% 0 0 round ${u(theme.radius)}px)`,\n        }}\n      >\n        {number === undefined ? null : (\n          <div\n            style={{\n              fontFamily: theme.fonts.mono,\n              fontSize: u(42),\n              fontVariantNumeric: \"tabular-nums\",\n              color: accentColor ?? theme.colors.accent,\n            }}\n          >\n            {number < 10 ? `0${number}` : number}\n          </div>\n        )}\n        <div\n          style={{\n            fontFamily: theme.fonts.heading,\n            fontWeight: theme.headingWeight,\n            fontSize: u(44),\n            letterSpacing: \"-0.02em\",\n            color: color ?? theme.colors.foreground,\n            opacity: text,\n            translate: `0 ${(1 - text) * u(10)}px`,\n          }}\n        >\n          {title}\n        </div>\n      </div>\n    </AbsoluteFill>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/chapter-title.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "36",
+    "use": [
+      "Section breaks in tutorials and long-form video",
+      "Naming the step a viewer is about to watch"
+    ],
+    "avoid": [
+      "A speaker's name — use `lower-third`"
+    ],
+    "tags": [
+      "chapter",
+      "section",
+      "divider",
+      "tutorial"
+    ]
+  },
+  "docs": "Usage:\n\n<Sequence from={300} durationInFrames={110}>\n  <ChapterTitle number={2} title=\"Setting the key light\" />\n</Sequence>",
+  "categories": [
+    "social"
+  ],
+  "type": "registry:item"
+}

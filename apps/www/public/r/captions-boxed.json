@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "captions-boxed",
+  "title": "Captions: Boxed",
+  "description": "Each word in its own rounded chip, with the spoken chip filled in the accent color.",
+  "dependencies": [],
+  "registryDependencies": [
+    "http://localhost:3000/r/captions.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/captions-boxed.tsx",
+      "content": "/**\n * @title Captions: Boxed\n * @category social\n * @description Each word in its own rounded chip, with the spoken chip filled in the accent color.\n * @duration data-driven\n * @preset captions\n * @use Busy footage where plain text would get lost\n * @tags captions, chips, contrast\n * @example\n * <CaptionsBoxed captions={captions} />\n */\nimport { Captions, type CaptionsProps } from \"./captions\";\n\nexport type CaptionsBoxedProps = Omit<CaptionsProps, \"variant\">;\n\nexport function CaptionsBoxed(props: CaptionsBoxedProps) {\n  return <Captions {...props} variant=\"boxed\" />;\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/captions-boxed.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "Busy footage where plain text would get lost"
+    ],
+    "avoid": [],
+    "tags": [
+      "captions",
+      "chips",
+      "contrast"
+    ],
+    "preset": "captions"
+  },
+  "docs": "Usage:\n\n<CaptionsBoxed captions={captions} />",
+  "categories": [
+    "social"
+  ],
+  "type": "registry:item"
+}

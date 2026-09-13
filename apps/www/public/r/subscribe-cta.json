@@ -1,0 +1,41 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "subscribe-cta",
+  "title": "Subscribe CTA",
+  "description": "A subscribe button that presses itself, with a bell that rings once after the click.",
+  "dependencies": [
+    "remotion"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/subscribe-cta.tsx",
+      "content": "/**\n * @title Subscribe CTA\n * @category social\n * @description A subscribe button that presses itself, with a bell that rings once after the click.\n * @duration 45\n * @use The last five seconds of a video, or right after a payoff\n * @use Any moment that asks for one specific action\n * @avoid Several competing asks at once — show one call to action\n * @tags cta, subscribe, bell, youtube\n * @example\n * <Sequence from={120} durationInFrames={90}>\n *   <SubscribeCta label=\"Subscribe\" note=\"New videos every Thursday\" />\n * </Sequence>\n */\nimport type React from \"react\";\nimport { AbsoluteFill } from \"remotion\";\nimport { alpha, type MotionProps, tween, useMotion, useTheme, useViewport } from \"./core\";\n\nexport type SubscribeCtaProps = MotionProps & {\n  label?: string;\n  /** Line under the button. */\n  note?: string;\n  /** Frame, relative to this component, when the button presses itself. */\n  pressAt?: number;\n  color?: string;\n  background?: string;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\nexport function SubscribeCta({\n  label = \"Subscribe\",\n  note,\n  pressAt,\n  color,\n  background,\n  style,\n  className,\n  ...motion\n}: SubscribeCtaProps) {\n  const theme = useTheme();\n  const { u, safe } = useViewport();\n  const m = useMotion(motion);\n  const press = pressAt ?? Math.round(m.fps * 0.9);\n  const down = tween(m.frame, m.fps, { from: press, duration: Math.round(m.fps * 0.12), motion: \"snappy\" });\n  const up = tween(m.frame, m.fps, {\n    from: press + Math.round(m.fps * 0.12),\n    duration: Math.round(m.fps * 0.2),\n    motion: \"bouncy\",\n  });\n  const ring = tween(m.frame, m.fps, {\n    from: press + Math.round(m.fps * 0.2),\n    duration: Math.round(m.fps * 0.5),\n    motion: \"linear\",\n  });\n  // One ring: the bell rocks twice and settles.\n  const tilt = ring > 0 && ring < 1 ? Math.sin(ring * Math.PI * 4) * (1 - ring) * 16 : 0;\n  const enter = Math.min(m.enter, 1);\n\n  return (\n    <AbsoluteFill\n      className={className}\n      style={{ alignItems: \"center\", justifyContent: \"flex-end\", padding: `0 ${safe.x}px ${safe.bottom}px`, ...style }}\n    >\n      <div\n        style={{\n          display: \"flex\",\n          flexDirection: \"column\",\n          alignItems: \"center\",\n          gap: u(12),\n          opacity: enter * (1 - m.exit),\n          translate: `0 ${(1 - enter) * u(20)}px`,\n        }}\n      >\n        <div\n          style={{\n            display: \"flex\",\n            alignItems: \"center\",\n            gap: u(14),\n            padding: `${u(16)}px ${u(30)}px`,\n            borderRadius: u(theme.radius),\n            background: background ?? theme.colors.accent,\n            color: color ?? theme.colors.accentForeground,\n            fontFamily: theme.fonts.heading,\n            fontWeight: theme.headingWeight,\n            fontSize: u(36),\n            boxShadow: `0 ${u(14)}px ${u(40)}px ${alpha(\"#000000\", 0.28)}`,\n            scale: String(1 - down * 0.06 + up * 0.06),\n          }}\n        >\n          <svg\n            width={u(34)}\n            height={u(34)}\n            viewBox=\"0 0 24 24\"\n            fill=\"none\"\n            aria-hidden=\"true\"\n            style={{ rotate: `${tilt}deg` }}\n          >\n            <path\n              d=\"M6 9a6 6 0 1 1 12 0c0 4 1.2 5.4 2 6H4c.8-.6 2-2 2-6Z\"\n              stroke=\"currentColor\"\n              strokeWidth={2}\n              strokeLinejoin=\"round\"\n            />\n            <path d=\"M10 19a2 2 0 0 0 4 0\" stroke=\"currentColor\" strokeWidth={2} strokeLinecap=\"round\" />\n          </svg>\n          <span>{label}</span>\n        </div>\n        {note ? <div style={{ fontSize: u(24), color: theme.colors.muted }}>{note}</div> : null}\n      </div>\n    </AbsoluteFill>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/subscribe-cta.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "45",
+    "use": [
+      "The last five seconds of a video, or right after a payoff",
+      "Any moment that asks for one specific action"
+    ],
+    "avoid": [
+      "Several competing asks at once — show one call to action"
+    ],
+    "tags": [
+      "cta",
+      "subscribe",
+      "bell",
+      "youtube"
+    ]
+  },
+  "docs": "Usage:\n\n<Sequence from={120} durationInFrames={90}>\n  <SubscribeCta label=\"Subscribe\" note=\"New videos every Thursday\" />\n</Sequence>",
+  "categories": [
+    "social"
+  ],
+  "type": "registry:item"
+}

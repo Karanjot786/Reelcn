@@ -46,6 +46,14 @@ import { fonts } from "./fonts";
 const heading = `${fonts.instrumentSerif}, ui-serif, Georgia, serif`;
 ```
 
+- [SFX](http://localhost:3000/r/sfx.json): Thirty CC0 sound effects, played from one component. Streams from reelcn.dev, or from your own public folder after `reelcn-sfx-pull`.
+
+```tsx
+<Sequence from={30}>
+  <Sfx name="whoosh" />
+</Sequence>
+```
+
 
 ## text
 
@@ -723,11 +731,139 @@ const heading = `${fonts.instrumentSerif}, ui-serif, Georgia, serif`;
 
 ## social
 
+- [Captions: Bold Pop](http://localhost:3000/r/captions-bold-pop.json): Heavy centered captions where the spoken word grows and lifts. (length data-driven · use for Shorts and reels that need captions to carry the edit)
+
+```tsx
+<CaptionsBoldPop captions={captions} emphasize={["free"]} />
+```
+
+- [Captions: Boxed](http://localhost:3000/r/captions-boxed.json): Each word in its own rounded chip, with the spoken chip filled in the accent color. (length data-driven · use for Busy footage where plain text would get lost)
+
+```tsx
+<CaptionsBoxed captions={captions} />
+```
+
+- [Captions: Highlight Box](http://localhost:3000/r/captions-highlight-box.json): A marker block travels word by word, like a highlighter following the speech. (length data-driven · use for Explainers and teaching clips where the key word should be unmissable)
+
+```tsx
+<CaptionsHighlightBox captions={captions} emphasize={["never"]} />
+```
+
+- [Captions: Karaoke](http://localhost:3000/r/captions-karaoke.json): Captions that fill in word by word as they are spoken, and dim the words still to come. (length data-driven · use for Lyric videos and sing-along clips; Tutorials where viewers follow along word by word)
+
+```tsx
+<CaptionsKaraoke captions={captions} />
+```
+
+- [Captions: Minimal](http://localhost:3000/r/captions-minimal.json): Quiet captions: one line, no effects, with only the spoken word brightening. (length data-driven · use for Interviews and documentary footage where captions should stay out of the way)
+
+```tsx
+<CaptionsMinimal captions={captions} />
+```
+
+- [Captions: Neon](http://localhost:3000/r/captions-neon.json): Captions where the spoken word glows in the accent color. (length data-driven · use for Night-time and club footage, music clips · avoid Corporate or documentary footage — use `captions-minimal`)
+
+```tsx
+<CaptionsNeon captions={captions} />
+```
+
+- [Captions: Subtitle Bar](http://localhost:3000/r/captions-subtitle-bar.json): Broadcast-style subtitles on a translucent bar, readable over anything. (length data-driven · use for Long-form video, webinars and anything with a wide audience)
+
+```tsx
+<CaptionsSubtitleBar captions={captions} position="bottom" />
+```
+
+- [Captions: Word Stack](http://localhost:3000/r/captions-word-stack.json): Words stacked one per line, with the spoken word growing and lifting. (length data-driven · use for Vertical video where a wide caption block would crowd the frame)
+
+```tsx
+<CaptionsWordStack captions={captions} maxWords={3} />
+```
+
+- [Captions](http://localhost:3000/r/captions.json): Word-synced captions that page like TikTok, highlight the spoken word and pop the words you choose. (length data-driven · use for Shorts, reels and talking-head videos that need burned-in captions; Podcast and tutorial clips watched without sound · avoid A single static line of text — use `text-reveal`)
+
+```tsx
+import captions from "../../public/captions/talk.json";
+
+<Captions captions={captions} emphasize={["free", "today"]} variant="bold-pop" />
+```
+
+- [Chapter Title](http://localhost:3000/r/chapter-title.json): A numbered chapter card that wipes in over the footage and leaves again. (length 36f@30fps · use for Section breaks in tutorials and long-form video; Naming the step a viewer is about to watch · avoid A speaker's name — use `lower-third`)
+
+```tsx
+<Sequence from={300} durationInFrames={110}>
+  <ChapterTitle number={2} title="Setting the key light" />
+</Sequence>
+```
+
+- [Comment Bubble](http://localhost:3000/r/comment-bubble.json): A viewer comment card, optionally marked as a reply, with a like count that ticks up. (length 36f@30fps · use for Answering a comment on camera; Showing the question a video is about to answer · avoid A full post with author metrics — use `post-card`)
+
+```tsx
+<Center>
+  <CommentBubble name="Katherine" handle="@kj" text="Which mic is that?" replyTo="Ada" likes={42} />
+</Center>
+```
+
+- [Countdown](http://localhost:3000/r/countdown.json): A ring that empties while the number counts down to zero. (length data-driven · use for Waiting rooms and "starting soon" cards for streams; Timed challenges inside a video)
+
+```tsx
+<Sequence durationInFrames={150}>
+  <Countdown seconds={5} label="Starting in" />
+</Sequence>
+```
+
+- [End Screen](http://localhost:3000/r/end-screen.json): Closing screen with a next-video slot, a subscribe slot and a countdown. (length 60f@30fps · use for The last ten seconds of a long-form video; Handing viewers one clear next step)
+
+```tsx
+<Sequence from={900} durationInFrames={240}>
+  <EndScreen title="Watch this next" nextTitle="How we cut render times in half" seconds={8} />
+</Sequence>
+```
+
+- [Follow Card](http://localhost:3000/r/follow-card.json): A profile card whose follow button presses itself and flips to "Following", with the count ticking up. (length 50f@30fps · use for Asking for a follow at the end of a short; Introducing a guest or a collaborator · avoid A subscribe ask for long-form video — use `subscribe-cta`)
+
+```tsx
+<Center>
+  <FollowCard name="Ada Lovelace" handle="@ada" followers="24.8k" />
+</Center>
+```
+
+- [Hook Title](http://localhost:3000/r/hook-title.json): The opening line of a short, parked at the top of the frame with a drawn underline. (length 30f@30fps · use for The first two seconds of a short, reel or TikTok; Restating the promise over b-roll halfway through · avoid Full headlines in landscape video — use `text-reveal`)
+
+```tsx
+<Sequence durationInFrames={90}>
+  <HookTitle text="Nobody tells you this about lighting" kicker="Part 3" />
+</Sequence>
+```
+
 - [Lower Third](http://localhost:3000/r/lower-third.json): Name and title strap that slides in above the bottom safe zone and centers itself in vertical video. (length 30f@30fps · use for Interviews, podcasts, tutorials and talking-head intros; Naming a speaker, product or location on screen)
 
 ```tsx
 <Sequence durationInFrames={120}>
   <LowerThird name="Ada Lovelace" title="Founder, Analytical Engines" variant="card" />
+</Sequence>
+```
+
+- [Post Card](http://localhost:3000/r/post-card.json): A platform-neutral social post: avatar, name, handle, text and engagement counts that tick up. (length 40f@30fps · use for Turning a post into a video without copying any platform's interface; Showing praise or a quote in a shareable form · avoid Attributed praise from a customer — use `quote-card`)
+
+```tsx
+<Center>
+  <PostCard name="Ada Lovelace" handle="@ada" time="2h" text="One timeline, three formats." metrics={{ likes: 1248, comments: 86, shares: 210 }} />
+</Center>
+```
+
+- [Quote Card](http://localhost:3000/r/quote-card.json): A pulled quote with its attribution, and an oversized quote mark drawn behind it. (length 40f@30fps · use for Customer praise and testimonials; Lifting one line out of an interview · avoid A social post with engagement counts — use `post-card`)
+
+```tsx
+<Center>
+  <QuoteCard quote="We cut a week of editing down to an afternoon." name="Grace Hopper" role="Head of Video" />
+</Center>
+```
+
+- [Subscribe CTA](http://localhost:3000/r/subscribe-cta.json): A subscribe button that presses itself, with a bell that rings once after the click. (length 45f@30fps · use for The last five seconds of a video, or right after a payoff; Any moment that asks for one specific action · avoid Several competing asks at once — show one call to action)
+
+```tsx
+<Sequence from={120} durationInFrames={90}>
+  <SubscribeCta label="Subscribe" note="New videos every Thursday" />
 </Sequence>
 ```
 
@@ -876,4 +1012,66 @@ const heading = `${fonts.instrumentSerif}, ui-serif, Georgia, serif`;
     ]}
   />
 </Center>
+```
+
+
+## audio
+
+- [Audio Reactive](http://localhost:3000/r/audio-reactive.json): Wraps anything and drives its scale, or a glow, from how loud the audio is right now. (length sustained · use for Making a logo, headline or card move with the track; Reacting to a voice whose tempo you do not know · avoid A known BPM, where pure math is steadier — use `use-beat`)
+
+```tsx
+<AudioReactive src={staticFile("track.mp3")} effect="both">
+  <Img src={staticFile("logo.png")} />
+</AudioReactive>
+```
+
+- [Radial Visualizer](http://localhost:3000/r/radial-visualizer.json): Frequency bars arranged around a circle, for cover art and square posts. (length sustained · use for Square and vertical music posts built around cover art; A centred visual when a full-width band would not fit · avoid Wide landscape banners — use `spectrum`)
+
+```tsx
+<RadialVisualizer src={staticFile("track.mp3")}>
+  <Img src={staticFile("cover.jpg")} style={{ width: "100%", borderRadius: "50%" }} />
+</RadialVisualizer>
+```
+
+- [Speaker Card](http://localhost:3000/r/speaker-card.json): A speaker's avatar and name, with a ring that swells while they talk. (length sustained · use for Podcast clips and audiograms with two or more voices; Showing who is speaking when there is no camera)
+
+```tsx
+<SpeakerCard src={staticFile("episode.mp3")} name="Ada Lovelace" role="Founder" />
+```
+
+- [Spectrum](http://localhost:3000/r/spectrum.json): Frequency bars, from bass on the left to treble on the right, moving with the track. (length sustained · use for Music clips and visualisers; Any scene that should feel driven by the track · avoid Speech, where a waveform reads better — use `waveform`)
+
+```tsx
+<Spectrum src={staticFile("track.mp3")} bars={48} />
+```
+
+- [Use Beat](http://localhost:3000/r/use-beat.json): A pulse that follows a fixed tempo, with no audio analysis: pure math, so it renders identically every time. (length sustained · use for Cutting, popping or shaking anything in time with a music bed; Beat-synced motion when you know the track's BPM · avoid Reacting to a voice or an unknown track — use `audio-reactive`)
+
+```tsx
+const { pulse, beat } = useBeat({ bpm: 120 });
+
+<div style={{ scale: String(1 + pulse * 0.2) }}>{beat}</div>
+```
+
+- [Waveform](http://localhost:3000/r/waveform.json): The audio's shape, drawn as bars, a line or a mirrored band that moves with the sound. (length sustained · use for Audiograms and podcast clips; Any full-bleed band of motion tied to a voice or a track · avoid A frequency view — use `spectrum`)
+
+```tsx
+<Waveform src={staticFile("episode.mp3")} variant="mirror" bars={64} />
+```
+
+
+## tools
+
+- [SFX Pull](http://localhost:3000/r/sfx-pull.json): Downloads the reelcn sound pack into your public folder so renders work offline. (use for Rendering on a machine with no network, or in CI; Pinning the sounds so a later reelcn release cannot change them)
+
+```tsx
+node scripts/reelcn-sfx-pull.ts
+```
+
+- [Transcribe](http://localhost:3000/r/transcribe.json): Turns audio or video into word-level captions JSON for the caption components. (use for Captioning a talking-head short, a podcast clip or a tutorial; Converting an existing .srt into the caption format)
+
+```tsx
+node scripts/reelcn-transcribe.ts talk.mp4
+node scripts/reelcn-transcribe.ts talk.mp4 --openai --out public/captions/talk.json
+node scripts/reelcn-transcribe.ts subtitles.srt
 ```

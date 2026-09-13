@@ -1,0 +1,37 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "captions-karaoke",
+  "title": "Captions: Karaoke",
+  "description": "Captions that fill in word by word as they are spoken, and dim the words still to come.",
+  "dependencies": [],
+  "registryDependencies": [
+    "http://localhost:3000/r/captions.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/captions-karaoke.tsx",
+      "content": "/**\n * @title Captions: Karaoke\n * @category social\n * @description Captions that fill in word by word as they are spoken, and dim the words still to come.\n * @duration data-driven\n * @preset captions\n * @use Lyric videos and sing-along clips\n * @use Tutorials where viewers follow along word by word\n * @tags captions, karaoke, lyrics\n * @example\n * <CaptionsKaraoke captions={captions} />\n */\nimport { Captions, type CaptionsProps } from \"./captions\";\n\nexport type CaptionsKaraokeProps = Omit<CaptionsProps, \"variant\">;\n\nexport function CaptionsKaraoke(props: CaptionsKaraokeProps) {\n  return <Captions {...props} variant=\"karaoke\" />;\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/captions-karaoke.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "Lyric videos and sing-along clips",
+      "Tutorials where viewers follow along word by word"
+    ],
+    "avoid": [],
+    "tags": [
+      "captions",
+      "karaoke",
+      "lyrics"
+    ],
+    "preset": "captions"
+  },
+  "docs": "Usage:\n\n<CaptionsKaraoke captions={captions} />",
+  "categories": [
+    "social"
+  ],
+  "type": "registry:item"
+}

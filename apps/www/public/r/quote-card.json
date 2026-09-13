@@ -1,0 +1,39 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "quote-card",
+  "title": "Quote Card",
+  "description": "A pulled quote with its attribution, and an oversized quote mark drawn behind it.",
+  "dependencies": [],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/quote-card.tsx",
+      "content": "/**\n * @title Quote Card\n * @category social\n * @description A pulled quote with its attribution, and an oversized quote mark drawn behind it.\n * @duration 40\n * @use Customer praise and testimonials\n * @use Lifting one line out of an interview\n * @avoid A social post with engagement counts — use `post-card`\n * @tags quote, testimonial, praise, card\n * @example\n * <Center>\n *   <QuoteCard quote=\"We cut a week of editing down to an afternoon.\" name=\"Grace Hopper\" role=\"Head of Video\" />\n * </Center>\n */\nimport type React from \"react\";\nimport { alpha, type MotionProps, tween, useMotion, useTheme, useViewport } from \"./core\";\n\nexport type QuoteCardProps = MotionProps & {\n  quote: string;\n  name: string;\n  role?: string;\n  /** Avatar image; pass an `<Img>`. Initials are drawn when omitted. */\n  avatar?: React.ReactNode;\n  width?: number;\n  size?: number;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\nexport function QuoteCard({\n  quote,\n  name,\n  role,\n  avatar,\n  width = 820,\n  size = 44,\n  style,\n  className,\n  ...motion\n}: QuoteCardProps) {\n  const theme = useTheme();\n  const { u } = useViewport();\n  const m = useMotion(motion);\n  const enter = Math.min(m.enter, 1);\n  const attribution = Math.min(\n    tween(m.frame, m.fps, { from: m.delay + Math.round(m.fps * 0.35), duration: m.enterFrames, motion: m.preset }),\n    1,\n  );\n\n  return (\n    <div\n      className={className}\n      style={{\n        position: \"relative\",\n        width: u(width),\n        maxWidth: \"100%\",\n        padding: u(36),\n        borderRadius: u(theme.radius),\n        background: theme.colors.surface,\n        border: `1px solid ${theme.colors.border}`,\n        color: theme.colors.foreground,\n        overflow: \"hidden\",\n        opacity: enter * (1 - m.exit),\n        translate: `0 ${(1 - enter) * u(22)}px`,\n        ...style,\n      }}\n    >\n      <div\n        aria-hidden=\"true\"\n        style={{\n          position: \"absolute\",\n          top: u(-30),\n          left: u(12),\n          fontFamily: theme.fonts.heading,\n          fontSize: u(220),\n          lineHeight: 1,\n          color: alpha(theme.colors.accent, 0.16),\n        }}\n      >\n        &ldquo;\n      </div>\n      <div\n        style={{\n          position: \"relative\",\n          fontFamily: theme.fonts.heading,\n          fontWeight: theme.headingWeight,\n          fontSize: u(size),\n          lineHeight: 1.28,\n          letterSpacing: \"-0.02em\",\n          textWrap: \"pretty\",\n        }}\n      >\n        {quote}\n      </div>\n      <div\n        style={{\n          display: \"flex\",\n          alignItems: \"center\",\n          gap: u(14),\n          marginTop: u(26),\n          opacity: attribution,\n          translate: `0 ${(1 - attribution) * u(10)}px`,\n        }}\n      >\n        <div\n          style={{\n            width: u(52),\n            height: u(52),\n            borderRadius: \"50%\",\n            overflow: \"hidden\",\n            background: theme.colors.accent,\n            color: theme.colors.accentForeground,\n            display: \"grid\",\n            placeItems: \"center\",\n            fontSize: u(22),\n            fontWeight: 700,\n          }}\n        >\n          {avatar ?? name.slice(0, 1)}\n        </div>\n        <div>\n          <div style={{ fontSize: u(24), fontWeight: 650 }}>{name}</div>\n          {role ? <div style={{ fontSize: u(20), color: theme.colors.muted }}>{role}</div> : null}\n        </div>\n      </div>\n    </div>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/quote-card.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "40",
+    "use": [
+      "Customer praise and testimonials",
+      "Lifting one line out of an interview"
+    ],
+    "avoid": [
+      "A social post with engagement counts — use `post-card`"
+    ],
+    "tags": [
+      "quote",
+      "testimonial",
+      "praise",
+      "card"
+    ]
+  },
+  "docs": "Usage:\n\n<Center>\n  <QuoteCard quote=\"We cut a week of editing down to an afternoon.\" name=\"Grace Hopper\" role=\"Head of Video\" />\n</Center>",
+  "categories": [
+    "social"
+  ],
+  "type": "registry:item"
+}

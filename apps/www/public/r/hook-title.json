@@ -1,0 +1,41 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "hook-title",
+  "title": "Hook Title",
+  "description": "The opening line of a short, parked at the top of the frame with a drawn underline.",
+  "dependencies": [
+    "remotion"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/hook-title.tsx",
+      "content": "/**\n * @title Hook Title\n * @category social\n * @description The opening line of a short, parked at the top of the frame with a drawn underline.\n * @duration 30\n * @use The first two seconds of a short, reel or TikTok\n * @use Restating the promise over b-roll halfway through\n * @avoid Full headlines in landscape video — use `text-reveal`\n * @tags hook, shorts, title, opening\n * @example\n * <Sequence durationInFrames={90}>\n *   <HookTitle text=\"Nobody tells you this about lighting\" kicker=\"Part 3\" />\n * </Sequence>\n */\nimport type React from \"react\";\nimport { AbsoluteFill } from \"remotion\";\nimport { alpha, type MotionProps, tween, useMotion, useTheme, useViewport } from \"./core\";\n\nexport type HookTitleProps = MotionProps & {\n  text: string;\n  /** Small line above the hook: an episode number, a series name. */\n  kicker?: string;\n  size?: number;\n  color?: string;\n  accentColor?: string;\n  background?: string;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\nexport function HookTitle({\n  text,\n  kicker,\n  size = 72,\n  color,\n  accentColor,\n  background,\n  style,\n  className,\n  ...motion\n}: HookTitleProps) {\n  const theme = useTheme();\n  const { u, width, safe, isPortrait } = useViewport();\n  const m = useMotion(motion);\n  const rule = tween(m.frame, m.fps, {\n    from: m.delay + m.enterFrames * 0.5,\n    duration: m.enterFrames,\n    motion: m.preset,\n  });\n  const enter = Math.min(m.enter, 1);\n\n  return (\n    <AbsoluteFill\n      className={className}\n      style={{ alignItems: \"center\", justifyContent: \"flex-start\", padding: `${safe.top}px ${safe.x}px`, ...style }}\n    >\n      <div\n        style={{\n          maxWidth: width - safe.x * 2,\n          padding: `${u(18)}px ${u(26)}px`,\n          borderRadius: u(theme.radius),\n          background: background ?? alpha(theme.colors.background, 0.72),\n          textAlign: \"center\",\n          opacity: enter * (1 - m.exit),\n          translate: `0 ${(1 - enter) * -u(24)}px`,\n        }}\n      >\n        {kicker ? (\n          <div style={{ fontSize: u(size * 0.34), color: accentColor ?? theme.colors.accent, marginBottom: u(8) }}>\n            {kicker}\n          </div>\n        ) : null}\n        <div\n          style={{\n            fontFamily: theme.fonts.heading,\n            fontWeight: theme.headingWeight,\n            fontSize: u(isPortrait ? size : size * 0.8),\n            lineHeight: 1.06,\n            letterSpacing: \"-0.03em\",\n            color: color ?? theme.colors.foreground,\n            textWrap: \"balance\",\n          }}\n        >\n          {text}\n        </div>\n        <div\n          style={{\n            height: u(6),\n            marginTop: u(14),\n            borderRadius: u(3),\n            background: accentColor ?? theme.colors.accent,\n            scale: `${Math.min(rule, 1)} 1`,\n            transformOrigin: \"center\",\n          }}\n        />\n      </div>\n    </AbsoluteFill>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/hook-title.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "30",
+    "use": [
+      "The first two seconds of a short, reel or TikTok",
+      "Restating the promise over b-roll halfway through"
+    ],
+    "avoid": [
+      "Full headlines in landscape video — use `text-reveal`"
+    ],
+    "tags": [
+      "hook",
+      "shorts",
+      "title",
+      "opening"
+    ]
+  },
+  "docs": "Usage:\n\n<Sequence durationInFrames={90}>\n  <HookTitle text=\"Nobody tells you this about lighting\" kicker=\"Part 3\" />\n</Sequence>",
+  "categories": [
+    "social"
+  ],
+  "type": "registry:item"
+}

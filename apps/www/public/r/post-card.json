@@ -1,0 +1,39 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "post-card",
+  "title": "Post Card",
+  "description": "A platform-neutral social post: avatar, name, handle, text and engagement counts that tick up.",
+  "dependencies": [],
+  "registryDependencies": [
+    "http://localhost:3000/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/post-card.tsx",
+      "content": "/**\n * @title Post Card\n * @category social\n * @description A platform-neutral social post: avatar, name, handle, text and engagement counts that tick up.\n * @duration 40\n * @use Turning a post into a video without copying any platform's interface\n * @use Showing praise or a quote in a shareable form\n * @avoid Attributed praise from a customer — use `quote-card`\n * @tags post, social, card, quote\n * @example\n * <Center>\n *   <PostCard name=\"Ada Lovelace\" handle=\"@ada\" time=\"2h\" text=\"One timeline, three formats.\" metrics={{ likes: 1248, comments: 86, shares: 210 }} />\n * </Center>\n */\nimport type React from \"react\";\nimport { alpha, type MotionProps, tween, useMotion, useTheme, useViewport } from \"./core\";\n\nexport type PostCardProps = MotionProps & {\n  name: string;\n  handle?: string;\n  /** Relative time, as text: \"2h\", \"Sep 12\". */\n  time?: string;\n  text: string;\n  /** Avatar image; pass an `<Img>`. Initials are drawn when omitted. */\n  avatar?: React.ReactNode;\n  metrics?: { likes?: number; comments?: number; shares?: number };\n  verified?: boolean;\n  width?: number;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\nconst icons = {\n  likes: \"M12 20s-7-4.5-7-9.5A3.5 3.5 0 0 1 12 8a3.5 3.5 0 0 1 7 2.5C19 15.5 12 20 12 20Z\",\n  comments: \"M4 5h16v10H9l-5 4V5Z\",\n  shares: \"M4 12v7h16v-7M12 3v12M8 7l4-4 4 4\",\n};\n\nexport function PostCard({\n  name,\n  handle,\n  time,\n  text,\n  avatar,\n  metrics,\n  verified,\n  width = 760,\n  style,\n  className,\n  ...motion\n}: PostCardProps) {\n  const theme = useTheme();\n  const { u } = useViewport();\n  const m = useMotion(motion);\n  const enter = Math.min(m.enter, 1);\n  const count = tween(m.frame, m.fps, {\n    from: m.delay + Math.round(m.fps * 0.3),\n    duration: Math.round(m.fps * 1.2),\n    motion: \"gentle\",\n  });\n  const format = (value: number) => Math.round(value * Math.min(count, 1)).toLocaleString();\n\n  return (\n    <div\n      className={className}\n      style={{\n        width: u(width),\n        maxWidth: \"100%\",\n        padding: u(28),\n        borderRadius: u(theme.radius),\n        background: theme.colors.surface,\n        border: `1px solid ${theme.colors.border}`,\n        boxShadow: `0 ${u(18)}px ${u(50)}px ${alpha(\"#000000\", 0.22)}`,\n        color: theme.colors.foreground,\n        opacity: enter * (1 - m.exit),\n        translate: `0 ${(1 - enter) * u(22)}px`,\n        ...style,\n      }}\n    >\n      <div style={{ display: \"flex\", alignItems: \"center\", gap: u(16) }}>\n        <div\n          style={{\n            width: u(64),\n            height: u(64),\n            borderRadius: \"50%\",\n            overflow: \"hidden\",\n            background: theme.colors.accent,\n            color: theme.colors.accentForeground,\n            display: \"grid\",\n            placeItems: \"center\",\n            fontSize: u(26),\n            fontWeight: 700,\n            flexShrink: 0,\n          }}\n        >\n          {avatar ?? name.slice(0, 1)}\n        </div>\n        <div style={{ display: \"flex\", flexDirection: \"column\", gap: u(2), minWidth: 0 }}>\n          <div style={{ display: \"flex\", alignItems: \"center\", gap: u(8), fontSize: u(28), fontWeight: 700 }}>\n            <span>{name}</span>\n            {verified ? (\n              <svg width={u(24)} height={u(24)} viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\">\n                <path\n                  d=\"m12 2 2.4 2.2 3.2-.4.6 3.2L21 8.6 19.4 11.5 21 14.4l-2.8 1.6-.6 3.2-3.2-.4L12 21l-2.4-2.2-3.2.4-.6-3.2L3 14.4l1.6-2.9L3 8.6l2.8-1.6.6-3.2 3.2.4L12 2Z\"\n                  fill=\"currentColor\"\n                  opacity={0.18}\n                />\n                <path\n                  d=\"m8.5 12 2.4 2.4 4.6-4.8\"\n                  stroke=\"currentColor\"\n                  strokeWidth={2.2}\n                  strokeLinecap=\"round\"\n                  strokeLinejoin=\"round\"\n                />\n              </svg>\n            ) : null}\n          </div>\n          <div style={{ fontSize: u(22), color: theme.colors.muted }}>\n            {handle}\n            {handle && time ? \" · \" : \"\"}\n            {time}\n          </div>\n        </div>\n      </div>\n      <div style={{ fontSize: u(30), lineHeight: 1.4, marginTop: u(20), textWrap: \"pretty\" }}>{text}</div>\n      {metrics ? (\n        <div style={{ display: \"flex\", gap: u(32), marginTop: u(22), color: theme.colors.muted, fontSize: u(22) }}>\n          {([\"likes\", \"comments\", \"shares\"] as const).map((key) =>\n            metrics[key] === undefined ? null : (\n              <span key={key} style={{ display: \"inline-flex\", alignItems: \"center\", gap: u(8) }}>\n                <svg width={u(22)} height={u(22)} viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\">\n                  <path\n                    d={icons[key]}\n                    stroke=\"currentColor\"\n                    strokeWidth={1.8}\n                    strokeLinecap=\"round\"\n                    strokeLinejoin=\"round\"\n                  />\n                </svg>\n                <span style={{ fontVariantNumeric: \"tabular-nums\" }}>{format(metrics[key] as number)}</span>\n              </span>\n            ),\n          )}\n        </div>\n      ) : null}\n    </div>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/post-card.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "40",
+    "use": [
+      "Turning a post into a video without copying any platform's interface",
+      "Showing praise or a quote in a shareable form"
+    ],
+    "avoid": [
+      "Attributed praise from a customer — use `quote-card`"
+    ],
+    "tags": [
+      "post",
+      "social",
+      "card",
+      "quote"
+    ]
+  },
+  "docs": "Usage:\n\n<Center>\n  <PostCard name=\"Ada Lovelace\" handle=\"@ada\" time=\"2h\" text=\"One timeline, three formats.\" metrics={{ likes: 1248, comments: 86, shares: 210 }} />\n</Center>",
+  "categories": [
+    "social"
+  ],
+  "type": "registry:item"
+}
