@@ -25,6 +25,7 @@ const CATEGORY_LOADERS: Record<string, () => Promise<{ default: Demo[] }>> = {
   overlays: () => import("@reelcn/registry/demos/overlays"),
   product: () => import("@reelcn/registry/demos/product"),
   social: () => import("@reelcn/registry/demos/social"),
+  templates: () => import("@reelcn/registry/demos/templates"),
   text: () => import("@reelcn/registry/demos/text"),
   transitions: () => import("@reelcn/registry/demos/transitions"),
 };

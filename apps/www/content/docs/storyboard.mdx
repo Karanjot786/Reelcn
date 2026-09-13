@@ -1,0 +1,123 @@
+---
+title: Storyboard
+description: Write a video as JSON (theme, brand, audio and a list of scenes), and Storyboard renders it and works out its length.
+---
+
+## Register it once
+
+```bash
+npx shadcn add @reelcn/storyboard
+```
+
+```tsx
+// src/Root.tsx
+import { Composition } from "remotion";
+import { StoryVideo, storyMetadata, storySchema } from "./reelcn/storyboard";
+
+export const Root = () => (
+  <Composition
+    id="Storyboard"
+    component={StoryVideo}
+    schema={storySchema}
+    calculateMetadata={storyMetadata}
+    defaultProps={{ scenes: [{ type: "title", title: "Hello from a story" }] }}
+    width={1920}
+    height={1080}
+    fps={30}
+    durationInFrames={1}
+  />
+);
+```
+
+## Render a story
+
+```json
+{
+  "theme": "neon",
+  "scenes": [
+    { "type": "title", "title": "Rendered from JSON", "subtitle": "npx remotion render Storyboard" },
+    { "type": "chart", "kind": "bar", "title": "Weekly renders",
+      "data": [{ "label": "Mon", "value": 12 }, { "label": "Tue", "value": 30 }, { "label": "Wed", "value": 22 }] },
+    { "type": "cta", "title": "Your turn", "button": "Write a story" }
+  ]
+}
+```
+
+```bash
+npx remotion render Storyboard out.mp4 --props=story.json
+```
+
+That story runs 294 frames: 114 + 120 + 90 frames of scenes, minus two 15-frame fades.
+
+## The story
+
+| Field | What it does |
+|---|---|
+| `theme` | A theme preset name. Default: the surrounding theme, or `midnight`. |
+| `brand` | `{ accent?, logo?, font? }`, laid over the theme. |
+| `fps` | Frames per second. Default 30. |
+| `audio` | `{ music?, musicVolume?, voiceover?, captions? }`. `captions` is a caption array or the URL of a JSON file holding one. |
+| `defaults` | `{ transition?, transitionFrames?, sfx? }` for every scene. Default: a 15-frame `fade`. |
+| `scenes` | At least one scene. |
+
+## Scene types
+
+Every scene also takes these fields:
+- `duration`: seconds.
+- `transition`: into the next scene, or `"none"` for a hard cut.
+- `sfx`: a sound effect name, or `false`.
+- `background`: a background name.
+
+| Type | Fields | Natural length |
+|---|---|---|
+| `title` | `title`, `subtitle?`, `kicker?` | reading time |
+| `text` | `text`, `accent?` (words to color) | reading time |
+| `bullets` | `title?`, `items[{ text, detail?, badge? }]` | reading time |
+| `image` | `src`, `caption?`, `zoom?` | 3 s |
+| `video` | `src`, `trimStart?`, `trimEnd?`, `muted?` | 5 s, or `trimEnd − trimStart` |
+| `device` | `device: phone \| laptop \| browser`, `src?`, `url?` | 3 s, or 5 s for a video |
+| `code` | `code`, `language?`, `title?`, `highlight?` | typing at 40 characters a second, + 1.5 s |
+| `terminal` | `lines[{ type: command \| output, text }]`, `title?` | typing time + 1.5 s |
+| `chart` | `kind: bar \| line \| donut`, `data[{ label, value }]`, `title?` | 4 s |
+| `stat` | `label`, `value`, `prefix?`, `suffix?`, `delta?`, `caption?` | 4 s |
+| `quote` | `quote`, `name`, `role?`, `avatar?` | reading time |
+| `post` | `name`, `text`, `handle?`, `avatar?`, `metrics?` | reading time |
+| `cta` | `title`, `button?`, `url?` | reading time |
+| `logo` | `text`, `src?` (defaults to `brand.logo`) | reading time |
+| `split` | `left`, `right` (any scene but `split`), `labels?` | the longer side |
+
+Reading time is 2.5 words a second plus one second, and never under two seconds. A scene's `duration` always wins. The story's length is the sum of its scenes minus the frames its transitions overlap.
+
+## Names
+
+- **Transitions:** `fade`, `brand-sweep`, `card-push`, `circle-burst`, `glitch`, `light-flash`, `shutter`, `slice-slide`, `split-doors`, `stripe-wipe`, `tile-reveal`, `none`.
+- **Backgrounds:** `aurora`, `beams`, `bokeh`, `brand-solid`, `dots`, `grain`, `gradient-mesh`, `grid`, `spotlight`, `starfield`.
+- **Sound effects:** see [Audio and SFX](/docs/audio-and-sfx).
+
+## Errors
+
+A broken story fails before rendering, and the error names the scene and field:
+
+```text
+Error: Invalid story:
+✖ Invalid input: expected string, received undefined
+  → at scenes[0].title
+✖ unknown scene type "hero"; expected one of title, text, bullets, image, video, device, code, terminal, chart, stat, quote, post, cta, logo, split
+  → at scenes[1].type
+```
+
+## Custom scenes
+
+```tsx
+import { z } from "zod";
+import { defineScene, Storyboard } from "./reelcn/storyboard";
+
+const mapScene = defineScene({
+  type: "map",
+  schema: z.object({ city: z.string() }),
+  component: ({ city }) => <h1>{city}</h1>,
+  duration: () => 3,
+});
+
+<Storyboard story={story} scenes={[mapScene]} />;
+```
