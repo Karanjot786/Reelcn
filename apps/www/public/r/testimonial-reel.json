@@ -1,0 +1,42 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "testimonial-reel",
+  "title": "Testimonial Reel",
+  "description": "Square reel of customer quotes, one card per testimonial, pushed in one after another.",
+  "dependencies": [
+    "zod"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/story.json",
+    "http://localhost:3000/r/storyboard.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/testimonial-reel.tsx",
+      "content": "/**\n * @title Testimonial Reel\n * @category templates\n * @description Square reel of customer quotes, one card per testimonial, pushed in one after another.\n * @duration data-driven\n * @use Social proof for a landing page or an ad\n * @use Collecting launch-day reactions into one clip\n * @avoid One quote on its own — use `quote-card`\n * @tags testimonials, quotes, social proof, template\n * @example\n * <Composition\n *   id=\"TestimonialReel\"\n *   component={TestimonialReel}\n *   schema={testimonialReelSchema}\n *   defaultProps={testimonialReelDefaults}\n *   calculateMetadata={testimonialReelMetadata}\n *   width={1080}\n *   height={1080}\n *   fps={30}\n *   durationInFrames={1}\n * />\n */\nimport { z } from \"zod\";\nimport type { Scene, Story } from \"./story\";\nimport { Storyboard, templateMetadata, templateSchema, templateStory } from \"./storyboard\";\n\nexport const testimonialReelSchema = templateSchema.extend({\n  testimonials: z\n    .array(\n      z.object({\n        quote: z.string(),\n        name: z.string(),\n        role: z.string(),\n        /** Avatar image. Initials are drawn when omitted. */\n        avatar: z.string().optional(),\n      }),\n    )\n    .min(1),\n});\n\nexport type TestimonialReelProps = z.infer<typeof testimonialReelSchema>;\n\nexport const testimonialReelDefaults: TestimonialReelProps = {\n  testimonials: [\n    {\n      quote: \"We cut our launch video from two weeks to one afternoon.\",\n      name: \"Maya Chen\",\n      role: \"Head of product, Northwind\",\n    },\n    { quote: \"Our changelog finally gets watched instead of skipped.\", name: \"Tomás Rivera\", role: \"Founder, Pace\" },\n    {\n      quote: \"The whole team edits the JSON. Nobody waits on a video editor.\",\n      name: \"Priya Nair\",\n      role: \"Design lead, Relay\",\n    },\n  ],\n};\n\nexport function testimonialReelStory(props: TestimonialReelProps): Story {\n  return templateStory(\n    props,\n    props.testimonials.map(\n      (t): Scene => ({ type: \"quote\", quote: t.quote, name: t.name, role: t.role, avatar: t.avatar }),\n    ),\n    \"card-push\",\n  );\n}\n\nexport function TestimonialReel(props: TestimonialReelProps) {\n  return <Storyboard story={testimonialReelStory(props)} />;\n}\n\nexport const testimonialReelMetadata = templateMetadata(testimonialReelStory);\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/testimonial-reel.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "Social proof for a landing page or an ad",
+      "Collecting launch-day reactions into one clip"
+    ],
+    "avoid": [
+      "One quote on its own — use `quote-card`"
+    ],
+    "tags": [
+      "testimonials",
+      "quotes",
+      "social proof",
+      "template"
+    ]
+  },
+  "docs": "Usage:\n\n<Composition\n  id=\"TestimonialReel\"\n  component={TestimonialReel}\n  schema={testimonialReelSchema}\n  defaultProps={testimonialReelDefaults}\n  calculateMetadata={testimonialReelMetadata}\n  width={1080}\n  height={1080}\n  fps={30}\n  durationInFrames={1}\n/>",
+  "categories": [
+    "templates"
+  ],
+  "type": "registry:item"
+}

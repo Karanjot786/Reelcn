@@ -1097,6 +1097,22 @@ const { pulse, beat } = useBeat({ bpm: 120 });
 />
 ```
 
+- [Audiogram](http://localhost:3000/r/audiogram.json): Square podcast clip with cover art, show and episode titles, a live waveform of the audio, speaker names and captions. (length data-driven · use for Sharing a podcast episode or segment on social feeds; Turning any voice recording into a video · avoid A short vertical teaser built on one quote — use `podcast-teaser`)
+
+```tsx
+<Composition
+  id="Audiogram"
+  component={Audiogram}
+  schema={audiogramSchema}
+  defaultProps={{ ...audiogramDefaults, audio: staticFile("episode-42.mp3"), captions }}
+  calculateMetadata={audiogramMetadata}
+  width={1080}
+  height={1080}
+  fps={30}
+  durationInFrames={1}
+/>
+```
+
 - [Changelog](http://localhost:3000/r/changelog.json): Release video listing what is new, improved and fixed in a version, three changes per card set. (length data-driven · use for Monthly or per-release update videos; Turning a changelog page into something people watch · avoid A whole product story — use `product-launch`)
 
 ```tsx
@@ -1106,6 +1122,22 @@ const { pulse, beat } = useBeat({ bpm: 120 });
   schema={changelogSchema}
   defaultProps={changelogDefaults}
   calculateMetadata={changelogMetadata}
+  width={1920}
+  height={1080}
+  fps={30}
+  durationInFrames={1}
+/>
+```
+
+- [Data Story](http://localhost:3000/r/data-story.json): Report video that walks through numbers: a title, then one bar, line, donut or stat scene per section with its caption. (length data-driven · use for Quarterly results, year-in-review and research findings; Turning a dashboard into a narrated walkthrough · avoid A single number — use `stat-counter`)
+
+```tsx
+<Composition
+  id="DataStory"
+  component={DataStory}
+  schema={dataStorySchema}
+  defaultProps={dataStoryDefaults}
+  calculateMetadata={dataStoryMetadata}
   width={1920}
   height={1080}
   fps={30}
@@ -1138,6 +1170,22 @@ const { pulse, beat } = useBeat({ bpm: 120 });
   schema={listicleShortSchema}
   defaultProps={listicleShortDefaults}
   calculateMetadata={listicleShortMetadata}
+  width={1080}
+  height={1920}
+  fps={30}
+  durationInFrames={1}
+/>
+```
+
+- [Podcast Teaser](http://localhost:3000/r/podcast-teaser.json): Vertical teaser cut from a podcast: one clip of the audio with its waveform, the show, and a pull quote. (length data-driven · use for Promoting an episode with its best thirty seconds · avoid Whole episodes or segments with captions — use `audiogram`)
+
+```tsx
+<Composition
+  id="PodcastTeaser"
+  component={PodcastTeaser}
+  schema={podcastTeaserSchema}
+  defaultProps={{ ...podcastTeaserDefaults, audio: staticFile("episode-42.mp3"), clipStart: 734, clipEnd: 762 }}
+  calculateMetadata={podcastTeaserMetadata}
   width={1080}
   height={1920}
   fps={30}
@@ -1205,6 +1253,38 @@ const { pulse, beat } = useBeat({ bpm: 120 });
   calculateMetadata={talkingHeadShortMetadata}
   width={1080}
   height={1920}
+  fps={30}
+  durationInFrames={1}
+/>
+```
+
+- [Testimonial Reel](http://localhost:3000/r/testimonial-reel.json): Square reel of customer quotes, one card per testimonial, pushed in one after another. (length data-driven · use for Social proof for a landing page or an ad; Collecting launch-day reactions into one clip · avoid One quote on its own — use `quote-card`)
+
+```tsx
+<Composition
+  id="TestimonialReel"
+  component={TestimonialReel}
+  schema={testimonialReelSchema}
+  defaultProps={testimonialReelDefaults}
+  calculateMetadata={testimonialReelMetadata}
+  width={1080}
+  height={1080}
+  fps={30}
+  durationInFrames={1}
+/>
+```
+
+- [Tutorial](http://localhost:3000/r/tutorial.json): Step-by-step coding tutorial: typed code, terminal sessions and screenshots, one step per scene, timed to the typing. (length data-driven · use for Getting-started guides and "how to" videos for developer tools; Walking through a setup one command at a time · avoid A single snippet — use `code-block`)
+
+```tsx
+<Composition
+  id="Tutorial"
+  component={Tutorial}
+  schema={tutorialSchema}
+  defaultProps={tutorialDefaults}
+  calculateMetadata={tutorialMetadata}
+  width={1920}
+  height={1080}
   fps={30}
   durationInFrames={1}
 />

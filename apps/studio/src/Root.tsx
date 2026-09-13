@@ -2,8 +2,10 @@ import { demos } from "@reelcn/registry/demos";
 import { sampleStory } from "@reelcn/registry/demos/story-samples";
 import { DemoFrame } from "@reelcn/registry/demos/view";
 import { AppPromo, appPromoDefaults, appPromoMetadata, appPromoSchema } from "@reelcn/registry/items/app-promo";
+import { Audiogram, audiogramDefaults, audiogramMetadata, audiogramSchema } from "@reelcn/registry/items/audiogram";
 import { Changelog, changelogDefaults, changelogMetadata, changelogSchema } from "@reelcn/registry/items/changelog";
 import { type ThemeName, themeNames, Viewport } from "@reelcn/registry/items/core";
+import { DataStory, dataStoryDefaults, dataStoryMetadata, dataStorySchema } from "@reelcn/registry/items/data-story";
 import {
   FeatureShort,
   featureShortDefaults,
@@ -16,6 +18,12 @@ import {
   listicleShortMetadata,
   listicleShortSchema,
 } from "@reelcn/registry/items/listicle-short";
+import {
+  PodcastTeaser,
+  podcastTeaserDefaults,
+  podcastTeaserMetadata,
+  podcastTeaserSchema,
+} from "@reelcn/registry/items/podcast-teaser";
 import {
   PostToVideo,
   postToVideoDefaults,
@@ -35,6 +43,13 @@ import {
   talkingHeadShortMetadata,
   talkingHeadShortSchema,
 } from "@reelcn/registry/items/talking-head-short";
+import {
+  TestimonialReel,
+  testimonialReelDefaults,
+  testimonialReelMetadata,
+  testimonialReelSchema,
+} from "@reelcn/registry/items/testimonial-reel";
+import { Tutorial, tutorialDefaults, tutorialMetadata, tutorialSchema } from "@reelcn/registry/items/tutorial";
 import {
   YoutubeIntro,
   youtubeIntroDefaults,
@@ -227,6 +242,55 @@ export function Root() {
           defaultProps={listicleShortDefaults}
           calculateMetadata={listicleShortMetadata}
           {...templateSize("9x16")}
+        />
+        <Composition
+          id="Audiogram"
+          component={Audiogram}
+          schema={audiogramSchema}
+          defaultProps={audiogramDefaults}
+          calculateMetadata={audiogramMetadata}
+          {...templateSize("1x1")}
+        />
+        {/* Proves mediaSeconds on audio: the length must come from voice.mp3 (6 s = 180 frames). */}
+        <Composition
+          id="AudiogramVoice"
+          component={Audiogram}
+          schema={audiogramSchema}
+          defaultProps={{ ...audiogramDefaults, audio: staticFile("reelcn-demo/voice.mp3") }}
+          calculateMetadata={audiogramMetadata}
+          {...templateSize("1x1")}
+        />
+        <Composition
+          id="PodcastTeaser"
+          component={PodcastTeaser}
+          schema={podcastTeaserSchema}
+          defaultProps={podcastTeaserDefaults}
+          calculateMetadata={podcastTeaserMetadata}
+          {...templateSize("9x16")}
+        />
+        <Composition
+          id="DataStory"
+          component={DataStory}
+          schema={dataStorySchema}
+          defaultProps={dataStoryDefaults}
+          calculateMetadata={dataStoryMetadata}
+          {...templateSize("16x9")}
+        />
+        <Composition
+          id="TestimonialReel"
+          component={TestimonialReel}
+          schema={testimonialReelSchema}
+          defaultProps={testimonialReelDefaults}
+          calculateMetadata={testimonialReelMetadata}
+          {...templateSize("1x1")}
+        />
+        <Composition
+          id="Tutorial"
+          component={Tutorial}
+          schema={tutorialSchema}
+          defaultProps={tutorialDefaults}
+          calculateMetadata={tutorialMetadata}
+          {...templateSize("16x9")}
         />
       </Folder>
       {formats.map((format) => (

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "data-story",
+  "title": "Data Story",
+  "description": "Report video that walks through numbers: a title, then one bar, line, donut or stat scene per section with its caption.",
+  "dependencies": [
+    "zod"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/story.json",
+    "http://localhost:3000/r/storyboard.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/data-story.tsx",
+      "content": "/**\n * @title Data Story\n * @category templates\n * @description Report video that walks through numbers: a title, then one bar, line, donut or stat scene per section with its caption.\n * @duration data-driven\n * @use Quarterly results, year-in-review and research findings\n * @use Turning a dashboard into a narrated walkthrough\n * @avoid A single number — use `stat-counter`\n * @tags data, charts, report, stats, template\n * @example\n * <Composition\n *   id=\"DataStory\"\n *   component={DataStory}\n *   schema={dataStorySchema}\n *   defaultProps={dataStoryDefaults}\n *   calculateMetadata={dataStoryMetadata}\n *   width={1920}\n *   height={1080}\n *   fps={30}\n *   durationInFrames={1}\n * />\n */\nimport { z } from \"zod\";\nimport type { Scene, Story } from \"./story\";\nimport { Storyboard, templateMetadata, templateSchema, templateStory } from \"./storyboard\";\n\nexport const dataStorySchema = templateSchema.extend({\n  title: z.string(),\n  sections: z\n    .array(\n      z.object({\n        kind: z.enum([\"bar\", \"line\", \"donut\", \"stat\"]),\n        /** For `stat`, the first entry is the number and its label. */\n        data: z.array(z.object({ label: z.string(), value: z.number() })).min(1),\n        caption: z.string(),\n      }),\n    )\n    .min(1),\n});\n\nexport type DataStoryProps = z.infer<typeof dataStorySchema>;\n\nexport const dataStoryDefaults: DataStoryProps = {\n  title: \"How our users rendered in 2026\",\n  sections: [\n    {\n      kind: \"stat\",\n      data: [{ label: \"Videos rendered this year\", value: 1284000 }],\n      caption: \"Up from 310,000 last year\",\n    },\n    {\n      kind: \"bar\",\n      data: [\n        { label: \"Shorts\", value: 58 },\n        { label: \"Tutorials\", value: 21 },\n        { label: \"Launches\", value: 13 },\n        { label: \"Podcasts\", value: 8 },\n      ],\n      caption: \"What people make, in percent\",\n    },\n    {\n      kind: \"line\",\n      data: [\n        { label: \"Jan\", value: 40 },\n        { label: \"Mar\", value: 62 },\n        { label: \"May\", value: 85 },\n        { label: \"Jul\", value: 120 },\n        { label: \"Sep\", value: 164 },\n      ],\n      caption: \"Renders per day, in thousands\",\n    },\n    {\n      kind: \"donut\",\n      data: [\n        { label: \"16:9\", value: 44 },\n        { label: \"9:16\", value: 41 },\n        { label: \"1:1\", value: 15 },\n      ],\n      caption: \"Formats\",\n    },\n  ],\n};\n\nexport function dataStoryStory(props: DataStoryProps): Story {\n  return templateStory(props, [\n    { type: \"title\", title: props.title, background: \"grid\" },\n    ...props.sections.map(\n      (section): Scene =>\n        section.kind === \"stat\"\n          ? { type: \"stat\", label: section.data[0].label, value: section.data[0].value, caption: section.caption }\n          : { type: \"chart\", kind: section.kind, title: section.caption, data: section.data },\n    ),\n  ]);\n}\n\nexport function DataStory(props: DataStoryProps) {\n  return <Storyboard story={dataStoryStory(props)} />;\n}\n\nexport const dataStoryMetadata = templateMetadata(dataStoryStory);\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/data-story.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "Quarterly results, year-in-review and research findings",
+      "Turning a dashboard into a narrated walkthrough"
+    ],
+    "avoid": [
+      "A single number — use `stat-counter`"
+    ],
+    "tags": [
+      "data",
+      "charts",
+      "report",
+      "stats",
+      "template"
+    ]
+  },
+  "docs": "Usage:\n\n<Composition\n  id=\"DataStory\"\n  component={DataStory}\n  schema={dataStorySchema}\n  defaultProps={dataStoryDefaults}\n  calculateMetadata={dataStoryMetadata}\n  width={1920}\n  height={1080}\n  fps={30}\n  durationInFrames={1}\n/>",
+  "categories": [
+    "templates"
+  ],
+  "type": "registry:item"
+}

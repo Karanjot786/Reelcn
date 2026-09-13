@@ -1,0 +1,43 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tutorial",
+  "title": "Tutorial",
+  "description": "Step-by-step coding tutorial: typed code, terminal sessions and screenshots, one step per scene, timed to the typing.",
+  "dependencies": [
+    "zod"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/story.json",
+    "http://localhost:3000/r/storyboard.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/tutorial.tsx",
+      "content": "/**\n * @title Tutorial\n * @category templates\n * @description Step-by-step coding tutorial: typed code, terminal sessions and screenshots, one step per scene, timed to the typing.\n * @duration data-driven\n * @use Getting-started guides and \"how to\" videos for developer tools\n * @use Walking through a setup one command at a time\n * @avoid A single snippet — use `code-block`\n * @tags tutorial, code, terminal, developer, template\n * @example\n * <Composition\n *   id=\"Tutorial\"\n *   component={Tutorial}\n *   schema={tutorialSchema}\n *   defaultProps={tutorialDefaults}\n *   calculateMetadata={tutorialMetadata}\n *   width={1920}\n *   height={1080}\n *   fps={30}\n *   durationInFrames={1}\n * />\n */\nimport { z } from \"zod\";\nimport { LANGUAGES, type Scene, type Story } from \"./story\";\nimport { Storyboard, templateMetadata, templateSchema, templateStory } from \"./storyboard\";\n\nexport const tutorialSchema = templateSchema.extend({\n  title: z.string(),\n  steps: z\n    .array(\n      z.object({\n        kind: z.enum([\"code\", \"terminal\", \"screen\"]),\n        /** Code, a terminal session (lines starting \"$ \" are commands), or a screenshot URL. */\n        content: z.string(),\n        language: z.enum(LANGUAGES).optional(),\n        /** Slow zoom on a screenshot. */\n        zoom: z.boolean().optional(),\n      }),\n    )\n    .min(1),\n});\n\nexport type TutorialProps = z.infer<typeof tutorialSchema>;\n\nexport const tutorialDefaults: TutorialProps = {\n  title: \"Add a storyboard to your project\",\n  steps: [\n    { kind: \"terminal\", content: \"$ npx shadcn add @reelcn/storyboard\\nCreated src/reelcn/storyboard.tsx\" },\n    {\n      kind: \"code\",\n      language: \"tsx\",\n      content:\n        '<Composition id=\"Storyboard\" component={StoryVideo}\\n  schema={storySchema} calculateMetadata={storyMetadata}\\n  defaultProps={story} width={1920} height={1080}\\n  fps={30} durationInFrames={1} />',\n    },\n    { kind: \"terminal\", content: \"$ npx remotion render Storyboard out.mp4 --props=story.json\\nRendered 294 frames\" },\n  ],\n};\n\n/** A terminal session as text: lines starting with \"$ \" are commands, the rest are output. */\nfunction terminalLines(content: string) {\n  return content\n    .split(\"\\n\")\n    .map((line) =>\n      line.startsWith(\"$ \")\n        ? { type: \"command\" as const, text: line.slice(2) }\n        : { type: \"output\" as const, text: line },\n    );\n}\n\nexport function tutorialStory(props: TutorialProps): Story {\n  return templateStory(props, [\n    { type: \"title\", kicker: \"Tutorial\", title: props.title, background: \"grid\" },\n    ...props.steps.map((step, index): Scene => {\n      const label = `Step ${index + 1}`;\n      if (step.kind === \"code\") return { type: \"code\", code: step.content, language: step.language, title: label };\n      if (step.kind === \"terminal\") return { type: \"terminal\", lines: terminalLines(step.content), title: label };\n      return { type: \"image\", src: step.content, zoom: step.zoom, caption: label };\n    }),\n  ]);\n}\n\nexport function Tutorial(props: TutorialProps) {\n  return <Storyboard story={tutorialStory(props)} />;\n}\n\nexport const tutorialMetadata = templateMetadata(tutorialStory);\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/tutorial.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "Getting-started guides and \"how to\" videos for developer tools",
+      "Walking through a setup one command at a time"
+    ],
+    "avoid": [
+      "A single snippet — use `code-block`"
+    ],
+    "tags": [
+      "tutorial",
+      "code",
+      "terminal",
+      "developer",
+      "template"
+    ]
+  },
+  "docs": "Usage:\n\n<Composition\n  id=\"Tutorial\"\n  component={Tutorial}\n  schema={tutorialSchema}\n  defaultProps={tutorialDefaults}\n  calculateMetadata={tutorialMetadata}\n  width={1920}\n  height={1080}\n  fps={30}\n  durationInFrames={1}\n/>",
+  "categories": [
+    "templates"
+  ],
+  "type": "registry:item"
+}

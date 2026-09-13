@@ -240,6 +240,55 @@
       }
     },
     {
+      "name": "audiogram",
+      "type": "registry:item",
+      "title": "Audiogram",
+      "description": "Square podcast clip with cover art, show and episode titles, a live waveform of the audio, speaker names and captions.",
+      "categories": [
+        "templates"
+      ],
+      "dependencies": [
+        "@remotion/media",
+        "remotion",
+        "zod"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/animate.json",
+        "http://localhost:3000/r/captions.json",
+        "http://localhost:3000/r/core.json",
+        "http://localhost:3000/r/story.json",
+        "http://localhost:3000/r/storyboard.json",
+        "http://localhost:3000/r/text-reveal.json",
+        "http://localhost:3000/r/use-beat.json",
+        "http://localhost:3000/r/waveform.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/audiogram.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/audiogram.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Composition\n  id=\"Audiogram\"\n  component={Audiogram}\n  schema={audiogramSchema}\n  defaultProps={{ ...audiogramDefaults, audio: staticFile(\"episode-42.mp3\"), captions }}\n  calculateMetadata={audiogramMetadata}\n  width={1080}\n  height={1080}\n  fps={30}\n  durationInFrames={1}\n/>",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "Sharing a podcast episode or segment on social feeds",
+          "Turning any voice recording into a video"
+        ],
+        "avoid": [
+          "A short vertical teaser built on one quote — use `podcast-teaser`"
+        ],
+        "tags": [
+          "podcast",
+          "audiogram",
+          "waveform",
+          "captions",
+          "template"
+        ]
+      }
+    },
+    {
       "name": "aurora",
       "type": "registry:item",
       "title": "Aurora",
@@ -1674,6 +1723,47 @@
       }
     },
     {
+      "name": "data-story",
+      "type": "registry:item",
+      "title": "Data Story",
+      "description": "Report video that walks through numbers: a title, then one bar, line, donut or stat scene per section with its caption.",
+      "categories": [
+        "templates"
+      ],
+      "dependencies": [
+        "zod"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/story.json",
+        "http://localhost:3000/r/storyboard.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/data-story.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/data-story.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Composition\n  id=\"DataStory\"\n  component={DataStory}\n  schema={dataStorySchema}\n  defaultProps={dataStoryDefaults}\n  calculateMetadata={dataStoryMetadata}\n  width={1920}\n  height={1080}\n  fps={30}\n  durationInFrames={1}\n/>",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "Quarterly results, year-in-review and research findings",
+          "Turning a dashboard into a narrated walkthrough"
+        ],
+        "avoid": [
+          "A single number — use `stat-counter`"
+        ],
+        "tags": [
+          "data",
+          "charts",
+          "report",
+          "stats",
+          "template"
+        ]
+      }
+    },
+    {
       "name": "donut",
       "type": "registry:item",
       "title": "Donut",
@@ -2723,6 +2813,48 @@
           "mockup",
           "frame",
           "app"
+        ]
+      }
+    },
+    {
+      "name": "podcast-teaser",
+      "type": "registry:item",
+      "title": "Podcast Teaser",
+      "description": "Vertical teaser cut from a podcast: one clip of the audio with its waveform, the show, and a pull quote.",
+      "categories": [
+        "templates"
+      ],
+      "dependencies": [
+        "remotion",
+        "zod"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/audiogram.json",
+        "http://localhost:3000/r/story.json",
+        "http://localhost:3000/r/storyboard.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/podcast-teaser.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/podcast-teaser.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Composition\n  id=\"PodcastTeaser\"\n  component={PodcastTeaser}\n  schema={podcastTeaserSchema}\n  defaultProps={{ ...podcastTeaserDefaults, audio: staticFile(\"episode-42.mp3\"), clipStart: 734, clipEnd: 762 }}\n  calculateMetadata={podcastTeaserMetadata}\n  width={1080}\n  height={1920}\n  fps={30}\n  durationInFrames={1}\n/>",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "Promoting an episode with its best thirty seconds"
+        ],
+        "avoid": [
+          "Whole episodes or segments with captions — use `audiogram`"
+        ],
+        "tags": [
+          "podcast",
+          "teaser",
+          "clip",
+          "short",
+          "template"
         ]
       }
     },
@@ -4181,6 +4313,46 @@
       }
     },
     {
+      "name": "testimonial-reel",
+      "type": "registry:item",
+      "title": "Testimonial Reel",
+      "description": "Square reel of customer quotes, one card per testimonial, pushed in one after another.",
+      "categories": [
+        "templates"
+      ],
+      "dependencies": [
+        "zod"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/story.json",
+        "http://localhost:3000/r/storyboard.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/testimonial-reel.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/testimonial-reel.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Composition\n  id=\"TestimonialReel\"\n  component={TestimonialReel}\n  schema={testimonialReelSchema}\n  defaultProps={testimonialReelDefaults}\n  calculateMetadata={testimonialReelMetadata}\n  width={1080}\n  height={1080}\n  fps={30}\n  durationInFrames={1}\n/>",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "Social proof for a landing page or an ad",
+          "Collecting launch-day reactions into one clip"
+        ],
+        "avoid": [
+          "One quote on its own — use `quote-card`"
+        ],
+        "tags": [
+          "testimonials",
+          "quotes",
+          "social proof",
+          "template"
+        ]
+      }
+    },
+    {
       "name": "text-reveal",
       "type": "registry:item",
       "title": "Text Reveal",
@@ -4328,6 +4500,47 @@
           "alert",
           "snackbar",
           "status"
+        ]
+      }
+    },
+    {
+      "name": "tutorial",
+      "type": "registry:item",
+      "title": "Tutorial",
+      "description": "Step-by-step coding tutorial: typed code, terminal sessions and screenshots, one step per scene, timed to the typing.",
+      "categories": [
+        "templates"
+      ],
+      "dependencies": [
+        "zod"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/story.json",
+        "http://localhost:3000/r/storyboard.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/tutorial.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/tutorial.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Composition\n  id=\"Tutorial\"\n  component={Tutorial}\n  schema={tutorialSchema}\n  defaultProps={tutorialDefaults}\n  calculateMetadata={tutorialMetadata}\n  width={1920}\n  height={1080}\n  fps={30}\n  durationInFrames={1}\n/>",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "Getting-started guides and \"how to\" videos for developer tools",
+          "Walking through a setup one command at a time"
+        ],
+        "avoid": [
+          "A single snippet — use `code-block`"
+        ],
+        "tags": [
+          "tutorial",
+          "code",
+          "terminal",
+          "developer",
+          "template"
         ]
       }
     },

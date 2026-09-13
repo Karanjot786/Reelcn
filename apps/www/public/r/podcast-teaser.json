@@ -1,0 +1,44 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "podcast-teaser",
+  "title": "Podcast Teaser",
+  "description": "Vertical teaser cut from a podcast: one clip of the audio with its waveform, the show, and a pull quote.",
+  "dependencies": [
+    "remotion",
+    "zod"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/audiogram.json",
+    "http://localhost:3000/r/story.json",
+    "http://localhost:3000/r/storyboard.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/podcast-teaser.tsx",
+      "content": "/**\n * @title Podcast Teaser\n * @category templates\n * @description Vertical teaser cut from a podcast: one clip of the audio with its waveform, the show, and a pull quote.\n * @duration data-driven\n * @use Promoting an episode with its best thirty seconds\n * @avoid Whole episodes or segments with captions — use `audiogram`\n * @tags podcast, teaser, clip, short, template\n * @example\n * <Composition\n *   id=\"PodcastTeaser\"\n *   component={PodcastTeaser}\n *   schema={podcastTeaserSchema}\n *   defaultProps={{ ...podcastTeaserDefaults, audio: staticFile(\"episode-42.mp3\"), clipStart: 734, clipEnd: 762 }}\n *   calculateMetadata={podcastTeaserMetadata}\n *   width={1080}\n *   height={1920}\n *   fps={30}\n *   durationInFrames={1}\n * />\n */\nimport type { CalculateMetadataFunction } from \"remotion\";\nimport { z } from \"zod\";\nimport { AudiogramLayout } from \"./audiogram\";\nimport { STORY_FPS } from \"./story\";\nimport { TemplateFrame, templateSchema } from \"./storyboard\";\n\nexport const podcastTeaserSchema = templateSchema\n  .extend({\n    /** The episode audio. Beat-driven bars stand in when omitted. */\n    audio: z.string().optional(),\n    /** Seconds into the audio where the clip starts. */\n    clipStart: z.number().min(0),\n    /** Seconds into the audio where the clip ends. */\n    clipEnd: z.number().positive(),\n    quote: z.string(),\n    show: z.string(),\n    cover: z.string().optional(),\n  })\n  .refine((props) => props.clipEnd > props.clipStart, {\n    message: \"clipEnd must be after clipStart\",\n    path: [\"clipEnd\"],\n  });\n\nexport type PodcastTeaserProps = z.infer<typeof podcastTeaserSchema>;\n\nexport const podcastTeaserDefaults: PodcastTeaserProps = {\n  clipStart: 0,\n  clipEnd: 8,\n  quote: \"The best render farm is the one you never have to think about.\",\n  show: \"Frame by Frame\",\n};\n\nexport function PodcastTeaser({ audio, clipStart, quote, show, cover, ...fields }: PodcastTeaserProps) {\n  return (\n    <TemplateFrame fields={fields}>\n      <AudiogramLayout audio={audio} clipStart={clipStart} show={show} cover={cover} quote={quote} />\n    </TemplateFrame>\n  );\n}\n\nexport const podcastTeaserMetadata: CalculateMetadataFunction<PodcastTeaserProps> = ({ props }) => ({\n  durationInFrames: Math.round((props.clipEnd - props.clipStart) * STORY_FPS),\n});\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/podcast-teaser.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "Promoting an episode with its best thirty seconds"
+    ],
+    "avoid": [
+      "Whole episodes or segments with captions — use `audiogram`"
+    ],
+    "tags": [
+      "podcast",
+      "teaser",
+      "clip",
+      "short",
+      "template"
+    ]
+  },
+  "docs": "Usage:\n\n<Composition\n  id=\"PodcastTeaser\"\n  component={PodcastTeaser}\n  schema={podcastTeaserSchema}\n  defaultProps={{ ...podcastTeaserDefaults, audio: staticFile(\"episode-42.mp3\"), clipStart: 734, clipEnd: 762 }}\n  calculateMetadata={podcastTeaserMetadata}\n  width={1080}\n  height={1920}\n  fps={30}\n  durationInFrames={1}\n/>",
+  "categories": [
+    "templates"
+  ],
+  "type": "registry:item"
+}

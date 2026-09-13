@@ -1,15 +1,20 @@
 import type React from "react";
 import { staticFile } from "remotion";
 import { AppPromo, appPromoDefaults, appPromoStory } from "../items/app-promo";
+import { Audiogram, audiogramDefaults } from "../items/audiogram";
 import { Changelog, changelogDefaults, changelogStory } from "../items/changelog";
+import { DataStory, dataStoryDefaults, dataStoryStory } from "../items/data-story";
 import { FeatureShort, featureShortDefaults, featureShortStory } from "../items/feature-short";
 import { ListicleShort, listicleShortDefaults, listicleShortStory } from "../items/listicle-short";
+import { PodcastTeaser, podcastTeaserDefaults } from "../items/podcast-teaser";
 import { PostToVideo, postToVideoDefaults, postToVideoStory } from "../items/post-to-video";
 import { ProductLaunch, productLaunchDefaults, productLaunchStory } from "../items/product-launch";
 import type { Story } from "../items/story";
 import { captionsSeconds, storyFrames } from "../items/story";
 import { Storyboard } from "../items/storyboard";
 import { TalkingHeadShort, talkingHeadShortDefaults } from "../items/talking-head-short";
+import { TestimonialReel, testimonialReelDefaults, testimonialReelStory } from "../items/testimonial-reel";
+import { Tutorial, tutorialDefaults, tutorialStory } from "../items/tutorial";
 import { YoutubeIntro, youtubeIntroDefaults, youtubeIntroStory } from "../items/youtube-intro";
 import { YOUTUBE_OUTRO_FRAMES, YoutubeOutro, youtubeOutroDefaults } from "../items/youtube-outro";
 import { captionFixture } from "./captions-fixture";
@@ -75,7 +80,31 @@ const creatorDemos: Demo[] = [
   storyDemo("listicle-short", ListicleShort, listicleShortStory, listicleShortDefaults),
 ];
 
+const podcastDataDemos: Demo[] = [
+  {
+    // voice.mp3 is 6 s long.
+    id: "audiogram",
+    duration: 180,
+    bare: true,
+    component: () => (
+      <Audiogram {...audiogramDefaults} audio={staticFile("reelcn-demo/voice.mp3")} captions={captionFixture} />
+    ),
+  },
+  { id: "audiogram-silent", duration: 240, bare: true, component: () => <Audiogram {...audiogramDefaults} /> },
+  {
+    id: "podcast-teaser",
+    duration: 120,
+    bare: true,
+    component: () => (
+      <PodcastTeaser {...podcastTeaserDefaults} audio={staticFile("reelcn-demo/voice.mp3")} clipStart={1} clipEnd={5} />
+    ),
+  },
+  storyDemo("data-story", DataStory, dataStoryStory, dataStoryDefaults),
+  storyDemo("testimonial-reel", TestimonialReel, testimonialReelStory, testimonialReelDefaults),
+  storyDemo("tutorial", Tutorial, tutorialStory, tutorialDefaults),
+];
+
 // Tasks 3–5 add one array per template group and list it here.
-const demos: Demo[] = [...storyboardDemos, ...productDemos, ...creatorDemos];
+const demos: Demo[] = [...storyboardDemos, ...productDemos, ...creatorDemos, ...podcastDataDemos];
 
 export default demos;
