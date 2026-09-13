@@ -1325,6 +1325,14 @@ const { pulse, beat } = useBeat({ bpm: 120 });
 
 ## tools
 
+- [Contact Sheet](http://localhost:3000/r/contact-sheet.json): Renders one PNG grid of evenly spaced frames from any composition, so a whole video can be reviewed in a single image.
+
+```tsx
+node scripts/reelcn-contact-sheet.ts ProductLaunch
+node scripts/reelcn-contact-sheet.ts Storyboard --frames 9 --props story.json --out review.png
+node scripts/reelcn-contact-sheet.ts MyVideo --entry src/index.ts
+```
+
 - [SFX Pull](http://localhost:3000/r/sfx-pull.json): Downloads the reelcn sound pack into your public folder so renders work offline. (use for Rendering on a machine with no network, or in CI; Pinning the sounds so a later reelcn release cannot change them)
 
 ```tsx

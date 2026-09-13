@@ -4823,6 +4823,38 @@
       }
     },
     {
+      "name": "contact-sheet",
+      "type": "registry:item",
+      "title": "Contact Sheet",
+      "description": "Renders one PNG grid of evenly spaced frames from any composition, so a whole video can be reviewed in a single image.",
+      "categories": [
+        "tools"
+      ],
+      "dependencies": [
+        "@remotion/bundler",
+        "@remotion/renderer"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "registry/tools/contact-sheet.ts",
+          "type": "registry:file",
+          "target": "~/scripts/reelcn-contact-sheet.ts"
+        }
+      ],
+      "docs": "Usage:\n\nnode scripts/reelcn-contact-sheet.ts ProductLaunch\nnode scripts/reelcn-contact-sheet.ts Storyboard --frames 9 --props story.json --out review.png\nnode scripts/reelcn-contact-sheet.ts MyVideo --entry src/index.ts",
+      "meta": {
+        "use": [],
+        "avoid": [],
+        "tags": [
+          "review",
+          "stills",
+          "contact sheet",
+          "agent"
+        ]
+      }
+    },
+    {
       "name": "sfx-pull",
       "type": "registry:item",
       "title": "SFX Pull",

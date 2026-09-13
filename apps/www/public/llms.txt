@@ -168,5 +168,6 @@ How they work:
 
 ## tools
 
+- [Contact Sheet](http://localhost:3000/r/contact-sheet.json): Renders one PNG grid of evenly spaced frames from any composition, so a whole video can be reviewed in a single image.
 - [SFX Pull](http://localhost:3000/r/sfx-pull.json): Downloads the reelcn sound pack into your public folder so renders work offline. (use for Rendering on a machine with no network, or in CI; Pinning the sounds so a later reelcn release cannot change them)
 - [Transcribe](http://localhost:3000/r/transcribe.json): Turns audio or video into word-level captions JSON for the caption components. (use for Captioning a talking-head short, a podcast clip or a tutorial; Converting an existing .srt into the caption format)

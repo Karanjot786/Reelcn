@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "contact-sheet",
+  "title": "Contact Sheet",
+  "description": "Renders one PNG grid of evenly spaced frames from any composition, so a whole video can be reviewed in a single image.",
+  "dependencies": [
+    "@remotion/bundler",
+    "@remotion/renderer"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/tools/contact-sheet.ts",
+      "content": "/**\n * @title Contact Sheet\n * @category tools\n * @description Renders one PNG grid of evenly spaced frames from any composition, so a whole video can be reviewed in a single image.\n * @tags review, stills, contact sheet, agent\n * @example\n * node scripts/reelcn-contact-sheet.ts ProductLaunch\n * node scripts/reelcn-contact-sheet.ts Storyboard --frames 9 --props story.json --out review.png\n * node scripts/reelcn-contact-sheet.ts MyVideo --entry src/index.ts\n */\n// Runs TypeScript directly, so it needs Node 22.18 or newer. Run it from your project root.\n// ponytail: bundles with defaults; a project whose remotion.config.ts overrides webpack needs that override passed to bundle().\nimport { mkdirSync, readFileSync, rmSync, writeFileSync } from \"node:fs\";\nimport path from \"node:path\";\nimport { bundle } from \"@remotion/bundler\";\nimport { openBrowser, renderStill, selectComposition } from \"@remotion/renderer\";\n\nconst USAGE =\n  \"usage: node scripts/reelcn-contact-sheet.ts <compositionId> [--frames 6] [--props file.json] [--out sheet.png] [--entry src/index.ts]\";\nconst SCALE = 0.25;\n\nconst args = process.argv.slice(2);\nconst option = (name: string) => {\n  const index = args.indexOf(`--${name}`);\n  return index === -1 ? undefined : args[index + 1];\n};\nconst id = args[0];\nconst count = Number(option(\"frames\") ?? 6);\nif (!id || id.startsWith(\"--\") || !Number.isInteger(count) || count < 1) {\n  console.error(USAGE);\n  process.exit(1);\n}\nconst entry = path.resolve(option(\"entry\") ?? \"src/index.ts\");\nconst out = path.resolve(option(\"out\") ?? `${id}-sheet.png`);\nconst propsFile = option(\"props\");\nconst inputProps: Record<string, unknown> = propsFile ? JSON.parse(readFileSync(propsFile, \"utf8\")) : {};\n\n// The grid is itself a composition, bundled from this temporary entry. It is written next to the user's entry so\n// `react` and `remotion` resolve from their node_modules, and it is plain JS so no loader has to transpile it.\nconst SHEET_ENTRY = `import { createElement as h } from \"react\";\nimport { AbsoluteFill, Composition, Img, registerRoot } from \"remotion\";\n\nconst Sheet = ({ cells, columns, width, height }) =>\n  h(AbsoluteFill, { style: { background: \"#1c1c1c\" } },\n    cells.map((cell, index) =>\n      h(\"div\", { key: index, style: { position: \"absolute\", left: (index % columns) * width, top: Math.floor(index / columns) * height, width, height } },\n        h(Img, { src: cell.src, style: { width: \"100%\", height: \"100%\" } }),\n        h(\"div\", { style: { position: \"absolute\", top: 8, left: 8, padding: \"2px 10px\", background: \"#000c\", color: \"#fff\", font: \"600 16px monospace\" } }, \"f\" + cell.frame))));\n\nregisterRoot(() =>\n  h(Composition, {\n    id: \"reelcn-contact-sheet\", component: Sheet, fps: 30, durationInFrames: 1, width: 2, height: 2,\n    defaultProps: { cells: [], columns: 1, width: 2, height: 2 },\n    calculateMetadata: ({ props }) => ({ width: props.columns * props.width, height: Math.ceil(props.cells.length / props.columns) * props.height }),\n  }));\n`;\n\nconst sheetEntry = path.join(path.dirname(entry), \".reelcn-contact-sheet.js\");\nconst browser = await openBrowser(\"chrome\");\ntry {\n  const serveUrl = await bundle({ entryPoint: entry });\n  const composition = await selectComposition({ serveUrl, id, inputProps, puppeteerInstance: browser });\n  // Skip the first and last frame, where entrances and exits are invisible (Studio's own sheets do the same).\n  const last = composition.durationInFrames - 1;\n  const first = Math.min(1, last);\n  const span = Math.max(last - 2, 0);\n  const frames = Array.from({ length: count }, (_, i) => Math.round(first + (i * span) / Math.max(count - 1, 1)));\n\n  const cells: { frame: number; src: string }[] = [];\n  for (const frame of frames) {\n    // No `output`: renderStill hands the PNG back as a buffer.\n    const { buffer } = await renderStill({\n      composition,\n      serveUrl,\n      frame,\n      scale: SCALE,\n      inputProps,\n      puppeteerInstance: browser,\n    });\n    cells.push({ frame, src: `data:image/png;base64,${(buffer as Buffer).toString(\"base64\")}` });\n    console.log(`frame ${frame}`);\n  }\n\n  writeFileSync(sheetEntry, SHEET_ENTRY);\n  const sheetUrl = await bundle({ entryPoint: sheetEntry });\n  const sheetProps = {\n    cells,\n    columns: Math.ceil(Math.sqrt(count)),\n    width: Math.round(composition.width * SCALE),\n    height: Math.round(composition.height * SCALE),\n  };\n  const sheet = await selectComposition({\n    serveUrl: sheetUrl,\n    id: \"reelcn-contact-sheet\",\n    inputProps: sheetProps,\n    puppeteerInstance: browser,\n  });\n  mkdirSync(path.dirname(out), { recursive: true });\n  await renderStill({\n    composition: sheet,\n    serveUrl: sheetUrl,\n    frame: 0,\n    output: out,\n    inputProps: sheetProps,\n    puppeteerInstance: browser,\n  });\n  console.log(`wrote ${path.relative(process.cwd(), out)}: ${cells.length} frames of ${id} (${frames.join(\", \")})`);\n} finally {\n  rmSync(sheetEntry, { force: true });\n  await browser.close({ silent: true });\n}\n",
+      "type": "registry:file",
+      "target": "~/scripts/reelcn-contact-sheet.ts"
+    }
+  ],
+  "meta": {
+    "use": [],
+    "avoid": [],
+    "tags": [
+      "review",
+      "stills",
+      "contact sheet",
+      "agent"
+    ]
+  },
+  "docs": "Usage:\n\nnode scripts/reelcn-contact-sheet.ts ProductLaunch\nnode scripts/reelcn-contact-sheet.ts Storyboard --frames 9 --props story.json --out review.png\nnode scripts/reelcn-contact-sheet.ts MyVideo --entry src/index.ts",
+  "categories": [
+    "tools"
+  ],
+  "type": "registry:item"
+}
