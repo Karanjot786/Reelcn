@@ -26,6 +26,8 @@ jobs:
       - run: pnpm registry:build
       - name: Generated files must be committed
         run: pnpm check:drift
+      - name: Build the site
+        run: pnpm site:build
       - name: Core self-test
         run: pnpm test:self
       - name: Smoke render every demo (fails blank or static demos)

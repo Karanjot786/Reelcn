@@ -1,20 +1,34 @@
 // Serves the built registry, scaffolds a fresh Remotion project, installs every item, typechecks and renders.
 // Run: node scripts/e2e.ts
 import { execFileSync, spawn } from "node:child_process";
-import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
 const PORT = 3000;
-const publicDir = path.resolve("apps/www/public");
-const { items } = JSON.parse(readFileSync("registry.json", "utf8")) as { items: { name: string }[] };
+const localBase = `http://localhost:${PORT}`;
+const { homepage, items } = JSON.parse(readFileSync("registry.json", "utf8")) as {
+  homepage: string;
+  items: { name: string }[];
+};
 if (items.length === 0) throw new Error("registry.json has no items — run pnpm registry:build first");
+
+// e2e must stay offline (spec §7): the committed public/r/*.json files bake in registry.homepage, which is
+// reelcn.dev once the domain switches. Serve a copy with every occurrence of that URL rewritten to localhost,
+// so shadcn's registryDependencies resolve here instead of over the network.
+const publicDir = mkdtempSync(path.join(tmpdir(), "reelcn-e2e-public-"));
+cpSync(path.resolve("apps/www/public"), publicDir, { recursive: true });
+const registryDir = path.join(publicDir, "r");
+for (const file of readdirSync(registryDir)) {
+  const filePath = path.join(registryDir, file);
+  writeFileSync(filePath, readFileSync(filePath, "utf8").split(homepage).join(localBase));
+}
 
 // ponytail: python3's http.server serves the registry; no hand-rolled static server.
 const server = spawn("python3", ["-m", "http.server", String(PORT), "--bind", "127.0.0.1", "--directory", publicDir], {
   stdio: "ignore",
 });
-const probeUrl = `http://localhost:${PORT}/r/${items[0].name}.json`;
+const probeUrl = `${localBase}/r/${items[0].name}.json`;
 for (let attempt = 0; ; attempt++) {
   try {
     if ((await fetch(probeUrl)).ok) break;
@@ -24,7 +38,7 @@ for (let attempt = 0; ; attempt++) {
   if (attempt > 40) throw new Error(`registry server did not start on port ${PORT}`);
   await new Promise((resolve) => setTimeout(resolve, 250));
 }
-console.log(`serving ${publicDir} on http://localhost:${PORT}`);
+console.log(`serving ${publicDir} (rewritten from ${homepage}) on ${localBase}`);
 
 const workDir = mkdtempSync(path.join(tmpdir(), "reelcn-e2e-"));
 const project = path.join(workDir, "app");
@@ -35,7 +49,7 @@ try {
   run("npx", ["--yes", "create-video@latest", "--yes", "--blank", "--no-tailwind", project], workDir);
   run(
     "npx",
-    ["--yes", "shadcn@4.21.0", "add", "--yes", ...items.map((item) => `http://localhost:${PORT}/r/${item.name}.json`)],
+    ["--yes", "shadcn@4.21.0", "add", "--yes", ...items.map((item) => `${localBase}/r/${item.name}.json`)],
     project,
   );
 

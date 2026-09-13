@@ -8,7 +8,7 @@
     "studio": "pnpm --filter @reelcn/studio studio",
     "site": "pnpm --filter @reelcn/www dev",
     "site:build": "pnpm --filter @reelcn/www build",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && pnpm --filter @reelcn/www typecheck",
     "typecheck:user": "tsc -p tsconfig.user.json",
     "lint": "biome check",
     "format": "biome check --write",
