@@ -541,6 +541,32 @@
   line-height: 1.6;
 }
 
+/* 404 (app/not-found.tsx): blank leader, one circled frame */
+.landing.lost {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 28px;
+  padding: 64px max(var(--gutter), calc((100% - 1312px) / 2));
+}
+.lost .film {
+  --fw: 72px;
+  margin-bottom: 40px;
+  transform: rotate(-1.5deg);
+}
+.lost .film-note {
+  font-size: 24px;
+}
+@media (min-width: 640px) {
+  .lost .film {
+    --fw: 160px;
+  }
+  .lost .film-note {
+    font-size: 30px;
+  }
+}
+
 /* Phone: three reels plus the "Browse all" link */
 @media (max-width: 639px) {
   .landing .reel-list li:nth-child(n + 4) {
