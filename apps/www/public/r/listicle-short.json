@@ -1,0 +1,43 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "listicle-short",
+  "title": "Listicle Short",
+  "description": "Vertical numbered list: a title, then one scene per item with its number, point and optional image.",
+  "dependencies": [
+    "zod"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/story.json",
+    "http://localhost:3000/r/storyboard.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/listicle-short.tsx",
+      "content": "/**\n * @title Listicle Short\n * @category templates\n * @description Vertical numbered list: a title, then one scene per item with its number, point and optional image.\n * @duration data-driven\n * @use \"Three ways to…\" and top-five shorts\n * @use Splitting a blog post into a quick video\n * @avoid Mixed scene types — use `storyboard`\n * @tags listicle, list, short, top, template\n * @example\n * <Composition\n *   id=\"ListicleShort\"\n *   component={ListicleShort}\n *   schema={listicleShortSchema}\n *   defaultProps={listicleShortDefaults}\n *   calculateMetadata={listicleShortMetadata}\n *   width={1080}\n *   height={1920}\n *   fps={30}\n *   durationInFrames={1}\n * />\n */\nimport { z } from \"zod\";\nimport type { Scene, Story } from \"./story\";\nimport { Storyboard, templateMetadata, templateSchema, templateStory } from \"./storyboard\";\n\nexport const listicleShortSchema = templateSchema.extend({\n  title: z.string(),\n  items: z.array(z.object({ title: z.string(), body: z.string().optional(), image: z.string().optional() })).min(1),\n});\n\nexport type ListicleShortProps = z.infer<typeof listicleShortSchema>;\n\nexport const listicleShortDefaults: ListicleShortProps = {\n  title: \"Three habits of teams that ship weekly\",\n  items: [\n    { title: \"Small pull requests\", body: \"Nothing over three hundred lines.\" },\n    { title: \"A fixed release day\", body: \"Thursday, every week.\" },\n    { title: \"One owner per launch\", body: \"Someone whose name is on it.\" },\n  ],\n};\n\nexport function listicleShortStory(props: ListicleShortProps): Story {\n  const { title, items } = props;\n  return templateStory(\n    props,\n    [\n      { type: \"title\", title, background: \"aurora\" },\n      ...items.map(\n        (item, index): Scene =>\n          item.image\n            ? { type: \"image\", src: item.image, caption: `${index + 1}. ${item.title}` }\n            : { type: \"title\", kicker: `${index + 1} of ${items.length}`, title: item.title, subtitle: item.body },\n      ),\n    ],\n    \"slice-slide\",\n  );\n}\n\nexport function ListicleShort(props: ListicleShortProps) {\n  return <Storyboard story={listicleShortStory(props)} />;\n}\n\nexport const listicleShortMetadata = templateMetadata(listicleShortStory);\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/listicle-short.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "\"Three ways to…\" and top-five shorts",
+      "Splitting a blog post into a quick video"
+    ],
+    "avoid": [
+      "Mixed scene types — use `storyboard`"
+    ],
+    "tags": [
+      "listicle",
+      "list",
+      "short",
+      "top",
+      "template"
+    ]
+  },
+  "docs": "Usage:\n\n<Composition\n  id=\"ListicleShort\"\n  component={ListicleShort}\n  schema={listicleShortSchema}\n  defaultProps={listicleShortDefaults}\n  calculateMetadata={listicleShortMetadata}\n  width={1080}\n  height={1920}\n  fps={30}\n  durationInFrames={1}\n/>",
+  "categories": [
+    "templates"
+  ],
+  "type": "registry:item"
+}

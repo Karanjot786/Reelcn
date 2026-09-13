@@ -1,0 +1,43 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "post-to-video",
+  "title": "Post to Video",
+  "description": "Turns one social post into a vertical video: the post card builds in, its text reveals and its counts climb.",
+  "dependencies": [
+    "zod"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/story.json",
+    "http://localhost:3000/r/storyboard.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/post-to-video.tsx",
+      "content": "/**\n * @title Post to Video\n * @category templates\n * @description Turns one social post into a vertical video: the post card builds in, its text reveals and its counts climb.\n * @duration data-driven\n * @use Reposting a popular post as a short\n * @use Quoting a customer's public post in a video\n * @avoid Several posts in a row — use `storyboard` with post scenes\n * @tags social, post, repost, short, template\n * @example\n * <Composition\n *   id=\"PostToVideo\"\n *   component={PostToVideo}\n *   schema={postToVideoSchema}\n *   defaultProps={postToVideoDefaults}\n *   calculateMetadata={postToVideoMetadata}\n *   width={1080}\n *   height={1920}\n *   fps={30}\n *   durationInFrames={1}\n * />\n */\nimport { z } from \"zod\";\nimport type { Story } from \"./story\";\nimport { Storyboard, templateMetadata, templateSchema, templateStory } from \"./storyboard\";\n\nexport const postToVideoSchema = templateSchema.extend({\n  author: z.string(),\n  handle: z.string().optional(),\n  /** Avatar image. Initials are drawn when omitted. */\n  avatar: z.string().optional(),\n  text: z.string(),\n  metrics: z\n    .object({ likes: z.number().optional(), comments: z.number().optional(), shares: z.number().optional() })\n    .optional(),\n});\n\nexport type PostToVideoProps = z.infer<typeof postToVideoSchema>;\n\nexport const postToVideoDefaults: PostToVideoProps = {\n  author: \"Maya Chen\",\n  handle: \"@mayachen\",\n  text: \"We replaced a two-week video process with a JSON file and an afternoon. The first cut shipped the same day.\",\n  metrics: { likes: 18400, comments: 932, shares: 2100 },\n};\n\nexport function postToVideoStory(props: PostToVideoProps): Story {\n  const { author, handle, avatar, text, metrics } = props;\n  return templateStory(props, [{ type: \"post\", name: author, handle, avatar, text, metrics, background: \"dots\" }]);\n}\n\nexport function PostToVideo(props: PostToVideoProps) {\n  return <Storyboard story={postToVideoStory(props)} />;\n}\n\nexport const postToVideoMetadata = templateMetadata(postToVideoStory);\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/post-to-video.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "Reposting a popular post as a short",
+      "Quoting a customer's public post in a video"
+    ],
+    "avoid": [
+      "Several posts in a row — use `storyboard` with post scenes"
+    ],
+    "tags": [
+      "social",
+      "post",
+      "repost",
+      "short",
+      "template"
+    ]
+  },
+  "docs": "Usage:\n\n<Composition\n  id=\"PostToVideo\"\n  component={PostToVideo}\n  schema={postToVideoSchema}\n  defaultProps={postToVideoDefaults}\n  calculateMetadata={postToVideoMetadata}\n  width={1080}\n  height={1920}\n  fps={30}\n  durationInFrames={1}\n/>",
+  "categories": [
+    "templates"
+  ],
+  "type": "registry:item"
+}

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "youtube-intro",
+  "title": "YouTube Intro",
+  "description": "Channel opener: the channel mark, then the video's title, joined by an accent sweep.",
+  "dependencies": [
+    "zod"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/story.json",
+    "http://localhost:3000/r/storyboard.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/youtube-intro.tsx",
+      "content": "/**\n * @title YouTube Intro\n * @category templates\n * @description Channel opener: the channel mark, then the video's title, joined by an accent sweep.\n * @duration data-driven\n * @use The first seconds of a YouTube video or a series episode\n * @avoid End cards — use `youtube-outro`\n * @tags youtube, intro, opener, channel, template\n * @example\n * <Composition\n *   id=\"YoutubeIntro\"\n *   component={YoutubeIntro}\n *   schema={youtubeIntroSchema}\n *   defaultProps={youtubeIntroDefaults}\n *   calculateMetadata={youtubeIntroMetadata}\n *   width={1920}\n *   height={1080}\n *   fps={30}\n *   durationInFrames={1}\n * />\n */\nimport { z } from \"zod\";\nimport type { Story } from \"./story\";\nimport { Storyboard, templateMetadata, templateSchema, templateStory } from \"./storyboard\";\n\nexport const youtubeIntroSchema = templateSchema.extend({\n  channel: z.string(),\n  title: z.string(),\n  /** Channel logo image. Falls back to `brand.logo`, then to the channel name alone. */\n  logo: z.string().optional(),\n});\n\nexport type YoutubeIntroProps = z.infer<typeof youtubeIntroSchema>;\n\nexport const youtubeIntroDefaults: YoutubeIntroProps = {\n  channel: \"Northwind Labs\",\n  title: \"Building a render farm in an afternoon\",\n};\n\nexport function youtubeIntroStory(props: YoutubeIntroProps): Story {\n  return templateStory(\n    props,\n    [\n      { type: \"logo\", text: props.channel, src: props.logo, background: \"gradient-mesh\", duration: 2 },\n      { type: \"title\", kicker: props.channel, title: props.title, background: \"gradient-mesh\" },\n    ],\n    \"brand-sweep\",\n  );\n}\n\nexport function YoutubeIntro(props: YoutubeIntroProps) {\n  return <Storyboard story={youtubeIntroStory(props)} />;\n}\n\nexport const youtubeIntroMetadata = templateMetadata(youtubeIntroStory);\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/youtube-intro.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "The first seconds of a YouTube video or a series episode"
+    ],
+    "avoid": [
+      "End cards — use `youtube-outro`"
+    ],
+    "tags": [
+      "youtube",
+      "intro",
+      "opener",
+      "channel",
+      "template"
+    ]
+  },
+  "docs": "Usage:\n\n<Composition\n  id=\"YoutubeIntro\"\n  component={YoutubeIntro}\n  schema={youtubeIntroSchema}\n  defaultProps={youtubeIntroDefaults}\n  calculateMetadata={youtubeIntroMetadata}\n  width={1920}\n  height={1080}\n  fps={30}\n  durationInFrames={1}\n/>",
+  "categories": [
+    "templates"
+  ],
+  "type": "registry:item"
+}

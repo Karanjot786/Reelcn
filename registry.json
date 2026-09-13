@@ -2531,6 +2531,47 @@
       }
     },
     {
+      "name": "listicle-short",
+      "type": "registry:item",
+      "title": "Listicle Short",
+      "description": "Vertical numbered list: a title, then one scene per item with its number, point and optional image.",
+      "categories": [
+        "templates"
+      ],
+      "dependencies": [
+        "zod"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/story.json",
+        "http://localhost:3000/r/storyboard.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/listicle-short.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/listicle-short.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Composition\n  id=\"ListicleShort\"\n  component={ListicleShort}\n  schema={listicleShortSchema}\n  defaultProps={listicleShortDefaults}\n  calculateMetadata={listicleShortMetadata}\n  width={1080}\n  height={1920}\n  fps={30}\n  durationInFrames={1}\n/>",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "\"Three ways to…\" and top-five shorts",
+          "Splitting a blog post into a quick video"
+        ],
+        "avoid": [
+          "Mixed scene types — use `storyboard`"
+        ],
+        "tags": [
+          "listicle",
+          "list",
+          "short",
+          "top",
+          "template"
+        ]
+      }
+    },
+    {
       "name": "lower-third",
       "type": "registry:item",
       "title": "Lower Third",
@@ -2758,6 +2799,47 @@
           "social",
           "card",
           "quote"
+        ]
+      }
+    },
+    {
+      "name": "post-to-video",
+      "type": "registry:item",
+      "title": "Post to Video",
+      "description": "Turns one social post into a vertical video: the post card builds in, its text reveals and its counts climb.",
+      "categories": [
+        "templates"
+      ],
+      "dependencies": [
+        "zod"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/story.json",
+        "http://localhost:3000/r/storyboard.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/post-to-video.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/post-to-video.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Composition\n  id=\"PostToVideo\"\n  component={PostToVideo}\n  schema={postToVideoSchema}\n  defaultProps={postToVideoDefaults}\n  calculateMetadata={postToVideoMetadata}\n  width={1080}\n  height={1920}\n  fps={30}\n  durationInFrames={1}\n/>",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "Reposting a popular post as a short",
+          "Quoting a customer's public post in a video"
+        ],
+        "avoid": [
+          "Several posts in a row — use `storyboard` with post scenes"
+        ],
+        "tags": [
+          "social",
+          "post",
+          "repost",
+          "short",
+          "template"
         ]
       }
     },
@@ -4012,6 +4094,53 @@
       }
     },
     {
+      "name": "talking-head-short",
+      "type": "registry:item",
+      "title": "Talking Head Short",
+      "description": "Vertical talking-head clip with a three-second hook and word-by-word captions, running as long as the video.",
+      "categories": [
+        "templates"
+      ],
+      "dependencies": [
+        "@remotion/media",
+        "remotion",
+        "zod"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/captions.json",
+        "http://localhost:3000/r/core.json",
+        "http://localhost:3000/r/gradient-mesh.json",
+        "http://localhost:3000/r/hook-title.json",
+        "http://localhost:3000/r/story.json",
+        "http://localhost:3000/r/storyboard.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/talking-head-short.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/talking-head-short.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Composition\n  id=\"TalkingHeadShort\"\n  component={TalkingHeadShort}\n  schema={talkingHeadShortSchema}\n  defaultProps={{ ...talkingHeadShortDefaults, video: staticFile(\"take-3.mp4\"), captions }}\n  calculateMetadata={talkingHeadShortMetadata}\n  width={1080}\n  height={1920}\n  fps={30}\n  durationInFrames={1}\n/>",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "Turning a recorded explanation or interview answer into a short",
+          "Captioned clips for feeds that autoplay muted"
+        ],
+        "avoid": [
+          "Captions over a layout you build yourself — use `captions`"
+        ],
+        "tags": [
+          "short",
+          "captions",
+          "talking head",
+          "creator",
+          "template"
+        ]
+      }
+    },
+    {
       "name": "terminal",
       "type": "registry:item",
       "title": "Terminal",
@@ -4394,6 +4523,89 @@
           "swap",
           "words",
           "tagline"
+        ]
+      }
+    },
+    {
+      "name": "youtube-intro",
+      "type": "registry:item",
+      "title": "YouTube Intro",
+      "description": "Channel opener: the channel mark, then the video's title, joined by an accent sweep.",
+      "categories": [
+        "templates"
+      ],
+      "dependencies": [
+        "zod"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/story.json",
+        "http://localhost:3000/r/storyboard.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/youtube-intro.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/youtube-intro.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Composition\n  id=\"YoutubeIntro\"\n  component={YoutubeIntro}\n  schema={youtubeIntroSchema}\n  defaultProps={youtubeIntroDefaults}\n  calculateMetadata={youtubeIntroMetadata}\n  width={1920}\n  height={1080}\n  fps={30}\n  durationInFrames={1}\n/>",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "The first seconds of a YouTube video or a series episode"
+        ],
+        "avoid": [
+          "End cards — use `youtube-outro`"
+        ],
+        "tags": [
+          "youtube",
+          "intro",
+          "opener",
+          "channel",
+          "template"
+        ]
+      }
+    },
+    {
+      "name": "youtube-outro",
+      "type": "registry:item",
+      "title": "YouTube Outro",
+      "description": "Ten-second end card with a next-video slot and a subscribe slot, sized for YouTube's end-screen elements.",
+      "categories": [
+        "templates"
+      ],
+      "dependencies": [
+        "remotion",
+        "zod"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/brand-solid.json",
+        "http://localhost:3000/r/end-screen.json",
+        "http://localhost:3000/r/story.json",
+        "http://localhost:3000/r/storyboard.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/youtube-outro.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/youtube-outro.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Composition\n  id=\"YoutubeOutro\"\n  component={YoutubeOutro}\n  schema={youtubeOutroSchema}\n  defaultProps={youtubeOutroDefaults}\n  calculateMetadata={youtubeOutroMetadata}\n  width={1920}\n  height={1080}\n  fps={30}\n  durationInFrames={1}\n/>",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "The last seconds of a YouTube video"
+        ],
+        "avoid": [
+          "Openers — use `youtube-intro`"
+        ],
+        "tags": [
+          "youtube",
+          "outro",
+          "end screen",
+          "subscribe",
+          "template"
         ]
       }
     },

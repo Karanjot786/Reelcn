@@ -1,11 +1,18 @@
 import type React from "react";
+import { staticFile } from "remotion";
 import { AppPromo, appPromoDefaults, appPromoStory } from "../items/app-promo";
 import { Changelog, changelogDefaults, changelogStory } from "../items/changelog";
 import { FeatureShort, featureShortDefaults, featureShortStory } from "../items/feature-short";
+import { ListicleShort, listicleShortDefaults, listicleShortStory } from "../items/listicle-short";
+import { PostToVideo, postToVideoDefaults, postToVideoStory } from "../items/post-to-video";
 import { ProductLaunch, productLaunchDefaults, productLaunchStory } from "../items/product-launch";
 import type { Story } from "../items/story";
-import { storyFrames } from "../items/story";
+import { captionsSeconds, storyFrames } from "../items/story";
 import { Storyboard } from "../items/storyboard";
+import { TalkingHeadShort, talkingHeadShortDefaults } from "../items/talking-head-short";
+import { YoutubeIntro, youtubeIntroDefaults, youtubeIntroStory } from "../items/youtube-intro";
+import { YOUTUBE_OUTRO_FRAMES, YoutubeOutro, youtubeOutroDefaults } from "../items/youtube-outro";
+import { captionFixture } from "./captions-fixture";
 import type { Demo } from "./index";
 import { sampleStory, sceneTour } from "./story-samples";
 
@@ -43,7 +50,32 @@ const productDemos: Demo[] = [
   storyDemo("app-promo", AppPromo, appPromoStory, appPromoDefaults),
 ];
 
+const creatorDemos: Demo[] = [
+  storyDemo("youtube-intro", YoutubeIntro, youtubeIntroStory, youtubeIntroDefaults),
+  {
+    id: "youtube-outro",
+    duration: YOUTUBE_OUTRO_FRAMES,
+    bare: true,
+    component: () => <YoutubeOutro {...youtubeOutroDefaults} />,
+  },
+  {
+    id: "talking-head-short",
+    duration: Math.ceil(30 * captionsSeconds(captionFixture, 6)),
+    bare: true,
+    component: () => <TalkingHeadShort {...talkingHeadShortDefaults} captions={captionFixture} emphasize={["three"]} />,
+  },
+  {
+    // clip.mp4 is 4 s long.
+    id: "talking-head-short-video",
+    duration: 120,
+    bare: true,
+    component: () => <TalkingHeadShort {...talkingHeadShortDefaults} video={staticFile("reelcn-demo/clip.mp4")} />,
+  },
+  storyDemo("post-to-video", PostToVideo, postToVideoStory, postToVideoDefaults),
+  storyDemo("listicle-short", ListicleShort, listicleShortStory, listicleShortDefaults),
+];
+
 // Tasks 3–5 add one array per template group and list it here.
-const demos: Demo[] = [...storyboardDemos, ...productDemos];
+const demos: Demo[] = [...storyboardDemos, ...productDemos, ...creatorDemos];
 
 export default demos;

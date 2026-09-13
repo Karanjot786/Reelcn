@@ -1129,6 +1129,38 @@ const { pulse, beat } = useBeat({ bpm: 120 });
 />
 ```
 
+- [Listicle Short](http://localhost:3000/r/listicle-short.json): Vertical numbered list: a title, then one scene per item with its number, point and optional image. (length data-driven · use for "Three ways to…" and top-five shorts; Splitting a blog post into a quick video · avoid Mixed scene types — use `storyboard`)
+
+```tsx
+<Composition
+  id="ListicleShort"
+  component={ListicleShort}
+  schema={listicleShortSchema}
+  defaultProps={listicleShortDefaults}
+  calculateMetadata={listicleShortMetadata}
+  width={1080}
+  height={1920}
+  fps={30}
+  durationInFrames={1}
+/>
+```
+
+- [Post to Video](http://localhost:3000/r/post-to-video.json): Turns one social post into a vertical video: the post card builds in, its text reveals and its counts climb. (length data-driven · use for Reposting a popular post as a short; Quoting a customer's public post in a video · avoid Several posts in a row — use `storyboard` with post scenes)
+
+```tsx
+<Composition
+  id="PostToVideo"
+  component={PostToVideo}
+  schema={postToVideoSchema}
+  defaultProps={postToVideoDefaults}
+  calculateMetadata={postToVideoMetadata}
+  width={1080}
+  height={1920}
+  fps={30}
+  durationInFrames={1}
+/>
+```
+
 - [Product Launch](http://localhost:3000/r/product-launch.json): Launch video for a product: name and tagline, feature cards, screenshots in a browser window, and a call to action. (length data-driven · use for Announcing a new product or a major version; A hero video for a landing page · avoid One feature in a vertical short — use `feature-short`)
 
 ```tsx
@@ -1155,6 +1187,54 @@ const { pulse, beat } = useBeat({ bpm: 120 });
   schema={storySchema}
   calculateMetadata={storyMetadata}
   defaultProps={{ scenes: [{ type: "title", title: "Hello from a story" }] }}
+  width={1920}
+  height={1080}
+  fps={30}
+  durationInFrames={1}
+/>
+```
+
+- [Talking Head Short](http://localhost:3000/r/talking-head-short.json): Vertical talking-head clip with a three-second hook and word-by-word captions, running as long as the video. (length data-driven · use for Turning a recorded explanation or interview answer into a short; Captioned clips for feeds that autoplay muted · avoid Captions over a layout you build yourself — use `captions`)
+
+```tsx
+<Composition
+  id="TalkingHeadShort"
+  component={TalkingHeadShort}
+  schema={talkingHeadShortSchema}
+  defaultProps={{ ...talkingHeadShortDefaults, video: staticFile("take-3.mp4"), captions }}
+  calculateMetadata={talkingHeadShortMetadata}
+  width={1080}
+  height={1920}
+  fps={30}
+  durationInFrames={1}
+/>
+```
+
+- [YouTube Intro](http://localhost:3000/r/youtube-intro.json): Channel opener: the channel mark, then the video's title, joined by an accent sweep. (length data-driven · use for The first seconds of a YouTube video or a series episode · avoid End cards — use `youtube-outro`)
+
+```tsx
+<Composition
+  id="YoutubeIntro"
+  component={YoutubeIntro}
+  schema={youtubeIntroSchema}
+  defaultProps={youtubeIntroDefaults}
+  calculateMetadata={youtubeIntroMetadata}
+  width={1920}
+  height={1080}
+  fps={30}
+  durationInFrames={1}
+/>
+```
+
+- [YouTube Outro](http://localhost:3000/r/youtube-outro.json): Ten-second end card with a next-video slot and a subscribe slot, sized for YouTube's end-screen elements. (length data-driven · use for The last seconds of a YouTube video · avoid Openers — use `youtube-intro`)
+
+```tsx
+<Composition
+  id="YoutubeOutro"
+  component={YoutubeOutro}
+  schema={youtubeOutroSchema}
+  defaultProps={youtubeOutroDefaults}
+  calculateMetadata={youtubeOutroMetadata}
   width={1920}
   height={1080}
   fps={30}

@@ -11,13 +11,43 @@ import {
   featureShortSchema,
 } from "@reelcn/registry/items/feature-short";
 import {
+  ListicleShort,
+  listicleShortDefaults,
+  listicleShortMetadata,
+  listicleShortSchema,
+} from "@reelcn/registry/items/listicle-short";
+import {
+  PostToVideo,
+  postToVideoDefaults,
+  postToVideoMetadata,
+  postToVideoSchema,
+} from "@reelcn/registry/items/post-to-video";
+import {
   ProductLaunch,
   productLaunchDefaults,
   productLaunchMetadata,
   productLaunchSchema,
 } from "@reelcn/registry/items/product-launch";
 import { StoryVideo, storyMetadata, storySchema } from "@reelcn/registry/items/storyboard";
-import { AbsoluteFill, Composition, Folder, Freeze, Sequence } from "remotion";
+import {
+  TalkingHeadShort,
+  talkingHeadShortDefaults,
+  talkingHeadShortMetadata,
+  talkingHeadShortSchema,
+} from "@reelcn/registry/items/talking-head-short";
+import {
+  YoutubeIntro,
+  youtubeIntroDefaults,
+  youtubeIntroMetadata,
+  youtubeIntroSchema,
+} from "@reelcn/registry/items/youtube-intro";
+import {
+  YoutubeOutro,
+  youtubeOutroDefaults,
+  youtubeOutroMetadata,
+  youtubeOutroSchema,
+} from "@reelcn/registry/items/youtube-outro";
+import { AbsoluteFill, Composition, Folder, Freeze, Sequence, staticFile } from "remotion";
 import { z } from "zod";
 import { SelfTest } from "./self-test";
 
@@ -147,6 +177,55 @@ export function Root() {
           schema={appPromoSchema}
           defaultProps={appPromoDefaults}
           calculateMetadata={appPromoMetadata}
+          {...templateSize("9x16")}
+        />
+        <Composition
+          id="YoutubeIntro"
+          component={YoutubeIntro}
+          schema={youtubeIntroSchema}
+          defaultProps={youtubeIntroDefaults}
+          calculateMetadata={youtubeIntroMetadata}
+          {...templateSize("16x9")}
+        />
+        <Composition
+          id="YoutubeOutro"
+          component={YoutubeOutro}
+          schema={youtubeOutroSchema}
+          defaultProps={youtubeOutroDefaults}
+          calculateMetadata={youtubeOutroMetadata}
+          {...templateSize("16x9")}
+        />
+        <Composition
+          id="TalkingHeadShort"
+          component={TalkingHeadShort}
+          schema={talkingHeadShortSchema}
+          defaultProps={talkingHeadShortDefaults}
+          calculateMetadata={talkingHeadShortMetadata}
+          {...templateSize("9x16")}
+        />
+        {/* Proves mediaSeconds: the length must come from clip.mp4 (4 s = 120 frames). */}
+        <Composition
+          id="TalkingHeadShortClip"
+          component={TalkingHeadShort}
+          schema={talkingHeadShortSchema}
+          defaultProps={{ ...talkingHeadShortDefaults, video: staticFile("reelcn-demo/clip.mp4") }}
+          calculateMetadata={talkingHeadShortMetadata}
+          {...templateSize("9x16")}
+        />
+        <Composition
+          id="PostToVideo"
+          component={PostToVideo}
+          schema={postToVideoSchema}
+          defaultProps={postToVideoDefaults}
+          calculateMetadata={postToVideoMetadata}
+          {...templateSize("9x16")}
+        />
+        <Composition
+          id="ListicleShort"
+          component={ListicleShort}
+          schema={listicleShortSchema}
+          defaultProps={listicleShortDefaults}
+          calculateMetadata={listicleShortMetadata}
           {...templateSize("9x16")}
         />
       </Folder>

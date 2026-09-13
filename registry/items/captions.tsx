@@ -97,8 +97,10 @@ export function Captions({
       : place === "middle"
         ? { top: 0, bottom: 0, justifyContent: "center", alignItems: "center" }
         : place === "bottom"
-          ? { bottom: safe.bottom + u(40), justifyContent: "flex-end", alignItems: "center" }
-          : { bottom: height * 0.14, justifyContent: "flex-end", alignItems: "center" };
+          ? // AbsoluteFill already sets top: 0 and height: 100%; without unsetting top, "bottom" is
+            // dropped as over-constrained and captions render flush against the frame edge.
+            { top: "auto", bottom: safe.bottom + u(40), justifyContent: "flex-end", alignItems: "center" }
+          : { top: "auto", bottom: height * 0.14, justifyContent: "flex-end", alignItems: "center" };
 
   return (
     <AbsoluteFill className={className} style={{ justifyContent: "center", ...style }}>
