@@ -1,0 +1,67 @@
+---
+title: Motion
+description: Every animated component shares one enter/exit clock, in frames.
+---
+
+Animated components take the same five props and drive themselves off one hook, `useMotion`, so timing behaves the same way everywhere:
+
+```ts
+type MotionProps = {
+  delay?: number;
+  duration?: number;
+  exit?: boolean | number;
+  motion?: "smooth" | "snappy" | "bouncy" | "gentle" | "linear";
+};
+```
+
+- `delay` — frames to wait before entering.
+- `duration` — enter length in frames. Defaults to 0.6s (`fps * 0.6`).
+- `exit` — `false` holds the component on screen; a number sets the exit length in frames. Otherwise it exits over the last 0.35s of its parent `<Sequence>`.
+- `motion` — overrides the theme's default preset for this one instance.
+
+## Auto-exit
+
+A component doesn't need an `exit` prop to leave cleanly: `useMotion` reads `durationInFrames` from the surrounding `<Sequence>` and eases out before its last frame. Wrap the same component in a longer or shorter `<Sequence>` and the exit re-times itself:
+
+```tsx
+<Sequence durationInFrames={90}>
+  <LowerThird name="Ada Lovelace" title="Founder" />
+</Sequence>
+```
+
+## Presets
+
+| Preset | Curve |
+|---|---|
+| `smooth` | `cubic-bezier(0.16, 1, 0.3, 1)` |
+| `snappy` | `cubic-bezier(0.2, 0.9, 0.1, 1)` |
+| `gentle` | `cubic-bezier(0.45, 0, 0.55, 1)` |
+| `linear` | linear |
+| `bouncy` | a spring (damping 12, stiffness 170, mass 0.9), stretched to `duration` — may overshoot past 1 |
+
+Exits always ease with a separate accelerating curve, `exitEasing` (`cubic-bezier(0.55, 0, 1, 0.45)`), regardless of which enter preset is active.
+
+## Building your own animated component
+
+`useMotion` returns the whole clock — `frame`, `fps`, `durationInFrames`, `preset`, `delay`, `enterFrames`, `enter` (0→1, may overshoot with `bouncy`), `exit` (0→1 during the out-transition) and `presence` (`min(enter, 1) × (1 − exit)`, the value most components animate on):
+
+```tsx
+import { type MotionProps, useMotion, useViewport } from "./reelcn/core";
+
+type CalloutProps = MotionProps & { text: string };
+
+function Callout({ text, ...motion }: CalloutProps) {
+  const { presence } = useMotion(motion);
+  const { u } = useViewport();
+  return <div style={{ opacity: presence, transform: `translateY(${(1 - presence) * u(16)}px)` }}>{text}</div>;
+}
+```
+
+For anything that isn't a plain fade, `tween(frame, fps, { from, duration, motion })` is the same curve `useMotion` uses internally, for driving more than one value off the same clock.
+
+## Next steps
+
+<Cards>
+  <Card title="Determinism rules" href="/docs/determinism" />
+  <Card title="Theming" href="/docs/theming" />
+</Cards>

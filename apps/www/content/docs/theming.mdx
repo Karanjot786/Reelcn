@@ -1,0 +1,75 @@
+---
+title: Theming
+description: One ThemeProvider restyles colors, fonts, radius and motion for everything inside it.
+---
+
+Every reelcn component reads its colors, fonts, corner radius and default motion from a theme. Wrap a scene once and everything inside restyles:
+
+```tsx
+import { Center, Stage, ThemeProvider } from "./reelcn/core";
+import { TextReveal } from "./reelcn/text-reveal";
+
+<ThemeProvider theme="paper">
+  <Stage>
+    <Center>
+      <TextReveal text="Hello" />
+    </Center>
+  </Stage>
+</ThemeProvider>;
+```
+
+`theme` takes a preset name or a `Theme` object. Without a `<ThemeProvider>`, components use `midnight`.
+
+## Presets
+
+| Preset | Background | Accent | Highlight | Heading font | Weight | Radius | Motion |
+|---|---|---|---|---|---|---|---|
+| `midnight` | `#0b0d12` | `#6d7cff` | `#ffd84d` | Inter | 700 | 20 | smooth |
+| `daylight` | `#fafafa` | `#2563eb` | `#fde047` | Inter | 700 | 20 | smooth |
+| `paper` | `#f4efe6` | `#d9480f` | `#ffd166` | Instrument Serif | 400 | 8 | gentle |
+| `neon` | `#07060d` | `#b4ff39` | `#ff2fb9` | Space Grotesk | 700 | 14 | snappy |
+| `mono` | `#000000` | `#ffffff` | `#ffffff` | Inter | 700 | 6 | snappy |
+| `sunset` | `#1a0f1f` | `#ff7a45` | `#ffc857` | Bricolage Grotesque | 800 | 28 | bouncy |
+
+Every color a component uses — including ones not in this table, like `surface`, `foreground`, `muted` and `border` — comes from the same `Theme.colors` object. Read the whole shape with `useTheme()`:
+
+```tsx
+import { useTheme } from "./reelcn/core";
+
+function Badge() {
+  const theme = useTheme();
+  return <div style={{ background: theme.colors.surface, color: theme.colors.accent }}>New</div>;
+}
+```
+
+## Building a brand kit
+
+`createTheme` starts from a preset and overrides only what you name; `colors` and `fonts` merge shallowly, so the rest of the preset stays intact:
+
+```tsx
+import { createTheme, ThemeProvider } from "./reelcn/core";
+
+const brand = createTheme("midnight", { colors: { accent: "#ff5a1f" }, radius: 12 });
+
+<ThemeProvider theme={brand}>{/* … */}</ThemeProvider>;
+```
+
+Every component also takes its own color props, so a single instance can break from the theme without a new one.
+
+## Opacity
+
+`alpha(color, amount)` returns any CSS color at `amount` opacity (0–1), via `color-mix`:
+
+```tsx
+import { alpha, useTheme } from "./reelcn/core";
+
+const theme = useTheme();
+const glass = alpha(theme.colors.surface, 0.6);
+```
+
+## Next steps
+
+<Cards>
+  <Card title="Motion presets and timing" href="/docs/motion" />
+  <Card title="Formats and safe zones" href="/docs/formats" />
+</Cards>

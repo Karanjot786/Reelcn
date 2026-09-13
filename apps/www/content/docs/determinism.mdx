@@ -1,0 +1,33 @@
+---
+title: Determinism
+description: The same frame, rendered twice, has to come out pixel-identical.
+---
+
+Remotion renders frames independently, often out of order and across more than one worker process. A component that reaches for the system clock or an unseeded random number can render one way in preview and another way in the final output — or a different way on every render.
+
+Two rules keep every reelcn component deterministic.
+
+## Never read wall-clock time or unseeded randomness
+
+No `Math.random()`, no `Date.now()`, no `new Date()` without an argument, and no CSS `animation`/`transition` or Tailwind `animate-*`/`transition-*` classes — those run on the browser's own clock, not the frame you asked for. Motion goes through `useMotion`/`tween` instead, which are pure functions of the current frame (see [Motion](/docs/motion)).
+
+Where a component needs to look random — a hand-drawn wobble, confetti, a starfield — it uses `random(seed)` from `remotion`, keyed off a string that includes the component's own `seed` prop plus whatever varies per element:
+
+```tsx title="registry/items/arrow.tsx (excerpt)"
+import { random } from "remotion";
+
+// The same seed always draws the same arrow.
+const jitter = (key: string) => (random(`${seed}-${key}`) - 0.5) * 0.1;
+```
+
+Call `random` with the same seed on every frame of every render, and the "random" result is identical every time — it's a hash, not a stream.
+
+## Only read the canvas through useViewport()
+
+`useVideoConfig().width` and `.height` return the real composition size. Reading them directly bakes that specific size into a component, so it silently breaks the moment someone renders it inside a `<Viewport>` override — a contact sheet, a picture-in-picture panel — that's a different size on purpose. `useViewport()` returns the size a component should actually lay out for, whether that's the real canvas or an override. See [Formats & safe zones](/docs/formats).
+
+## Next steps
+
+<Cards>
+  <Card title="Motion presets and timing" href="/docs/motion" />
+</Cards>

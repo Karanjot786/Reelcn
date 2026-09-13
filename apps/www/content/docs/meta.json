@@ -1,0 +1,4 @@
+{
+  "title": "Guides",
+  "pages": ["index", "installation", "theming", "motion", "formats", "determinism", "agents", "license"]
+}

@@ -1,0 +1,42 @@
+---
+title: Agents
+description: llms.txt for a quick answer, llms-full.txt for working examples, and an MCP server for installing components directly.
+---
+
+reelcn is built to be read by an agent as easily as by a person.
+
+## llms.txt
+
+[`/llms.txt`](/llms.txt) lists every item, grouped by category, with its one-line description, natural length, use/avoid notes and install URL — small enough to paste whole into a context window. [`/llms-full.txt`](/llms-full.txt) adds a working usage example under each entry, generated from the same `@example` header as this site's item pages.
+
+Every docs page is also available as raw markdown at its own URL with `.md` appended (`/docs/theming.md`), or by asking for it with `Accept: text/markdown` — useful for an agent that fetches a page and wants the source, not the rendered HTML.
+
+## shadcn MCP
+
+The `shadcn` CLI ships an MCP server that lets an agent search and install registry items as tool calls instead of shell commands. Point it at reelcn by adding the registry to `components.json` first (see [Installation](/docs/installation)):
+
+```json title="components.json"
+{
+  "registries": {
+    "@reelcn": "https://reelcn.dev/r/{name}.json"
+  }
+}
+```
+
+Then wire the server into your agent:
+
+```bash
+npx shadcn mcp init
+```
+
+It asks which client to configure — Claude Code, Cursor, VS Code, Codex or OpenCode — and writes that client's MCP config for you.
+
+## Agent skill
+
+A packaged skill for planning and rendering whole videos with reelcn — not just installing components — is on the roadmap and isn't published yet.
+
+## Next steps
+
+<Cards>
+  <Card title="Browse components" href="/docs/components" />
+</Cards>

@@ -1,0 +1,95 @@
+---
+title: Installation
+description: Add a component with the shadcn CLI. Files land in src/reelcn/, ready to edit.
+---
+
+import { Tabs, Tab } from "fumadocs-ui/components/tabs";
+import { Steps, Step } from "fumadocs-ui/components/steps";
+
+reelcn is a [shadcn](https://ui.shadcn.com) registry, not an npm package. The CLI copies one component file — and any sibling files it imports, like `core.tsx` — straight into your project. There's nothing to upgrade and nothing to depend on: the code is yours from the moment it lands.
+
+<Steps>
+<Step>
+
+### Start a Remotion project
+
+Any Remotion project works. If you don't have one yet:
+
+```bash
+npx create-video@latest
+```
+
+</Step>
+<Step>
+
+### Add a component
+
+Pick any item from the [catalog](/docs/components) and install it by URL. Every command below installs `lower-third`:
+
+<Tabs items={['npx', 'pnpm', 'bun', '@reelcn']}>
+<Tab value="npx">
+
+```bash
+npx shadcn add https://reelcn.dev/r/lower-third.json
+```
+
+</Tab>
+<Tab value="pnpm">
+
+```bash
+pnpm dlx shadcn add https://reelcn.dev/r/lower-third.json
+```
+
+</Tab>
+<Tab value="bun">
+
+```bash
+bunx --bun shadcn add https://reelcn.dev/r/lower-third.json
+```
+
+</Tab>
+<Tab value="@reelcn">
+
+Add the registry once, in `components.json`:
+
+```json title="components.json"
+{
+  "registries": {
+    "@reelcn": "https://reelcn.dev/r/{name}.json"
+  }
+}
+```
+
+Then install by name:
+
+```bash
+npx shadcn add @reelcn/lower-third
+```
+
+</Tab>
+</Tabs>
+
+The file lands at `src/reelcn/lower-third.tsx`. The first three tabs need no `components.json` at all, and nothing here needs a path alias: a component's own imports (`./core`) are flat sibling files, so they resolve the same way in your project as they do in this one.
+
+</Step>
+<Step>
+
+### Check your Remotion versions
+
+Every `@remotion/*` package has to match the `remotion` version in your project. shadcn installs each component's dependencies unpinned, so after adding one that pulls in a Remotion package — `core` needs `@remotion/google-fonts`, for instance — run:
+
+```bash
+npx remotion versions
+```
+
+It lists your installed Remotion packages side by side and flags anything out of sync.
+
+</Step>
+</Steps>
+
+## Next steps
+
+<Cards>
+  <Card title="Restyle with themes" href="/docs/theming" />
+  <Card title="Fit every format" href="/docs/formats" />
+</Cards>

@@ -1,0 +1,63 @@
+---
+title: Formats & safe zones
+description: One timeline, three canvases. useViewport tells a component where it's allowed to put content.
+---
+
+Every component sizes and lays itself out from `useViewport()`, not from raw `width`/`height`, so the same timeline renders correctly at 1920×1080, 1080×1920 and 1080×1080:
+
+```ts
+function useViewport(): {
+  width: number;
+  height: number;
+  scale: number;
+  aspect: number;
+  orientation: "landscape" | "portrait" | "square";
+  isPortrait: boolean;
+  isLandscape: boolean;
+  u: (n: number) => number;
+  safe: { top: number; bottom: number; x: number };
+};
+```
+
+## Design units
+
+`scale = min(width, height) / 1080`, and `u(n) = n * scale`. Size everything in `u()` — raw pixels are only for 1px hairlines — and a component drawn at `u(56)` reads the same relative size on a 1080p landscape canvas as it does on a 1080-wide vertical one.
+
+## Orientation
+
+`aspect = width / height`. A canvas is `landscape` above 1.15, `portrait` below 0.87, and `square` in between — so a 4:5 post canvas reads as portrait. Branch on `orientation` (or the `isPortrait` / `isLandscape` shortcuts) wherever layout, not just size, has to change:
+
+```tsx
+const { isPortrait } = useViewport();
+const align = isPortrait ? "center" : "left";
+```
+
+## Safe zones
+
+`safe` keeps content clear of platform UI — captions, the mute button, TikTok's caption band — and of the title-safe margin on landscape:
+
+| Orientation | Top | Bottom | Sides |
+|---|---|---|---|
+| Portrait | 12% of height | 20% of height | 7% of width |
+| Landscape / square | 8% of height | 8% of height | 6% of width |
+
+`<Center>` already pads to `safe` for you. Reading it directly is only for components that lay out their own edges, like a lower third anchored to the bottom.
+
+## Overriding the canvas size
+
+`<Viewport width height>` makes everything inside it see a different size — for a contact sheet, a picture-in-picture panel or a split screen — without touching the composition's real size:
+
+```tsx
+import { Viewport } from "./reelcn/core";
+
+<Viewport width={1080} height={1080}>
+  <LowerThird name="Ada Lovelace" />
+</Viewport>;
+```
+
+## Next steps
+
+<Cards>
+  <Card title="Motion presets and timing" href="/docs/motion" />
+  <Card title="Determinism rules" href="/docs/determinism" />
+</Cards>
