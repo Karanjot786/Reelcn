@@ -35,7 +35,7 @@ const agents = [
   {
     href: "/docs/agents#agent-skill",
     name: "Agent skill",
-    text: "Picks components, writes the scenes and checks the contact sheet before rendering.",
+    text: "Coming soon: picks components, writes the scenes and checks the contact sheet before rendering.",
   },
   {
     href: "/docs/agents#shadcn-mcp",
