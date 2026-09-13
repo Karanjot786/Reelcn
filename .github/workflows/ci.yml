@@ -36,6 +36,8 @@ jobs:
         run: pnpm test:self
       - name: Smoke render every demo (fails blank or static demos)
         run: pnpm stills smoke
+      - name: Pixel determinism and render budget
+        run: pnpm stills determinism
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
