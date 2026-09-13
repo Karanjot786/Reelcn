@@ -12,6 +12,8 @@ const args = process.argv.slice(2);
 const positional = args.filter((arg) => !arg.startsWith("--"));
 const mode = positional[0] ?? "sheets";
 const filter = positional[1] ?? "";
+// Comma-separated: `pnpm stills smoke product-launch,ProductLaunch` bundles once for both.
+const filters = filter.split(",");
 const theme = args.find((arg) => arg.startsWith("--theme="))?.slice("--theme=".length);
 
 if (mode !== "smoke" && mode !== "sheets") {
@@ -32,7 +34,7 @@ const all = await getCompositions(serveUrl, { puppeteerInstance: browser });
 const wanted = all.filter((composition) => {
   const isSheet = composition.id.startsWith("sheet-");
   if (mode === "sheets" ? !isSheet : isSheet || composition.id === "self-test") return false;
-  return composition.id.includes(filter);
+  return filters.some((part) => composition.id.includes(part));
 });
 
 let failures = 0;

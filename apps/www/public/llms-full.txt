@@ -54,6 +54,12 @@ const heading = `${fonts.instrumentSerif}, ui-serif, Georgia, serif`;
 </Sequence>
 ```
 
+- [Story Scenes](http://localhost:3000/r/story-scenes.json): Draws each of the storyboard's 15 scene types from catalog items; `storyboard` renders stories with it.
+
+```tsx
+<SceneView scene={{ type: "stat", label: "Weekly users", value: 48200, delta: 12 }} />
+```
+
 - [Story](http://localhost:3000/r/story.json): The storyboard's JSON schema and scene-length rules, as pure functions shared by `storyboard` and every template.
 
 ```tsx
@@ -1070,6 +1076,26 @@ const { pulse, beat } = useBeat({ bpm: 120 });
 
 ```tsx
 <Waveform src={staticFile("episode.mp3")} variant="mirror" bars={64} />
+```
+
+
+## templates
+
+- [Storyboard](http://localhost:3000/r/storyboard.json): Turns a JSON story (theme, brand, audio and a list of scenes) into a finished video whose length comes from its content. (length data-driven · use for Whole videos written as data, by hand or by an agent; Rendering one story at 16:9, 9:16 and 1:1 · avoid Scenes you lay out by hand in JSX — use `scenes`)
+
+```tsx
+// src/Root.tsx — then: npx remotion render Storyboard out.mp4 --props=story.json
+<Composition
+  id="Storyboard"
+  component={StoryVideo}
+  schema={storySchema}
+  calculateMetadata={storyMetadata}
+  defaultProps={{ scenes: [{ type: "title", title: "Hello from a story" }] }}
+  width={1920}
+  height={1080}
+  fps={30}
+  durationInFrames={1}
+/>
 ```
 
 

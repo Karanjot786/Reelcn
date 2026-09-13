@@ -3580,6 +3580,66 @@
       }
     },
     {
+      "name": "story-scenes",
+      "type": "registry:item",
+      "title": "Story Scenes",
+      "description": "Draws each of the storyboard's 15 scene types from catalog items; `storyboard` renders stories with it.",
+      "categories": [
+        "lib"
+      ],
+      "dependencies": [
+        "@remotion/media",
+        "remotion"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/animate.json",
+        "http://localhost:3000/r/aurora.json",
+        "http://localhost:3000/r/bar-chart.json",
+        "http://localhost:3000/r/beams.json",
+        "http://localhost:3000/r/bokeh.json",
+        "http://localhost:3000/r/brand-solid.json",
+        "http://localhost:3000/r/browser-window.json",
+        "http://localhost:3000/r/code-block.json",
+        "http://localhost:3000/r/core.json",
+        "http://localhost:3000/r/donut.json",
+        "http://localhost:3000/r/dots.json",
+        "http://localhost:3000/r/feature-card.json",
+        "http://localhost:3000/r/gradient-mesh.json",
+        "http://localhost:3000/r/grain.json",
+        "http://localhost:3000/r/grid.json",
+        "http://localhost:3000/r/laptop-frame.json",
+        "http://localhost:3000/r/line-chart.json",
+        "http://localhost:3000/r/lower-third.json",
+        "http://localhost:3000/r/phone-frame.json",
+        "http://localhost:3000/r/post-card.json",
+        "http://localhost:3000/r/quote-card.json",
+        "http://localhost:3000/r/split-screen.json",
+        "http://localhost:3000/r/spotlight.json",
+        "http://localhost:3000/r/stagger.json",
+        "http://localhost:3000/r/starfield.json",
+        "http://localhost:3000/r/stat-counter.json",
+        "http://localhost:3000/r/story.json",
+        "http://localhost:3000/r/terminal.json",
+        "http://localhost:3000/r/text-reveal.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/story-scenes.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/story-scenes.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<SceneView scene={{ type: \"stat\", label: \"Weekly users\", value: 48200, delta: 12 }} />",
+      "meta": {
+        "use": [],
+        "avoid": [],
+        "tags": [
+          "storyboard",
+          "scenes"
+        ]
+      }
+    },
+    {
       "name": "story",
       "type": "registry:item",
       "title": "Story",
@@ -3609,6 +3669,65 @@
           "schema",
           "duration",
           "zod"
+        ]
+      }
+    },
+    {
+      "name": "storyboard",
+      "type": "registry:item",
+      "title": "Storyboard",
+      "description": "Turns a JSON story (theme, brand, audio and a list of scenes) into a finished video whose length comes from its content.",
+      "categories": [
+        "templates"
+      ],
+      "dependencies": [
+        "@remotion/media",
+        "@remotion/transitions",
+        "mediabunny",
+        "remotion",
+        "zod"
+      ],
+      "registryDependencies": [
+        "http://localhost:3000/r/brand-sweep.json",
+        "http://localhost:3000/r/captions.json",
+        "http://localhost:3000/r/card-push.json",
+        "http://localhost:3000/r/circle-burst.json",
+        "http://localhost:3000/r/core.json",
+        "http://localhost:3000/r/glitch.json",
+        "http://localhost:3000/r/light-flash.json",
+        "http://localhost:3000/r/scenes.json",
+        "http://localhost:3000/r/sfx.json",
+        "http://localhost:3000/r/shutter.json",
+        "http://localhost:3000/r/slice-slide.json",
+        "http://localhost:3000/r/split-doors.json",
+        "http://localhost:3000/r/story.json",
+        "http://localhost:3000/r/story-scenes.json",
+        "http://localhost:3000/r/stripe-wipe.json",
+        "http://localhost:3000/r/tile-reveal.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/storyboard.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/storyboard.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n// src/Root.tsx — then: npx remotion render Storyboard out.mp4 --props=story.json\n<Composition\n  id=\"Storyboard\"\n  component={StoryVideo}\n  schema={storySchema}\n  calculateMetadata={storyMetadata}\n  defaultProps={{ scenes: [{ type: \"title\", title: \"Hello from a story\" }] }}\n  width={1920}\n  height={1080}\n  fps={30}\n  durationInFrames={1}\n/>",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "Whole videos written as data, by hand or by an agent",
+          "Rendering one story at 16:9, 9:16 and 1:1"
+        ],
+        "avoid": [
+          "Scenes you lay out by hand in JSX — use `scenes`"
+        ],
+        "tags": [
+          "storyboard",
+          "json",
+          "template",
+          "agent",
+          "calculateMetadata"
         ]
       }
     },

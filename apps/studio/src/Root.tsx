@@ -1,6 +1,8 @@
 import { demos } from "@reelcn/registry/demos";
+import { sampleStory } from "@reelcn/registry/demos/story-samples";
 import { DemoFrame } from "@reelcn/registry/demos/view";
 import { type ThemeName, themeNames, Viewport } from "@reelcn/registry/items/core";
+import { StoryVideo, storyMetadata, storySchema } from "@reelcn/registry/items/storyboard";
 import { AbsoluteFill, Composition, Folder, Freeze, Sequence } from "remotion";
 import { z } from "zod";
 import { SelfTest } from "./self-test";
@@ -31,6 +33,14 @@ function DemoView({ demo, theme }: z.infer<typeof demoSchema>) {
 
 const SHEET_CELLS = 9;
 const SHEET_COLUMNS = 3;
+
+/** Size and timing for a template composition; its `calculateMetadata` sets the real length. */
+const templateSize = (format: Format) => ({
+  width: FORMATS[format][0],
+  height: FORMATS[format][1],
+  fps: 30,
+  durationInFrames: 1,
+});
 
 /** One still holding nine frozen frames, so motion can be reviewed without watching a render. */
 function ContactSheet({ demo, theme, format }: z.infer<typeof sheetSchema>) {
@@ -84,6 +94,16 @@ export function Root() {
   return (
     <>
       <Composition id="self-test" component={SelfTest} durationInFrames={40} fps={30} width={1920} height={1080} />
+      <Folder name="Templates">
+        <Composition
+          id="Storyboard"
+          component={StoryVideo}
+          schema={storySchema}
+          defaultProps={sampleStory}
+          calculateMetadata={storyMetadata}
+          {...templateSize("16x9")}
+        />
+      </Folder>
       {formats.map((format) => (
         <Folder key={format} name={format}>
           {categories.map((category) => (

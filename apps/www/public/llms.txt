@@ -17,6 +17,7 @@ How they work:
 - [Core](http://localhost:3000/r/core.json): Theme tokens, responsive design units, platform safe zones and motion presets. Every reelcn component builds on this file.
 - [Fonts](http://localhost:3000/r/fonts.json): Loads the curated font set used by the built-in themes, so renders look identical on every machine.
 - [SFX](http://localhost:3000/r/sfx.json): Thirty CC0 sound effects, played from one component. Streams from reelcn.dev, or from your own public folder after `reelcn-sfx-pull`.
+- [Story Scenes](http://localhost:3000/r/story-scenes.json): Draws each of the storyboard's 15 scene types from catalog items; `storyboard` renders stories with it.
 - [Story](http://localhost:3000/r/story.json): The storyboard's JSON schema and scene-length rules, as pure functions shared by `storyboard` and every template.
 
 ## text
@@ -146,6 +147,10 @@ How they work:
 - [Spectrum](http://localhost:3000/r/spectrum.json): Frequency bars, from bass on the left to treble on the right, moving with the track. (length sustained · use for Music clips and visualisers; Any scene that should feel driven by the track · avoid Speech, where a waveform reads better — use `waveform`)
 - [Use Beat](http://localhost:3000/r/use-beat.json): A pulse that follows a fixed tempo, with no audio analysis: pure math, so it renders identically every time. (length sustained · use for Cutting, popping or shaking anything in time with a music bed; Beat-synced motion when you know the track's BPM · avoid Reacting to a voice or an unknown track — use `audio-reactive`)
 - [Waveform](http://localhost:3000/r/waveform.json): The audio's shape, drawn as bars, a line or a mirrored band that moves with the sound. (length sustained · use for Audiograms and podcast clips; Any full-bleed band of motion tied to a voice or a track · avoid A frequency view — use `spectrum`)
+
+## templates
+
+- [Storyboard](http://localhost:3000/r/storyboard.json): Turns a JSON story (theme, brand, audio and a list of scenes) into a finished video whose length comes from its content. (length data-driven · use for Whole videos written as data, by hand or by an agent; Rendering one story at 16:9, 9:16 and 1:1 · avoid Scenes you lay out by hand in JSX — use `scenes`)
 
 ## tools
 

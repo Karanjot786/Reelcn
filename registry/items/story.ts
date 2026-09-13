@@ -279,7 +279,8 @@ export function makeStorySchema(names: StoryNames, custom: CustomSceneRule[] = [
       for (const candidate of custom) if (candidate.type === scene.type) rule = candidate;
       const schema = rule
         ? rule.schema.extend({ type: z.literal(rule.type), ...common })
-        : Object.hasOwn(SCENE_SCHEMAS, scene.type)
+        : // biome-ignore lint/suspicious/noPrototypeBuiltins: Object.hasOwn is ES2022; registry items target ES2015.
+          Object.prototype.hasOwnProperty.call(SCENE_SCHEMAS, scene.type)
           ? SCENE_SCHEMAS[scene.type]
           : undefined;
       if (!schema) {

@@ -6,6 +6,7 @@ import motion from "./motion";
 import overlays from "./overlays";
 import product from "./product";
 import social from "./social";
+import templates from "./templates";
 import text from "./text";
 import transitions from "./transitions";
 
@@ -31,6 +32,7 @@ const groups: Record<string, Demo[]> = {
   overlays,
   product,
   social,
+  templates,
   text,
   transitions,
 };
