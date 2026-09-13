@@ -1,10 +1,10 @@
 import { DocsLayout } from "fumadocs-ui/layouts/docs";
 import { baseOptions } from "@/lib/layout.shared";
-import { source } from "@/lib/source";
+import { docsTree } from "@/lib/tree";
 
 export default function Layout({ children }: LayoutProps<"/docs">) {
   return (
-    <DocsLayout tree={source.getPageTree()} {...baseOptions()}>
+    <DocsLayout tree={docsTree} {...baseOptions()}>
       {children}
     </DocsLayout>
   );

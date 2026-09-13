@@ -12,7 +12,7 @@
     "typecheck:user": "tsc -p tsconfig.user.json",
     "lint": "biome check",
     "format": "biome check --write",
-    "test": "node --test \"scripts/*.test.ts\"",
+    "test": "node --test \"scripts/*.test.ts\" \"apps/www/lib/*.test.ts\"",
     "test:self": "pnpm --filter @reelcn/studio exec remotion still src/index.ts self-test ../../out/self-test.png --log=error",
     "registry:build": "node scripts/build-registry.ts",
     "check:drift": "test -z \"$(git status --porcelain -- registry.json apps/www/public)\" || (echo 'Generated files differ from the commit. Run pnpm registry:build and commit the result:' && git status --porcelain -- registry.json apps/www/public && exit 1)",

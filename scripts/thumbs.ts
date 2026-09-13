@@ -1,6 +1,6 @@
 // Renders the stills the docs site shows: one per demo, the landing hero strips, the format trio and one frame per theme.
-// Run: node scripts/thumbs.ts   (writes apps/www/public/thumbs/*.jpg; commit the result)
-import { mkdirSync, rmSync } from "node:fs";
+// Run: node scripts/thumbs.ts   (writes apps/www/public/thumbs/*.jpg + demos.json; commit the result)
+import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { bundle } from "@remotion/bundler";
 import { getCompositions, openBrowser, renderStill } from "@remotion/renderer";
@@ -51,4 +51,17 @@ try {
 } finally {
   await browser.close({ silent: true });
 }
+
+// `perDemo` is already in composition order (the folder walk visits categories in `demos`' group-insertion
+// order, and each category's demos in file order), which is the order `lib/demos.ts` needs.
+writeFileSync(
+  path.join(OUT, "demos.json"),
+  `${JSON.stringify(
+    perDemo.map((job) => job.out),
+    null,
+    2,
+  )}\n`,
+);
+console.log(`ok   ${path.join(OUT, "demos.json")}`);
+
 console.log(`${perDemo.length + fixed.length} thumbnails in ${OUT}`);
