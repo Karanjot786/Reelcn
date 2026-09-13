@@ -87,3 +87,18 @@ test("themeNamesFromSource reads preset names from core source", () => {
   const core = '  midnight: {\n    name: "midnight",\n  },\n  paper: {\n    name: "paper",\n  },\n';
   assert.deepEqual(themeNamesFromSource(core), ["midnight", "paper"]);
 });
+
+test("parseHeader reads repeatable @env names", () => {
+  const tool = `/**
+ * @title Transcribe
+ * @category tools
+ * @description Turns audio into captions.
+ * @env OPENAI_API_KEY
+ * @example
+ * node scripts/reelcn-transcribe.ts talk.mp4
+ */
+export const x = 1;
+`;
+  assert.deepEqual(parseHeader(tool, "transcribe.ts").env, ["OPENAI_API_KEY"]);
+  assert.deepEqual(parseHeader(source, "text-reveal.tsx").env, []);
+});

@@ -4,7 +4,10 @@
   "private": true,
   "type": "module",
   "dependencies": {
+    "@remotion/captions": "catalog:",
     "@remotion/google-fonts": "catalog:",
+    "@remotion/media": "catalog:",
+    "@remotion/media-utils": "catalog:",
     "@remotion/transitions": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",

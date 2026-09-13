@@ -9,10 +9,19 @@ catalogs:
     '@remotion/bundler':
       specifier: 4.0.523
       version: 4.0.523
+    '@remotion/captions':
+      specifier: 4.0.523
+      version: 4.0.523
     '@remotion/cli':
       specifier: 4.0.523
       version: 4.0.523
     '@remotion/google-fonts':
+      specifier: 4.0.523
+      version: 4.0.523
+    '@remotion/media':
+      specifier: 4.0.523
+      version: 4.0.523
+    '@remotion/media-utils':
       specifier: 4.0.523
       version: 4.0.523
     '@remotion/player':
@@ -145,7 +154,16 @@ importers:
 
   registry:
     dependencies:
+      '@remotion/captions':
+        specifier: 'catalog:'
+        version: 4.0.523
       '@remotion/google-fonts':
+        specifier: 'catalog:'
+        version: 4.0.523(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@remotion/media':
+        specifier: 'catalog:'
+        version: 4.0.523(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@remotion/media-utils':
         specifier: 'catalog:'
         version: 4.0.523(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@remotion/transitions':

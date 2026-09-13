@@ -1,7 +1,7 @@
 // Derives registry.json, the shadcn artifacts and the llms files from each registry file's JSDoc header and imports.
 // Run: node scripts/build-registry.ts
 import { execFileSync } from "node:child_process";
-import { existsSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 export const CATEGORIES = [
@@ -43,6 +43,7 @@ export type Header = {
   use: string[];
   avoid: string[];
   tags: string[];
+  env: string[];
   preset?: string;
   example: string;
 };
@@ -91,6 +92,7 @@ export function parseHeader(source: string, file: string): Header {
       .split(",")
       .map((tag) => tag.trim())
       .filter(Boolean),
+    env: many("env"),
     preset: one("preset"),
     example: one("example") as string,
   };
@@ -152,7 +154,7 @@ function collect(base: string) {
       .map((file) => {
         const filePath = path.posix.join(dir, file);
         const source = readFileSync(filePath, "utf8");
-        const { title, description, category, example, ...meta } = parseHeader(source, filePath);
+        const { title, description, category, example, env, ...meta } = parseHeader(source, filePath);
         const imports = parseImports(source, filePath);
         return {
           name: file.replace(/\.tsx?$/, ""),
@@ -162,6 +164,9 @@ function collect(base: string) {
           categories: [category],
           dependencies: imports.npm,
           registryDependencies: imports.local.map((dependency) => `${base}/r/${dependency}.json`),
+          ...(env.length > 0
+            ? { envVars: env.reduce<Record<string, string>>((all, name) => ({ ...all, [name]: "" }), {}) }
+            : {}),
           files: [{ path: filePath, type: "registry:file" as const, target: target(file) }],
           docs: `Usage:\n\n${example}`,
           meta,
@@ -241,6 +246,11 @@ function main() {
   execFileSync("pnpm", ["exec", "shadcn", "build", "registry.json", "--output", "apps/www/public/r"], {
     stdio: "inherit",
   });
+
+  // Sound effects are binary, so they ship as hosted files rather than through the registry.
+  if (existsSync("sfx")) {
+    cpSync("sfx", "apps/www/public/sfx", { recursive: true });
+  }
 
   writeFileSync("apps/www/public/llms.txt", llms(items, base, themes, false));
   writeFileSync("apps/www/public/llms-full.txt", llms(items, base, themes, true));
