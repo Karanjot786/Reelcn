@@ -6,20 +6,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CopyCommand } from "@/components/copy-command";
-import { FormatSwitch } from "@/components/format-switch";
+import { ItemPreview } from "@/components/item-preview";
 import { demosFor, themeNames } from "@/lib/demos";
 import { linkifyBackticks } from "@/lib/item-markdown";
 import { propsTable } from "@/lib/props-table";
-import {
-  categories,
-  categoryOf,
-  componentUrl,
-  getItem,
-  installUrl,
-  isLib,
-  itemSourcePath,
-  items,
-} from "@/lib/registry";
+import { categoryOf, componentUrl, getItem, installUrl, isLib, itemSourcePath, items } from "@/lib/registry";
 
 function AvoidLine({ text }: { text: string }) {
   const segments = linkifyBackticks(text, (name) => (getItem(name) ? componentUrl(name) : undefined));
@@ -48,7 +39,6 @@ export default async function Page(props: PageProps<"/docs/components/[name]">) 
   const demoIds = demosFor(item.name);
   const url = installUrl(item.name);
   const usage = item.docs?.replace(/^Usage:\n\n/, "") ?? "";
-  const categoryTitle = categories.find((entry) => entry.id === category)?.title ?? category;
   const filePath = item.files[0].path;
   const lang = filePath.endsWith(".tsx") ? "tsx" : "ts";
   const sourcePath = itemSourcePath(item);
@@ -57,20 +47,30 @@ export default async function Page(props: PageProps<"/docs/components/[name]">) 
   const related = items.filter((other) => other.name !== item.name && categoryOf(other) === category).slice(0, 6);
   const dependencies = item.dependencies ?? [];
   const registryDependencies = item.registryDependencies ?? [];
+  const sections: [id: string, title: string, shown: boolean][] = [
+    ["install", "Install", true],
+    ["usage", "Usage", Boolean(usage)],
+    ["props", "Props", rows.length > 0],
+    ["use", "Use", item.meta.use.length > 0],
+    ["avoid", "Avoid", item.meta.avoid.length > 0],
+    ["dependencies", "Dependencies", dependencies.length + registryDependencies.length > 0],
+    ["source", "Source", true],
+    ["related", "Related", related.length > 0],
+  ];
+  const toc = sections.filter(([, , shown]) => shown).map(([id, title]) => ({ title, url: `#${id}`, depth: 2 }));
 
   return (
-    <DocsPage>
-      <p className="font-semibold text-fd-muted-foreground text-sm">{categoryTitle}</p>
+    <DocsPage toc={toc} tableOfContent={{ style: "clerk" }}>
       <DocsTitle>{item.title}</DocsTitle>
       <DocsDescription>{item.description}</DocsDescription>
       <DocsBody className="flex flex-col gap-10">
         {!isLib(item) && demoIds.length > 0 && (
-          <FormatSwitch demoIds={demoIds} category={category} themes={themeNames} />
+          <ItemPreview name={item.name} demoIds={demoIds} category={category} themes={themeNames} />
         )}
 
         <section>
-          <h2>Install</h2>
-          <Tabs items={["npx", "pnpm", "bun", "@reelcn"]}>
+          <h2 id="install">Install</h2>
+          <Tabs items={["npx", "pnpm", "bun"]}>
             <Tab value="npx">
               <CopyCommand command={`npx shadcn add ${url}`} />
             </Tab>
@@ -80,22 +80,19 @@ export default async function Page(props: PageProps<"/docs/components/[name]">) 
             <Tab value="bun">
               <CopyCommand command={`bunx --bun shadcn add ${url}`} />
             </Tab>
-            <Tab value="@reelcn">
-              <CopyCommand command={`npx shadcn add @reelcn/${item.name}`} />
-            </Tab>
           </Tabs>
         </section>
 
         {usage && (
           <section>
-            <h2>Usage</h2>
+            <h2 id="usage">Usage</h2>
             <ServerCodeBlock lang={lang} code={usage} />
           </section>
         )}
 
         {rows.length > 0 && (
           <section>
-            <h2>Props</h2>
+            <h2 id="props">Props</h2>
             <table>
               <thead>
                 <tr>
@@ -118,7 +115,9 @@ export default async function Page(props: PageProps<"/docs/components/[name]">) 
                       <code>{row.type}</code>
                     </td>
                     <td>{row.default ? <code>{row.default}</code> : "—"}</td>
-                    <td>{row.description}</td>
+                    <td>
+                      <AvoidLine text={row.description} />
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -130,7 +129,7 @@ export default async function Page(props: PageProps<"/docs/components/[name]">) 
           <section className="grid gap-8 sm:grid-cols-2">
             {item.meta.use.length > 0 && (
               <div>
-                <h2>Use</h2>
+                <h2 id="use">Use</h2>
                 <ul>
                   {item.meta.use.map((line) => (
                     <li key={line}>{line}</li>
@@ -140,7 +139,7 @@ export default async function Page(props: PageProps<"/docs/components/[name]">) 
             )}
             {item.meta.avoid.length > 0 && (
               <div>
-                <h2>Avoid</h2>
+                <h2 id="avoid">Avoid</h2>
                 <ul>
                   {item.meta.avoid.map((line) => (
                     <li key={line}>
@@ -155,7 +154,7 @@ export default async function Page(props: PageProps<"/docs/components/[name]">) 
 
         {(dependencies.length > 0 || registryDependencies.length > 0) && (
           <section>
-            <h2>Dependencies</h2>
+            <h2 id="dependencies">Dependencies</h2>
             {dependencies.length > 0 && (
               <p>
                 {dependencies.map((dep, index) => (
@@ -186,7 +185,7 @@ export default async function Page(props: PageProps<"/docs/components/[name]">) 
         )}
 
         <section>
-          <h2>Source</h2>
+          <h2 id="source">Source</h2>
           <details>
             <summary>{filePath}</summary>
             <ServerCodeBlock lang={lang} code={source} />
@@ -195,7 +194,7 @@ export default async function Page(props: PageProps<"/docs/components/[name]">) 
 
         {related.length > 0 && (
           <section>
-            <h2>Related</h2>
+            <h2 id="related">Related</h2>
             <div className="chips">
               {related.map((relatedItem) => (
                 <Link key={relatedItem.name} className="chip" href={componentUrl(relatedItem.name)}>
