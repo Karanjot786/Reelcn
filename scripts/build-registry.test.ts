@@ -88,6 +88,22 @@ test("themeNamesFromSource reads preset names from core source", () => {
   assert.deepEqual(themeNamesFromSource(core), ["midnight", "paper"]);
 });
 
+test("parseImports lets tools files import Node built-ins and the whisper packages, without emitting node: as a dependency", () => {
+  const code =
+    'import { readFileSync } from "node:fs";\nimport path from "node:path";\nimport { installWhisperCpp } from "@remotion/install-whisper-cpp";\n';
+  assert.deepEqual(parseImports(code, "registry/tools/transcribe.ts"), {
+    local: [],
+    npm: ["@remotion/install-whisper-cpp"],
+  });
+});
+
+test("parseImports still rejects Node built-ins in registry items", () => {
+  assert.throws(
+    () => parseImports('import { readFileSync } from "node:fs";\n', "registry/items/core.tsx"),
+    /allowlist/,
+  );
+});
+
 test("parseHeader reads repeatable @env names", () => {
   const tool = `/**
  * @title Transcribe

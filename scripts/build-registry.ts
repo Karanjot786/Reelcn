@@ -107,6 +107,9 @@ export function parseImports(source: string, file: string): { local: string[]; n
   const specifiers = [...body.matchAll(/^(?:import|export)\s(?:[^;]*?\sfrom\s)?["']([^"']+)["'][ \t]*;?[ \t]*$/gm)]
     .filter((match) => (body.slice(0, match.index).match(/`/g) ?? []).length % 2 === 0)
     .map((match) => match[1]);
+  // Tools (registry/tools/) run in Node, not the browser, so they may reach for Node built-ins;
+  // items keep the strict browser-only allowlist. Either way, `node:*` is never an npm dependency.
+  const isTool = file.startsWith("registry/tools/");
   const local: string[] = [];
   const npm: string[] = [];
   for (const specifier of specifiers) {
@@ -120,6 +123,10 @@ export function parseImports(source: string, file: string): { local: string[]; n
       }
       if (!local.includes(name)) local.push(name);
       continue;
+    }
+    if (specifier.startsWith("node:")) {
+      if (isTool) continue;
+      throw new Error(`${file}: "${specifier}" is not on the dependency allowlist (spec §4.2)`);
     }
     const root = specifier
       .split("/")
