@@ -1,0 +1,616 @@
+/* Landing page (app/page.tsx) and the film strip (components/film-strip.tsx, also used by app/not-found.tsx).
+   Layout from the design canvas (spec §4.1), motion from spec §5. Colors are site tokens only.
+   global.css switches every animation off under prefers-reduced-motion; at rest, frames are developed, grease is drawn
+   and notes are visible, so reduced motion shows the finished sheet. */
+
+/* ---------- Film strip ---------- */
+.film {
+  --fw: 160px; /* frame width */
+  --gap: 10px;
+  --ratio: 16 / 9;
+  --seg: calc(var(--n) * (var(--fw) + var(--gap))); /* one pass of the frames */
+  --flash: var(--paper); /* the overexposed light a frame develops out of */
+  width: fit-content;
+  max-width: 100%;
+  padding: 14px;
+  border-radius: 3px;
+  background: var(--film);
+  overflow-x: clip; /* clip keeps overflow-y visible, so a grease note can hang below the strip */
+}
+.dark .film {
+  --flash: var(--ink);
+}
+.film-portrait {
+  --fw: 64px;
+  --ratio: 9 / 16;
+}
+.film-track {
+  --pitch: calc((var(--fw) + var(--gap)) / 6); /* six sprocket holes per frame, so one pass is whole holes */
+  display: flex;
+  width: max-content;
+  padding-block: 18px;
+  background:
+    linear-gradient(90deg, var(--sprocket) 0 43%, transparent 43%) left top / var(--pitch) 8px repeat-x,
+    linear-gradient(90deg, var(--sprocket) 0 43%, transparent 43%) left bottom / var(--pitch) 8px repeat-x;
+}
+.film-cell {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 8px;
+  width: var(--fw);
+  margin-right: var(--gap);
+}
+.film:not(.film-crawl) .film-cell:last-child {
+  margin-right: 0;
+}
+.film-frame {
+  position: relative;
+  aspect-ratio: var(--ratio);
+  background: var(--well);
+}
+.film-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.film-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--flash);
+  opacity: 0;
+}
+.film-edge {
+  color: var(--edge);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 13px;
+}
+.film-mark {
+  position: absolute;
+  z-index: 1;
+  top: -31%;
+  left: -15%;
+  width: 131%;
+  height: 167%;
+  overflow: visible;
+  pointer-events: none;
+}
+.film-mark path {
+  animation: draw var(--dur-4) var(--ease-draw) var(--mark-at, 200ms) both;
+}
+.film-note {
+  position: absolute;
+  z-index: 1;
+  top: 128%;
+  left: 47%;
+  color: var(--grease);
+  font-family: var(--font-caveat), cursive;
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  transform: rotate(-6deg);
+  animation: note var(--dur-3) var(--ease-enter) var(--note-at, 750ms) both;
+}
+.film-crawl {
+  width: min(100%, calc(var(--seg) + var(--gap)));
+  padding-inline: 0;
+}
+.film-crawl .film-track {
+  margin-left: calc(100% - var(--seg)); /* right-aligned: the last (marked) frame starts in view on any width */
+  animation: crawl var(--crawl-for, 17s) linear var(--crawl-at, 0s) infinite;
+}
+.film-crawl:hover .film-track {
+  animation-play-state: paused;
+}
+
+@keyframes feed {
+  from {
+    opacity: 0;
+    transform: translateX(140px) rotate(-1.5deg);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(-1.5deg);
+  }
+}
+@keyframes develop {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes note {
+  from {
+    opacity: 0;
+    transform: translateY(8px) rotate(-6deg);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(-6deg);
+  }
+}
+@keyframes crawl {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes drift {
+  from {
+    transform: translateX(-16px);
+  }
+  to {
+    transform: translateX(16px);
+  }
+}
+
+/* ---------- Page ---------- */
+.landing {
+  --gutter: 20px;
+  --section-y: 72px;
+  flex: 1;
+  overflow-x: clip;
+  background: var(--paper);
+  color: var(--ink);
+}
+.landing .nav,
+.landing section,
+.landing .footer {
+  padding-inline: max(var(--gutter), calc((100% - 1312px) / 2));
+}
+.landing h1,
+.landing h2 {
+  font-weight: 850;
+  font-stretch: 70%;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.landing h1 {
+  font-size: clamp(60px, 7.5vw, 108px);
+  line-height: 0.9;
+}
+.landing h2 {
+  font-size: clamp(44px, 5vw, 72px);
+  line-height: 0.92;
+}
+.landing h3 {
+  font-size: 22px;
+  font-weight: 700;
+}
+.landing p {
+  max-width: 34em;
+  color: var(--muted);
+  font-size: clamp(16px, 1.3vw, 19px);
+  line-height: 1.55;
+}
+.landing .copy-command {
+  max-width: 100%;
+}
+.landing .skip {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: 16px;
+  border-radius: 6px;
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 650;
+  transform: translateY(-200%);
+}
+.landing .skip:focus {
+  transform: none;
+}
+.landing .button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 52px;
+  padding-inline: 26px;
+  border-radius: 6px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 17px;
+  font-weight: 650;
+  transition: transform var(--dur-1) ease-out;
+}
+.landing .button:active {
+  transform: scale(0.97);
+}
+.landing .nav-links a:hover,
+.landing .all:hover,
+.landing .agent-list a:hover,
+.landing .footer a:hover {
+  text-decoration: underline 2px var(--grease);
+  text-underline-offset: 6px;
+}
+
+/* Nav */
+.landing .nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 24px;
+}
+.landing .logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  font-size: 24px;
+  font-weight: 800;
+  font-stretch: 80%;
+}
+.landing .nav-links {
+  display: flex;
+  gap: clamp(8px, 2.5vw, 36px);
+}
+.landing .nav-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: 4px;
+  font-weight: 500;
+}
+
+/* 1. Hero: the one load moment */
+.landing .hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 48px;
+  padding-block: 40px var(--section-y);
+}
+.landing .hero-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 28px;
+}
+.landing .lede {
+  max-width: 470px;
+  font-size: clamp(17px, 1.4vw, 20px);
+}
+.landing .hero-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  max-width: 100%;
+}
+.hero-strips {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  transform: rotate(-1.5deg);
+  animation: feed var(--dur-5) var(--ease-enter) both;
+}
+.hero .film {
+  --fw: 112px;
+  --crawl-for: 12.2s; /* 4 × (112 + 10)px at ~40px/s */
+  --crawl-at: 2.1s;
+  --mark-at: 1250ms;
+  --note-at: 1780ms;
+}
+.hero .film-portrait {
+  --fw: 44px;
+}
+.hero .film-frame::after {
+  animation: develop var(--dur-4) var(--ease-enter) calc(450ms + var(--i) * 70ms) both;
+}
+.hero .film-note {
+  font-size: 24px;
+}
+
+/* 2. Formats */
+.landing .formats {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 40px;
+  padding-block: var(--section-y);
+}
+.landing .formats-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.landing .poster {
+  width: 100%;
+}
+
+/* 3. Steps */
+.landing .steps {
+  display: flex;
+  flex-direction: column;
+  gap: 44px;
+  padding-block: 40px var(--section-y);
+}
+.landing .step-list {
+  display: grid;
+  gap: 32px;
+}
+.landing .step-list li {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  padding-top: 18px;
+  border-top: 2px solid var(--ink);
+}
+.landing .step-num {
+  display: inline-grid;
+  place-items: center;
+  min-width: 28px;
+  height: 22px;
+  padding-inline: 6px;
+  border-radius: 2px;
+  background: var(--film);
+  color: var(--edge);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* 4. Reels */
+.landing .reels {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding-block: var(--section-y);
+  background: var(--paper-2);
+}
+.landing .reels-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px 32px;
+}
+.landing .all {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 17px;
+  font-weight: 650;
+  text-decoration: underline 2px;
+  text-underline-offset: 6px;
+}
+.landing .reel-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.landing .reel {
+  display: grid;
+  align-items: center;
+  gap: 12px;
+}
+.landing .reel-name {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+.landing .reel h3 {
+  font-size: 26px;
+  font-weight: 800;
+  font-stretch: 75%;
+}
+.landing .reel-count {
+  color: var(--muted);
+  font-size: 14px;
+}
+.landing .reel-film {
+  padding: 10px 24px;
+  border-radius: 3px;
+  background: var(--film);
+}
+.landing .reel-strip {
+  display: flex;
+  gap: 10px;
+}
+.landing .reel img {
+  flex: 1 1 0;
+  min-width: 0;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  outline: 3px solid transparent;
+  outline-offset: 3px;
+  transition:
+    transform 220ms var(--ease-enter),
+    outline-color 160ms ease-out;
+}
+.landing .reel img:hover {
+  transform: scale(1.05);
+  outline-color: var(--grease);
+}
+@supports (animation-timeline: view()) {
+  .landing .reel-strip {
+    animation: drift linear both;
+    animation-timeline: view();
+  }
+  .landing .reel-list li:nth-child(even) .reel-strip {
+    animation-direction: reverse;
+  }
+}
+
+/* 5. Themes */
+.landing .themes {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  padding-block: var(--section-y);
+}
+.landing .themes-head {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.landing .themes-head code {
+  color: var(--muted);
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 15px;
+}
+.landing .theme-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.landing .theme-grid figure {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.landing .theme-grid img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+.landing .theme-grid figcaption {
+  font-size: 14px;
+}
+
+/* 6. Agents */
+.landing .agents {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px;
+  padding-block: 40px var(--section-y);
+}
+.landing .agent-list li {
+  display: grid;
+  gap: 4px 24px;
+  padding-block: 16px;
+  border-top: 1px solid var(--rule);
+}
+.landing .agent-list li:last-child {
+  border-bottom: 1px solid var(--rule);
+}
+.landing .agent-list a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+/* 7. Footer: on film in both modes */
+.landing .footer {
+  --fg: var(--sprocket);
+  --strong: var(--paper);
+  display: grid;
+  gap: 32px;
+  padding-block: 56px;
+  background: var(--film);
+  color: var(--fg);
+}
+.dark .landing .footer {
+  --fg: var(--muted);
+  --strong: var(--ink);
+}
+.landing .footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.landing .footer-mark {
+  color: var(--strong);
+  font-size: 28px;
+  font-weight: 800;
+  font-stretch: 80%;
+}
+.landing .footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 28px;
+}
+.landing .footer a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 15px;
+}
+.landing .footer p {
+  max-width: 520px;
+  color: var(--fg);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Phone: three reels plus the "Browse all" link */
+@media (max-width: 639px) {
+  .landing .reel-list li:nth-child(n + 4) {
+    display: none;
+  }
+}
+
+@media (min-width: 640px) {
+  .landing {
+    --gutter: 40px;
+  }
+  .hero .film {
+    --fw: 160px;
+    --crawl-for: 17s; /* 4 × (160 + 10)px at 40px/s */
+  }
+  .hero .film-portrait {
+    --fw: 64px;
+    margin-left: clamp(0px, 8vw, 120px);
+  }
+  .hero .film-note {
+    font-size: 30px;
+  }
+  .landing .theme-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 900px) {
+  .landing .step-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .landing .reel {
+    grid-template-columns: 200px minmax(0, 1fr);
+    gap: 24px;
+  }
+  .landing .reel-name {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+}
+
+@media (min-width: 1100px) {
+  .landing {
+    --gutter: 64px;
+    --section-y: 110px;
+  }
+  .landing .hero {
+    grid-template-columns: 540px minmax(0, 1fr);
+    gap: 56px;
+    align-items: center;
+  }
+  .landing .formats {
+    grid-template-columns: 440px minmax(0, 1fr);
+    gap: 64px;
+    align-items: center;
+  }
+  .landing .theme-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  .landing .agents {
+    grid-template-columns: 440px minmax(0, 1fr);
+    gap: 64px;
+  }
+  .landing .agent-list li {
+    grid-template-columns: 200px minmax(0, 1fr);
+    align-items: center;
+  }
+  .landing .footer {
+    grid-template-columns: minmax(0, 1fr) 520px;
+    gap: 64px;
+  }
+}
