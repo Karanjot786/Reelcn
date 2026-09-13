@@ -118,7 +118,7 @@ export function Waveform({
               alignSelf: variant === "mirror" ? "center" : "flex-end",
               borderRadius: u(radius),
               background: tone,
-              opacity: 0.55 + Math.min(1, value * 2) * 0.45,
+              opacity: 0.55 + Math.min(1, Math.abs(value) * gain) * 0.45,
               boxShadow: variant === "mirror" ? `0 0 ${u(12)}px ${alpha(tone, 0.35)}` : undefined,
             }}
           />
