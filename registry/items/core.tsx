@@ -27,7 +27,7 @@ import { fonts } from "./fonts";
 
 /* ────────────────────────────── Theme ────────────────────────────── */
 
-export type MotionPreset = "smooth" | "snappy" | "bouncy" | "gentle" | "linear";
+export type MotionPreset = "smooth" | "snappy" | "bouncy" | "gentle" | "linear" | "settle";
 
 export type Theme = {
   name: string;
@@ -258,7 +258,7 @@ export function useViewport(platform: SafeZonePlatform = "generic") {
 
 export const CLAMP = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 
-export const easings: Record<Exclude<MotionPreset, "bouncy">, (t: number) => number> = {
+export const easings: Record<Exclude<MotionPreset, "bouncy" | "settle">, (t: number) => number> = {
   smooth: Easing.bezier(0.16, 1, 0.3, 1),
   snappy: Easing.bezier(0.2, 0.9, 0.1, 1),
   gentle: Easing.bezier(0.45, 0, 0.55, 1),
@@ -282,6 +282,12 @@ export function tween(
       durationInFrames: duration,
       config: { damping: 12, stiffness: 170, mass: 0.9 },
     });
+  }
+  if (motion === "settle") {
+    const t = Math.min(Math.max((frame - from) / duration, 0), 1);
+    if (t <= 0) return 0;
+    if (t < 0.4) return interpolate(t, [0, 0.4], [0, 1.06], { ...CLAMP, easing: easings.smooth });
+    return 1 + 0.06 * Math.exp(-4.6 * ((t - 0.4) / 0.6));
   }
   return interpolate(frame, [from, from + duration], [0, 1], { ...CLAMP, easing: easings[motion] });
 }

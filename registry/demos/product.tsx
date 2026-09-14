@@ -336,6 +336,14 @@ function ToastError() {
   );
 }
 
+function ToastSettle() {
+  return (
+    <Center>
+      <Toast variant="info" title="Synced" description="Every device is up to date" motion="settle" />
+    </Center>
+  );
+}
+
 /* ─────────────────────────────── chat-thread ─────────────────────────────── */
 
 function ChatThreadDemo() {
@@ -453,6 +461,7 @@ export default [
   { id: "screen-zoom-detail", duration: 100, component: ScreenZoomDemo },
   { id: "toast-success", duration: 90, bare: true, component: ToastSuccess },
   { id: "toast-error", duration: 90, bare: true, component: ToastError },
+  { id: "toast-settle", duration: 90, bare: true, component: ToastSettle },
   { id: "chat-thread-reply", duration: 110, component: ChatThreadDemo },
   { id: "command-palette-filter", duration: 100, component: CommandPaletteDemo },
   { id: "feature-card-rise", duration: 75, component: FeatureCardDemo },

@@ -187,4 +187,13 @@ export default [
       </Center>
     ),
   },
+  {
+    id: "stamp-settle",
+    duration: 75,
+    component: () => (
+      <Center>
+        <Stamp text="Sold out" size={170} motion="settle" />
+      </Center>
+    ),
+  },
 ] satisfies Demo[];

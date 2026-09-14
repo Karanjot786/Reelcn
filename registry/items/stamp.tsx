@@ -16,16 +16,16 @@
 import { useMotion } from "./core";
 import { TextReveal, type TextRevealProps } from "./text-reveal";
 
-export type StampProps = Omit<TextRevealProps, "effect" | "motion">;
+export type StampProps = Omit<TextRevealProps, "effect">;
 
-export function Stamp({ style, ...props }: StampProps) {
-  const m = useMotion({ delay: props.delay, duration: props.duration, motion: "bouncy" });
+export function Stamp({ style, motion, ...props }: StampProps) {
+  const m = useMotion({ delay: props.delay, duration: props.duration, motion: motion ?? "bouncy" });
   return (
     <TextReveal
       split="line"
       {...props}
       effect="scale"
-      motion="bouncy"
+      motion={motion ?? "bouncy"}
       style={{ rotate: `${(1 - m.enter) * -8}deg`, ...style }}
     />
   );
