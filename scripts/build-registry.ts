@@ -157,7 +157,7 @@ function collect(base: string) {
   ];
   return sources.flatMap(({ dir, target }) =>
     (existsSync(dir) ? readdirSync(dir).sort() : [])
-      .filter((file) => /\.tsx?$/.test(file))
+      .filter((file) => /\.tsx?$/.test(file) && !/\.test\.tsx?$/.test(file))
       .map((file) => {
         const filePath = path.posix.join(dir, file);
         const source = readFileSync(filePath, "utf8");

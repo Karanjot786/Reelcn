@@ -2,6 +2,9 @@
  * @title Core Physical Light
  * @category lib
  * @description Shared "physical light" background looks for midnight/paper/neon/mono, reused by aurora, gradient-mesh, beams and spotlight. Not a catalog item on its own — each background item still owns its per-theme LOOK_BY_THEME mapping and its own default (curtains/blobs/shafts/pool) look for daylight/sunset.
+ * @tags background, light, grain, grid, theme
+ * @example
+ * <GridSweepLook theme={theme} seconds={seconds} strength={0.6} background={theme.colors.background} />
  */
 import type React from "react";
 import { AbsoluteFill } from "remotion";

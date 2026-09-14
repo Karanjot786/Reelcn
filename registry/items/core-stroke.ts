@@ -3,6 +3,8 @@
  * @category lib
  * @description Pure stroke-width math behind theme.stroke's `brush` look, kept separate from core-math.ts so its one export stays easy to find and test on its own.
  * @tags stroke, brush, taper
+ * @example
+ * const width = baseWidth * strokeWidthProfile(0.5, "arrow"); // thickest mid-stroke
  */
 import { random } from "remotion";
 
