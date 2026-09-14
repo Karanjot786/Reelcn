@@ -13,7 +13,7 @@
  * </Center>
  */
 import type React from "react";
-import { type MotionProps, tween, useMotion, useTheme, useViewport } from "./core";
+import { type MotionProps, StrokeOverlay, tween, useMotion, useTheme, useViewport } from "./core";
 
 export type HighlightVariant = "marker" | "underline" | "box" | "circle";
 
@@ -149,7 +149,15 @@ export function Highlight({
             preserveAspectRatio="none"
             style={{ ...overlay, left: "-0.06em", top: "0.9em", width: "calc(100% + 0.12em)", height: "0.32em" }}
           >
-            <path d={UNDERLINE} vectorEffect="non-scaling-stroke" {...stroke} />
+            <StrokeOverlay
+              d={UNDERLINE}
+              kind={theme.stroke}
+              seed="highlight-underline"
+              color={mark}
+              strokeWidth={fontPx * 0.06}
+              drawn={drawn}
+              extraProps={{ vectorEffect: "non-scaling-stroke", strokeLinecap: "round" }}
+            />
           </svg>
         );
       case "circle":
@@ -160,7 +168,15 @@ export function Highlight({
             preserveAspectRatio="none"
             style={{ ...overlay, left: "-0.3em", top: "-0.12em", width: "calc(100% + 0.6em)", height: "1.45em" }}
           >
-            <path d={CIRCLE} vectorEffect="non-scaling-stroke" {...stroke} />
+            <StrokeOverlay
+              d={CIRCLE}
+              kind={theme.stroke}
+              seed="highlight-circle"
+              color={mark}
+              strokeWidth={fontPx * 0.06}
+              drawn={drawn}
+              extraProps={{ vectorEffect: "non-scaling-stroke", strokeLinecap: "round" }}
+            />
           </svg>
         );
       case "box":

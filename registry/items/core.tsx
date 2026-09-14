@@ -37,6 +37,7 @@ import {
   useTypedText,
   useVariableFontAxis,
 } from "./core-math";
+import { strokeWidthProfile } from "./core-stroke";
 import { fonts } from "./fonts";
 
 // Pure math (motion quantization, stagger ordering, keyframe interpolation, the typing model, grapheme
@@ -729,4 +730,100 @@ export function useKeyframePath(keys: PoseKey[], opts?: { motion?: MotionPreset 
     width: at4("width", 100),
     height: at4("height", 100),
   };
+}
+
+export type StrokeKind = Theme["stroke"];
+
+/**
+ * Renders `d` (already in a `pathLength={1}`-normalized coordinate space, the convention every stroke
+ * consumer here already uses) as one of the three line qualities: `vector` is a single clean stroke,
+ * `marker` adds a wider, blurred, low-opacity duplicate underneath (a feathered double-stroke), `brush`
+ * splits the path into segments whose width follows strokeWidthProfile (thick mid, thin ends) plus a
+ * seeded grain filter. `drawn` is the existing 0-1 draw-on progress every consumer already computes
+ * (`strokeDashoffset={1 - drawn}`); this component owns the visual, not the timing.
+ */
+export function StrokeOverlay({
+  d,
+  kind,
+  seed,
+  color,
+  strokeWidth,
+  drawn,
+  extraProps,
+}: {
+  d: string;
+  kind: StrokeKind;
+  seed: string;
+  color: string;
+  strokeWidth: number;
+  drawn: number;
+  /** Passed to every underlying `<path>` (e.g. `strokeLinecap`, `fill`). */
+  extraProps?: React.SVGProps<SVGPathElement>;
+}) {
+  const dashProps = { pathLength: 1, strokeDasharray: 1, strokeDashoffset: 1 - drawn } as const;
+  if (kind === "vector") {
+    return <path d={d} stroke={color} strokeWidth={strokeWidth} fill="none" {...dashProps} {...extraProps} />;
+  }
+  if (kind === "marker") {
+    const featherId = `stroke-feather-${seed.replace(/[^a-zA-Z0-9_-]/g, "")}`;
+    return (
+      <>
+        <defs>
+          <filter id={featherId} x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation={strokeWidth * 0.35} />
+          </filter>
+        </defs>
+        <path
+          d={d}
+          stroke={color}
+          strokeWidth={strokeWidth * 1.7}
+          fill="none"
+          opacity={0.3}
+          filter={`url(#${featherId})`}
+          {...dashProps}
+          {...extraProps}
+        />
+        <path d={d} stroke={color} strokeWidth={strokeWidth} fill="none" {...dashProps} {...extraProps} />
+      </>
+    );
+  }
+  // brush: N normalized-length segments, each with its own strokeWidthProfile-driven width, plus a
+  // shared seeded grain filter so the ribbon reads as textured rather than a flat taper.
+  const grainId = `stroke-grain-${seed.replace(/[^a-zA-Z0-9_-]/g, "")}`;
+  const segments = 10;
+  return (
+    <>
+      <defs>
+        <filter id={grainId}>
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency={0.9}
+            numOctaves={2}
+            seed={Math.round(random(`${seed}-grain`) * 1000)}
+          />
+          <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.5 0" />
+          <feComposite operator="in" in2="SourceGraphic" />
+        </filter>
+      </defs>
+      {Array.from({ length: segments }, (_, i) => {
+        const segLen = 1 / segments;
+        const t = (i + 0.5) * segLen;
+        const w = strokeWidth * strokeWidthProfile(t, seed);
+        return (
+          <path
+            key={i}
+            d={d}
+            stroke={color}
+            strokeWidth={w}
+            fill="none"
+            pathLength={1}
+            strokeDasharray={`${segLen} ${1 - segLen}`}
+            strokeDashoffset={i * -segLen + (1 - drawn)}
+            filter={`url(#${grainId})`}
+            {...extraProps}
+          />
+        );
+      })}
+    </>
+  );
 }

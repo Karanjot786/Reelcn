@@ -12,7 +12,7 @@
  */
 import type React from "react";
 import { AbsoluteFill, random } from "remotion";
-import { type MotionProps, useMotion, useTheme, useViewport } from "./core";
+import { type MotionProps, StrokeOverlay, useMotion, useTheme, useViewport } from "./core";
 
 export type ScribbleCircleProps = MotionProps & {
   /**
@@ -96,18 +96,17 @@ export function ScribbleCircle({
         viewBox={`0 0 ${width} ${height}`}
         style={{ position: "absolute", left: 0, top: 0, overflow: "visible" }}
       >
-        <path
-          d={d}
-          fill="none"
-          stroke={color ?? theme.colors.accent}
-          strokeWidth={u(strokeWidth)}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          pathLength={1}
-          strokeDasharray={1}
-          strokeDashoffset={1 - drawn}
-          opacity={drawn > 0 ? 1 : 0}
-        />
+        <g opacity={drawn > 0 ? 1 : 0}>
+          <StrokeOverlay
+            d={d}
+            kind={theme.stroke}
+            seed={String(seed)}
+            color={color ?? theme.colors.accent}
+            strokeWidth={u(strokeWidth)}
+            drawn={drawn}
+            extraProps={{ strokeLinecap: "round", strokeLinejoin: "round" }}
+          />
+        </g>
       </svg>
     </AbsoluteFill>
   );

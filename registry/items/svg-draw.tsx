@@ -13,7 +13,7 @@
  * </Center>
  */
 import type React from "react";
-import { type MotionProps, tween, useMotion, useTheme, useViewport } from "./core";
+import { type MotionProps, StrokeOverlay, tween, useMotion, useTheme, useViewport } from "./core";
 
 export type SvgDrawProps = MotionProps & {
   /** One or more `d` attributes, drawn in order. */
@@ -82,20 +82,18 @@ export function SvgDraw({
             )
           : 0;
         return (
-          <path
-            key={index}
-            d={d}
-            fill={fill ?? "none"}
-            fillOpacity={fill ? filled : undefined}
-            stroke={stroke}
-            strokeWidth={strokeWidth}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            pathLength={1}
-            strokeDasharray={1}
-            strokeDashoffset={1 - drawn}
-            opacity={drawn > 0 ? 1 : 0}
-          />
+          <g key={index} opacity={drawn > 0 ? 1 : 0}>
+            {fill ? <path d={d} fill={fill} fillOpacity={filled} stroke="none" /> : null}
+            <StrokeOverlay
+              d={d}
+              kind={theme.stroke}
+              seed={`svg-draw-${index}`}
+              color={stroke}
+              strokeWidth={strokeWidth}
+              drawn={drawn}
+              extraProps={{ strokeLinecap: "round", strokeLinejoin: "round" }}
+            />
+          </g>
         );
       })}
     </svg>

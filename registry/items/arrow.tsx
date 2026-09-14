@@ -12,7 +12,7 @@
  */
 import type React from "react";
 import { AbsoluteFill, random } from "remotion";
-import { type MotionProps, tween, useMotion, useTheme, useViewport } from "./core";
+import { type MotionProps, StrokeOverlay, tween, useMotion, useTheme, useViewport } from "./core";
 
 export type ArrowPoint = { x: number; y: number };
 
@@ -148,7 +148,17 @@ export function Arrow({
         style={{ position: "absolute", left: 0, top: 0, overflow: "visible" }}
       >
         {/* Round caps would leave a dot at the start of an undrawn path, so hide each path until it moves. */}
-        <path d={shaftPath} {...strokeProps} strokeDashoffset={1 - shaft} opacity={shaft > 0 ? 1 : 0} />
+        <g opacity={shaft > 0 ? 1 : 0}>
+          <StrokeOverlay
+            d={shaftPath}
+            kind={theme.stroke}
+            seed={String(seed)}
+            color={stroke}
+            strokeWidth={sw}
+            drawn={shaft}
+            extraProps={{ strokeLinecap: "round", strokeLinejoin: "round" }}
+          />
+        </g>
         <path d={headPath} {...strokeProps} strokeDashoffset={1 - tip} opacity={tip > 0 ? 1 : 0} />
       </svg>
       {label && (
