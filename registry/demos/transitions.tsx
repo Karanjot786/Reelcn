@@ -7,6 +7,7 @@ import { circleBurst } from "../items/circle-burst";
 import { useTheme, useViewport } from "../items/core";
 import { glitch } from "../items/glitch";
 import { lightFlash } from "../items/light-flash";
+import { organicDissolve } from "../items/organic-dissolve";
 import { rackFocus } from "../items/rack-focus";
 import { getScenesDuration, type SceneItem, Scenes } from "../items/scenes";
 import { shutter } from "../items/shutter";
@@ -137,6 +138,7 @@ export default [
   pair("zoom-through-in", zoomThrough()),
   pair("zoom-through-out", zoomThrough({ direction: "out" })),
   pair("rack-focus-default", rackFocus()),
+  pair("organic-dissolve-default", organicDissolve({ seed: "demo" })),
   {
     id: "scenes-default",
     duration: getScenesDuration(
