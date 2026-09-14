@@ -16,6 +16,7 @@
 import type React from "react";
 import { AbsoluteFill } from "remotion";
 import { alpha, type MotionProps, useMotion, useTheme, useViewport } from "./core";
+import { FlatAccentLook, FlatBlocksLook, GrainFieldLook, GridSweepLook } from "./core-physical-light";
 
 export type SpotlightProps = MotionProps & {
   /** Base fill. Defaults to the theme background. */
@@ -36,6 +37,17 @@ export type SpotlightProps = MotionProps & {
   className?: string;
 };
 
+type SpotlightLook = "pool" | "grid-sweep" | "grain-field" | "flat-blocks" | "flat-accent";
+
+const LOOK_BY_THEME: Record<string, SpotlightLook> = {
+  daylight: "pool",
+  sunset: "pool",
+  midnight: "grid-sweep",
+  paper: "grain-field",
+  neon: "flat-blocks",
+  mono: "flat-accent",
+};
+
 const clamp01 = (value: number) => Math.min(Math.max(value, 0), 1);
 
 export function Spotlight({
@@ -53,13 +65,63 @@ export function Spotlight({
   const theme = useTheme();
   const { width, height, u } = useViewport();
   const m = useMotion(motion);
-  const light = color ?? theme.colors.accent;
+  const light = color ?? (theme.name === "daylight" ? theme.colors.foreground : theme.colors.accent);
   const seconds = (m.frame / m.fps) * speed;
   // A 1:2 Lissajous curve: a lazy figure-eight around the upper middle of the frame.
   const x = position ? position.x : 0.5 + 0.2 * Math.sin(seconds * 0.5);
   const y = position ? position.y : 0.42 + 0.09 * Math.sin(seconds + 0.6);
   const radius = u(size) * (1 + 0.04 * Math.sin((m.frame / m.fps) * 0.9));
   const strength = intensity * m.presence;
+
+  const look = LOOK_BY_THEME[theme.name] ?? "pool";
+
+  if (look === "grid-sweep")
+    return (
+      <GridSweepLook
+        theme={theme}
+        seconds={seconds}
+        strength={strength}
+        background={background}
+        className={className}
+        style={style}
+      />
+    );
+  if (look === "grain-field")
+    return (
+      <GrainFieldLook
+        theme={theme}
+        seconds={seconds}
+        strength={strength}
+        palette={[light]}
+        background={background}
+        className={className}
+        style={style}
+      />
+    );
+  if (look === "flat-blocks")
+    return (
+      <FlatBlocksLook
+        theme={theme}
+        seconds={seconds}
+        strength={strength}
+        palette={[light, theme.colors.highlight]}
+        background={background}
+        className={className}
+        style={style}
+      />
+    );
+  if (look === "flat-accent")
+    return (
+      <FlatAccentLook
+        theme={theme}
+        seconds={seconds}
+        strength={strength}
+        background={background}
+        className={className}
+        style={style}
+      />
+    );
+
   const stop = (share: number) => alpha(light, clamp01(strength * share));
   const pool = `radial-gradient(circle ${radius}px at ${x * width}px ${y * height}px, ${stop(1)} 0%, ${stop(0.62)} 22%, ${stop(0.28)} 48%, ${stop(0.08)} 75%, ${stop(0)} 100%)`;
   const edges = `radial-gradient(ellipse farthest-corner at 50% 50%, ${alpha("#000000", 0)} 45%, ${alpha("#000000", clamp01(vignette))} 100%)`;
