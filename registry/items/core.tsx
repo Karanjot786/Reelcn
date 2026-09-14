@@ -11,8 +11,8 @@
  */
 /// <reference lib="es2022.intl" />
 import type React from "react";
-import { createContext, useContext } from "react";
-import { AbsoluteFill, Easing, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
+import { createContext, useContext, useEffect, useState } from "react";
+import { AbsoluteFill, continueRender, delayRender, Easing, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { fonts } from "./fonts";
 
 /* ────────────────────────────── Theme ────────────────────────────── */
@@ -387,3 +387,62 @@ const segmenter =
 /** Split into user-perceived characters, so emoji and accents never break apart. */
 export const graphemes = (text: string) =>
   segmenter ? Array.from(segmenter.segment(text), (s) => s.segment) : Array.from(text);
+
+/* ────────────────────────────── Text metrics ────────────────────────────── */
+
+let measureContext: CanvasRenderingContext2D | null = null;
+
+function measurePx(text: string, font: string): number {
+  if (typeof document === "undefined") return 0;
+  if (!measureContext) measureContext = document.createElement("canvas").getContext("2d");
+  if (!measureContext) return 0;
+  measureContext.font = font;
+  return measureContext.measureText(text).width;
+}
+
+/** True once `document.fonts` has a face covering this weight for the stack's first family. */
+function fontFaceReady(stack: string, weight: number): boolean {
+  if (typeof document === "undefined" || !document.fonts) return false;
+  const family = stack.split(",")[0].trim().replace(/["']/g, "");
+  let found = false;
+  document.fonts.forEach((face) => {
+    const range = face.weight.split(" ");
+    const covers = Number(range[0]) <= weight && weight <= Number(range[range.length - 1]);
+    if (covers && face.family.replace(/["']/g, "") === family) found = true;
+  });
+  return found;
+}
+
+/**
+ * Real width of `text` set in `style`, measured against the loaded font — gated on the browser's own font-ready
+ * signal (`document.fonts.ready` plus a face check, since a font can resolve `ready` before its face is queryable)
+ * through `delayRender`/`continueRender`, not a fixed-attempt timer.
+ */
+export function useTextMetrics(
+  text: string,
+  style: { fontFamily: string; fontSize: number; fontWeight?: number; letterSpacing?: number },
+): { width: number; ready: boolean } {
+  const { fontFamily, fontSize, fontWeight = 400, letterSpacing = 0 } = style;
+  const [handle] = useState(() => delayRender("useTextMetrics font"));
+  const [ready, setReady] = useState(() => fontFaceReady(fontFamily, fontWeight));
+
+  useEffect(() => {
+    if (ready) return;
+    let cancelled = false;
+    document.fonts.ready.then(() => {
+      if (!cancelled && fontFaceReady(fontFamily, fontWeight)) setReady(true);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [ready, fontFamily, fontWeight]);
+
+  useEffect(() => {
+    if (ready) continueRender(handle);
+  }, [ready, handle]);
+
+  const width = ready
+    ? measurePx(text, `${fontWeight} ${fontSize}px ${fontFamily}`) + Math.max(text.length - 1, 0) * letterSpacing
+    : 0;
+  return { width, ready };
+}
