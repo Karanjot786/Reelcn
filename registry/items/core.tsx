@@ -649,7 +649,7 @@ function fontFaceReady(stack: string, weight: number): boolean {
   document.fonts.forEach((face) => {
     const range = face.weight.split(" ");
     const covers = Number(range[0]) <= weight && weight <= Number(range[range.length - 1]);
-    if (covers && families.includes(face.family.replace(/["']/g, ""))) found = true;
+    if (covers && families.indexOf(face.family.replace(/["']/g, "")) !== -1) found = true;
   });
   return found;
 }
