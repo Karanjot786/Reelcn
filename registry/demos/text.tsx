@@ -1,3 +1,4 @@
+import { staticFile } from "remotion";
 import { BlurIn } from "../items/blur-in";
 import { CharRise } from "../items/char-rise";
 import { Center } from "../items/core";
@@ -11,6 +12,7 @@ import { PopIn } from "../items/pop-in";
 import { RiseUp } from "../items/rise-up";
 import { Scramble } from "../items/scramble";
 import { Stamp } from "../items/stamp";
+import { TextMaskVideo } from "../items/text-mask-video";
 import { TextMorph } from "../items/text-morph";
 import { TextReveal, type TextRevealEffect } from "../items/text-reveal";
 import { Typewriter } from "../items/typewriter";
@@ -222,6 +224,15 @@ export default [
     component: () => (
       <Center>
         <TextMorph from="Build faster" to="Ship faster" />
+      </Center>
+    ),
+  },
+  {
+    id: "text-mask-video-window",
+    duration: 90,
+    component: () => (
+      <Center>
+        <TextMaskVideo text="MOTION" src={staticFile("reelcn-demo/clip.mp4")} />
       </Center>
     ),
   },
