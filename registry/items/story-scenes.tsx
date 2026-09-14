@@ -71,8 +71,8 @@ const avatarImage = (src?: string) => (src ? <Img src={src} style={cover} /> : u
 function ScreenPlaceholder() {
   const theme = useTheme();
   const { u } = useViewport();
-  const bar = (width: string, height: number, color: string) => (
-    <div style={{ width, height: u(height), borderRadius: u(10), background: color }} />
+  const bar = (width: string, height: number, color: string, radius = 6) => (
+    <div style={{ width, height: u(height), borderRadius: u(radius), background: color }} />
   );
   return (
     <div
@@ -80,18 +80,54 @@ function ScreenPlaceholder() {
         width: "100%",
         height: "100%",
         boxSizing: "border-box",
-        padding: u(32),
+        background: theme.colors.surface,
         display: "flex",
         flexDirection: "column",
-        gap: u(18),
-        background: theme.colors.surface,
       }}
     >
-      {bar("40%", 28, alpha(theme.colors.foreground, 0.5))}
-      {bar("100%", 160, alpha(theme.colors.accent, 0.35))}
-      {bar("85%", 18, alpha(theme.colors.foreground, 0.2))}
-      {bar("70%", 18, alpha(theme.colors.foreground, 0.2))}
-      {bar("90%", 18, alpha(theme.colors.foreground, 0.2))}
+      {/* A denser top chrome bar (window controls + a tab) reads as "an app", not a mock. */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: u(8),
+          padding: `${u(10)}px ${u(16)}px`,
+          borderBottom: `1px solid ${theme.colors.border}`,
+        }}
+      >
+        <div
+          style={{ width: u(9), height: u(9), borderRadius: "50%", background: alpha(theme.colors.foreground, 0.25) }}
+        />
+        <div
+          style={{ width: u(9), height: u(9), borderRadius: "50%", background: alpha(theme.colors.foreground, 0.25) }}
+        />
+        <div
+          style={{ width: u(9), height: u(9), borderRadius: "50%", background: alpha(theme.colors.foreground, 0.25) }}
+        />
+        <div
+          style={{
+            marginLeft: u(12),
+            width: "30%",
+            height: u(16),
+            borderRadius: u(4),
+            background: alpha(theme.colors.foreground, 0.12),
+          }}
+        />
+      </div>
+      <div style={{ flex: 1, display: "flex", padding: u(24), gap: u(20) }}>
+        <div style={{ width: "22%", display: "flex", flexDirection: "column", gap: u(12) }}>
+          {bar("100%", 14, alpha(theme.colors.foreground, 0.3))}
+          {bar("80%", 14, alpha(theme.colors.foreground, 0.16))}
+          {bar("85%", 14, alpha(theme.colors.foreground, 0.16))}
+          {bar("60%", 14, alpha(theme.colors.foreground, 0.16))}
+        </div>
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: u(16) }}>
+          {bar("45%", 24, alpha(theme.colors.foreground, 0.45), 4)}
+          {bar("100%", 140, alpha(theme.colors.accent, 0.3), u(theme.radius > 0 ? Math.min(theme.radius, 16) : 6))}
+          {bar("90%", 16, alpha(theme.colors.foreground, 0.18))}
+          {bar("75%", 16, alpha(theme.colors.foreground, 0.18))}
+        </div>
+      </div>
     </div>
   );
 }
