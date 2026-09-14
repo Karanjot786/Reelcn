@@ -36,6 +36,7 @@ import { circleBurst } from "./circle-burst";
 import { createTheme, Stage, type Theme, type ThemeName, ThemeProvider, themeNames, useTheme } from "./core";
 import { glitch } from "./glitch";
 import { lightFlash } from "./light-flash";
+import { rackFocus } from "./rack-focus";
 import { type SceneItem, Scenes } from "./scenes";
 import { SFX_NAMES, Sfx, type SfxName } from "./sfx";
 import { shutter } from "./shutter";
@@ -68,6 +69,7 @@ export const TRANSITIONS: Record<string, () => Presentation> = {
   "circle-burst": () => circleBurst(),
   glitch: () => glitch(),
   "light-flash": () => lightFlash(),
+  "rack-focus": () => rackFocus(),
   shutter: () => shutter(),
   "slice-slide": () => sliceSlide(),
   "split-doors": () => splitDoors(),
