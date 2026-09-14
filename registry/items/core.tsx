@@ -10,7 +10,7 @@
  * </ThemeProvider>
  */
 import type React from "react";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useId, useState } from "react";
 import {
   AbsoluteFill,
   continueRender,
@@ -761,11 +761,16 @@ export function StrokeOverlay({
   extraProps?: React.SVGProps<SVGPathElement>;
 }) {
   const dashProps = { pathLength: 1, strokeDasharray: 1, strokeDashoffset: 1 - drawn } as const;
+  // Mixed into every filter id below so 2+ StrokeOverlay instances sharing a `seed` (e.g. highlight.tsx's
+  // hardcoded seeds, or Arrow/ScribbleCircle defaults) don't collide on the same <filter id> and end up
+  // resolving `url(#id)` to each other's filter. `seed` alone still drives noise/random seeding so pixels
+  // stay deterministic.
+  const instanceId = useId().replace(/:/g, "");
   if (kind === "vector") {
     return <path d={d} stroke={color} strokeWidth={strokeWidth} fill="none" {...dashProps} {...extraProps} />;
   }
   if (kind === "marker") {
-    const featherId = `stroke-feather-${seed.replace(/[^a-zA-Z0-9_-]/g, "")}`;
+    const featherId = `stroke-feather-${instanceId}-${seed.replace(/[^a-zA-Z0-9_-]/g, "")}`;
     return (
       <>
         <defs>
@@ -789,7 +794,7 @@ export function StrokeOverlay({
   }
   // brush: N normalized-length segments, each with its own strokeWidthProfile-driven width, plus a
   // shared seeded grain filter so the ribbon reads as textured rather than a flat taper.
-  const grainId = `stroke-grain-${seed.replace(/[^a-zA-Z0-9_-]/g, "")}`;
+  const grainId = `stroke-grain-${instanceId}-${seed.replace(/[^a-zA-Z0-9_-]/g, "")}`;
   const segments = 10;
   return (
     <>
