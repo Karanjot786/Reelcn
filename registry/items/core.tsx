@@ -323,6 +323,37 @@ export function useMotion({ delay = 0, duration, exit = true, motion }: MotionPr
   };
 }
 
+/* ─────────────────────────── Per-role motion ─────────────────────────── */
+
+export type RoleShape = { travel: number; opacityLeadFrames: number };
+
+/** Exit travels 60% as far as enter and finishes its opacity 3 frames ahead of its geometry, so it reads as one quick, clean exit rather than a mirrored entrance. */
+export const roleDefaults: { enter: RoleShape; exit: RoleShape } = {
+  enter: { travel: 1, opacityLeadFrames: 0 },
+  exit: { travel: 0.6, opacityLeadFrames: 3 },
+};
+
+/**
+ * Splits `useMotion`'s single enter/exit clock into per-role shapes: `opacity` and `geometry` (translate/scale
+ * progress) can now finish at different times, and `travel(px)` scales a base distance separately for enter and exit.
+ */
+export function useRoleMotion(
+  m: ReturnType<typeof useMotion>,
+  overrides?: { enter?: Partial<RoleShape>; exit?: Partial<RoleShape> },
+): { opacity: number; geometry: number; travel: (px: number) => { enterPx: number; exitPx: number } } {
+  const enterShape = { ...roleDefaults.enter, ...overrides?.enter };
+  const exitShape = { ...roleDefaults.exit, ...overrides?.exit };
+  const enter = Math.min(m.enter, 1);
+  // opacityLeadFrames converted to a share of the exit window, so it stays a frame count regardless of exit length.
+  const exitOpacityLead =
+    m.exit > 0 && m.exit < 1 ? Math.min(1, m.exit + exitShape.opacityLeadFrames / Math.max(m.fps * 0.35, 1)) : m.exit;
+  return {
+    opacity: enter * (1 - Math.min(exitOpacityLead, 1)),
+    geometry: enter * (1 - m.exit),
+    travel: (px: number) => ({ enterPx: px * enterShape.travel, exitPx: px * exitShape.travel }),
+  };
+}
+
 /* ────────────────────────────── Layout ────────────────────────────── */
 
 /** Full-bleed canvas painted with the theme background, text color and body font. */
