@@ -135,11 +135,16 @@ function StoryAudio({ audio }: { audio: Story["audio"] }) {
 export function Storyboard({ story, scenes: custom = [], style, className }: StoryboardProps) {
   const outer = useTheme();
   const { frames, overlaps } = storyTimeline(story, custom);
+  // Keyed by resolved sfx name, not scene index: two scenes that both end up playing "click" alternate
+  // its two build variants (rule S2) even when other, differently-named sounds play in between.
+  const sfxOccurrences = new Map<string, number>();
   const items: SceneItem[] = story.scenes.map((scene, index) => {
     const definition = custom.find((d) => d.type === scene.type);
     const Custom = definition?.component;
     const sfx =
       scene.sfx === false ? undefined : (scene.sfx ?? (story.defaults?.sfx && index > 0 ? DEFAULT_SFX : undefined));
+    const sfxOccurrence = sfx ? (sfxOccurrences.get(sfx) ?? 0) : 0;
+    if (sfx) sfxOccurrences.set(sfx, sfxOccurrence + 1);
     const overlap = overlaps[index] ?? 0;
     const name = scene.transition ?? story.defaults?.transition ?? DEFAULT_TRANSITION;
     return {
@@ -153,7 +158,7 @@ export function Storyboard({ story, scenes: custom = [], style, className }: Sto
           ) : (
             <SceneView scene={withBrandLogo(scene as Scene, story)} />
           )}
-          {sfx ? <Sfx name={sfx as SfxName} /> : null}
+          {sfx ? <Sfx name={sfx as SfxName} occurrence={sfxOccurrence} /> : null}
         </Stage>
       ),
       duration: frames[index],
