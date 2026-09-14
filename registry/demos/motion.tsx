@@ -221,6 +221,39 @@ function CameraShake() {
   );
 }
 
+// Same beats as CameraTour, but the backdrop sits in a depth={0} layer (no parallax) while the
+// dashboard sits in a depth={1} layer (full parallax) — the panels visibly slide/zoom past a static grid.
+function CameraLayers() {
+  const theme = useTheme();
+  const { u } = useViewport();
+  return (
+    <Camera
+      keyframes={[
+        { frame: 0, zoom: 1 },
+        { frame: 24, x: -210, y: -210, zoom: 2 },
+        { frame: 36 },
+        { frame: 62, x: 210, y: 210, zoom: 2.2, rotate: -4 },
+        { frame: 74 },
+        { frame: 100, x: 0, y: 0, zoom: 1, rotate: 0 },
+      ]}
+      shake={2}
+    >
+      <Camera.Layer depth={0}>
+        <AbsoluteFill
+          style={{
+            background: theme.colors.background,
+            backgroundImage: `linear-gradient(${alpha(theme.colors.border, 0.6)} 1px, transparent 1px), linear-gradient(90deg, ${alpha(theme.colors.border, 0.6)} 1px, transparent 1px)`,
+            backgroundSize: `${u(80)}px ${u(80)}px`,
+          }}
+        />
+      </Camera.Layer>
+      <Camera.Layer depth={1}>
+        <Dashboard />
+      </Camera.Layer>
+    </Camera>
+  );
+}
+
 /* ───────────────────────────── split-screen ───────────────────────────── */
 
 /** Pane content: reads the pane's own viewport, so it sizes itself to the pane, not the canvas. */
@@ -413,6 +446,7 @@ export default [
   { id: "stagger-steps", duration: 90, component: StaggerSteps },
   { id: "camera-tour", duration: 120, component: CameraTour },
   { id: "camera-shake", duration: 90, component: CameraShake },
+  { id: "camera-layers", duration: 100, component: CameraLayers },
   { id: "split-screen-duo", duration: 90, component: SplitDuo },
   { id: "split-screen-quad", duration: 90, component: SplitQuad },
   { id: "bento-grid-features", duration: 105, component: BentoFeatures },

@@ -6,6 +6,7 @@
  * @use Pushing in on a detail of a screenshot, dashboard or illustration, then pulling back out
  * @use Handheld energy or an impact shake on a title card
  * @avoid Giving one element its own zoom or slide entrance, use `animate`
+ * @use Splitting a scene into background/foreground layers that parallax at different strengths
  * @tags camera, zoom, pan, shake, ken burns, push in
  * @example
  * <Camera
@@ -18,8 +19,18 @@
  * >
  *   <Img src={staticFile("dashboard.png")} style={{ width: "100%" }} />
  * </Camera>
+ * @example
+ * <Camera keyframes={[{ frame: 0, zoom: 1 }, { frame: 60, x: -100, zoom: 2 }]}>
+ *   <Camera.Layer depth={0}>
+ *     <Img src={staticFile("bg.png")} style={{ width: "100%" }} />
+ *   </Camera.Layer>
+ *   <Camera.Layer depth={1}>
+ *     <Img src={staticFile("fg.png")} style={{ width: "100%" }} />
+ *   </Camera.Layer>
+ * </Camera>
  */
 import type React from "react";
+import { Children, isValidElement } from "react";
 import { AbsoluteFill } from "remotion";
 import { type MotionProps, type PoseKey, useKeyframePath, useMotion, useViewport } from "./core";
 
@@ -51,6 +62,21 @@ export type CameraProps = MotionProps & {
   style?: React.CSSProperties;
   className?: string;
 };
+
+export type CameraLayerProps = { depth?: number; children?: React.ReactNode };
+
+/**
+ * Marks a child for its own parallax depth inside `<Camera>`: `0` = background, no parallax; `1` =
+ * foreground, full parallax (the same motion every un-wrapped child already gets). Rendered on its own,
+ * outside a `<Camera>`, it's a no-op passthrough.
+ */
+export function CameraLayer({ children }: CameraLayerProps) {
+  return <>{children}</>;
+}
+
+function isCameraLayer(node: React.ReactNode): node is React.ReactElement<CameraLayerProps> {
+  return isValidElement(node) && node.type === CameraLayer;
+}
 
 type Pose = { x: number; y: number; zoom: number; rotate: number };
 
@@ -103,21 +129,54 @@ export function Camera({
   const shakeX = u(shake) * wobble(t, 0);
   const shakeY = u(shake) * wobble(t, 2.4);
   const shakeRotate = shake * 0.06 * wobble(t, 4.8);
+  const kids = Children.toArray(children);
+  const hasLayers = kids.some(isCameraLayer);
+
+  if (!hasLayers) {
+    return (
+      <AbsoluteFill className={className} style={{ overflow: "hidden", opacity: 1 - m.exit, ...style }}>
+        <AbsoluteFill
+          style={{
+            transformOrigin: "50% 50%",
+            transform: [
+              `translate(${shakeX}px, ${shakeY}px)`,
+              `rotate(${pose.rotate + shakeRotate}deg)`,
+              `scale(${Math.max(pose.zoom, 0.01)})`,
+              `translate(${-u(pose.x)}px, ${-u(pose.y)}px)`,
+            ].join(" "),
+          }}
+        >
+          {children}
+        </AbsoluteFill>
+      </AbsoluteFill>
+    );
+  }
+
   return (
     <AbsoluteFill className={className} style={{ overflow: "hidden", opacity: 1 - m.exit, ...style }}>
-      <AbsoluteFill
-        style={{
-          transformOrigin: "50% 50%",
-          transform: [
-            `translate(${shakeX}px, ${shakeY}px)`,
-            `rotate(${pose.rotate + shakeRotate}deg)`,
-            `scale(${Math.max(pose.zoom, 0.01)})`,
-            `translate(${-u(pose.x)}px, ${-u(pose.y)}px)`,
-          ].join(" "),
-        }}
-      >
-        {children}
-      </AbsoluteFill>
+      {kids.map((kid, index) => {
+        const depth = isCameraLayer(kid) ? (kid.props.depth ?? 1) : 1;
+        const content = isCameraLayer(kid) ? kid.props.children : kid;
+        const layerZoom = 1 + (pose.zoom - 1) * depth;
+        return (
+          <AbsoluteFill
+            key={index}
+            style={{
+              transformOrigin: "50% 50%",
+              transform: [
+                `translate(${shakeX * depth}px, ${shakeY * depth}px)`,
+                `rotate(${(pose.rotate + shakeRotate) * depth}deg)`,
+                `scale(${Math.max(layerZoom, 0.01)})`,
+                `translate(${-u(pose.x * depth)}px, ${-u(pose.y * depth)}px)`,
+              ].join(" "),
+            }}
+          >
+            {content}
+          </AbsoluteFill>
+        );
+      })}
     </AbsoluteFill>
   );
 }
+
+Camera.Layer = CameraLayer;
