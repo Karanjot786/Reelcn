@@ -24,7 +24,7 @@
  */
 import type React from "react";
 import { formatter, niceTicks, scaleLinear } from "./chart-scale";
-import { alpha, type MotionProps, tween, useMotion, useTheme, useViewport } from "./core";
+import { alpha, type MotionProps, tween, useMotion, useTextMetrics, useTheme, useViewport } from "./core";
 
 export type BarChartDatum = {
   label: string;
@@ -106,6 +106,8 @@ export function BarChart({
 
   const tickPx = u(22);
   const labelPx = u(horizontal ? 28 : 26);
+  const longestLabel = data.reduce((most, d) => (d.label.length > most.length ? d.label : most), "");
+  const labelMetrics = useTextMetrics(longestLabel, { fontFamily: theme.fonts.body, fontSize: labelPx });
   const valuePx = u(horizontal ? 28 : 30);
   const step = stagger ?? Math.round(m.fps * 0.1);
   const lead = Math.round(m.enterFrames * 0.35);
@@ -236,7 +238,10 @@ export function BarChart({
       );
     });
   } else {
-    const labelW = Math.min(longest(data.map((d) => d.label)) * labelPx * 0.56 + u(24), w * 0.36);
+    const labelW = Math.min(
+      (labelMetrics.ready ? labelMetrics.width : longest(data.map((d) => d.label)) * labelPx * 0.56) + u(44),
+      w * 0.36,
+    );
     const valueW = showValues ? longest(values.map(formatValue)) * valuePx * 0.6 + u(20) : u(8);
     const x0 = labelW + (hasNegative ? valueW : 0);
     const x1 = w - valueW;
