@@ -15,7 +15,7 @@
  * </Center>
  */
 import type React from "react";
-import { alpha, type MotionProps, useMotion, useTheme, useViewport } from "./core";
+import { alpha, type MotionProps, useMotion, useRoleMotion, useTheme, useViewport } from "./core";
 
 export type BrowserWindowProps = MotionProps & {
   /** Text shown in the address pill. */
@@ -58,6 +58,7 @@ export function BrowserWindow({
   const theme = useTheme();
   const { u, width, height, safe, isLandscape } = useViewport();
   const m = useMotion(motion);
+  const role = useRoleMotion(m);
   const border = borderColor ?? theme.colors.border;
   const bar = barColor ?? theme.colors.surface;
   const maxW = (width - safe.x * 2) * (widthFraction ?? (isLandscape ? 0.86 : 1));
@@ -79,8 +80,8 @@ export function BrowserWindow({
         border: `1px solid ${border}`,
         boxShadow: `0 ${u(2)}px ${u(6)}px ${alpha("#000000", 0.12)}, 0 ${u(28)}px ${u(72)}px ${alpha("#000000", 0.3)}`,
         fontFamily: theme.fonts.body,
-        opacity: Math.min(1, Math.max(0, m.enter)) * (1 - m.exit),
-        translate: `0 ${(1 - m.enter) * u(40) - m.exit * u(24)}px`,
+        opacity: role.opacity,
+        translate: `0 ${(1 - m.enter) * u(40) - m.exit * role.travel(u(40)).exitPx}px`,
         scale: String(0.97 + 0.03 * m.enter),
         ...style,
       }}
