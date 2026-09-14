@@ -86,7 +86,7 @@ export function Typewriter({
   }
   // Solid while typing, then a hard on/off blink once a second, like a real text cursor.
   const typing = m.frame >= m.delay && m.frame < end;
-  const caretOn = typing || Math.floor(Math.abs(m.frame - end) / (m.fps / 2)) % 2 === 0;
+  const caretOn = typing || Math.floor(Math.abs(m.frame - end) / Math.max(1, Math.round(m.fps / 2))) % 2 === 0;
   const block = caret === "block";
 
   return (

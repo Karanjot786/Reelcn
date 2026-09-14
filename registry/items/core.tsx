@@ -578,3 +578,48 @@ export function useTextMetrics(
     : 0;
   return { width, ready };
 }
+
+/* ───────────────────────────────── Typing ──────────────────────────────── */
+
+export type TypingModel = {
+  /** Picks the burst/typo randomness. The same seed types identically on every machine. */
+  seed?: string;
+  /** Characters per second at the model's default burstiness. */
+  cps?: number;
+  /** 0-1. Adds a small seeded per-character speed variance around `cps`. 0 (default) types at a constant rate. */
+  burstiness?: number;
+  /** Extra frames held after `. , ! ? ; :`. 0 (default) adds no rest. */
+  punctuationRestFrames?: number;
+  /** 0-1 chance per character of a wrong glyph and a backspace before the real one. 0 (default) never fires. */
+  typoRate?: number;
+};
+
+const PUNCTUATION = /[.,!?;:]/;
+
+/**
+ * `fullText` typed out at `frame`/`fps`, with `model`'s burst/typo/rest shaping layered on a constant-cps base.
+ * Frame/fps are plain arguments (not read via a hook), so this is safe to call per-row inside a list.
+ */
+export function useTypedText(
+  fullText: string,
+  frame: number,
+  fps: number,
+  model: TypingModel = {},
+): { visible: string; caretOn: boolean; done: boolean } {
+  const { seed = "typed", cps = 18, burstiness = 0, punctuationRestFrames = 0, typoRate = 0 } = model;
+  const chars = graphemes(fullText);
+  let t = 0;
+  let shown = 0;
+  for (let i = 0; i < chars.length; i++) {
+    const jitter = burstiness > 0 ? 1 + burstiness * (random(`${seed}-${i}`) - 0.5) : 1;
+    const charFrames = Math.max(1, fps / (cps * jitter));
+    if (typoRate > 0 && random(`${seed}-typo-${i}`) < typoRate) t += charFrames * 2; // one wrong glyph, then a backspace
+    t += charFrames;
+    if (PUNCTUATION.test(chars[i])) t += punctuationRestFrames;
+    if (frame < t) break;
+    shown = i + 1;
+  }
+  const done = shown === chars.length;
+  const caretOn = !done || Math.floor(Math.abs(frame) / Math.max(1, Math.round(fps / 2))) % 2 === 0;
+  return { visible: chars.slice(0, shown).join(""), caretOn, done };
+}

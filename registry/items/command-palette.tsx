@@ -18,7 +18,7 @@
  * </Center>
  */
 import type React from "react";
-import { alpha, type MotionProps, tween, useMotion, useTheme, useViewport } from "./core";
+import { alpha, type MotionProps, tween, useMotion, useTheme, useTypedText, useViewport } from "./core";
 
 export type CommandItem = {
   label: string;
@@ -87,9 +87,9 @@ export function CommandPalette({
   };
 
   const start = m.delay + Math.round(m.enterFrames * 0.4);
-  const shownChars = Math.max(0, Math.min(query.length, Math.floor(((m.frame - start) * cps) / m.fps)));
-  const typed = query.slice(0, shownChars);
-  const typing = shownChars < query.length;
+  const typedText = useTypedText(query, m.frame - start, m.fps, { cps });
+  const typed = typedText.visible;
+  const typing = !typedText.done;
   const blinkOn = Math.floor(m.frame / Math.round(m.fps * 0.5)) % 2 === 0;
   const filtered = filteredAt(typed);
 

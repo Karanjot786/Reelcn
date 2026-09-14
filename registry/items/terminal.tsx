@@ -19,7 +19,7 @@
  */
 import type React from "react";
 import { type Token, tokenColors, tokenize } from "./code-tokens";
-import { alpha, type MotionProps, tween, useMotion, useTheme, useViewport } from "./core";
+import { alpha, type MotionProps, tween, useMotion, useTheme, useTypedText, useViewport } from "./core";
 
 export type TerminalLine = { type: "command"; text: string } | { type: "output"; text: string };
 
@@ -71,7 +71,7 @@ export function Terminal({
   cps = 32,
   pause,
   outputDelay,
-  outputStagger = 3,
+  outputStagger,
   highlight = true,
   rows: rowsProp,
   fontSize = 28,
@@ -88,6 +88,7 @@ export function Terminal({
   const theme = useTheme();
   const { u, width, height, safe, isLandscape } = useViewport();
   const m = useMotion(motion);
+  const outputStaggerFrames = outputStagger ?? Math.round(m.fps * (3 / 30));
   const palette = tokenColors(theme.colors);
   const border = borderColor ?? theme.colors.border;
   const waitFrames = pause ?? Math.round(m.fps * 0.4);
@@ -102,7 +103,7 @@ export function Terminal({
       t += waitFrames + Math.ceil((line.text.length * m.fps) / cps) + enterFrames;
     } else {
       timeline.push({ kind: "output", text: line.text, at: t, typeFrom: t });
-      t += outputStagger;
+      t += outputStaggerFrames;
     }
   }
   timeline.push({ kind: "prompt", text: "", at: t, typeFrom: t });
@@ -140,8 +141,9 @@ export function Terminal({
         </span>
       );
     }
-    const typedChars = Math.max(0, Math.min(row.text.length, Math.floor(((m.frame - row.typeFrom) * cps) / m.fps)));
-    const typing = m.frame >= row.typeFrom && typedChars < row.text.length;
+    const typed = useTypedText(row.text, m.frame - row.typeFrom, m.fps, { cps });
+    const typedChars = typed.visible.length;
+    const typing = m.frame >= row.typeFrom && !typed.done;
     const tokens: Token[] = highlight
       ? tokenize(row.text.slice(0, typedChars), "bash")[0]
       : [{ text: row.text.slice(0, typedChars), kind: "plain" }];

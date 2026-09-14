@@ -88,7 +88,7 @@ function TypingDots({ frame, color, size }: { frame: number; color: string; size
 
 export function ChatThread({
   messages,
-  typingDuration = 18,
+  typingDuration,
   width = 460,
   height = 480,
   fontSize = 24,
@@ -105,6 +105,7 @@ export function ChatThread({
   const theme = useTheme();
   const { u } = useViewport();
   const m = useMotion(motion);
+  const dotsFrames = typingDuration ?? Math.round(m.fps * 0.6);
   const boxW = u(width);
   const boxH = u(height);
   const fontPx = u(fontSize);
@@ -120,7 +121,7 @@ export function ChatThread({
   const rows = messages.map((message) => {
     const lines = wrappedLines(message.text, perLine);
     const rowH = lines * lineH + padY * 2;
-    const typingFrom = message.from === "them" ? message.at - typingDuration : message.at;
+    const typingFrom = message.from === "them" ? message.at - dotsFrames : message.at;
     return { message, rowH, typingFrom };
   });
 
@@ -166,7 +167,7 @@ export function ChatThread({
           const { message, rowH, typingFrom, y } = row;
           const isMe = message.from === "me";
           const shown = appearOf(typingFrom);
-          const typing = !isMe && typingDuration > 0 && m.frame < m.delay + message.at;
+          const typing = !isMe && dotsFrames > 0 && m.frame < m.delay + message.at;
           const pop = Math.max(
             0,
             tween(m.frame, m.fps, { from: m.delay + message.at, duration: popFrames, motion: "bouncy" }),
