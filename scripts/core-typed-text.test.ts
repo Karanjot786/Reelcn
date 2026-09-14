@@ -40,7 +40,9 @@ function useTypedText(
   let shown = 0;
   for (let i = 0; i < chars.length; i++) {
     const jitter = burstiness > 0 ? 1 + burstiness * (mockRandom(`${seed}-${i}`) - 0.5) : 1;
-    const charFrames = Math.max(1, fps / (cps * jitter));
+    // Below 1 when cps exceeds fps, so several characters land in the same frame — matching the
+    // pre-quantization floor(elapsed * cps / fps) model instead of capping at one char per frame.
+    const charFrames = fps / (cps * jitter);
     if (typoRate > 0 && mockRandom(`${seed}-typo-${i}`) < typoRate) t += charFrames * 2; // one wrong glyph, then a backspace
     t += charFrames;
     if (PUNCTUATION.test(chars[i])) t += punctuationRestFrames;
@@ -61,6 +63,19 @@ test("default model reveals characters at a constant cps, matching today's math"
   assert.equal(useTypedText(text, frameFor(1), fps, { cps }).visible, "h");
   assert.equal(useTypedText(text, frameFor(5), fps, { cps }).visible, "hello");
   assert.equal(useTypedText(text, frameFor(5), fps, { cps }).done, true);
+});
+
+test("cps above the frame rate reveals several characters in a single frame", () => {
+  // Pre-Phase-1 terminal.tsx used `floor((frame * cps) / fps)` directly, with no per-char 1-frame floor, so a
+  // 32cps/30fps default (or any cps > fps) could reveal more than one character on the very first frame.
+  const fps = 30;
+  const cps = 90; // 3x the frame rate
+  const text = "hello world";
+  const expected = (frame: number) => Math.min(text.length, Math.floor((frame * cps) / fps));
+  for (const frame of [0, 1, 2, 3, 4, 10]) {
+    assert.equal(useTypedText(text, frame, fps, { cps }).visible.length, expected(frame));
+  }
+  assert.equal(useTypedText(text, 1, fps, { cps }).visible, text.slice(0, 3));
 });
 
 test("same seed and model always produce the same timeline", () => {

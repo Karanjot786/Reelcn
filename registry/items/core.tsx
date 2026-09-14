@@ -730,7 +730,9 @@ export function useTypedText(
   let shown = 0;
   for (let i = 0; i < chars.length; i++) {
     const jitter = burstiness > 0 ? 1 + burstiness * (random(`${seed}-${i}`) - 0.5) : 1;
-    const charFrames = Math.max(1, fps / (cps * jitter));
+    // Below 1 when cps exceeds fps, so several characters land in the same frame — matching the
+    // pre-quantization floor(elapsed * cps / fps) model instead of capping at one char per frame.
+    const charFrames = fps / (cps * jitter);
     if (typoRate > 0 && random(`${seed}-typo-${i}`) < typoRate) t += charFrames * 2; // one wrong glyph, then a backspace
     t += charFrames;
     if (PUNCTUATION.test(chars[i])) t += punctuationRestFrames;
