@@ -1,4 +1,4 @@
-import { AbsoluteFill } from "remotion";
+import { AbsoluteFill, Img, staticFile } from "remotion";
 import { AppWindow } from "../items/app-window";
 import { BeforeAfter } from "../items/before-after";
 import { BrowserWindow } from "../items/browser-window";
@@ -97,53 +97,6 @@ function FakeDashboard() {
   );
 }
 
-/** A generic feed screen: a stack of notification-style rows. Used inside `phone-frame`. */
-function FakeFeed() {
-  const theme = useTheme();
-  const { u } = useViewport();
-  const rows = ["Deploy succeeded", "New comment on #142", "Invite accepted", "Weekly summary ready"];
-  return (
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        background: theme.colors.background,
-        padding: u(20),
-        boxSizing: "border-box",
-        display: "flex",
-        flexDirection: "column",
-        gap: u(12),
-      }}
-    >
-      <div
-        style={{
-          fontFamily: theme.fonts.heading,
-          fontWeight: theme.headingWeight,
-          fontSize: u(22),
-          color: theme.colors.foreground,
-        }}
-      >
-        Activity
-      </div>
-      {rows.map((row) => (
-        <div
-          key={row}
-          style={{
-            padding: u(14),
-            borderRadius: u(theme.radius * 0.6),
-            background: theme.colors.surface,
-            border: `1px solid ${theme.colors.border}`,
-            fontSize: u(16),
-            color: theme.colors.foreground,
-          }}
-        >
-          {row}
-        </div>
-      ))}
-    </div>
-  );
-}
-
 /** A lighter "old" screen for before/after comparisons: plain rows, no cards or color. */
 function FakePlainList() {
   const theme = useTheme();
@@ -220,7 +173,10 @@ function BrowserWindowDemo() {
   return (
     <Center>
       <BrowserWindow url="reelcn.dev/pricing">
-        <FakeDashboard />
+        <Img
+          src={staticFile("reelcn-demo/screenshots/fictional-analytics.webp")}
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+        />
       </BrowserWindow>
     </Center>
   );
@@ -242,7 +198,10 @@ function PhoneFrameDemo() {
   return (
     <Center>
       <PhoneFrame>
-        <FakeFeed />
+        <Img
+          src={staticFile("reelcn-demo/screenshots/fictional-mobile-feed.webp")}
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+        />
       </PhoneFrame>
     </Center>
   );
@@ -254,7 +213,10 @@ function LaptopFrameDemo() {
   return (
     <Center>
       <LaptopFrame>
-        <FakeDashboard />
+        <Img
+          src={staticFile("reelcn-demo/screenshots/reelcn-docs.webp")}
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+        />
       </LaptopFrame>
     </Center>
   );
