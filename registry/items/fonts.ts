@@ -45,6 +45,12 @@ const ARCHIVO_VARIABLE_FAMILY = "Archivo Variable";
 
 function loadArchivoVariable(): string {
   if (typeof document === "undefined" || typeof FontFace === "undefined") return ARCHIVO_VARIABLE_FAMILY;
+  // Loaded eagerly (not just in the .catch below) so its fontFamily can be listed as a CSS fallback
+  // in the string this function returns synchronously — by the time FontFace.load() might reject,
+  // that string has already been handed out as `theme.fonts.heading`, so there's no way to swap it
+  // for the static family after the fact. loaders.archivo() is defined below; hoisting is fine since
+  // this function only runs once lazily invoked, by which point the module has finished evaluating.
+  const staticFamily = loaders.archivo();
   const handle = delayRender("Archivo Variable font");
   const face = new FontFace(ARCHIVO_VARIABLE_FAMILY, `url(${ARCHIVO_VARIABLE_URL})`, {
     weight: "100 900",
@@ -58,15 +64,15 @@ function loadArchivoVariable(): string {
     })
     .catch((err) => {
       // Fallback: static Archivo at its default width still renders correctly, just without the
-      // wdth move (spec §13 risk 1). loaders.archivo() is defined below; hoisting is fine since this
-      // function only runs once lazily invoked, by which point the module has finished evaluating.
+      // wdth move (spec §13 risk 1). Since "Archivo Variable" is never registered with
+      // document.fonts on this path, the browser's CSS font-family fallback in the string returned
+      // below skips straight to the already-loaded static Archivo family.
       console.warn(
         `Archivo Variable failed to load from the pinned woff2, falling back to static Archivo: ${(err as Error).message}`,
       );
-      loaders.archivo();
       continueRender(handle);
     });
-  return ARCHIVO_VARIABLE_FAMILY;
+  return `${ARCHIVO_VARIABLE_FAMILY}, ${staticFamily}`;
 }
 
 const loaders = {

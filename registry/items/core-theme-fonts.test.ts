@@ -96,3 +96,29 @@ test("daylight's fonts getter in core.tsx references only its own font, never an
     );
   }
 });
+
+// loadArchivoVariable() in fonts.ts returns its fontFamily string synchronously, before
+// FontFace.load() can possibly reject — so the only way a failed load still renders Archivo (rather
+// than falling through to the browser's generic sans-serif) is if the string handed out up front
+// already lists the static Archivo family as a CSS fallback. Pinning to the shipped source text for
+// the same reason the test above does: it can't import fonts.ts's browser-only FontFace/delayRender
+// code path under node --test.
+test("mono theme's Archivo Variable loader returns the static Archivo family as a CSS fallback", () => {
+  const fontsPath = fileURLToPath(new URL("./fonts.ts", import.meta.url));
+  const source = readFileSync(fontsPath, "utf8");
+
+  const fnIndex = source.indexOf("function loadArchivoVariable()");
+  assert.ok(fnIndex !== -1, "expected a loadArchivoVariable function in fonts.ts");
+  const fnBody = extractBracedBlock(source, source.indexOf("{", fnIndex));
+
+  assert.ok(
+    fnBody.includes("const staticFamily = loaders.archivo()"),
+    "the static Archivo family must be loaded eagerly, not only inside the FontFace .catch handler",
+  );
+  assert.match(
+    fnBody,
+    /return `\$\{ARCHIVO_VARIABLE_FAMILY\}, \$\{staticFamily\}`/,
+    "the returned fontFamily string must list the static Archivo family after ARCHIVO_VARIABLE_FAMILY, " +
+      "so a failed variable-font load still falls back to Archivo instead of the system sans default",
+  );
+});
