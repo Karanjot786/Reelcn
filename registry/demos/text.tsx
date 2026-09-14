@@ -1,7 +1,7 @@
 import { staticFile } from "remotion";
 import { BlurIn } from "../items/blur-in";
 import { CharRise } from "../items/char-rise";
-import { Center } from "../items/core";
+import { Center, ThemeProvider } from "../items/core";
 import { Counter } from "../items/counter";
 import { DropIn } from "../items/drop-in";
 import { FitTitle } from "../items/fit-title";
@@ -52,6 +52,44 @@ export default [
       <Center>
         <TextReveal text={"Record once.\nRender everywhere."} split="line" effect="mask" align="left" />
       </Center>
+    ),
+  },
+  {
+    id: "text-reveal-track",
+    duration: 75,
+    component: () => (
+      <Center>
+        <TextReveal text="Ship videos, not keyframes" effect="track" accentWords={["videos"]} />
+      </Center>
+    ),
+  },
+  {
+    id: "text-reveal-outline-fill",
+    duration: 75,
+    component: () => (
+      <Center>
+        <TextReveal text="Ship videos, not keyframes" effect="outline-fill" accentWords={["videos"]} />
+      </Center>
+    ),
+  },
+  {
+    id: "text-reveal-split-flap",
+    duration: 75,
+    component: () => (
+      <Center>
+        <TextReveal text="Ship videos, not keyframes" effect="split-flap" split="char" accentWords={["videos"]} />
+      </Center>
+    ),
+  },
+  {
+    id: "text-reveal-variable-axis",
+    duration: 75,
+    component: () => (
+      <ThemeProvider theme="mono">
+        <Center>
+          <TextReveal text="Ship videos, not keyframes" effect="variable-axis" accentWords={["videos"]} />
+        </Center>
+      </ThemeProvider>
     ),
   },
   {

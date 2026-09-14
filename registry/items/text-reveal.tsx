@@ -14,7 +14,17 @@
 import type React from "react";
 import { graphemes, type MotionProps, tween, useMotion, useTheme, useVariableFontAxis, useViewport } from "./core";
 
-export type TextRevealEffect = "rise" | "blur" | "fade" | "scale" | "drop" | "mask";
+export type TextRevealEffect =
+  | "rise"
+  | "blur"
+  | "fade"
+  | "scale"
+  | "drop"
+  | "mask"
+  | "track"
+  | "outline-fill"
+  | "split-flap"
+  | "variable-axis";
 
 export type TextRevealProps = MotionProps & {
   text: string;
@@ -38,6 +48,19 @@ export type TextRevealProps = MotionProps & {
 
 const normalize = (word: string) => word.toLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
 
+const SPLIT_FLAP_GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 .,!?-".split("");
+
+/** Cycles a character through a small fixed set of intermediate glyphs before settling on `target`,
+ * seeded from the unit's own index (deterministic, not `Math.random`) — an airport-departures-board feel. */
+function splitFlapChar(target: string, progress: number, seed: number): string {
+  if (progress >= 1) return target;
+  const targetIndex = SPLIT_FLAP_GLYPHS.indexOf(target.toUpperCase());
+  if (targetIndex < 0) return target;
+  const cycle = Math.floor((1 - progress) * 6) + (seed % 3);
+  const index = (targetIndex + cycle) % SPLIT_FLAP_GLYPHS.length;
+  return SPLIT_FLAP_GLYPHS[index];
+}
+
 function unitStyle(effect: TextRevealEffect, progress: number, fontPx: number): React.CSSProperties {
   const opacity = Math.min(Math.max(progress, 0), 1);
   const hidden = 1 - progress;
@@ -54,6 +77,18 @@ function unitStyle(effect: TextRevealEffect, progress: number, fontPx: number): 
       return { opacity, translate: `0 ${-hidden * 0.6}em`, rotate: `${-hidden * 8}deg` };
     case "mask":
       return { translate: `0 ${hidden * 110}%` };
+    case "track":
+      return { opacity, letterSpacing: `${hidden * 0.5}em` };
+    case "outline-fill":
+      return {
+        opacity,
+        color: progress < 0.92 ? "transparent" : undefined,
+        WebkitTextStroke: `${Math.max(hidden, 0) * fontPx * 0.05}px currentColor`,
+      };
+    case "split-flap":
+      return { opacity: 1 };
+    case "variable-axis":
+      return { opacity, fontVariationSettings: `"wdth" ${(140 + (100 - 140) * progress).toFixed(2)}` };
   }
 }
 
@@ -76,6 +111,9 @@ export function TextReveal({
   const theme = useTheme();
   const { u, width, safe } = useViewport();
   const m = useMotion(motion);
+  // variable-axis falls back to fade on any theme with no variable font loaded, so it never throws on
+  // daylight/midnight/paper/sunset/neon — only mono has the Archivo variable cut this effect animates.
+  const effectiveEffect = effect === "variable-axis" && theme.name !== "mono" ? "fade" : effect;
   // mono/Signal's signature move: Archivo's wdth axis snaps from expanded to condensed as the
   // headline enters. Always computed (cheap, pure math) so this hook is never called conditionally;
   // only applied to the style below when the theme and font slot actually use the variable cut.
@@ -97,9 +135,13 @@ export function TextReveal({
       duration: m.enterFrames,
       motion: m.preset,
     });
+    const displayContent = effectiveEffect === "split-flap" ? splitFlapChar(content, progress, index) : content;
     const inner = (
-      <span key={key} style={{ display: "inline-block", whiteSpace: "pre", ...unitStyle(effect, progress, fontPx) }}>
-        {content}
+      <span
+        key={key}
+        style={{ display: "inline-block", whiteSpace: "pre", ...unitStyle(effectiveEffect, progress, fontPx) }}
+      >
+        {displayContent}
       </span>
     );
     if (effect !== "mask") return inner;
@@ -160,7 +202,7 @@ export function TextReveal({
         key={lineNumber}
         style={effect === "mask" ? { overflow: "hidden", paddingBottom: "0.12em", marginBottom: "-0.12em" } : undefined}
       >
-        <span style={{ display: "inline-block", ...unitStyle(effect, progress, fontPx) }}>{parts}</span>
+        <span style={{ display: "inline-block", ...unitStyle(effectiveEffect, progress, fontPx) }}>{parts}</span>
       </div>
     );
   });
