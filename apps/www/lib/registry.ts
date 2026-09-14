@@ -12,7 +12,7 @@ export type Item = {
   registryDependencies?: string[];
   files: { path: string; target: string }[];
   docs?: string;
-  meta: { duration?: string; use: string[]; avoid: string[]; tags: string[] };
+  meta: { duration?: string; use: string[]; avoid: string[]; tags: string[]; preset?: string };
 };
 
 export type Category = { id: string; title: string; items: Item[] };
@@ -27,7 +27,7 @@ type RawItem = {
   registryDependencies?: string[];
   files: RawFile[];
   docs?: string;
-  meta: { duration?: string; use: string[]; avoid: string[]; tags: string[] };
+  meta: { duration?: string; use: string[]; avoid: string[]; tags: string[]; preset?: string };
 };
 type RawRegistry = { name: string; homepage: string; items: RawItem[] };
 
@@ -134,4 +134,9 @@ export function itemMarkdown(item: Item): string {
     lines.push("", "Dependencies:", "", ...item.dependencies.map((dep) => `- \`${dep}\``));
   }
   return `${lines.join("\n").trimEnd()}\n`;
+}
+
+/** Sentence case for display titles ("Product Launch" to "Product launch"); words like "YouTube" keep their capitals. */
+export function sentenceCase(title: string): string {
+  return title.replace(/ ([A-Z][a-z]+)\b/g, (_, word: string) => ` ${word.toLowerCase()}`);
 }

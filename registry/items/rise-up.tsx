@@ -1,7 +1,7 @@
 /**
  * @title Rise Up
  * @category text
- * @description Headline whose words rise into place from just below the line.
+ * @description Headline whose words rise into place from just below the line — an alias of `text-reveal` with `effect="rise"` and no other prop changes.
  * @duration 30
  * @use The default choice for clean, confident headlines
  * @use Section titles and short-form hooks
