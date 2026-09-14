@@ -1,24 +1,10 @@
 import { strict as assert } from "node:assert";
 import { test } from "node:test";
+import { quantizeMotion } from "../registry/items/core-math.ts";
 
-// Mirrors quantizeMotion and tween's quantization step from registry/items/core.tsx.
-// core.tsx is JSX and cannot be imported by `node --test` (see scripts/core-settle.test.ts for the same convention).
-type MotionPreset = "smooth" | "snappy" | "bouncy" | "gentle" | "linear" | "settle";
-type MotionPersonality = MotionPreset | { preset: MotionPreset; step?: number; jitter?: number };
-
-function quantizeMotion(m: MotionPersonality): { preset: MotionPreset; step: number; jitter: number } {
-  if (typeof m === "string") return { preset: m, step: 1, jitter: 0 };
-  return { preset: m.preset, step: m.step ?? 1, jitter: m.jitter ?? 0 };
-}
-
-test("a plain string normalizes to step:1, jitter:0", () => {
-  assert.deepEqual(quantizeMotion("smooth"), { preset: "smooth", step: 1, jitter: 0 });
-});
-
-test("an object fills in missing step/jitter", () => {
-  assert.deepEqual(quantizeMotion({ preset: "snappy" }), { preset: "snappy", step: 1, jitter: 0 });
-  assert.deepEqual(quantizeMotion({ preset: "snappy", step: 3 }), { preset: "snappy", step: 3, jitter: 0 });
-});
+// tween's floor-snap + seeded-offset frame quantization stays mirrored here (not extracted): tween itself lives
+// in core.tsx and calls remotion's `spring`/`interpolate`/`Easing`, so only its pure quantizeMotion helper — used
+// to normalize a MotionPersonality before tween ever runs — moved to core-math.ts.
 
 // Stand-in for remotion's seeded `random()` — deterministic (same seed -> same value) like the real
 // export, not required to match its exact distribution.
@@ -40,6 +26,15 @@ function linearTween(frame: number, duration: number, step = 1, jitter = 0, seed
   const f = quantizedFrame(frame, step, jitter, seed);
   return Math.min(Math.max(f / duration, 0), 1);
 }
+
+test("a plain string normalizes to step:1, jitter:0", () => {
+  assert.deepEqual(quantizeMotion("smooth"), { preset: "smooth", step: 1, jitter: 0 });
+});
+
+test("an object fills in missing step/jitter", () => {
+  assert.deepEqual(quantizeMotion({ preset: "snappy" }), { preset: "snappy", step: 1, jitter: 0 });
+  assert.deepEqual(quantizeMotion({ preset: "snappy", step: 3 }), { preset: "snappy", step: 3, jitter: 0 });
+});
 
 test("step:1 output equals unquantized tween output frame-for-frame", () => {
   for (let f = 0; f < 20; f++) {

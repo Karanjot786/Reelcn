@@ -28,6 +28,13 @@ const lines = tokenize("const answer = 42; // done", "ts");
 // lines[0] → [{ text: "const", kind: "keyword" }, { text: " answer ", kind: "plain" }, { text: "=", kind: "punctuation" }, …]
 ```
 
+- [Core Math](https://www.reelcn.dev/r/core-math.json): Pure, dependency-free math behind Core's motion and text helpers: motion quantization, stagger ordering, Catmull-Rom keyframe interpolation, the typing-reveal model, grapheme splitting and 0-1 clamping. No React, no DOM — safe to unit-test directly.
+
+```tsx
+const delay = staggerDelay(2, 5, { step: 4 }); // 8
+const initial = graphemeInitial("👩‍🚀 Ada"); // "👩‍🚀"
+```
+
 - [Core](https://www.reelcn.dev/r/core.json): Theme tokens, responsive design units, platform safe zones and motion presets. Every reelcn component builds on this file.
 
 ```tsx

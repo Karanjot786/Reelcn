@@ -1576,6 +1576,39 @@
       }
     },
     {
+      "name": "core-math",
+      "type": "registry:item",
+      "title": "Core Math",
+      "description": "Pure, dependency-free math behind Core's motion and text helpers: motion quantization, stagger ordering, Catmull-Rom keyframe interpolation, the typing-reveal model, grapheme splitting and 0-1 clamping. No React, no DOM — safe to unit-test directly.",
+      "categories": [
+        "lib"
+      ],
+      "dependencies": [
+        "remotion"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "registry/items/core-math.ts",
+          "type": "registry:file",
+          "target": "~/src/reelcn/core-math.ts"
+        }
+      ],
+      "docs": "Usage:\n\nconst delay = staggerDelay(2, 5, { step: 4 }); // 8\nconst initial = graphemeInitial(\"👩‍🚀 Ada\"); // \"👩‍🚀\"",
+      "meta": {
+        "use": [],
+        "avoid": [],
+        "tags": [
+          "math",
+          "stagger",
+          "keyframe",
+          "typing",
+          "grapheme",
+          "quantize"
+        ]
+      }
+    },
+    {
       "name": "core",
       "type": "registry:item",
       "title": "Core",
@@ -1587,6 +1620,7 @@
         "remotion"
       ],
       "registryDependencies": [
+        "https://www.reelcn.dev/r/core-math.json",
         "https://www.reelcn.dev/r/fonts.json"
       ],
       "files": [

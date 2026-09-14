@@ -1,58 +1,6 @@
 import { strict as assert } from "node:assert";
 import { test } from "node:test";
-
-// Mirrors useTypedText's math without a React/Remotion import — core.tsx is JSX and node --test's native
-// TypeScript loader can't strip it (same reason core-stagger.test.ts, core-role-motion.test.ts and
-// core-viewport.test.ts mirror instead of importing). `mockRandom` stands in for remotion's `random(seed)`:
-// any deterministic, string-seeded [0, 1) function satisfies these tests, since they only assert
-// reproducibility and shape, never remotion's actual sequence. `graphemes` here is a plain `Array.from`
-// split, which matches core.tsx's `graphemes` for the plain-ASCII strings these tests use.
-function mockRandom(seed: string): number {
-  let h = 2166136261;
-  for (let i = 0; i < seed.length; i++) {
-    h ^= seed.charCodeAt(i);
-    h = Math.imul(h, 16777619);
-  }
-  return ((h >>> 0) % 1000000) / 1000000;
-}
-
-const graphemes = (text: string) => Array.from(text);
-
-type TypingModel = {
-  seed?: string;
-  cps?: number;
-  burstiness?: number;
-  punctuationRestFrames?: number;
-  typoRate?: number;
-};
-
-const PUNCTUATION = /[.,!?;:]/;
-
-function useTypedText(
-  fullText: string,
-  frame: number,
-  fps: number,
-  model: TypingModel = {},
-): { visible: string; caretOn: boolean; done: boolean } {
-  const { seed = "typed", cps = 18, burstiness = 0, punctuationRestFrames = 0, typoRate = 0 } = model;
-  const chars = graphemes(fullText);
-  let t = 0;
-  let shown = 0;
-  for (let i = 0; i < chars.length; i++) {
-    const jitter = burstiness > 0 ? 1 + burstiness * (mockRandom(`${seed}-${i}`) - 0.5) : 1;
-    // Below 1 when cps exceeds fps, so several characters land in the same frame — matching the
-    // pre-quantization floor(elapsed * cps / fps) model instead of capping at one char per frame.
-    const charFrames = fps / (cps * jitter);
-    if (typoRate > 0 && mockRandom(`${seed}-typo-${i}`) < typoRate) t += charFrames * 2; // one wrong glyph, then a backspace
-    t += charFrames;
-    if (PUNCTUATION.test(chars[i])) t += punctuationRestFrames;
-    if (frame < t) break;
-    shown = i + 1;
-  }
-  const done = shown === chars.length;
-  const caretOn = !done || Math.floor(Math.abs(frame) / Math.max(1, Math.round(fps / 2))) % 2 === 0;
-  return { visible: chars.slice(0, shown).join(""), caretOn, done };
-}
+import { useTypedText } from "../registry/items/core-math.ts";
 
 test("default model reveals characters at a constant cps, matching today's math", () => {
   const fps = 30;
