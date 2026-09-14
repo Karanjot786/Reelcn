@@ -148,7 +148,7 @@ storyFrames({
 </Center>
 ```
 
-- [Rise Up](https://www.reelcn.dev/r/rise-up.json): Headline whose words rise into place from just below the line. (length 30f@30fps · use for The default choice for clean, confident headlines; Section titles and short-form hooks · avoid Letter-by-letter reveals of a single word — use `char-rise`)
+- [Rise Up](https://www.reelcn.dev/r/rise-up.json): Headline whose words rise into place from just below the line — an alias of `text-reveal` with `effect="rise"` and no other prop changes. (length 30f@30fps · use for The default choice for clean, confident headlines; Section titles and short-form hooks · avoid Letter-by-letter reveals of a single word — use `char-rise`)
 
 ```tsx
 <Center>

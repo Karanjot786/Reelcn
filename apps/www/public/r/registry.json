@@ -2008,9 +2008,7 @@
       "categories": [
         "text"
       ],
-      "dependencies": [
-        "remotion"
-      ],
+      "dependencies": [],
       "registryDependencies": [
         "https://www.reelcn.dev/r/core.json",
         "https://www.reelcn.dev/r/text-reveal.json"
@@ -3218,7 +3216,7 @@
       "name": "rise-up",
       "type": "registry:item",
       "title": "Rise Up",
-      "description": "Headline whose words rise into place from just below the line.",
+      "description": "Headline whose words rise into place from just below the line — an alias of `text-reveal` with `effect=\"rise\"` and no other prop changes.",
       "categories": [
         "text"
       ],
