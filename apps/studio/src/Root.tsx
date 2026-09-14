@@ -305,7 +305,7 @@ export function Root() {
                     id={`${demo.id}-${format}`}
                     component={DemoView}
                     schema={demoSchema}
-                    defaultProps={{ demo: demo.id, theme: "midnight" as ThemeName, thumbFrame: demo.thumbFrame }}
+                    defaultProps={{ demo: demo.id, theme: "daylight" as ThemeName, thumbFrame: demo.thumbFrame }}
                     durationInFrames={demo.duration}
                     fps={30}
                     width={FORMATS[format][0]}
@@ -324,7 +324,7 @@ export function Root() {
               id={`sheet-${demo.id}-${format}`}
               component={ContactSheet}
               schema={sheetSchema}
-              defaultProps={{ demo: demo.id, theme: "midnight" as ThemeName, format }}
+              defaultProps={{ demo: demo.id, theme: "daylight" as ThemeName, format }}
               // Not a <Still>: that reports fps 1 and durationInFrames 1, which clamps every cell's Sequence
               // to a single frame, leaving <Freeze> nothing to freeze. Only frame 0 is ever rendered.
               durationInFrames={demo.duration}
