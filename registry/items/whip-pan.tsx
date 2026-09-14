@@ -17,8 +17,9 @@
  *   </TransitionSeries.Sequence>
  * </TransitionSeries>
  */
-import { useId } from "react";
+
 import type { TransitionPresentation, TransitionPresentationComponentProps } from "@remotion/transitions";
+import { useId } from "react";
 import { AbsoluteFill } from "remotion";
 import { coverPhase, punchCurve, useViewport } from "./core";
 
@@ -58,7 +59,7 @@ function WhipPanPresentation({
   return (
     <AbsoluteFill style={{ overflow: "hidden", opacity: visible ? 1 : 0 }}>
       {hasBlur && (
-        <svg width={0} height={0} style={{ position: "absolute" }}>
+        <svg aria-hidden="true" width={0} height={0} style={{ position: "absolute" }}>
           <defs>
             <filter id={filterId} x="-50%" y="-50%" width="200%" height="200%">
               <feGaussianBlur stdDeviation={axis === "x" ? `${sigma},0` : `0,${sigma}`} />
