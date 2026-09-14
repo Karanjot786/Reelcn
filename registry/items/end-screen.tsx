@@ -81,8 +81,44 @@ export function EndScreen({
           translate: `0 ${(1 - Math.min(card, 1)) * u(26)}px`,
         }}
       >
-        <div style={{ aspectRatio: "16 / 9", background: alpha(theme.colors.foreground, 0.08), position: "relative" }}>
-          {thumbnail}
+        <div
+          style={{
+            aspectRatio: "16 / 9",
+            background: theme.colors.background,
+            position: "relative",
+            overflow: "hidden",
+          }}
+        >
+          {thumbnail ?? (
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                display: "flex",
+                flexDirection: "column",
+                padding: u(14),
+                gap: u(8),
+              }}
+            >
+              <div
+                style={{
+                  width: "45%",
+                  height: u(14),
+                  borderRadius: u(4),
+                  background: alpha(theme.colors.foreground, 0.5),
+                }}
+              />
+              <div style={{ flex: 1, borderRadius: u(6), background: alpha(theme.colors.accent, 0.22) }} />
+              <div
+                style={{
+                  width: "70%",
+                  height: u(10),
+                  borderRadius: u(4),
+                  background: alpha(theme.colors.foreground, 0.25),
+                }}
+              />
+            </div>
+          )}
           <div
             style={{
               position: "absolute",
@@ -138,9 +174,16 @@ export function EndScreen({
             borderRadius: "50%",
             background: theme.colors.accent,
             overflow: "hidden",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: theme.colors.accentForeground,
+            fontFamily: theme.fonts.heading,
+            fontWeight: theme.headingWeight,
+            fontSize: u(34),
           }}
         >
-          {channelAvatar}
+          {channelAvatar ?? channel?.trim()[0]?.toUpperCase() ?? "?"}
         </div>
         <div style={{ fontSize: u(26), fontWeight: 650, color: theme.colors.foreground }}>{subscribeLabel}</div>
         <div style={{ fontSize: u(20), color: theme.colors.muted }}>{subscribeSubtitle}</div>
