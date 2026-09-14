@@ -14,6 +14,7 @@ import { splitDoors } from "../items/split-doors";
 import { stripeWipe } from "../items/stripe-wipe";
 import { tileReveal } from "../items/tile-reveal";
 import { whipPan } from "../items/whip-pan";
+import { zoomThrough } from "../items/zoom-through";
 import type { Demo } from "./index";
 
 const DURATION = 75;
@@ -132,6 +133,8 @@ export default [
   pair("tile-reveal-random", tileReveal({ pattern: "random" })),
   pair("whip-pan-x", whipPan({ axis: "x" })),
   pair("whip-pan-y", whipPan({ axis: "y" })),
+  pair("zoom-through-in", zoomThrough()),
+  pair("zoom-through-out", zoomThrough({ direction: "out" })),
   {
     id: "scenes-default",
     duration: getScenesDuration(
