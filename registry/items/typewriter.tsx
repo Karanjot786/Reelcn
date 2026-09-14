@@ -121,7 +121,29 @@ export function Typewriter({
     fontWeight: weight ?? (font === "heading" ? theme.headingWeight : 500),
   });
   const laggedLines = laggedText.split("\n").length - 1;
-  const caretPosition = { x: caretMetrics.width, y: laggedLines * fontPx * 1.2 };
+
+  // The div is centered horizontally by its usual layout (see the `@example`'s `<Center>`), and its
+  // rendered width never changes while typing — the hidden untyped tail below always reserves the full
+  // text's space — so the box's real screen-space origin is fixed and derivable from the *full* text's
+  // width. Without this, caret.x above was a bare local offset that implicitly assumed the box started
+  // flush at the frame's left edge (x=0), which sent `follow`'s zoom off-frame for this, the default,
+  // centered rendering (see CONTRIBUTING.md's `follow` guidance).
+  const fullTextMetrics = useTextMetrics(chars.join(""), {
+    fontFamily: theme.fonts[font],
+    fontSize: fontPx,
+    fontWeight: weight ?? (font === "heading" ? theme.headingWeight : 500),
+  });
+  const maxTextWidth = width - safe.x * 2;
+  const boxWidth = Math.min(fullTextMetrics.width, maxTextWidth);
+  const originX = (width - boxWidth) / 2;
+  // Past one box-width the text has wrapped a line the canvas measurement above can't see (it measures
+  // one continuous run); folding that back into a line count keeps the lagged caret advancing downward
+  // instead of running off the right edge, and keeps its x inside the box on every wrapped line.
+  const wrappedLines = boxWidth > 0 ? Math.floor(caretMetrics.width / boxWidth) : 0;
+  const caretPosition = {
+    x: originX + Math.min(caretMetrics.width - wrappedLines * boxWidth, boxWidth),
+    y: (laggedLines + wrappedLines) * fontPx * 1.2,
+  };
 
   return (
     <FollowCaret follow={follow} caret={caretPosition}>

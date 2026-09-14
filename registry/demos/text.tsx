@@ -11,6 +11,7 @@ import { PopIn } from "../items/pop-in";
 import { RiseUp } from "../items/rise-up";
 import { Scramble } from "../items/scramble";
 import { Stamp } from "../items/stamp";
+import { TextMorph } from "../items/text-morph";
 import { TextReveal, type TextRevealEffect } from "../items/text-reveal";
 import { Typewriter } from "../items/typewriter";
 import { WordPush } from "../items/word-push";
@@ -212,6 +213,15 @@ export default [
     component: () => (
       <Center>
         <WordPush words={["Ship", "videos,", "not", "keyframes,", "faster"]} />
+      </Center>
+    ),
+  },
+  {
+    id: "text-morph-phrase",
+    duration: 90,
+    component: () => (
+      <Center>
+        <TextMorph from="Build faster" to="Ship faster" />
       </Center>
     ),
   },

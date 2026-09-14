@@ -122,3 +122,34 @@ test("geometricCadence's gaps strictly shrink (an accelerando, not a constant st
   assert.ok(gap2 < gap1, `expected ${gap2} < ${gap1}`);
   assert.ok(gap3 < gap2, `expected ${gap3} < ${gap2}`);
 });
+
+import { matchGraphemes } from "./core-math.ts";
+
+test("matchGraphemes keeps a shared letter's identity instead of fading and re-appearing", () => {
+  const from = "Build".split("");
+  const to = "Ship".split("");
+  const pairs = matchGraphemes(from, to);
+  const matched = pairs.filter((p) => p.fromIndex >= 0 && p.toIndex >= 0);
+  // "i" is the only letter shared between "Build" and "Ship" (case-sensitive as written) at index 2 in
+  // both words — it must be matched, not treated as an exit+enter pair.
+  assert.ok(
+    matched.some((p) => p.fromIndex === 2 && p.toIndex === 2),
+    JSON.stringify(pairs),
+  );
+});
+
+test("matchGraphemes accounts for every character exactly once", () => {
+  const from = "cat".split("");
+  const to = "cot".split("");
+  const pairs = matchGraphemes(from, to);
+  const froms = pairs
+    .filter((p) => p.fromIndex >= 0)
+    .map((p) => p.fromIndex)
+    .sort();
+  const tos = pairs
+    .filter((p) => p.toIndex >= 0)
+    .map((p) => p.toIndex)
+    .sort();
+  assert.deepEqual(froms, [0, 1, 2]);
+  assert.deepEqual(tos, [0, 1, 2]);
+});

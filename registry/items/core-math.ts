@@ -409,3 +409,43 @@ export function useTypedText(
   const caretOn = !done || Math.floor(Math.abs(frame) / Math.max(1, Math.round(fps / 2))) % 2 === 0;
   return { visible: chars.slice(0, shown).join(""), caretOn, done };
 }
+
+/**
+ * Reserves each `to` grapheme against the nearest (by index — a left-to-right text's index already
+ * approximates horizontal position before measurement) unclaimed identical `from` grapheme, so a letter
+ * shared between two phrases keeps its identity and just translates instead of fading out and back in.
+ * Leftover `to` entries get `fromIndex: -1` (a fresh grapheme, fades in); leftover `from` entries get
+ * `toIndex: -1` (fades out).
+ */
+export function matchGraphemes(from: string[], to: string[]): { fromIndex: number; toIndex: number }[] {
+  const usedFrom: boolean[] = [];
+  const usedTo: boolean[] = [];
+  for (let i = 0; i < from.length; i++) usedFrom.push(false);
+  for (let i = 0; i < to.length; i++) usedTo.push(false);
+
+  const pairs: { fromIndex: number; toIndex: number }[] = [];
+  for (let toIndex = 0; toIndex < to.length; toIndex++) {
+    let best = -1;
+    let bestDistance = Infinity;
+    for (let fromIndex = 0; fromIndex < from.length; fromIndex++) {
+      if (usedFrom[fromIndex] || from[fromIndex] !== to[toIndex]) continue;
+      const distance = Math.abs(fromIndex - toIndex);
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        best = fromIndex;
+      }
+    }
+    if (best >= 0) {
+      usedFrom[best] = true;
+      usedTo[toIndex] = true;
+      pairs.push({ fromIndex: best, toIndex });
+    }
+  }
+  for (let toIndex = 0; toIndex < to.length; toIndex++) {
+    if (!usedTo[toIndex]) pairs.push({ fromIndex: -1, toIndex });
+  }
+  for (let fromIndex = 0; fromIndex < from.length; fromIndex++) {
+    if (!usedFrom[fromIndex]) pairs.push({ fromIndex, toIndex: -1 });
+  }
+  return pairs;
+}

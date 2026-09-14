@@ -35,6 +35,7 @@ import {
   type MotionPreset,
   mat4LookAt,
   mat4Multiply,
+  matchGraphemes,
   projectPoint,
   punchCurve,
   type Quat,
@@ -67,6 +68,7 @@ export {
   type MotionPreset,
   mat4LookAt,
   mat4Multiply,
+  matchGraphemes,
   projectPoint,
   punchCurve,
   type Quat,
@@ -638,7 +640,7 @@ export function Center({
 
 let measureContext: CanvasRenderingContext2D | null = null;
 
-function measurePx(text: string, font: string): number {
+export function measurePx(text: string, font: string): number {
   if (typeof document === "undefined") return 0;
   if (!measureContext) measureContext = document.createElement("canvas").getContext("2d");
   if (!measureContext) return 0;
