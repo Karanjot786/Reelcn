@@ -183,6 +183,159 @@ export function coverPhase(
   return { cover, reveal, showsNext: p >= swapAt };
 }
 
+/* ─────────────────────────────── 3D ───────────────────────────────── */
+
+export type Vec3 = { x: number; y: number; z: number };
+/** Row-major 4×4, 16 entries: `m[row*4+col]`. Transforms a column vector `[x,y,z,1]` as `M·v`. */
+export type Mat4 = number[];
+
+const vsub = (a: Vec3, b: Vec3): Vec3 => ({ x: a.x - b.x, y: a.y - b.y, z: a.z - b.z });
+const vcross = (a: Vec3, b: Vec3): Vec3 => ({
+  x: a.y * b.z - a.z * b.y,
+  y: a.z * b.x - a.x * b.z,
+  z: a.x * b.y - a.y * b.x,
+});
+const vdot = (a: Vec3, b: Vec3): number => a.x * b.x + a.y * b.y + a.z * b.z;
+const vnormalize = (v: Vec3): Vec3 => {
+  const len = Math.sqrt(vdot(v, v)) || 1;
+  return { x: v.x / len, y: v.y / len, z: v.z / len };
+};
+
+/** Standard 4×4 matrix product, `a · b`. */
+export function mat4Multiply(a: Mat4, b: Mat4): Mat4 {
+  const out = new Array(16).fill(0);
+  for (let row = 0; row < 4; row++) {
+    for (let col = 0; col < 4; col++) {
+      let sum = 0;
+      for (let k = 0; k < 4; k++) sum += a[row * 4 + k] * b[k * 4 + col];
+      out[row * 4 + col] = sum;
+    }
+  }
+  return out;
+}
+
+/** Right-handed view matrix: transforms a world point into the camera's own space (camera looks down -z). */
+export function mat4LookAt(eye: Vec3, target: Vec3, up: Vec3 = { x: 0, y: 1, z: 0 }): Mat4 {
+  const zAxis = vnormalize(vsub(eye, target));
+  const xAxis = vnormalize(vcross(up, zAxis));
+  const yAxis = vcross(zAxis, xAxis);
+  return [
+    xAxis.x,
+    xAxis.y,
+    xAxis.z,
+    -vdot(xAxis, eye),
+    yAxis.x,
+    yAxis.y,
+    yAxis.z,
+    -vdot(yAxis, eye),
+    zAxis.x,
+    zAxis.y,
+    zAxis.z,
+    -vdot(zAxis, eye),
+    0,
+    0,
+    0,
+    1,
+  ];
+}
+
+export type Quat = { x: number; y: number; z: number; w: number };
+
+const quatNormalize = (q: Quat): Quat => {
+  const len = Math.sqrt(q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w) || 1;
+  return { x: q.x / len, y: q.y / len, z: q.z / len, w: q.w / len };
+};
+
+/** Shortest-path spherical interpolation between two unit quaternions. Falls back to a normalized lerp
+ * when they're nearly identical, where `sin(halfTheta)` would be too small to divide by safely. */
+export function quatSlerp(a: Quat, b: Quat, t: number): Quat {
+  let bx = b.x;
+  let by = b.y;
+  let bz = b.z;
+  let bw = b.w;
+  let cosHalfTheta = a.x * bx + a.y * by + a.z * bz + a.w * bw;
+  // Negating both signs of `b` picks the shorter rotational path (a quaternion and its negation
+  // represent the same rotation, but interpolating naively between them can take the long way around).
+  if (cosHalfTheta < 0) {
+    bx = -bx;
+    by = -by;
+    bz = -bz;
+    bw = -bw;
+    cosHalfTheta = -cosHalfTheta;
+  }
+  if (cosHalfTheta > 0.9995) {
+    return quatNormalize({
+      x: a.x + (bx - a.x) * t,
+      y: a.y + (by - a.y) * t,
+      z: a.z + (bz - a.z) * t,
+      w: a.w + (bw - a.w) * t,
+    });
+  }
+  const halfTheta = Math.acos(cosHalfTheta);
+  const sinHalfTheta = Math.sqrt(1 - cosHalfTheta * cosHalfTheta);
+  const ratioA = Math.sin((1 - t) * halfTheta) / sinHalfTheta;
+  const ratioB = Math.sin(t * halfTheta) / sinHalfTheta;
+  return {
+    x: a.x * ratioA + bx * ratioB,
+    y: a.y * ratioA + by * ratioB,
+    z: a.z * ratioA + bz * ratioB,
+    w: a.w * ratioA + bw * ratioB,
+  };
+}
+
+/** The rotation a camera at `eye` needs to look at `target`, as a unit quaternion (trace method). */
+export function quatFromLookAt(eye: Vec3, target: Vec3, up: Vec3 = { x: 0, y: 1, z: 0 }): Quat {
+  const zAxis = vnormalize(vsub(eye, target));
+  const xAxis = vnormalize(vcross(up, zAxis));
+  const yAxis = vcross(zAxis, xAxis);
+  const m00 = xAxis.x;
+  const m10 = xAxis.y;
+  const m20 = xAxis.z;
+  const m01 = yAxis.x;
+  const m11 = yAxis.y;
+  const m21 = yAxis.z;
+  const m02 = zAxis.x;
+  const m12 = zAxis.y;
+  const m22 = zAxis.z;
+  const trace = m00 + m11 + m22;
+  if (trace > 0) {
+    const s = 0.5 / Math.sqrt(trace + 1);
+    return quatNormalize({ w: 0.25 / s, x: (m21 - m12) * s, y: (m02 - m20) * s, z: (m10 - m01) * s });
+  }
+  if (m00 > m11 && m00 > m22) {
+    const s = 2 * Math.sqrt(1 + m00 - m11 - m22);
+    return quatNormalize({ w: (m21 - m12) / s, x: 0.25 * s, y: (m01 + m10) / s, z: (m02 + m20) / s });
+  }
+  if (m11 > m22) {
+    const s = 2 * Math.sqrt(1 + m11 - m00 - m22);
+    return quatNormalize({ w: (m02 - m20) / s, x: (m01 + m10) / s, y: 0.25 * s, z: (m12 + m21) / s });
+  }
+  const s = 2 * Math.sqrt(1 + m22 - m00 - m11);
+  return quatNormalize({ w: (m10 - m01) / s, x: (m02 + m20) / s, y: (m12 + m21) / s, z: 0.25 * s });
+}
+
+/**
+ * Projects a world point through `viewMatrix` (from `mat4LookAt`) with a pinhole perspective: `fov` in
+ * degrees, `aspect` = width/height. `x`/`y` are roughly `[-1, 1]` inside the frustum; `depth` is distance
+ * in front of the camera along its view axis (negative or zero means behind the camera — callers should
+ * skip drawing that child).
+ */
+export function projectPoint(
+  point: Vec3,
+  viewMatrix: Mat4,
+  fov: number,
+  aspect: number,
+): { x: number; y: number; depth: number } {
+  const m = viewMatrix;
+  const vx = m[0] * point.x + m[1] * point.y + m[2] * point.z + m[3];
+  const vy = m[4] * point.x + m[5] * point.y + m[6] * point.z + m[7];
+  const vz = m[8] * point.x + m[9] * point.y + m[10] * point.z + m[11];
+  const depth = -vz;
+  const focal = 1 / Math.tan((fov * Math.PI) / 360);
+  const safeDepth = Math.max(depth, 0.001);
+  return { x: (vx * focal) / (safeDepth * aspect), y: (vy * focal) / safeDepth, depth };
+}
+
 /* ───────────────────────────────── Typing ──────────────────────────────── */
 
 export type TypingModel = {

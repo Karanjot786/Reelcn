@@ -50,3 +50,36 @@ test("coverPhase swaps at swapAt", () => {
   assert.equal(coverPhase(0.4, { swapAt: 0.5 }).showsNext, false);
   assert.equal(coverPhase(0.5, { swapAt: 0.5 }).showsNext, true);
 });
+
+import { mat4LookAt, mat4Multiply, projectPoint, quatFromLookAt, quatSlerp } from "./core-math.ts";
+
+const IDENTITY = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+
+test("mat4Multiply(identity, M) === M", () => {
+  const m = [2, 0, 0, 5, 0, 3, 0, 6, 0, 0, 4, 7, 0, 0, 0, 1];
+  const result = mat4Multiply(IDENTITY, m);
+  for (let i = 0; i < 16; i++) assert.ok(Math.abs(result[i] - m[i]) < 1e-9, `index ${i}`);
+});
+
+test("quatSlerp(q, q, 0.5) === q for a unit quaternion", () => {
+  const q = quatFromLookAt({ x: 0, y: 0, z: 5 }, { x: 0, y: 0, z: 0 });
+  const mid = quatSlerp(q, q, 0.5);
+  assert.ok(Math.abs(mid.x - q.x) < 1e-9);
+  assert.ok(Math.abs(mid.y - q.y) < 1e-9);
+  assert.ok(Math.abs(mid.z - q.z) < 1e-9);
+  assert.ok(Math.abs(mid.w - q.w) < 1e-9);
+});
+
+test("golden projection: a point straight ahead of the camera projects to x=0, y=0", () => {
+  const view = mat4LookAt({ x: 0, y: 0, z: 5 }, { x: 0, y: 0, z: 0 });
+  const projected = projectPoint({ x: 0, y: 0, z: 0 }, view, 50, 1);
+  assert.ok(Math.abs(projected.x) < 1e-9);
+  assert.ok(Math.abs(projected.y) < 1e-9);
+  assert.ok(Math.abs(projected.depth - 5) < 1e-9, `expected depth 5, got ${projected.depth}`);
+});
+
+test("golden projection: a point to the camera's right projects to positive x", () => {
+  const view = mat4LookAt({ x: 0, y: 0, z: 5 }, { x: 0, y: 0, z: 0 });
+  const projected = projectPoint({ x: 1, y: 0, z: 0 }, view, 50, 1);
+  assert.ok(projected.x > 0, `expected positive x, got ${projected.x}`);
+});
