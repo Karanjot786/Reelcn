@@ -16,6 +16,7 @@
 import type React from "react";
 import { AbsoluteFill } from "remotion";
 import { alpha, type MotionProps, useMotion, useTheme, useViewport } from "./core";
+import { FlatAccentLook, FlatBlocksLook, GrainFieldLook, GridSweepLook } from "./core-physical-light";
 
 export type BeamsProps = MotionProps & {
   /** Base fill. Defaults to the theme background. */
@@ -42,6 +43,17 @@ const weights = [1, 0.7, 0.9, 0.6, 0.85, 0.75];
 
 const clamp01 = (value: number) => Math.min(Math.max(value, 0), 1);
 
+type BeamsLook = "shafts" | "grid-sweep" | "grain-field" | "flat-blocks" | "flat-accent";
+
+const LOOK_BY_THEME: Record<string, BeamsLook> = {
+  daylight: "shafts",
+  sunset: "shafts",
+  midnight: "grid-sweep",
+  paper: "grain-field",
+  neon: "flat-blocks",
+  mono: "flat-accent",
+};
+
 export function Beams({
   background,
   color,
@@ -57,7 +69,7 @@ export function Beams({
   const theme = useTheme();
   const { width, height, u } = useViewport();
   const m = useMotion(motion);
-  const light = color ?? theme.colors.accent;
+  const light = color ?? (theme.name === "daylight" ? theme.colors.foreground : theme.colors.accent);
   const seconds = (m.frame / m.fps) * speed;
   const ox = origin === "top-left" ? -u(60) : origin === "top-right" ? width + u(60) : width / 2;
   const oy = origin === "top" ? -u(80) : -u(60);
@@ -66,6 +78,55 @@ export function Beams({
   const spread = origin === "top" ? 38 : 26;
   const beams = Math.max(1, Math.round(count));
   const strength = intensity * m.presence;
+
+  const look = LOOK_BY_THEME[theme.name] ?? "shafts";
+
+  if (look === "grid-sweep")
+    return (
+      <GridSweepLook
+        theme={theme}
+        seconds={seconds}
+        strength={strength}
+        background={background}
+        className={className}
+        style={style}
+      />
+    );
+  if (look === "grain-field")
+    return (
+      <GrainFieldLook
+        theme={theme}
+        seconds={seconds}
+        strength={strength}
+        palette={[light]}
+        background={background}
+        className={className}
+        style={style}
+      />
+    );
+  if (look === "flat-blocks")
+    return (
+      <FlatBlocksLook
+        theme={theme}
+        seconds={seconds}
+        strength={strength}
+        palette={[light, theme.colors.highlight]}
+        background={background}
+        className={className}
+        style={style}
+      />
+    );
+  if (look === "flat-accent")
+    return (
+      <FlatAccentLook
+        theme={theme}
+        seconds={seconds}
+        strength={strength}
+        background={background}
+        className={className}
+        style={style}
+      />
+    );
 
   const layers: string[] = [];
   for (let index = 0; index < beams; index++) {
