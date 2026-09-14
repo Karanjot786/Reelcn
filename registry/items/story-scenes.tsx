@@ -123,7 +123,7 @@ function ScreenPlaceholder() {
         </div>
         <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: u(16) }}>
           {bar("45%", 24, alpha(theme.colors.foreground, 0.45), 4)}
-          {bar("100%", 140, alpha(theme.colors.accent, 0.3), u(theme.radius > 0 ? Math.min(theme.radius, 16) : 6))}
+          {bar("100%", 140, alpha(theme.colors.accent, 0.3), theme.radius > 0 ? Math.min(theme.radius, 16) : 6)}
           {bar("90%", 16, alpha(theme.colors.foreground, 0.18))}
           {bar("75%", 16, alpha(theme.colors.foreground, 0.18))}
         </div>
