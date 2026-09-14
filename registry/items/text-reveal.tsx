@@ -12,7 +12,7 @@
  * </Center>
  */
 import type React from "react";
-import { graphemes, type MotionProps, tween, useMotion, useTheme, useViewport } from "./core";
+import { graphemes, type MotionProps, tween, useMotion, useTheme, useVariableFontAxis, useViewport } from "./core";
 
 export type TextRevealEffect = "rise" | "blur" | "fade" | "scale" | "drop" | "mask";
 
@@ -76,6 +76,16 @@ export function TextReveal({
   const theme = useTheme();
   const { u, width, safe } = useViewport();
   const m = useMotion(motion);
+  // mono/Signal's signature move: Archivo's wdth axis snaps from expanded to condensed as the
+  // headline enters. Always computed (cheap, pure math) so this hook is never called conditionally;
+  // only applied to the style below when the theme and font slot actually use the variable cut.
+  const axisSettings = useVariableFontAxis(125, 62, {
+    fps: m.fps,
+    frame: m.frame,
+    motion: motion.motion ?? theme.motion,
+    delay: m.delay,
+    duration: m.enterFrames,
+  });
   const fontPx = u(size);
   const step = stagger ?? (split === "char" ? 1 : Math.round(m.fps * (split === "word" ? 0.07 : 0.16)));
   const accents = new Set(accentWords.map(normalize));
@@ -165,6 +175,7 @@ export function TextReveal({
         color: color ?? theme.colors.foreground,
         lineHeight: 1.1,
         letterSpacing: font === "mono" ? 0 : "-0.025em",
+        fontVariationSettings: theme.name === "mono" && font === "heading" ? axisSettings : undefined,
         textAlign: align,
         textWrap: "balance",
         maxWidth: width - safe.x * 2,

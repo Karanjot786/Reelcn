@@ -23,6 +23,48 @@ export function quantizeMotion(m: MotionPersonality): { preset: MotionPreset; st
   return { preset: m.preset, step: m.step ?? 1, jitter: m.jitter ?? 0 };
 }
 
+/**
+ * 0-1 progress from `frame`/`fps` over `duration` frames starting at `delay`, quantized by `motion`'s
+ * step/jitter — the same time-quantization `tween` (in core.tsx) applies, reimplemented here without a
+ * curve library since core-math.ts can't import core.tsx's Easing/spring helpers (core.tsx is JSX and
+ * can't be loaded by node's native TypeScript loader; this file exists so node --test can). Linear only:
+ * a variable-font axis move reads fine as a straight ramp, and it keeps this file dependency-free.
+ */
+function axisProgress(
+  frame: number,
+  { delay, duration, motion }: { delay: number; duration: number; motion: MotionPersonality },
+): number {
+  if (duration <= 0) return frame >= delay ? 1 : 0;
+  const q = quantizeMotion(motion);
+  const wobble =
+    q.jitter > 0 ? Math.round((random(`axis-jitter-${Math.floor(frame / q.step)}`) - 0.5) * 2 * q.jitter * q.step) : 0;
+  const f = q.step > 1 ? Math.floor((frame + wobble) / q.step) * q.step : frame;
+  return clamp01((f - delay) / duration);
+}
+
+/**
+ * A `font-variation-settings` fragment (`"wdth" <value>`) moving from `from` to `to` over `duration`
+ * frames (default 0.6s, `useMotion`'s own enter-duration default) starting at `delay` (default 0),
+ * shaped by `motion`'s quantized step/jitter so a variable-font axis move looks staged like every other
+ * Phase 1 motion primitive (mono/Signal's Archivo width move is the only Phase 2 consumer).
+ */
+export function useVariableFontAxis(
+  from: number,
+  to: number,
+  {
+    fps,
+    frame,
+    motion = "snappy",
+    delay = 0,
+    duration,
+  }: { fps: number; frame: number; motion?: MotionPersonality; delay?: number; duration?: number },
+): string {
+  const span = duration ?? Math.round(fps * 0.6);
+  const t = axisProgress(frame, { delay, duration: span, motion });
+  const value = from + (to - from) * t;
+  return `"wdth" ${value.toFixed(2)}`;
+}
+
 /* ──────────────────────────────── Stagger ─────────────────────────────── */
 
 export type StaggerOrder = "forward" | "reverse" | "center" | "edges" | "random";

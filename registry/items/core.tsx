@@ -35,6 +35,7 @@ import {
   staggerDelay,
   type TypingModel,
   useTypedText,
+  useVariableFontAxis,
 } from "./core-math";
 import { fonts } from "./fonts";
 
@@ -53,6 +54,7 @@ export {
   staggerDelay,
   type TypingModel,
   useTypedText,
+  useVariableFontAxis,
 };
 
 /* ────────────────────────────── Theme ────────────────────────────── */
