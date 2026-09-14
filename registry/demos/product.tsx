@@ -226,6 +226,16 @@ function BrowserWindowDemo() {
   );
 }
 
+function BrowserWindowPosterDemo() {
+  return (
+    <Center>
+      <BrowserWindow url="reelcn.dev/pricing" poster>
+        <FakeDashboard />
+      </BrowserWindow>
+    </Center>
+  );
+}
+
 /* ──────────────────────────────── phone-frame ──────────────────────────────── */
 
 function PhoneFrameDemo() {
@@ -256,6 +266,16 @@ function AppWindowDemo() {
   return (
     <Center>
       <AppWindow title="Overview">
+        <FakeDashboard />
+      </AppWindow>
+    </Center>
+  );
+}
+
+function AppWindowPosterDemo() {
+  return (
+    <Center>
+      <AppWindow title="Overview" poster>
         <FakeDashboard />
       </AppWindow>
     </Center>
@@ -454,9 +474,11 @@ export default [
   { id: "code-block-diff", duration: 75, component: CodeBlockDiff },
   { id: "terminal-install", duration: 120, component: TerminalInstall },
   { id: "browser-window-dashboard", duration: 75, component: BrowserWindowDemo },
+  { id: "browser-window-poster", duration: 75, component: BrowserWindowPosterDemo },
   { id: "phone-frame-feed", duration: 75, component: PhoneFrameDemo },
   { id: "laptop-frame-dashboard", duration: 75, component: LaptopFrameDemo },
   { id: "app-window-overview", duration: 75, component: AppWindowDemo },
+  { id: "app-window-poster", duration: 75, component: AppWindowPosterDemo },
   { id: "cursor-click-path", duration: 90, bare: true, component: CursorDemo },
   { id: "screen-zoom-detail", duration: 100, component: ScreenZoomDemo },
   { id: "toast-success", duration: 90, bare: true, component: ToastSuccess },
