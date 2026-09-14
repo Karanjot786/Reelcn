@@ -15,13 +15,39 @@ import { loadFont as loadSpaceGrotesk } from "@remotion/google-fonts/SpaceGrotes
 
 const latin = { subsets: ["latin" as const] };
 
-// ponytail: loads all five families up front. Split per theme if render start-up time ever matters.
-loadInstrumentSerif("italic", { weights: ["400"], ...latin });
+/** Calls `load` once per process and caches the resulting `fontFamily` string; every later call is free. */
+function lazy(load: () => { fontFamily: string }): () => string {
+  let value: string | undefined;
+  return () => (value ??= load().fontFamily);
+}
 
-export const fonts = {
-  inter: loadInter("normal", { weights: ["400", "500", "600", "700", "800"], ...latin }).fontFamily,
-  instrumentSerif: loadInstrumentSerif("normal", { weights: ["400"], ...latin }).fontFamily,
-  spaceGrotesk: loadSpaceGrotesk("normal", { weights: ["400", "500", "700"], ...latin }).fontFamily,
-  jetbrainsMono: loadJetBrainsMono("normal", { weights: ["400", "500", "700"], ...latin }).fontFamily,
-  bricolage: loadBricolage("normal", { weights: ["400", "600", "800"], ...latin }).fontFamily,
+const loaders = {
+  inter: lazy(() => loadInter("normal", { weights: ["400", "500", "600", "700", "800"], ...latin })),
+  instrumentSerif: lazy(() => {
+    // Instrument Serif's italic face is only ever paired with its normal face, never used alone.
+    loadInstrumentSerif("italic", { weights: ["400"], ...latin });
+    return loadInstrumentSerif("normal", { weights: ["400"], ...latin });
+  }),
+  spaceGrotesk: lazy(() => loadSpaceGrotesk("normal", { weights: ["400", "500", "700"], ...latin })),
+  jetbrainsMono: lazy(() => loadJetBrainsMono("normal", { weights: ["400", "500", "700"], ...latin })),
+  bricolage: lazy(() => loadBricolage("normal", { weights: ["400", "600", "800"], ...latin })),
+};
+
+/** Each family's `fontFamily` string, loaded the first time it's read (`fonts.inter`, not `fonts.inter()`). */
+export const fonts: Record<keyof typeof loaders, string> = {
+  get inter() {
+    return loaders.inter();
+  },
+  get instrumentSerif() {
+    return loaders.instrumentSerif();
+  },
+  get spaceGrotesk() {
+    return loaders.spaceGrotesk();
+  },
+  get jetbrainsMono() {
+    return loaders.jetbrainsMono();
+  },
+  get bricolage() {
+    return loaders.bricolage();
+  },
 };
