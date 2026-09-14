@@ -58,7 +58,7 @@ export function PostCard({
     duration: Math.round(m.fps * 1.2),
     motion: "gentle",
   });
-  const format = (value: number) => Math.round(value * Math.min(count, 1)).toLocaleString();
+  const format = (value: number) => Math.round(value * Math.min(count, 1)).toLocaleString("en-US");
 
   return (
     <div

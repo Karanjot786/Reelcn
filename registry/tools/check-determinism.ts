@@ -33,6 +33,12 @@ const RULES: Rule[] = [
     // registry/items is where reelcn keeps its own copies.
     onlyIn: /(^|\/)(reelcn|registry\/items)\//,
   },
+  {
+    pattern:
+      /\.toLocaleString\(\s*\)|\.toLocaleString\(\s*undefined\s*[,)]|\bnew Intl\.\w+\(\s*\)|\bnew Intl\.\w+\(\s*undefined\b/,
+    message:
+      'toLocaleString/Intl without an explicit locale renders differently by machine locale; pass a literal locale (e.g. "en-US")',
+  },
 ];
 
 const SKIP = new Set(["node_modules", ".git", ".next", "out", "dist", "build"]);

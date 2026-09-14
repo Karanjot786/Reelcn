@@ -56,3 +56,22 @@ test("exits 0 on a clean project and 2 on a missing directory", () => {
   assert.equal(run(path.join(root, "src")).status, 0);
   assert.equal(run(path.join(root, "nope")).status, 2);
 });
+
+test("flags toLocaleString with no locale", () => {
+  const root = project({ "src/fixture.tsx": "const s = n.toLocaleString();\n" });
+  const result = run(path.join(root, "src"));
+  assert.equal(result.status, 1);
+  assert.match(result.stdout, /toLocaleString/);
+});
+
+test("flags toLocaleString(undefined, ...)", () => {
+  const root = project({
+    "src/fixture.tsx": 'const s = n.toLocaleString(undefined, { style: "percent" });\n',
+  });
+  assert.equal(run(path.join(root, "src")).status, 1);
+});
+
+test("allows toLocaleString with a literal locale", () => {
+  const root = project({ "src/fixture.tsx": 'const s = n.toLocaleString("en-US");\n' });
+  assert.equal(run(path.join(root, "src")).status, 0);
+});

@@ -371,9 +371,7 @@ export function Center({
 /* ────────────────────────────── Text ────────────────────────────── */
 
 const segmenter =
-  typeof Intl !== "undefined" && "Segmenter" in Intl
-    ? new Intl.Segmenter(undefined, { granularity: "grapheme" })
-    : null;
+  typeof Intl !== "undefined" && "Segmenter" in Intl ? new Intl.Segmenter("en-US", { granularity: "grapheme" }) : null;
 
 /** Split into user-perceived characters, so emoji and accents never break apart. */
 export const graphemes = (text: string) =>
