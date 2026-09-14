@@ -14,7 +14,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { InstallBlock } from "@/components/install-block";
 import { ItemPreview } from "@/components/item-preview";
-import { demosFor, themeNames } from "@/lib/demos";
+import { demosFor, formatsFor, themeNames } from "@/lib/demos";
 import { linkifyBackticks } from "@/lib/item-markdown";
 import { REPO_URL } from "@/lib/layout.shared";
 import { propsTable } from "@/lib/props-table";
@@ -55,6 +55,7 @@ export default async function Page(props: PageProps<"/docs/components/[name]">) 
   const category = categoryOf(item);
   const parent = item.meta.preset ? getItem(item.meta.preset) : undefined;
   const demoIds = demosFor(item.name);
+  const thumbs = Object.fromEntries(demoIds.map((id) => [id, formatsFor(id)]));
   const url = installUrl(item.name);
   const usage = item.docs?.replace(/^Usage:\n\n/, "") ?? "";
   const filePath = item.files[0].path;
@@ -198,6 +199,7 @@ export default async function Page(props: PageProps<"/docs/components/[name]">) 
             demoIds={demoIds}
             category={category}
             themes={themeNames}
+            thumbs={thumbs}
             code={usage ? <ServerCodeBlock lang={lang} code={usage} /> : undefined}
             builtFrom={builtFrom || undefined}
           >

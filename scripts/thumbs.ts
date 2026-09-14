@@ -1,5 +1,5 @@
 // Renders the stills the docs site shows: one per demo, the landing hero strips, the format trio and one frame per theme.
-// Run: node scripts/thumbs.ts   (writes apps/www/public/thumbs/*.jpg + demos.json; commit the result)
+// Run: node scripts/thumbs.ts   (writes apps/www/public/thumbs/*.jpg, demos.json and durations.json; commit the result)
 import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { bundle } from "@remotion/bundler";
@@ -8,6 +8,7 @@ import { themeNamesFromSource } from "./build-registry.ts";
 
 const OUT = "apps/www/public/thumbs";
 type Job = { id: string; out: string; frame?: number; theme?: string };
+const FORMATS = ["16x9", "9x16", "1x1"] as const;
 
 const fixed: Job[] = [
   ...[1, 10, 19, 28].map((frame, i) => ({ id: "text-reveal-blur-16x9", out: `hero-t${i + 1}`, frame })),
@@ -26,7 +27,15 @@ const all = await getCompositions(serveUrl, { puppeteerInstance: browser });
 const byId = new Map(all.map((composition) => [composition.id, composition]));
 const perDemo: Job[] = all
   .filter((composition) => composition.id.endsWith("-16x9") && !composition.id.startsWith("sheet-"))
-  .map((composition) => ({ id: composition.id, out: composition.id.slice(0, -"-16x9".length) }));
+  .flatMap((composition) => {
+    const base = composition.id.slice(0, -"-16x9".length);
+    return FORMATS.filter((format) => byId.has(`${base}-${format}`)).map((format) => ({
+      id: `${base}-${format}`,
+      // The existing 16:9 file keeps its bare name so lib/demos.ts's current callers don't need to change;
+      // 9:16 and 1:1 land alongside it as new, distinctly-named files.
+      out: format === "16x9" ? base : `${base}-${format}`,
+    }));
+  });
 
 try {
   for (const job of [...perDemo, ...fixed]) {
@@ -64,5 +73,11 @@ writeFileSync(
   )}\n`,
 );
 console.log(`ok   ${path.join(OUT, "demos.json")}`);
+// Frames per demo, for the docs sidebar's template lengths.
+writeFileSync(
+  path.join(OUT, "durations.json"),
+  `${JSON.stringify(Object.fromEntries(perDemo.map((job) => [job.out, byId.get(job.id)?.durationInFrames])), null, 2)}\n`,
+);
+console.log(`ok   ${path.join(OUT, "durations.json")}`);
 
 console.log(`${perDemo.length + fixed.length} thumbnails in ${OUT}`);
