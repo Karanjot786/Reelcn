@@ -13,6 +13,7 @@ import { Scramble } from "../items/scramble";
 import { Stamp } from "../items/stamp";
 import { TextReveal, type TextRevealEffect } from "../items/text-reveal";
 import { Typewriter } from "../items/typewriter";
+import { WordPush } from "../items/word-push";
 import { WordRotator } from "../items/word-rotator";
 import type { Demo } from "./index";
 
@@ -202,6 +203,15 @@ export default [
     component: () => (
       <Center>
         <Stamp text="Sold out" size={170} motion="settle" />
+      </Center>
+    ),
+  },
+  {
+    id: "word-push-hook",
+    duration: 75,
+    component: () => (
+      <Center>
+        <WordPush words={["Ship", "videos,", "not", "keyframes,", "faster"]} />
       </Center>
     ),
   },

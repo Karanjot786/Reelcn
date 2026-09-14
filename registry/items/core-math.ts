@@ -123,6 +123,17 @@ export function staggerDelay(
   return Math.max(0, base + wobble);
 }
 
+/**
+ * Geometric accelerando: `t_i = gap·(1-aⁱ)/(1-a)` for `a = accel < 1`, so each successive delay is
+ * shorter than the last — satisfies M2 ("speed comes from acceleration, never linear motion") directly.
+ * Distinct from `staggerDelay`'s `accelerando` shape (quadratic-ish), kept as its own function so the
+ * research's exact geometric formula is reproducible, not approximated by bending the existing shape.
+ */
+export function geometricCadence(i: number, gap: number, accel: number): number {
+  if (accel >= 1) return gap * i;
+  return (gap * (1 - accel ** i)) / (1 - accel);
+}
+
 /* ───────────────────────────────── Paths ───────────────────────────────── */
 
 /** Catmull-Rom spline through four control points, evaluated at `t` in [0, 1] between `p1` and `p2`. */

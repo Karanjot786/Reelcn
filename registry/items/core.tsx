@@ -26,6 +26,7 @@ import {
   catmullRom,
   clamp01,
   coverPhase,
+  geometricCadence,
   graphemeInitial,
   graphemes,
   lookAtOffset,
@@ -57,6 +58,7 @@ import { fonts } from "./fonts";
 export {
   clamp01,
   coverPhase,
+  geometricCadence,
   graphemeInitial,
   graphemes,
   lookAtOffset,

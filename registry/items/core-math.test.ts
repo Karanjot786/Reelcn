@@ -104,3 +104,21 @@ test("lookAtOffset moves off-center targets toward frame center", () => {
   assert.equal(offset.x, -300);
   assert.equal(offset.y, 300);
 });
+
+import { geometricCadence } from "./core-math.ts";
+
+test("geometricCadence starts at 0", () => {
+  assert.equal(geometricCadence(0, 6, 0.82), 0);
+});
+
+test("geometricCadence's gaps strictly shrink (an accelerando, not a constant stagger)", () => {
+  const t0 = geometricCadence(0, 6, 0.82);
+  const t1 = geometricCadence(1, 6, 0.82);
+  const t2 = geometricCadence(2, 6, 0.82);
+  const t3 = geometricCadence(3, 6, 0.82);
+  const gap1 = t1 - t0;
+  const gap2 = t2 - t1;
+  const gap3 = t3 - t2;
+  assert.ok(gap2 < gap1, `expected ${gap2} < ${gap1}`);
+  assert.ok(gap3 < gap2, `expected ${gap3} < ${gap2}`);
+});
