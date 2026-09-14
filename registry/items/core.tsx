@@ -301,28 +301,43 @@ export type MotionProps = {
   exit?: boolean | number;
   /** Override the theme's motion personality. */
   motion?: MotionPreset;
+  /** Renders fully entered, with no exit — for a still frame or thumbnail. Defaults to `false`. */
+  poster?: boolean;
+  /** Delays the start of the exit window by this many frames, for a minimum on-screen hold. Defaults to `0`. */
+  holdFrames?: number;
 };
 
 /**
  * Shared enter/exit clock. `enter` goes 0 → 1 (may overshoot with `bouncy`), `exit` goes 0 → 1 during the last frames of the
  * parent Sequence, `presence` = clamped enter × (1 − exit).
  */
-export function useMotion({ delay = 0, duration, exit = true, motion }: MotionProps = {}) {
+export function useMotion({
+  delay = 0,
+  duration,
+  exit = true,
+  motion,
+  poster = false,
+  holdFrames = 0,
+}: MotionProps = {}) {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
   const theme = useTheme();
   const preset = motion ?? theme.motion;
   const enterFrames = duration ?? Math.round(fps * 0.6);
+  if (poster) {
+    return { frame, fps, durationInFrames, preset, delay, enterFrames, enter: 1, exit: 0, presence: 1 };
+  }
   const exitFrames = typeof exit === "number" ? exit : Math.round(fps * 0.35);
   const enter = tween(frame, fps, { from: delay, duration: enterFrames, motion: preset });
   // The last rendered frame is durationInFrames - 1, so the exit has to finish there.
   // A single-frame sequence (a Still, a contact-sheet cell) or a zero-length exit has no room to leave,
   // and would otherwise ask interpolate for a degenerate range.
   const lastFrame = durationInFrames - 1;
+  const exitEnd = lastFrame - holdFrames;
   const out =
-    exit === false || exitFrames <= 0 || lastFrame <= 0
+    exit === false || exitFrames <= 0 || exitEnd <= 0
       ? 0
-      : interpolate(frame, [lastFrame - exitFrames, lastFrame], [0, 1], {
+      : interpolate(frame, [exitEnd - exitFrames, exitEnd], [0, 1], {
           ...CLAMP,
           easing: exitEasing,
         });
@@ -337,6 +352,19 @@ export function useMotion({ delay = 0, duration, exit = true, motion }: MotionPr
     exit: out,
     presence: Math.min(enter, 1) * (1 - out),
   };
+}
+
+/** A locally looped frame number: counts up to `durationInFrames - 1`, holds there for `holdFrames`, then wraps to 0 — seamless for a `<Loop>`-wrapped composition. */
+export function useLoop({
+  durationInFrames,
+  holdFrames = 0,
+}: {
+  durationInFrames: number;
+  holdFrames?: number;
+}): number {
+  const frame = useCurrentFrame();
+  const cycle = Math.max(1, durationInFrames + holdFrames);
+  return Math.min(frame % cycle, durationInFrames - 1);
 }
 
 /* ─────────────────────────── Per-role motion ─────────────────────────── */

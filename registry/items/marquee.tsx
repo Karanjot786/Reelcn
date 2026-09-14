@@ -12,7 +12,7 @@
  */
 import type React from "react";
 import { Children } from "react";
-import { type MotionProps, useMotion, useTheme, useViewport } from "./core";
+import { type MotionProps, useLoop, useMotion, useTheme, useViewport } from "./core";
 
 export type MarqueeProps = MotionProps & {
   /** Words to scroll. Ignored when `children` are given. */
@@ -84,7 +84,10 @@ export function Marquee({
   );
   const travel = (m.durationInFrames / m.fps) * u(speed);
   const copies = minCopyWidth > 0 ? Math.min(Math.ceil((width + travel) / minCopyWidth) + 1, 400) : 0;
-  const offset = (m.frame / m.fps) * u(speed);
+  // One copy-width per loop, so a Remotion <Loop> wrapped around Marquee never jumps at the seam.
+  const loopFrames =
+    minCopyWidth > 0 && u(speed) > 0 ? Math.max(1, Math.round((minCopyWidth / u(speed)) * m.fps)) : m.durationInFrames;
+  const offset = (useLoop({ durationInFrames: loopFrames }) / m.fps) * u(speed);
   const fadePx = u(fade);
   const mask =
     fadePx > 0
