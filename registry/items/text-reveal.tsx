@@ -12,7 +12,16 @@
  * </Center>
  */
 import type React from "react";
-import { graphemes, type MotionProps, tween, useMotion, useTheme, useVariableFontAxis, useViewport } from "./core";
+import {
+  alpha,
+  graphemes,
+  type MotionProps,
+  tween,
+  useMotion,
+  useTheme,
+  useVariableFontAxis,
+  useViewport,
+} from "./core";
 
 export type TextRevealEffect =
   | "rise"
@@ -79,12 +88,27 @@ function unitStyle(effect: TextRevealEffect, progress: number, fontPx: number): 
       return { translate: `0 ${hidden * 110}%` };
     case "track":
       return { opacity, letterSpacing: `${hidden * 0.5}em` };
-    case "outline-fill":
+    case "outline-fill": {
+      // `color: transparent` also zeroed out `currentColor` for the stroke on this same element (it's
+      // the same property `currentColor` resolves against), so the stroke was invisible for the entire
+      // outline phase and the fill then snapped in at 0.92 with nothing having been visible before it.
+      // `-webkit-text-fill-color` controls the glyph fill paint without touching `color`, so `currentColor`
+      // stays the real, opaque color for the stroke throughout. `progress` is the shared eased clock
+      // (the `smooth` motion preset, front-loaded: it clears ~0.9 within the entrance's first third and
+      // spends the rest creeping to 1), so thresholds here are placed to read well against *that* shape,
+      // not against a linear clock: opacity ramps in over the first 15% of progress (a blink in real
+      // time — no blank flash), a stroke-only outline then holds clearly visible while progress crosses
+      // its mid-range, and the fill phases in — stroke shrinking as it does — only over progress's long
+      // final approach to 1, which is most of the entrance's real duration.
+      const p = Math.min(Math.max(progress, 0), 1);
+      const strokeIn = Math.min(1, p / 0.15);
+      const fillProgress = Math.max(0, (p - 0.85) / 0.15);
       return {
-        opacity,
-        color: progress < 0.92 ? "transparent" : undefined,
-        WebkitTextStroke: `${Math.max(hidden, 0) * fontPx * 0.05}px currentColor`,
+        opacity: strokeIn,
+        WebkitTextFillColor: alpha("currentColor", fillProgress),
+        WebkitTextStroke: `${(1 - fillProgress) * strokeIn * fontPx * 0.05}px currentColor`,
       };
+    }
     case "split-flap":
       return { opacity: 1 };
     case "variable-axis":

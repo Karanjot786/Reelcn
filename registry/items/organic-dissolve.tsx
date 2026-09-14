@@ -21,7 +21,7 @@
 import type { TransitionPresentation, TransitionPresentationComponentProps } from "@remotion/transitions";
 import { useId } from "react";
 import { AbsoluteFill } from "remotion";
-import { coverPhase, useViewport } from "./core";
+import { useViewport } from "./core";
 
 export type OrganicDissolveProps = {
   /** Deterministic per instance: the same seed always dissolves in the same pattern. */
@@ -47,9 +47,15 @@ function OrganicDissolvePresentation({
   const seed = passedProps.seed ?? "organic-dissolve";
   const grain = passedProps.grain ?? 40;
   const exiting = presentationDirection === "exiting";
-  const { cover, reveal } = coverPhase(presentationProgress);
-  // 1 = this layer shown exactly as its plain scene, 0 = fully dissolved away.
-  const revealAmount = exiting ? 1 - cover : reveal;
+  // The exiting scene stays fully opaque underneath for the whole transition; only the entering scene
+  // dissolves in on top via the grain mask below, across the full 0→1 progress. coverPhase's sequential
+  // cover/reveal split (cover 1→0 on [0, 0.5], reveal 0→1 on [0.5, 1]) made both layers hit 0 at the
+  // p=0.5 swap point — a flat black frame — which is right for a hard cover/reveal transition (one layer
+  // is meant to fully occlude the other) but wrong for a cross-dissolve, where both scenes must be
+  // visibly mixed at the midpoint. Same fix as rack-focus.tsx's opaque exiting layer.
+  if (exiting) return <AbsoluteFill>{children}</AbsoluteFill>;
+  // 1 = shown exactly as its plain scene, 0 = fully dissolved away.
+  const revealAmount = presentationProgress;
 
   if (revealAmount >= 1) return <AbsoluteFill>{children}</AbsoluteFill>;
   if (revealAmount <= 0) return <AbsoluteFill style={{ opacity: 0 }}>{children}</AbsoluteFill>;
@@ -59,9 +65,13 @@ function OrganicDissolvePresentation({
   // Per-instance, not per-direction: see whip-pan's identical fix for why a static id collides.
   const filterId = `organic-dissolve-${useId().replace(/[^a-zA-Z0-9_-]/g, "")}`;
   const displaceStrength = u(24) * 4 * revealAmount * (1 - revealAmount);
-  // The threshold sweeps through the turbulence's own alpha channel, so grains disappear/appear in the
-  // same organic pattern the noise already drew instead of a uniform cross-fade.
-  const cutoff = (revealAmount - 0.5) * 24;
+  // The threshold sweeps through the turbulence's own alpha channel (which realistically only spans
+  // roughly [0, 1], not [-1, 1]), so grains disappear/appear in the same organic pattern the noise
+  // already drew instead of a uniform cross-fade. Centering that sweep on `revealAmount - 1` (rather
+  // than `- 0.5`) means the threshold only clears the alpha channel's real range at revealAmount ≈ 1,
+  // not ≈ 0.5 — otherwise the whole dissolve finishes by the transition's own halfway point and its
+  // true midpoint renders as a plain, fully-revealed frame instead of a visible mix of both scenes.
+  const cutoff = (revealAmount - 1) * 24;
 
   return (
     <AbsoluteFill style={{ overflow: "hidden" }}>
