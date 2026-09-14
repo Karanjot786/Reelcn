@@ -149,6 +149,40 @@ export const clamp01 = (n: number): number => Math.min(Math.max(n, 0), 1);
 /** First user-perceived character of `name`, safe for emoji, CJK and combining marks (`graphemes` already handles the segmentation). */
 export const graphemeInitial = (name: string): string => graphemes(name)[0] ?? "";
 
+/* ─────────────────────────── Transitions ─────────────────────────── */
+
+/**
+ * `d` shaped so the result is exactly 0 at `d=0` and exactly 1 at `d=1` (not merely close — a
+ * `TransitionSeries` presentation stays mounted at `progress=0` outside its overlap, so a near-zero
+ * residual like `sin(π)` is a real, visible artifact). `p` controls how sharp the punch is; the research's
+ * whip pan uses `p≈3`.
+ */
+export function punchCurve(d: number, p: number): number {
+  const clamped = clamp01(d);
+  const a = clamped ** p;
+  const b = (1 - clamped) ** p;
+  return a + b === 0 ? 0 : a / (a + b);
+}
+
+/**
+ * The cover/swap/reveal split every existing cover-style transition (`circle-burst`, `stripe-wipe`,
+ * `shutter`, `tile-reveal`) hand-rolls inline. `cover` runs 0→1 over `[0, coverEnd]`, `reveal` runs 0→1
+ * over `[revealStart, 1]`, `showsNext` flips at `swapAt`. Exactly 0 at `p=0` and exactly 1 at `p=1` for
+ * both `cover` and `reveal` — the displace-zero contract.
+ */
+export function coverPhase(
+  p: number,
+  {
+    coverEnd = 0.5,
+    swapAt = coverEnd,
+    revealStart = coverEnd,
+  }: { coverEnd?: number; swapAt?: number; revealStart?: number } = {},
+): { cover: number; reveal: number; showsNext: boolean } {
+  const cover = coverEnd <= 0 ? 1 : clamp01(p / coverEnd);
+  const reveal = revealStart >= 1 ? 0 : clamp01((p - revealStart) / (1 - revealStart));
+  return { cover, reveal, showsNext: p >= swapAt };
+}
+
 /* ───────────────────────────────── Typing ──────────────────────────────── */
 
 export type TypingModel = {

@@ -25,10 +25,12 @@ import {
 import {
   catmullRom,
   clamp01,
+  coverPhase,
   graphemeInitial,
   graphemes,
   type MotionPersonality,
   type MotionPreset,
+  punchCurve,
   quantizeMotion,
   type StaggerOrder,
   type StaggerShape,
@@ -45,10 +47,12 @@ import { fonts } from "./fonts";
 // loaded by node's native TypeScript loader. Re-exported here so no item's import site changes.
 export {
   clamp01,
+  coverPhase,
   graphemeInitial,
   graphemes,
   type MotionPersonality,
   type MotionPreset,
+  punchCurve,
   quantizeMotion,
   type StaggerOrder,
   type StaggerShape,
