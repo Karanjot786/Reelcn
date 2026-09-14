@@ -41,7 +41,7 @@ export function SubscribeCta({
   const theme = useTheme();
   const { u, safe } = useViewport();
   const m = useMotion(motion);
-  const press = pressAt ?? Math.round(m.fps * 0.9);
+  const press = m.delay + (pressAt ?? Math.round(m.fps * 0.9));
   const down = tween(m.frame, m.fps, { from: press, duration: Math.round(m.fps * 0.12), motion: "snappy" });
   const up = tween(m.frame, m.fps, {
     from: press + Math.round(m.fps * 0.12),

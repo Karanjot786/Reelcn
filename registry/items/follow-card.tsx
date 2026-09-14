@@ -50,7 +50,7 @@ export function FollowCard({
   const { u } = useViewport();
   const m = useMotion(motion);
   const enter = Math.min(m.enter, 1);
-  const press = pressAt ?? Math.round(m.fps * 1.1);
+  const press = m.delay + (pressAt ?? Math.round(m.fps * 1.1));
   const down = tween(m.frame, m.fps, { from: press, duration: Math.round(m.fps * 0.12), motion: "snappy" });
   const followed = m.frame >= press + Math.round(m.fps * 0.12);
 
