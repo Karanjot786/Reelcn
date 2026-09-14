@@ -20,7 +20,7 @@
  * </Center>
  */
 import type React from "react";
-import { type MotionProps, staggerDelay, tween, useMotion, useTheme, useViewport } from "./core";
+import { type MotionProps, staggerDelay, tween, useMotion, useSceneClock, useTheme, useViewport } from "./core";
 import { StatCounter } from "./stat-counter";
 
 export type KpiGridItem = {
@@ -79,6 +79,7 @@ export function KpiGrid({
   const theme = useTheme();
   const { u, width: canvasWidth, safe, orientation } = useViewport();
   const m = useMotion(motion);
+  const sceneClock = useSceneClock();
   const count = Math.max(items.length, 1);
   const columns =
     orientation === "landscape"
@@ -95,6 +96,7 @@ export function KpiGrid({
   const cardSize = size ?? (columns === 1 ? 108 : columns === 2 ? 92 : columns === 3 ? 78 : 64);
   const step = stagger ?? Math.round(m.fps * 0.15);
   const delay = motion.delay ?? 0;
+  const delayFor = (index: number, count: number) => sceneClock?.delayFor(index, count) ?? staggerDelay(index, count, { step });
 
   return (
     <div
@@ -108,7 +110,7 @@ export function KpiGrid({
       }}
     >
       {items.map((item, index) => {
-        const cardDelay = delay + staggerDelay(index, items.length, { step });
+        const cardDelay = delay + delayFor(index, items.length);
         const pop = clamp01(tween(m.frame, m.fps, { from: cardDelay, duration: m.enterFrames, motion: m.preset }));
         return (
           <div

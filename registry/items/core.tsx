@@ -422,6 +422,33 @@ export function staggerDelay(
   return Math.max(0, base + wobble);
 }
 
+type SceneClockValue = { delayFor: (index: number, count: number) => number } | null;
+
+const SceneClockContext = createContext<SceneClockValue>(null);
+
+/** Shares one `staggerDelay` timeline with every child that reads it via `useSceneClock`. */
+export function SceneClock({
+  step,
+  order,
+  shape,
+  seed,
+  jitter,
+  children,
+}: {
+  step: number;
+  order?: StaggerOrder;
+  shape?: StaggerShape;
+  seed?: string;
+  jitter?: number;
+  children: (delayFor: (index: number, count: number) => number) => React.ReactNode;
+}) {
+  const delayFor = (index: number, count: number) => staggerDelay(index, count, { step, order, shape, seed, jitter });
+  return <SceneClockContext.Provider value={{ delayFor }}>{children(delayFor)}</SceneClockContext.Provider>;
+}
+
+/** `null` outside a `SceneClock`, so an item can fall back to its own standalone `step` prop. */
+export const useSceneClock = () => useContext(SceneClockContext);
+
 /* ────────────────────────────── Layout ────────────────────────────── */
 
 /** Full-bleed canvas painted with the theme background, text color and body font. */

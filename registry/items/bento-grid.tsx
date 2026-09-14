@@ -20,7 +20,7 @@
  */
 import type React from "react";
 import { type AnimateEffect, effectStyle } from "./animate";
-import { alpha, type MotionProps, staggerDelay, tween, useMotion, useTheme, useViewport } from "./core";
+import { alpha, type MotionProps, staggerDelay, tween, useMotion, useSceneClock, useTheme, useViewport } from "./core";
 
 export type BentoTile = {
   title: string;
@@ -95,12 +95,14 @@ export function BentoGrid({
   const theme = useTheme();
   const { u, orientation } = useViewport();
   const m = useMotion(motion);
+  const sceneClock = useSceneClock();
   const cols = columns ?? (orientation === "landscape" ? 4 : orientation === "square" ? 3 : 2);
   const spans = packSpans(
     tiles.map((tile) => tile.span ?? 1),
     cols,
   );
   const frames = step ?? Math.round(m.fps * 0.1);
+  const delayFor = (index: number, count: number) => sceneClock?.delayFor(index, count) ?? staggerDelay(index, count, { step: frames });
 
   return (
     <div
@@ -119,7 +121,7 @@ export function BentoGrid({
       }}
     >
       {tiles.map((tile, index) => {
-        const p = tween(m.frame, m.fps, { from: m.delay + staggerDelay(index, tiles.length, { step: frames }), duration: m.enterFrames, motion: m.preset });
+        const p = tween(m.frame, m.fps, { from: m.delay + delayFor(index, tiles.length), duration: m.enterFrames, motion: m.preset });
         const fill = tile.accent ? (accentColor ?? theme.colors.accent) : (background ?? theme.colors.surface);
         return (
           <div
