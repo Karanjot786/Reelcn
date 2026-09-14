@@ -12,7 +12,17 @@
 /// <reference lib="es2022.intl" />
 import type React from "react";
 import { createContext, useContext, useEffect, useState } from "react";
-import { AbsoluteFill, continueRender, delayRender, Easing, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
+import {
+  AbsoluteFill,
+  continueRender,
+  delayRender,
+  Easing,
+  interpolate,
+  random,
+  spring,
+  useCurrentFrame,
+  useVideoConfig,
+} from "remotion";
 import { fonts } from "./fonts";
 
 /* ────────────────────────────── Theme ────────────────────────────── */
@@ -352,6 +362,64 @@ export function useRoleMotion(
     geometry: enter * (1 - m.exit),
     travel: (px: number) => ({ enterPx: px * enterShape.travel, exitPx: px * exitShape.travel }),
   };
+}
+
+/* ──────────────────────────────── Stagger ─────────────────────────────── */
+
+export type StaggerOrder = "forward" | "reverse" | "center" | "edges" | "random";
+export type StaggerShape = "linear" | "compress" | "accelerando";
+
+/** 0-indexed fire order for `index` among `count` items — `0` fires first. */
+function fireRank(index: number, count: number, order: StaggerOrder, seed: string): number {
+  if (count <= 1) return 0;
+  if (order === "forward") return index;
+  if (order === "reverse") return count - 1 - index;
+  if (order === "center" || order === "edges") {
+    const mid = (count - 1) / 2;
+    const key = (i: number) => (order === "center" ? Math.abs(i - mid) : -Math.abs(i - mid));
+    const ranked = Array.from({ length: count }, (_, i) => i).sort((a, b) => key(a) - key(b) || a - b);
+    return ranked.indexOf(index);
+  }
+  // Seeded permutation: reproducible for a fixed (seed, count), independent of any other item's index.
+  const ranked = Array.from({ length: count }, (_, i) => i).sort(
+    (a, b) => random(`${seed}-order-${count}-${a}`) - random(`${seed}-order-${count}-${b}`),
+  );
+  return ranked.indexOf(index);
+}
+
+function shapedDelay(rank: number, step: number, shape: StaggerShape): number {
+  if (shape === "linear") return rank * step;
+  if (shape === "compress") return Math.round(step * rank ** 0.8);
+  // accelerando: gaps between successive ranks grow, i.e. each step is bigger than the last.
+  return Math.round(step * rank + 0.1 * step * rank * (rank - 1));
+}
+
+/**
+ * Frame offset for item `index` of `count`, honoring a fire `order` and a delay `shape`. `staggerDelay(i, n, {
+ * step, order: "forward", shape: "linear", jitter: 0 })` equals `index * step` exactly, so migrating an existing
+ * `index * step` call site is a safe drop-in.
+ */
+export function staggerDelay(
+  index: number,
+  count: number,
+  {
+    step,
+    order = "forward",
+    shape = "linear",
+    seed = "stagger",
+    jitter = 0,
+  }: {
+    step: number;
+    order?: StaggerOrder;
+    shape?: StaggerShape;
+    seed?: string;
+    jitter?: number;
+  },
+): number {
+  const rank = fireRank(index, count, order, seed);
+  const base = shapedDelay(rank, step, shape);
+  const wobble = jitter > 0 ? Math.round((random(`${seed}-jitter-${index}`) - 0.5) * 2 * jitter * step) : 0;
+  return Math.max(0, base + wobble);
 }
 
 /* ────────────────────────────── Layout ────────────────────────────── */
