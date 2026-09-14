@@ -5,6 +5,7 @@ import { Camera } from "../items/camera";
 import { alpha, Center, useTheme, useViewport } from "../items/core";
 import { LaptopFrame } from "../items/laptop-frame";
 import { Marquee } from "../items/marquee";
+import { Space } from "../items/space";
 import { SplitScreen } from "../items/split-screen";
 import { Stage } from "../items/stage";
 import { Stagger } from "../items/stagger";
@@ -360,6 +361,53 @@ function StageTour() {
   );
 }
 
+/* ──────────────────────────────── space ─────────────────────────────── */
+
+function GalleryCard({ label }: { label: string }) {
+  const theme = useTheme();
+  const { u } = useViewport();
+  return (
+    <div
+      style={{
+        width: u(260),
+        height: u(160),
+        borderRadius: u(theme.radius),
+        background: theme.colors.surface,
+        border: `1px solid ${theme.colors.border}`,
+        display: "grid",
+        placeItems: "center",
+        fontFamily: theme.fonts.heading,
+        fontWeight: theme.headingWeight,
+        fontSize: u(28),
+        color: theme.colors.foreground,
+      }}
+    >
+      {label}
+    </div>
+  );
+}
+
+// World units are on the same order as shortSide/2 (Space's scale is shortSide/2/depth), so beats and
+// child offsets sit in the hundreds, matching the cards' own design-unit sizing.
+function SpaceGallery() {
+  return (
+    <Space
+      beats={[
+        { frame: 0, lookAt: [0, 0, 0], distance: 700 },
+        { frame: 90, lookAt: [200, 0, -100], distance: 480 },
+      ]}
+    >
+      {[
+        // Wide and Close sit near the same x/y (small on-screen separation) but far apart in z, so Wide's
+        // nearer card visibly occludes Close's farther one where they overlap.
+        { x: -20, y: -10, z: 0, children: <GalleryCard label="Wide" /> },
+        { x: 40, y: 20, z: -220, children: <GalleryCard label="Close" /> },
+        { x: 260, y: -30, z: -320, children: <GalleryCard label="Screen" /> },
+      ]}
+    </Space>
+  );
+}
+
 export default [
   { id: "animate", duration: 75, component: AnimateGrid },
   { id: "stagger-steps", duration: 90, component: StaggerSteps },
@@ -370,4 +418,5 @@ export default [
   { id: "bento-grid-features", duration: 105, component: BentoFeatures },
   { id: "marquee-bands", duration: 120, component: MarqueeBands },
   { id: "stage-tour", duration: 120, component: StageTour },
+  { id: "space-gallery", duration: 100, component: SpaceGallery },
 ] satisfies Demo[];
