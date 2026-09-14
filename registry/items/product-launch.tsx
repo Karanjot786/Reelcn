@@ -59,10 +59,12 @@ export function productLaunchStory(props: ProductLaunchProps): Story {
   // long one, reusing the story vocabulary's existing "text" and "bullets" scene types (P2-6d: no new
   // scene type).
   const featureGroups = chunk(features, 2);
-  const featureScenes: Scene[] = featureGroups.flatMap((group): Scene[] => [
-    { type: "text", text: group.map((feature) => feature.title).join(" · ") },
-    { type: "bullets", items: group.map((feature) => ({ text: feature.title, detail: feature.body })) },
-  ]);
+  const featureScenes: Scene[] = ([] as Scene[]).concat(
+    ...featureGroups.map((group): Scene[] => [
+      { type: "text", text: group.map((feature) => feature.title).join(" · ") },
+      { type: "bullets", items: group.map((feature) => ({ text: feature.title, detail: feature.body })) },
+    ]),
+  );
   return templateStory(props, [
     ...logo,
     { type: "title", kicker: "Introducing", title: name, subtitle: tagline, background: "gradient-mesh" },
