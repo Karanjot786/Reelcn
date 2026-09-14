@@ -614,6 +614,8 @@ export function Center({
 
 /* ────────────────────────────── Text ────────────────────────────── */
 
+// Locale is pinned (not undefined) because grapheme segmentation is locale-independent per UAX #29,
+// and a fixed locale satisfies the determinism lint rule in registry/tools/check-determinism.ts.
 const segmenter =
   typeof Intl !== "undefined" && "Segmenter" in Intl ? new Intl.Segmenter("en-US", { granularity: "grapheme" }) : null;
 
@@ -639,18 +641,21 @@ function measurePx(text: string, font: string): number {
   return measureContext.measureText(text).width;
 }
 
-/** True once `document.fonts` has a face covering this weight for the stack's first family. */
+/** True once `document.fonts` has a face covering this weight for any family in the stack (not just the first). */
 function fontFaceReady(stack: string, weight: number): boolean {
   if (typeof document === "undefined" || !document.fonts) return false;
-  const family = stack.split(",")[0].trim().replace(/["']/g, "");
+  const families = stack.split(",").map((f) => f.trim().replace(/["']/g, ""));
   let found = false;
   document.fonts.forEach((face) => {
     const range = face.weight.split(" ");
     const covers = Number(range[0]) <= weight && weight <= Number(range[range.length - 1]);
-    if (covers && face.family.replace(/["']/g, "") === family) found = true;
+    if (covers && families.includes(face.family.replace(/["']/g, ""))) found = true;
   });
   return found;
 }
+
+/** Bounded fallback for `useTextMetrics`, matching the old fit-title cap (`++attempts > 40`, ~2s at one check per frame). */
+const FONT_READY_TIMEOUT_MS = 2000;
 
 /**
  * Real width of `text` set in `style`, measured against the loaded font — gated on the browser's own font-ready
@@ -671,8 +676,14 @@ export function useTextMetrics(
     document.fonts.ready.then(() => {
       if (!cancelled && fontFaceReady(fontFamily, fontWeight)) setReady(true);
     });
+    // Safety net: if the face check never resolves (e.g. document.fonts.ready never settles), proceed
+    // with whatever measurement is available instead of hanging the render forever.
+    const timeout = setTimeout(() => {
+      if (!cancelled) setReady(true);
+    }, FONT_READY_TIMEOUT_MS);
     return () => {
       cancelled = true;
+      clearTimeout(timeout);
     };
   }, [ready, fontFamily, fontWeight]);
 

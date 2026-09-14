@@ -58,7 +58,9 @@ export function BrowserWindow({
   const theme = useTheme();
   const { u, width, height, safe, isLandscape } = useViewport();
   const m = useMotion(motion);
-  const role = useRoleMotion(m);
+  // opacityLeadFrames: 0 keeps this item's default render pixel-identical to its pre-retrofit hardcoded
+  // exit (opacity and geometry finishing together); useRoleMotion's own default (3) is unchanged for other adopters.
+  const role = useRoleMotion(m, { exit: { opacityLeadFrames: 0 } });
   const border = borderColor ?? theme.colors.border;
   const bar = barColor ?? theme.colors.surface;
   const maxW = (width - safe.x * 2) * (widthFraction ?? (isLandscape ? 0.86 : 1));

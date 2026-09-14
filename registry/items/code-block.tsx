@@ -97,7 +97,9 @@ export function CodeBlock({
   const remove = removeColor ?? theme.colors.danger;
   const { u, width, height, safe, isLandscape } = useViewport();
   const m = useMotion(motion);
-  const role = useRoleMotion(m);
+  // opacityLeadFrames: 0 keeps this item's default render pixel-identical to its pre-retrofit hardcoded
+  // exit (opacity and geometry finishing together); useRoleMotion's own default (3) is unchanged for other adopters.
+  const role = useRoleMotion(m, { exit: { opacityLeadFrames: 0 } });
   const palette = { ...tokenColors(theme.colors), ...colors };
   const surface = background ?? theme.colors.surface;
   const border = borderColor ?? theme.colors.border;
