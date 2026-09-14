@@ -82,7 +82,7 @@ function StepCard({ index, label }: { index: number; label: string }) {
 function StaggerSteps() {
   return (
     <Center>
-      <Stagger>
+      <Stagger motion={{ preset: "smooth", step: 3 }}>
         {["Write", "Preview", "Render", "Ship"].map((label, index) => (
           <StepCard key={label} index={index + 1} label={label} />
         ))}

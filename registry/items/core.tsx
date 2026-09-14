@@ -29,6 +29,15 @@ import { fonts } from "./fonts";
 
 export type MotionPreset = "smooth" | "snappy" | "bouncy" | "gentle" | "linear" | "settle";
 
+/** A plain preset, or a preset with time-quantization ("on twos"/"on threes") and seeded jitter. */
+export type MotionPersonality = MotionPreset | { preset: MotionPreset; step?: number; jitter?: number };
+
+/** Normalizes a `MotionPersonality` to its full, explicit shape. A plain string is `{ preset, step: 1, jitter: 0 }` — mathematically a no-op quantization. */
+export function quantizeMotion(m: MotionPersonality): { preset: MotionPreset; step: number; jitter: number } {
+  if (typeof m === "string") return { preset: m, step: 1, jitter: 0 };
+  return { preset: m.preset, step: m.step ?? 1, jitter: m.jitter ?? 0 };
+}
+
 export type Theme = {
   name: string;
   colors: {
@@ -62,7 +71,7 @@ export type Theme = {
   /** Corner radius in design units (see `useViewport().u`). */
   radius: number;
   /** Default motion personality for every component. */
-  motion: MotionPreset;
+  motion: MotionPersonality;
   /** Line quality Phase 2 will use for arrow/highlight/scribble/svg-draw. No item reads this yet. */
   stroke: "vector" | "marker" | "brush";
 };
@@ -320,24 +329,28 @@ export const exitEasing = Easing.bezier(0.55, 0, 1, 0.45);
 export function tween(
   frame: number,
   fps: number,
-  { from = 0, duration, motion = "smooth" }: { from?: number; duration: number; motion?: MotionPreset },
+  {
+    from = 0,
+    duration,
+    motion = "smooth",
+    step = 1,
+    jitter = 0,
+    seed = "tween",
+  }: { from?: number; duration: number; motion?: MotionPreset; step?: number; jitter?: number; seed?: string },
 ): number {
   if (duration <= 0) return frame >= from ? 1 : 0;
+  const wobble = jitter > 0 ? Math.round((random(`${seed}-${Math.floor(frame / step)}`) - 0.5) * 2 * jitter * step) : 0;
+  const f = step > 1 ? Math.floor((frame + wobble) / step) * step : frame;
   if (motion === "bouncy") {
-    return spring({
-      frame: frame - from,
-      fps,
-      durationInFrames: duration,
-      config: { damping: 12, stiffness: 170, mass: 0.9 },
-    });
+    return spring({ frame: f - from, fps, durationInFrames: duration, config: { damping: 12, stiffness: 170, mass: 0.9 } });
   }
   if (motion === "settle") {
-    const t = Math.min(Math.max((frame - from) / duration, 0), 1);
+    const t = Math.min(Math.max((f - from) / duration, 0), 1);
     if (t <= 0) return 0;
     if (t < 0.4) return interpolate(t, [0, 0.4], [0, 1.06], { ...CLAMP, easing: easings.smooth });
     return 1 + 0.06 * Math.exp(-4.6 * ((t - 0.4) / 0.6));
   }
-  return interpolate(frame, [from, from + duration], [0, 1], { ...CLAMP, easing: easings[motion] });
+  return interpolate(f, [from, from + duration], [0, 1], { ...CLAMP, easing: easings[motion] });
 }
 
 export type MotionProps = {
@@ -348,7 +361,7 @@ export type MotionProps = {
   /** Exit at the end of the parent `<Sequence>`. `false` keeps it on screen, a number sets the exit length in frames. */
   exit?: boolean | number;
   /** Override the theme's motion personality. */
-  motion?: MotionPreset;
+  motion?: MotionPersonality;
   /** Renders fully entered, with no exit — for a still frame or thumbnail. Defaults to `false`. */
   poster?: boolean;
   /** Delays the start of the exit window by this many frames, for a minimum on-screen hold. Defaults to `0`. */
@@ -370,13 +383,20 @@ export function useMotion({
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
   const theme = useTheme();
-  const preset = motion ?? theme.motion;
+  const personality = quantizeMotion(motion ?? theme.motion);
+  const preset = personality.preset;
   const enterFrames = duration ?? Math.round(fps * 0.6);
   if (poster) {
     return { frame, fps, durationInFrames, preset, delay, enterFrames, enter: 1, exit: 0, presence: 1 };
   }
   const exitFrames = typeof exit === "number" ? exit : Math.round(fps * 0.35);
-  const enter = tween(frame, fps, { from: delay, duration: enterFrames, motion: preset });
+  const enter = tween(frame, fps, {
+    from: delay,
+    duration: enterFrames,
+    motion: preset,
+    step: personality.step,
+    jitter: personality.jitter,
+  });
   // The last rendered frame is durationInFrames - 1, so the exit has to finish there.
   // A single-frame sequence (a Still, a contact-sheet cell) or a zero-length exit has no room to leave,
   // and would otherwise ask interpolate for a degenerate range.

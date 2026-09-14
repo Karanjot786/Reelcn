@@ -121,6 +121,7 @@ export default [
     component: () => (
       <Center>
         <KpiGrid
+          motion={{ preset: "smooth", step: 3 }}
           items={[
             {
               label: "MRR",
