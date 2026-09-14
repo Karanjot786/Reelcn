@@ -20,7 +20,7 @@
  */
 import type React from "react";
 import { type AnimateEffect, effectStyle } from "./animate";
-import { alpha, type MotionProps, tween, useMotion, useTheme, useViewport } from "./core";
+import { alpha, type MotionProps, staggerDelay, tween, useMotion, useTheme, useViewport } from "./core";
 
 export type BentoTile = {
   title: string;
@@ -119,7 +119,7 @@ export function BentoGrid({
       }}
     >
       {tiles.map((tile, index) => {
-        const p = tween(m.frame, m.fps, { from: m.delay + index * frames, duration: m.enterFrames, motion: m.preset });
+        const p = tween(m.frame, m.fps, { from: m.delay + staggerDelay(index, tiles.length, { step: frames }), duration: m.enterFrames, motion: m.preset });
         const fill = tile.accent ? (accentColor ?? theme.colors.accent) : (background ?? theme.colors.surface);
         return (
           <div

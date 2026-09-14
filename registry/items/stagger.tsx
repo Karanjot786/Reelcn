@@ -20,7 +20,7 @@ import type React from "react";
 import { Children } from "react";
 import { useVideoConfig } from "remotion";
 import { Animate, type AnimateEffect } from "./animate";
-import { type MotionProps, useViewport } from "./core";
+import { type MotionProps, staggerDelay, useViewport } from "./core";
 
 export type StaggerProps = MotionProps & {
   children?: React.ReactNode;
@@ -76,18 +76,21 @@ export function Stagger({
         ...style,
       }}
     >
-      {Children.toArray(children).map((child, index) => (
-        <Animate
-          key={index}
-          effect={effect}
-          exitEffect={exitEffect}
-          distance={distance}
-          delay={delay + index * frames}
-          {...motion}
-        >
-          {child}
-        </Animate>
-      ))}
+      {(() => {
+        const items = Children.toArray(children);
+        return items.map((child, index) => (
+          <Animate
+            key={index}
+            effect={effect}
+            exitEffect={exitEffect}
+            distance={distance}
+            delay={delay + staggerDelay(index, items.length, { step: frames })}
+            {...motion}
+          >
+            {child}
+          </Animate>
+        ));
+      })()}
     </div>
   );
 }

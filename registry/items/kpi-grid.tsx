@@ -20,7 +20,7 @@
  * </Center>
  */
 import type React from "react";
-import { type MotionProps, tween, useMotion, useTheme, useViewport } from "./core";
+import { type MotionProps, staggerDelay, tween, useMotion, useTheme, useViewport } from "./core";
 import { StatCounter } from "./stat-counter";
 
 export type KpiGridItem = {
@@ -108,7 +108,7 @@ export function KpiGrid({
       }}
     >
       {items.map((item, index) => {
-        const cardDelay = delay + index * step;
+        const cardDelay = delay + staggerDelay(index, items.length, { step });
         const pop = clamp01(tween(m.frame, m.fps, { from: cardDelay, duration: m.enterFrames, motion: m.preset }));
         return (
           <div
