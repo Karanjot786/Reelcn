@@ -90,7 +90,13 @@ export function Camera({
   const { u } = useViewport();
   const m = useMotion({ ...motion, exit });
   const poses = resolvePoses(keyframes);
-  const keys: PoseKey[] = poses.map((p) => ({ frame: m.delay + p.frame, x: p.x, y: p.y, scale: p.zoom, rotate: p.rotate }));
+  const keys: PoseKey[] = poses.map((p) => ({
+    frame: m.delay + p.frame,
+    x: p.x,
+    y: p.y,
+    scale: p.zoom,
+    rotate: p.rotate,
+  }));
   const path = useKeyframePath(keys, { motion: m.preset });
   const pose: Pose = { x: path.x, y: path.y, zoom: path.scale ?? 1, rotate: path.rotate ?? 0 };
   const t = (m.frame / m.fps) * shakeSpeed * Math.PI;

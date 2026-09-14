@@ -2,11 +2,7 @@ import { strict as assert } from "node:assert";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
 
-const MIGRATED = [
-  "registry/items/toast.tsx",
-  "registry/items/stat-counter.tsx",
-  "registry/items/code-block.tsx",
-];
+const MIGRATED = ["registry/items/toast.tsx", "registry/items/stat-counter.tsx", "registry/items/code-block.tsx"];
 
 test("no hex color literals remain in the four files migrated to theme tokens", () => {
   for (const file of MIGRATED) {

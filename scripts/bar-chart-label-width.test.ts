@@ -2,7 +2,13 @@
 import { strict as assert } from "node:assert";
 import { test } from "node:test";
 
-function labelWidth(measured: { ready: boolean; width: number }, estimateChars: number, labelPx: number, padPx: number, cap: number): number {
+function labelWidth(
+  measured: { ready: boolean; width: number },
+  estimateChars: number,
+  labelPx: number,
+  padPx: number,
+  cap: number,
+): number {
   return Math.min((measured.ready ? measured.width : estimateChars * labelPx * 0.56) + padPx, cap);
 }
 

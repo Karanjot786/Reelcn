@@ -102,7 +102,8 @@ export function BentoGrid({
     cols,
   );
   const frames = step ?? Math.round(m.fps * 0.1);
-  const delayFor = (index: number, count: number) => sceneClock?.delayFor(index, count) ?? staggerDelay(index, count, { step: frames });
+  const delayFor = (index: number, count: number) =>
+    sceneClock?.delayFor(index, count) ?? staggerDelay(index, count, { step: frames });
 
   return (
     <div
@@ -121,7 +122,11 @@ export function BentoGrid({
       }}
     >
       {tiles.map((tile, index) => {
-        const p = tween(m.frame, m.fps, { from: m.delay + delayFor(index, tiles.length), duration: m.enterFrames, motion: m.preset });
+        const p = tween(m.frame, m.fps, {
+          from: m.delay + delayFor(index, tiles.length),
+          duration: m.enterFrames,
+          motion: m.preset,
+        });
         const fill = tile.accent ? (accentColor ?? theme.colors.accent) : (background ?? theme.colors.surface);
         return (
           <div

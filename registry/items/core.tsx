@@ -342,7 +342,12 @@ export function tween(
   const wobble = jitter > 0 ? Math.round((random(`${seed}-${Math.floor(frame / step)}`) - 0.5) * 2 * jitter * step) : 0;
   const f = step > 1 ? Math.floor((frame + wobble) / step) * step : frame;
   if (motion === "bouncy") {
-    return spring({ frame: f - from, fps, durationInFrames: duration, config: { damping: 12, stiffness: 170, mass: 0.9 } });
+    return spring({
+      frame: f - from,
+      fps,
+      durationInFrames: duration,
+      config: { damping: 12, stiffness: 170, mass: 0.9 },
+    });
   }
   if (motion === "settle") {
     const t = Math.min(Math.max((f - from) / duration, 0), 1);

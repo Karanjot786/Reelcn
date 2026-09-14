@@ -23,7 +23,16 @@
  */
 import type React from "react";
 import { AbsoluteFill } from "remotion";
-import { alpha, type MotionProps, type PoseKey, tween, useKeyframePath, useMotion, useTheme, useViewport } from "./core";
+import {
+  alpha,
+  type MotionProps,
+  type PoseKey,
+  tween,
+  useKeyframePath,
+  useMotion,
+  useTheme,
+  useViewport,
+} from "./core";
 
 export type CursorWaypoint = {
   /** Position in % of the canvas (0–100 on each axis). */

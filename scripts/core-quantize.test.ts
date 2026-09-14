@@ -30,7 +30,8 @@ function seededRandom(seed: string): number {
 
 // Mirrors tween's floor-snap + seeded-offset quantization of `frame`.
 function quantizedFrame(frame: number, step: number, jitter: number, seed: string): number {
-  const wobble = jitter > 0 ? Math.round((seededRandom(`${seed}-${Math.floor(frame / step)}`) - 0.5) * 2 * jitter * step) : 0;
+  const wobble =
+    jitter > 0 ? Math.round((seededRandom(`${seed}-${Math.floor(frame / step)}`) - 0.5) * 2 * jitter * step) : 0;
   return step > 1 ? Math.floor((frame + wobble) / step) * step : frame;
 }
 

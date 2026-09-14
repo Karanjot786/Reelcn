@@ -49,7 +49,13 @@ const REST: ScreenZoomFocus = { frame: 0, x: 0, y: 0, width: 100, height: 100 };
 export function ScreenZoom({ focus, exit = false, children, style, className, ...motion }: ScreenZoomProps) {
   const m = useMotion({ ...motion, exit });
   const points = focus.slice().sort((a, b) => a.frame - b.frame);
-  const keys: PoseKey[] = points.map((p) => ({ frame: m.delay + p.frame, x: p.x, y: p.y, width: p.width, height: p.height }));
+  const keys: PoseKey[] = points.map((p) => ({
+    frame: m.delay + p.frame,
+    x: p.x,
+    y: p.y,
+    width: p.width,
+    height: p.height,
+  }));
   const path = useKeyframePath(keys, { motion: m.preset });
   const rect: ScreenZoomFocus =
     points.length > 0

@@ -96,7 +96,8 @@ export function KpiGrid({
   const cardSize = size ?? (columns === 1 ? 108 : columns === 2 ? 92 : columns === 3 ? 78 : 64);
   const step = stagger ?? Math.round(m.fps * 0.15);
   const delay = motion.delay ?? 0;
-  const delayFor = (index: number, count: number) => sceneClock?.delayFor(index, count) ?? staggerDelay(index, count, { step });
+  const delayFor = (index: number, count: number) =>
+    sceneClock?.delayFor(index, count) ?? staggerDelay(index, count, { step });
 
   return (
     <div
