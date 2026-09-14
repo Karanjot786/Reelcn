@@ -13,5 +13,6 @@
     "forceConsistentCasingInFileNames": true,
     "noUnusedLocals": true
   },
-  "include": ["registry/items"]
+  "include": ["registry/items"],
+  "exclude": ["registry/items/*.test.ts"]
 }
