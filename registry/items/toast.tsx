@@ -11,7 +11,7 @@
  * <Toast variant="success" title="Deployed" description="Live in 12 regions" />
  */
 import type React from "react";
-import { alpha, type MotionProps, useMotion, useTheme, useViewport } from "./core";
+import { alpha, clamp01, type MotionProps, useMotion, useTheme, useViewport } from "./core";
 
 export type ToastVariant = "success" | "info" | "warning" | "error";
 
@@ -34,8 +34,6 @@ export type ToastProps = MotionProps & {
   style?: React.CSSProperties;
   className?: string;
 };
-
-const clamp01 = (value: number) => Math.min(Math.max(value, 0), 1);
 
 function ToastIcon({ variant }: { variant: ToastVariant }) {
   if (variant === "success") return <path d="M5 13l4 4L19 7" />;

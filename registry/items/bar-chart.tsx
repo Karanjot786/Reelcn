@@ -24,7 +24,7 @@
  */
 import type React from "react";
 import { formatter, niceTicks, scaleLinear } from "./chart-scale";
-import { alpha, type MotionProps, tween, useMotion, useTextMetrics, useTheme, useViewport } from "./core";
+import { alpha, clamp01, type MotionProps, tween, useMotion, useTextMetrics, useTheme, useViewport } from "./core";
 
 export type BarChartDatum = {
   label: string;
@@ -65,7 +65,6 @@ export type BarChartProps = MotionProps & {
   className?: string;
 };
 
-const clamp01 = (value: number) => Math.min(Math.max(value, 0), 1);
 const longest = (texts: string[]) => texts.reduce((most, text) => Math.max(most, text.length), 0);
 
 export function BarChart({

@@ -548,6 +548,12 @@ const segmenter =
 export const graphemes = (text: string) =>
   segmenter ? Array.from(segmenter.segment(text), (s) => s.segment) : Array.from(text);
 
+/** Clamp to 0-1. */
+export const clamp01 = (n: number): number => Math.min(Math.max(n, 0), 1);
+
+/** First user-perceived character of `name`, safe for emoji, CJK and combining marks (`graphemes` already handles the segmentation). */
+export const graphemeInitial = (name: string): string => graphemes(name)[0] ?? "";
+
 /* ────────────────────────────── Text metrics ────────────────────────────── */
 
 let measureContext: CanvasRenderingContext2D | null = null;
@@ -654,7 +660,15 @@ export function useTypedText(
 
 /* ───────────────────────────────── Paths ───────────────────────────────── */
 
-export type PoseKey = { frame: number; x: number; y: number; scale?: number; rotate?: number; width?: number; height?: number };
+export type PoseKey = {
+  frame: number;
+  x: number;
+  y: number;
+  scale?: number;
+  rotate?: number;
+  width?: number;
+  height?: number;
+};
 
 function catmullRom(p0: number, p1: number, p2: number, p3: number, t: number): number {
   const t2 = t * t;
@@ -685,7 +699,13 @@ export function useKeyframePath(keys: PoseKey[], opts?: { motion?: MotionPreset 
   type Field = "x" | "y" | "scale" | "rotate" | "width" | "height";
   const field = (key: PoseKey, name: Field, fallback: number) => key[name] ?? fallback;
   const at4 = (name: Field, fallback: number) =>
-    catmullRom(field(p0, name, fallback), field(p1, name, fallback), field(p2, name, fallback), field(p3, name, fallback), localT);
+    catmullRom(
+      field(p0, name, fallback),
+      field(p1, name, fallback),
+      field(p2, name, fallback),
+      field(p3, name, fallback),
+      localT,
+    );
 
   return {
     frame: clamped,

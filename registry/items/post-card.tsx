@@ -13,7 +13,7 @@
  * </Center>
  */
 import type React from "react";
-import { alpha, type MotionProps, tween, useMotion, useTheme, useViewport } from "./core";
+import { alpha, graphemeInitial, type MotionProps, tween, useMotion, useTheme, useViewport } from "./core";
 
 export type PostCardProps = MotionProps & {
   name: string;
@@ -93,7 +93,7 @@ export function PostCard({
             flexShrink: 0,
           }}
         >
-          {avatar ?? name.slice(0, 1)}
+          {avatar ?? graphemeInitial(name)}
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: u(2), minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: u(8), fontSize: u(28), fontWeight: 700 }}>

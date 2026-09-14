@@ -13,7 +13,7 @@
  * </Center>
  */
 import type React from "react";
-import { alpha, type MotionProps, tween, useMotion, useTheme, useViewport } from "./core";
+import { alpha, graphemeInitial, type MotionProps, tween, useMotion, useTheme, useViewport } from "./core";
 
 export type FollowCardProps = MotionProps & {
   name: string;
@@ -89,7 +89,7 @@ export function FollowCard({
           flexShrink: 0,
         }}
       >
-        {avatar ?? name.slice(0, 1)}
+        {avatar ?? graphemeInitial(name)}
       </div>
       <div style={{ flexGrow: 1, minWidth: 0 }}>
         <div style={{ fontSize: u(30), fontWeight: 700 }}>{name}</div>

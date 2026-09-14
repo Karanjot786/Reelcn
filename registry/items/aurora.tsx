@@ -15,7 +15,7 @@
  */
 import type React from "react";
 import { AbsoluteFill } from "remotion";
-import { alpha, type MotionProps, useMotion, useTheme, useViewport } from "./core";
+import { alpha, clamp01, type MotionProps, useMotion, useTheme, useViewport } from "./core";
 
 export type AuroraProps = MotionProps & {
   /** Base fill. Defaults to the theme background. */
@@ -38,8 +38,6 @@ const layers = [
   { weight: 0.55, tilt: 6, band: 0.36 },
   { weight: 0.8, tilt: -3, band: 0.28 },
 ];
-
-const clamp01 = (value: number) => Math.min(Math.max(value, 0), 1);
 
 // Bright lower hem, long fade upward: the shape of a real curtain.
 const curtainMask =

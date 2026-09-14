@@ -12,7 +12,7 @@
 import { useWindowedAudioData, visualizeAudioWaveform } from "@remotion/media-utils";
 import type React from "react";
 import { useCurrentFrame, useVideoConfig } from "remotion";
-import { alpha, type MotionProps, useMotion, useTheme, useViewport } from "./core";
+import { alpha, graphemeInitial, type MotionProps, useMotion, useTheme, useViewport } from "./core";
 
 export type SpeakerCardProps = MotionProps & {
   /** Audio file; `staticFile("…")` or a URL. */
@@ -105,7 +105,7 @@ export function SpeakerCard({
             fontWeight: 700,
           }}
         >
-          {avatar ?? name.slice(0, 1)}
+          {avatar ?? graphemeInitial(name)}
         </div>
       </div>
       <div>

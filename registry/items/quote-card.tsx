@@ -13,7 +13,7 @@
  * </Center>
  */
 import type React from "react";
-import { alpha, type MotionProps, tween, useMotion, useTheme, useViewport } from "./core";
+import { alpha, graphemeInitial, type MotionProps, tween, useMotion, useTheme, useViewport } from "./core";
 
 export type QuoteCardProps = MotionProps & {
   quote: string;
@@ -116,7 +116,7 @@ export function QuoteCard({
             fontWeight: 700,
           }}
         >
-          {avatar ?? name.slice(0, 1)}
+          {avatar ?? graphemeInitial(name)}
         </div>
         <div>
           <div style={{ fontSize: u(24), fontWeight: 650 }}>{name}</div>

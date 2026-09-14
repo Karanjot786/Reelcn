@@ -13,7 +13,7 @@
  * </Center>
  */
 import type React from "react";
-import { alpha, type MotionProps, tween, useMotion, useTheme, useViewport } from "./core";
+import { alpha, graphemeInitial, type MotionProps, tween, useMotion, useTheme, useViewport } from "./core";
 
 export type CommentBubbleProps = MotionProps & {
   name: string;
@@ -80,7 +80,7 @@ export function CommentBubble({
           flexShrink: 0,
         }}
       >
-        {avatar ?? name.slice(0, 1)}
+        {avatar ?? graphemeInitial(name)}
       </div>
       <div
         style={{
