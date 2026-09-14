@@ -164,7 +164,7 @@ export function BarRace({
       </div>
       {series.map((s, index) => {
         const grow = tween(m.frame, m.fps, {
-          from: m.delay + rankFrom[index] * 2,
+          from: m.delay + rankFrom[index] * Math.round(m.fps * (2 / 30)),
           duration: m.enterFrames,
           motion: m.preset,
         });

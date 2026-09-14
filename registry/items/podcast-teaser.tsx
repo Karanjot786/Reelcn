@@ -60,5 +60,6 @@ export function PodcastTeaser({ audio, clipStart, quote, show, cover, ...fields 
 }
 
 export const podcastTeaserMetadata: CalculateMetadataFunction<PodcastTeaserProps> = ({ props }) => ({
+  fps: STORY_FPS,
   durationInFrames: Math.round((props.clipEnd - props.clipStart) * STORY_FPS),
 });

@@ -206,6 +206,7 @@ export function Audiogram({ audio, captions, show, episode, speakers, cover, ...
 
 /** As long as the audio; without it, as long as the captions, or 8 s. */
 export const audiogramMetadata: CalculateMetadataFunction<AudiogramProps> = async ({ props }) => ({
+  fps: STORY_FPS,
   durationInFrames: Math.ceil(
     STORY_FPS * (props.audio ? await mediaSeconds(props.audio) : captionsSeconds(props.captions, 8)),
   ),

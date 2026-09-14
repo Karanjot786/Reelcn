@@ -177,7 +177,11 @@ export function CommandPalette({
         )}
         {filtered.map((item, index) => {
           const rowIn = clamp01(
-            tween(m.frame, m.fps, { from: start + index * 2, duration: Math.round(m.fps * 0.3), motion: "smooth" }),
+            tween(m.frame, m.fps, {
+              from: start + index * Math.round(m.fps * (2 / 30)),
+              duration: Math.round(m.fps * 0.3),
+              motion: "smooth",
+            }),
           );
           const active = item.label === targetLabel;
           return (

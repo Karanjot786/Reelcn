@@ -129,7 +129,11 @@ export function CodeBlock({
   const sweep = (order: number) =>
     Math.min(
       1,
-      tween(m.frame, m.fps, { from: focusFrom + order * 2, duration: Math.round(m.fps * 0.45), motion: m.preset }),
+      tween(m.frame, m.fps, {
+        from: focusFrom + order * Math.round(m.fps * (2 / 30)),
+        duration: Math.round(m.fps * 0.45),
+        motion: m.preset,
+      }),
     );
   const focus = highlightLines.length > 0 ? sweep(0) : 0;
   const blinkOn = Math.floor(m.frame / Math.round(m.fps * 0.5)) % 2 === 0;

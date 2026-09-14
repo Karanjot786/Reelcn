@@ -62,5 +62,6 @@ export function YoutubeOutro({ nextVideoTitle, thumbnail, subscribe, ...fields }
 }
 
 export const youtubeOutroMetadata: CalculateMetadataFunction<YoutubeOutroProps> = () => ({
+  fps: STORY_FPS,
   durationInFrames: YOUTUBE_OUTRO_FRAMES,
 });

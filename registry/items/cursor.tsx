@@ -88,7 +88,9 @@ export function Cursor({
   }
 
   const appear =
-    points.length > 0 ? tween(m.frame, m.fps, { from: m.delay + points[0].frame, duration: 6, motion: "snappy" }) : 1;
+    points.length > 0
+      ? tween(m.frame, m.fps, { from: m.delay + points[0].frame, duration: Math.round(m.fps * 0.2), motion: "snappy" })
+      : 1;
   const pressWindow = Math.round(m.fps * 0.18);
   let press = 0;
   for (const point of points) {

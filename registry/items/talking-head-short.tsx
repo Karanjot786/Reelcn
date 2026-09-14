@@ -87,6 +87,7 @@ export function TalkingHeadShort({ video, captions, hook, emphasize, ...fields }
 
 /** As long as the video; without one, as long as the captions. */
 export const talkingHeadShortMetadata: CalculateMetadataFunction<TalkingHeadShortProps> = async ({ props }) => ({
+  fps: STORY_FPS,
   durationInFrames: Math.ceil(
     STORY_FPS * (props.video ? await mediaSeconds(props.video) : captionsSeconds(props.captions, 6)),
   ),
