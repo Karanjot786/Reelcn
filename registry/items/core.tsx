@@ -290,10 +290,10 @@ export function createTheme(base: ThemeName | Theme, overrides: ThemeOverrides =
   };
 }
 
-const ThemeContext = createContext<Theme>(themes.midnight);
+const ThemeContext = createContext<Theme>(themes.daylight);
 
 export function ThemeProvider({
-  theme = "midnight",
+  theme = "daylight",
   children,
 }: {
   theme?: ThemeName | Theme;
