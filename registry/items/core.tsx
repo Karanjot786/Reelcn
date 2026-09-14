@@ -91,8 +91,17 @@ export type Theme = {
   radius: number;
   /** Default motion personality for every component. */
   motion: MotionPersonality;
-  /** Line quality Phase 2 will use for arrow/highlight/scribble/svg-draw. No item reads this yet. */
+  /** Line quality for arrow/highlight/scribble-circle/svg-draw (Phase 2). */
   stroke: "vector" | "marker" | "brush";
+  /** Non-color, non-motion visual traits a theme needs and no other field carries. Optional: undefined is a valid, empty `material` for any theme that doesn't need one. */
+  material?: {
+    /** 0-1 opacity of the film-grain layer (the `grain` item's default when it gets no explicit `opacity`). */
+    grain?: number;
+    /** 0-1 bloom around bright edges, film-look themes only. */
+    halation?: number;
+    /** Contact-shadow falloff under a device frame or stage. */
+    floorShadow?: "hard" | "soft";
+  };
 };
 
 const sans = (family: string) => `${family}, ui-sans-serif, system-ui, sans-serif`;
