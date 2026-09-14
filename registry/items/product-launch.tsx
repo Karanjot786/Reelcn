@@ -53,15 +53,20 @@ export function productLaunchStory(props: ProductLaunchProps): Story {
   const { name, tagline, features, screenshots, cta, url } = props;
   const logo: Scene[] = props.brand?.logo ? [{ type: "logo", text: name }] : [];
   const screens: (string | undefined)[] = screenshots.length > 0 ? screenshots : [undefined];
+  // Was one bullets scene holding every feature (an ~11s single hold for the 3-feature default —
+  // rule M3's "hold ≥ 1s but not forever"). Groups of 2 keep each bullets scene short, and a one-line
+  // headline scene between groups breaks the hold into several shorter, varied beats instead of one
+  // long one, reusing the story vocabulary's existing "text" and "bullets" scene types (P2-6d: no new
+  // scene type).
+  const featureGroups = chunk(features, 2);
+  const featureScenes: Scene[] = featureGroups.flatMap((group): Scene[] => [
+    { type: "text", text: group.map((feature) => feature.title).join(" · ") },
+    { type: "bullets", items: group.map((feature) => ({ text: feature.title, detail: feature.body })) },
+  ]);
   return templateStory(props, [
     ...logo,
     { type: "title", kicker: "Introducing", title: name, subtitle: tagline, background: "gradient-mesh" },
-    ...chunk(features, 3).map(
-      (group): Scene => ({
-        type: "bullets",
-        items: group.map((feature) => ({ text: feature.title, detail: feature.body })),
-      }),
-    ),
+    ...featureScenes,
     ...screens.map((src): Scene => ({ type: "device", device: "browser", src, url })),
     { type: "cta", title: cta, url, background: "spotlight" },
   ]);
