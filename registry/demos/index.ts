@@ -1,4 +1,5 @@
 import type React from "react";
+import type { Story } from "../items/story";
 import audio from "./audio";
 import backgrounds from "./backgrounds";
 import data from "./data";
@@ -24,6 +25,8 @@ export type Demo = {
   thumbFrame?: number;
   /** Scene starts for story-built demos; the site marks them on its scrubber. */
   scenes?: SceneMark[];
+  /** The story a story-built demo renders; the site shows it in a Story JSON tab. */
+  story?: Story;
 };
 
 // Each category adds one entry. Tasks 3-5 and later plans extend this map.

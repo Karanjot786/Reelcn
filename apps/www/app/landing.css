@@ -1421,3 +1421,74 @@
     animation-range: entry 0% entry 60%;
   }
 }
+
+/* Interactive hero: template buttons in the bin, editable props, the feature stepper and the scrub surfaces. */
+.landing .bin li button {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  padding: 6px 8px;
+  border-radius: 6px;
+  color: var(--muted);
+  text-align: left;
+  transition:
+    background-color var(--t1) ease-out,
+    color var(--t1) ease-out;
+}
+.landing .bin li button:hover,
+.landing .bin li button[aria-pressed="true"] {
+  background: var(--panel3);
+  color: var(--text);
+}
+.landing .insp input.field {
+  font: inherit;
+  width: 100%;
+  outline: none;
+}
+.landing .insp input.field:focus {
+  border-color: var(--play);
+}
+.landing .stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.landing .stepper button {
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line2);
+  border-radius: 6px;
+  color: var(--muted);
+}
+.landing .stepper button:hover:not(:disabled) {
+  color: var(--text);
+  border-color: var(--line);
+}
+.landing .stepper button:disabled {
+  opacity: 0.4;
+}
+.landing .insp .reset {
+  font: 400 11px var(--mono);
+  color: var(--play);
+}
+.landing .prop-note {
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+.landing .prop-note a {
+  color: var(--text);
+  border-bottom: 1px solid var(--line);
+}
+.landing .ruler,
+.landing .lane {
+  touch-action: none;
+  cursor: ew-resize;
+}
+.landing .ruler:focus-visible {
+  outline: 2px solid var(--play);
+  outline-offset: 2px;
+  border-radius: 4px;
+}

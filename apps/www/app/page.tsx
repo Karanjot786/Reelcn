@@ -1,9 +1,11 @@
 import Link from "next/link";
+import type { CSSProperties, ReactNode } from "react";
 import { CopyCommand } from "@/components/copy-command";
 import { FormatTrio } from "@/components/format-trio";
 import { FrameSheet } from "@/components/frame-sheet";
 import { HeadlineSweep } from "@/components/headline-sweep";
 import { HeroEditor } from "@/components/hero-editor";
+import { SearchButton } from "@/components/search-button";
 import { ThemeCycle } from "@/components/theme-cycle";
 import { TypeOnView } from "@/components/type-on-view";
 import { firstDemo, themeNames } from "@/lib/demos";
@@ -11,29 +13,154 @@ import { REPO_URL } from "@/lib/layout.shared";
 import { categoryOf, componentUrl, getItem, installUrl, items } from "@/lib/registry";
 import "./landing.css";
 
-const costs = [
+// Icons copied from assets/reelcn-07/mockup.html; `.draw` strokes redraw on hover and rest fully drawn.
+const len = (n: number) => ({ "--len": n }) as CSSProperties;
+const icon = (children: ReactNode) => (
+  <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+    {children}
+  </svg>
+);
+const costs: [string, ReactNode, ReactNode][] = [
   [
     "No keyframes",
     "Entrances, exits and staggers come from the theme's motion preset, timed to the frame. Change the preset and every item follows.",
+    icon(
+      <>
+        <path
+          className="draw"
+          style={len(70)}
+          d="M4 22 L10 8 L16 18 L24 6"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <circle cx="10" cy="8" r="2" fill="#FFB224" />
+        <circle cx="16" cy="18" r="2" fill="#FFB224" />
+      </>,
+    ),
   ],
   [
     "No second export for Reels",
     "Items size themselves in design units and respect platform safe zones. The same code renders at 16:9, 9:16 and 1:1.",
+    icon(
+      <>
+        <rect
+          className="draw"
+          style={len(60)}
+          x="3"
+          y="8"
+          width="14"
+          height="10"
+          rx="2"
+          stroke="currentColor"
+          strokeWidth="1.6"
+        />
+        <rect
+          className="draw"
+          style={len(50)}
+          x="19"
+          y="5"
+          width="6"
+          height="18"
+          rx="1.5"
+          stroke="currentColor"
+          strokeWidth="1.6"
+        />
+      </>,
+    ),
   ],
   [
     "No restyling per video",
-    "One theme prop sets colors, type, radius and motion across every item. Six themes, or your brand kit.",
+    <>
+      One <code className="mono">theme</code> prop sets colors, type, radius and motion across every item. Six themes,
+      or your brand kit.
+    </>,
+    icon(
+      <>
+        <circle className="draw" style={len(60)} cx="14" cy="14" r="9" stroke="currentColor" strokeWidth="1.6" />
+        <path d="M14 5a9 9 0 0 1 0 18z" fill="#FFB224" />
+      </>,
+    ),
   ],
   [
     "No render roulette",
     "No clock, no unseeded randomness, no CSS animation. CI renders sampled frames twice and fails on a single changed pixel.",
+    icon(
+      <>
+        <rect
+          className="draw"
+          style={len(56)}
+          x="4"
+          y="6"
+          width="9"
+          height="16"
+          rx="1.5"
+          stroke="currentColor"
+          strokeWidth="1.6"
+        />
+        <rect
+          className="draw"
+          style={len(56)}
+          x="15"
+          y="6"
+          width="9"
+          height="16"
+          rx="1.5"
+          stroke="currentColor"
+          strokeWidth="1.6"
+        />
+        <path d="M7 14h3M18 14h3" stroke="#FFB224" strokeWidth="1.6" strokeLinecap="round" />
+      </>,
+    ),
   ],
-  ["No black box", "Source lands in src/reelcn/ and stays yours. MIT, no runtime package, nothing to log in to."],
+  [
+    "No black box",
+    <>
+      Source lands in <code className="mono">src/reelcn/</code> and stays yours. MIT, no runtime package, nothing to log
+      in to.
+    </>,
+    icon(
+      <>
+        <path
+          className="draw"
+          style={len(60)}
+          d="M9 8 L4 14 L9 20 M19 8 L24 14 L19 20"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path d="M16 6 L12 22" stroke="#FFB224" strokeWidth="1.6" strokeLinecap="round" />
+      </>,
+    ),
+  ],
   [
     "No timeline guesswork",
     "Templates work out their own length from the content: reading time for text, typing time for code, the file length for audio.",
+    icon(
+      <>
+        <path
+          className="draw"
+          style={len(40)}
+          d="M4 20h20"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+        />
+        <path
+          className="draw"
+          style={len(40)}
+          d="M4 20V9h6v11M12 20V5h6v15"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinejoin="round"
+        />
+        <path d="M20 20v-7h4v7" stroke="#FFB224" strokeWidth="1.6" strokeLinejoin="round" />
+      </>,
+    ),
   ],
-] as const;
+];
 
 const sheet = [
   "text-reveal",
@@ -71,8 +198,12 @@ export default function Home() {
           </nav>
           <span className="sp" />
           <a className="stars" href={REPO_URL}>
-            GitHub
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <path d="M8 .2 10.4 5l5.3.8-3.8 3.7.9 5.3L8 12.3l-4.8 2.5.9-5.3L.3 5.8 5.6 5z" />
+            </svg>
+            <span>GitHub</span>
           </a>
+          <SearchButton />
         </div>
       </header>
 
@@ -116,10 +247,10 @@ export default function Home() {
               <span>pixels different, render to render</span>
             </div>
           </div>
-          <HeroEditor poster="/thumbs/hero-launch.jpg" />
+          <HeroEditor poster="/thumbs/hero-launch.jpg" install={`npx shadcn add ${installUrl("product-launch")}`} />
         </section>
 
-        <section className="block wrap" aria-labelledby="costs-title">
+        <section className="block wrap" id="costs" aria-labelledby="costs-title">
           <div className="sec-head">
             <div>
               <span className="tc-label">00:20:16</span>
@@ -131,9 +262,10 @@ export default function Home() {
             </p>
           </div>
           <div className="costs">
-            {costs.map(([title, body], i) => (
+            {costs.map(([title, body, costIcon], i) => (
               <article className="cost" key={title}>
                 <span className="f">f{String(i + 1).padStart(3, "0")}</span>
+                {costIcon}
                 <h3>{title}</h3>
                 <p>{body}</p>
               </article>
@@ -141,7 +273,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="block wrap" aria-labelledby="steps-title">
+        <section className="block wrap" id="steps" aria-labelledby="steps-title">
           <div className="sec-head">
             <div>
               <span className="tc-label">00:42:00</span>
@@ -197,9 +329,12 @@ export default function Home() {
               <p>615 frames, measured from the content. Same pixels every time.</p>
             </div>
           </div>
+          <p className="after">
+            Prefer an agent? <a href="#agents">Give it the reelcn skill</a> and describe the video.
+          </p>
         </section>
 
-        <section className="block wrap" aria-labelledby="formats-title">
+        <section className="block wrap" id="formats" aria-labelledby="formats-title">
           <div className="sec-head">
             <div>
               <span className="tc-label">01:04:00</span>
@@ -213,7 +348,7 @@ export default function Home() {
           <FormatTrio demoId="product-launch" category="templates" />
         </section>
 
-        <section className="block wrap" aria-labelledby="themes-title">
+        <section className="block wrap" id="themes" aria-labelledby="themes-title">
           <div className="sec-head">
             <div>
               <span className="tc-label">01:26:00</span>
@@ -227,7 +362,7 @@ export default function Home() {
           <ThemeCycle themes={themeNames} />
         </section>
 
-        <section className="block wrap" aria-labelledby="catalog-title">
+        <section className="block wrap" id="catalog" aria-labelledby="catalog-title">
           <div className="sec-head">
             <div>
               <span className="tc-label">01:48:00</span>
@@ -238,7 +373,7 @@ export default function Home() {
           <FrameSheet frames={sheet} />
         </section>
 
-        <section className="block wrap" aria-labelledby="agents-title">
+        <section className="block wrap" id="agents" aria-labelledby="agents-title">
           <div className="sec-head">
             <div>
               <span className="tc-label">02:10:00</span>

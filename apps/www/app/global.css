@@ -586,3 +586,371 @@ button.pv-scrub {
     font-size: 9.5px;
   }
 }
+
+/* Docs blocks copied from assets/reelcn-07/mockup.html: code block, props table, scenes list, dependency chips. */
+.code {
+  border: 1px solid var(--line);
+  border-radius: var(--r3);
+  background: var(--bg);
+  overflow: hidden;
+  margin-top: 12px;
+}
+.code pre {
+  margin: 0;
+  padding: 16px 18px;
+  font: 400 13px / 1.7 var(--mono);
+  color: var(--text);
+  overflow-x: auto;
+}
+.code .k {
+  color: var(--sel);
+}
+.code .s {
+  color: #9fd5a8;
+}
+.code .c {
+  color: var(--dim);
+}
+.code .n {
+  color: var(--play);
+}
+.ptable {
+  border: 1px solid var(--line);
+  border-radius: var(--r3);
+  overflow: hidden;
+}
+.prow {
+  display: grid;
+  grid-template-columns: 170px 170px minmax(0, 1fr);
+  gap: 16px;
+  padding: 14px 18px;
+  border-top: 1px solid var(--line2);
+  font-size: 14px;
+}
+.prow:first-child {
+  border-top: 0;
+  background: var(--panel2);
+  font: 500 11px var(--mono);
+  color: var(--dim);
+  padding-block: 10px;
+}
+.prow .pn {
+  font: 500 13px var(--mono);
+}
+.prow .pn b {
+  color: var(--play);
+  font-weight: 400;
+}
+.prow .pt {
+  font: 400 12.5px var(--mono);
+  color: var(--sel);
+}
+.prow .pd {
+  color: var(--muted);
+}
+.prow .pd code {
+  font: 400 12px var(--mono);
+  color: var(--text);
+  background: var(--panel2);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+.scenes-list {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+.scenes-list button {
+  text-align: left;
+  border: 1px solid var(--line2);
+  border-radius: var(--r2);
+  padding: 10px;
+  background: var(--bg);
+  transition: border-color var(--t1) ease-out;
+}
+.scenes-list button:hover {
+  border-color: #3a3e45;
+}
+.scenes-list b {
+  display: block;
+  font: 600 16px var(--display);
+}
+.scenes-list span {
+  font: 400 11px var(--mono);
+  color: var(--dim);
+}
+.deps {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.deps a {
+  font: 400 12.5px var(--mono);
+  border: 1px solid var(--line2);
+  background: var(--bg);
+  border-radius: 6px;
+  padding: 5px 10px;
+  color: var(--muted);
+}
+@media (max-width: 760px) {
+  .prow {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  .prow:first-child {
+    display: none;
+  }
+  .scenes-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Item page header, badges, copy-page and the top-right notch, copied from the mockup; notch and panel offsets fit the Fumadocs grid. */
+.notch {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 18px 0 42px;
+  background: var(--bg);
+  border-bottom-left-radius: 18px;
+  border-left: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--muted);
+  z-index: 3;
+}
+.notch .vr {
+  width: 1px;
+  height: 16px;
+  background: var(--line);
+}
+.dhead {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: start;
+}
+.dhead h1 {
+  font-size: 52px;
+}
+.dhead p {
+  color: var(--muted);
+  margin: 12px 0 0;
+  max-width: 56ch;
+}
+.copypage {
+  display: flex;
+  border: 1px solid var(--line);
+  border-radius: var(--r2);
+  overflow: hidden;
+  font-size: 13px;
+  flex: none;
+}
+.copypage button {
+  padding: 7px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+}
+.copypage button + button {
+  border-left: 1px solid var(--line);
+  padding: 7px 9px;
+}
+.badges {
+  display: flex;
+  gap: 6px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+.badges a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 400 12px var(--mono);
+  color: var(--muted);
+  background: var(--panel2);
+  border: 1px solid var(--line2);
+  border-radius: 6px;
+  padding: 3px 8px;
+}
+.badges a b {
+  font-weight: 400;
+  color: var(--play);
+}
+.dsec h3 {
+  font: 600 18px var(--display);
+  margin: 28px 0 10px;
+  scroll-margin-top: 24px;
+}
+.dsec p {
+  color: var(--muted);
+  margin: 0 0 14px;
+}
+#nd-docs-layout {
+  position: relative;
+}
+.notch {
+  top: 7px;
+  right: 7px;
+}
+.notch a {
+  color: var(--muted);
+}
+@media (max-width: 767px) {
+  .notch {
+    display: none;
+  }
+}
+
+/* Item page fit-and-finish: TOC starts below the notch; mockup chips are plain links, not prose-underlined. */
+#nd-toc {
+  padding-top: 84px;
+}
+.badges a,
+.deps a {
+  text-decoration: none;
+}
+.badges + .preview {
+  margin-top: 24px;
+}
+@media (max-width: 760px) {
+  .dhead {
+    flex-direction: column;
+  }
+  .dhead h1 {
+    font-size: 38px;
+  }
+}
+
+/* Docs sidebar search box and the active template's section list, copied from the mockup. */
+.dsearch {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: var(--r2);
+  padding: 6px 8px 6px 10px;
+  color: var(--dim);
+  font-size: 13px;
+  margin-bottom: 18px;
+}
+.sub {
+  position: relative;
+  list-style: none;
+  margin: 2px 0 6px 15px;
+  padding: 0 0 0 14px;
+}
+.sub:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 1px;
+  background: var(--line);
+}
+.sub .dot {
+  position: absolute;
+  left: -2.5px;
+  top: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--play);
+  box-shadow: 0 0 0 3px rgba(255, 178, 36, 0.15);
+  transform: translateY(var(--y, 14px));
+  transition: transform var(--t3) var(--e-out);
+}
+.sub a {
+  padding: 5px 8px;
+  font-size: 13.5px;
+}
+.sub a {
+  display: block;
+  border-radius: 7px;
+  color: var(--muted);
+}
+.sub a:hover {
+  background: var(--panel2);
+  color: var(--text);
+}
+.sub a[aria-current="true"] {
+  color: var(--text);
+}
+.dsearch {
+  width: 100%;
+  margin: 12px 0 0;
+}
+
+/* Sidebar group labels (Get started, Templates, Components), styled like the mockup's `.group h6`. */
+#nd-sidebar p {
+  font: 500 12px var(--sans);
+  color: var(--dim);
+}
+
+/* Full-bleed docs grid, as in the mockup: Fumadocs caps and centres it at 97rem, which leaves an empty gutter left of
+   the sidebar on wide screens. `100%` resolves against the grid itself, so nothing overflows. */
+#nd-docs-layout {
+  --fd-layout-width: 100%;
+}
+
+/* "On this page", set like the mockup's `.toc`: 13px dim entries, the active one in text colour; the amber rail stays. */
+#nd-toc h3 {
+  font: 500 13px var(--sans);
+  color: var(--dim);
+}
+#nd-toc a {
+  font-size: 13px;
+  padding-block: 4px;
+  color: var(--dim);
+}
+#nd-toc a:hover {
+  color: var(--muted);
+}
+#nd-toc a[data-active="true"] {
+  color: var(--text);
+}
+/* The mockup's amber dot on the active entry. Clerk draws its rail at x 8.5px (depth 2) and 20.5px (depth 3). */
+#nd-toc a[data-active="true"]::before {
+  content: "";
+  position: absolute;
+  left: 5.3px;
+  top: 50%;
+  width: 6.4px;
+  height: 6.4px;
+  border-radius: 50%;
+  background: var(--play);
+  box-shadow: 0 0 0 3px rgba(255, 178, 36, 0.15);
+  transform: translateY(-50%);
+}
+#nd-toc a[data-active="true"][style*="32px"]::before {
+  left: 17.3px;
+}
+/* Rail and progress, as in the mockup's TOC svg: a #2A2E35 rail, and an amber line from the top of the rail down to
+   the active entry's dot. Clerk sets the amber clip inline to the active row, hence `!important` on that one rule. */
+#nd-toc a {
+  line-height: 21px;
+}
+#nd-toc a svg :is(line, path) {
+  stroke: #2a2e35;
+  stroke-width: 1.2px;
+}
+#nd-toc svg[class*="clip-path"] {
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(var(--track-bottom, 0px) - 10.5px),
+    0 calc(var(--track-bottom, 0px) - 10.5px)
+  ) !important;
+}
+#nd-toc svg[class*="clip-path"] path {
+  stroke-width: 1.6px;
+}
+#nd-toc a[data-active="true"]::before {
+  box-shadow: none;
+}

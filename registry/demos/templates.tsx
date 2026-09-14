@@ -28,6 +28,7 @@ const storyboardDemos: Demo[] = [
     duration: storyFrames(sampleStory),
     bare: true,
     scenes: sceneMarks(sampleStory),
+    story: sampleStory,
     component: () => <Storyboard story={sampleStory} />,
   },
   ...sceneTour.map(
@@ -36,6 +37,7 @@ const storyboardDemos: Demo[] = [
       duration: storyFrames(story),
       bare: true,
       scenes: sceneMarks(story),
+      story,
       component: () => <Storyboard story={story} />,
     }),
   ),
@@ -54,6 +56,7 @@ function storyDemo<P extends object>(
     duration: storyFrames(story),
     bare: true,
     scenes: sceneMarks(story),
+    story,
     component: () => <Template {...props} />,
   };
 }
