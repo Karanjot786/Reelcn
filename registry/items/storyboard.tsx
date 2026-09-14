@@ -55,6 +55,7 @@ import {
 import { BACKGROUNDS, Backdrop, SceneView } from "./story-scenes";
 import { stripeWipe } from "./stripe-wipe";
 import { tileReveal } from "./tile-reveal";
+import { whipPan } from "./whip-pan";
 
 type Presentation = NonNullable<SceneItem["transition"]>;
 
@@ -71,6 +72,7 @@ export const TRANSITIONS: Record<string, () => Presentation> = {
   "split-doors": () => splitDoors(),
   "stripe-wipe": () => stripeWipe(),
   "tile-reveal": () => tileReveal(),
+  "whip-pan": () => whipPan(),
 };
 
 /** Played at the start of every scene after the first when a story turns sound effects on and the scene names none. */

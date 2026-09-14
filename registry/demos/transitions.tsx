@@ -13,6 +13,7 @@ import { sliceSlide } from "../items/slice-slide";
 import { splitDoors } from "../items/split-doors";
 import { stripeWipe } from "../items/stripe-wipe";
 import { tileReveal } from "../items/tile-reveal";
+import { whipPan } from "../items/whip-pan";
 import type { Demo } from "./index";
 
 const DURATION = 75;
@@ -129,6 +130,8 @@ export default [
   pair("shutter-vertical", shutter({ direction: "vertical" })),
   pair("tile-reveal-default", tileReveal()),
   pair("tile-reveal-random", tileReveal({ pattern: "random" })),
+  pair("whip-pan-x", whipPan({ axis: "x" })),
+  pair("whip-pan-y", whipPan({ axis: "y" })),
   {
     id: "scenes-default",
     duration: getScenesDuration(
