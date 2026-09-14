@@ -64,7 +64,12 @@ export function LaptopFrame({
         alignItems: "center",
         opacity: Math.min(1, Math.max(0, m.enter)) * (1 - m.exit),
         translate: `0 ${(1 - m.enter) * u(40) - m.exit * u(24)}px`,
+        // A small fixed 3D tilt reads as a real product shot instead of a flat cutout (P2-6b). Not
+        // user-adjustable — a real camera control is Phase 3's `stage`.
+        transform: "perspective(1400px) rotateX(4deg)",
+        transformStyle: "preserve-3d",
         scale: String(0.96 + 0.04 * m.enter),
+        filter: `drop-shadow(0 ${u(theme.material?.floorShadow === "soft" ? 36 : 20)}px ${u(theme.material?.floorShadow === "soft" ? 46 : 12)}px ${alpha(theme.colors.shadow, theme.material?.floorShadow === "soft" ? 0.28 : 0.45)})`,
         ...style,
       }}
     >
@@ -85,9 +90,22 @@ export function LaptopFrame({
             borderRadius: u(4),
             overflow: "hidden",
             background: screenColor ?? theme.colors.background,
+            position: "relative",
           }}
         >
           {children}
+          {/* Key-light sheen: one clipped highlight sweep across the glass, at most once, on load (rule M9). */}
+          <div
+            aria-hidden="true"
+            style={{
+              position: "absolute",
+              inset: 0,
+              pointerEvents: "none",
+              background: `linear-gradient(115deg, transparent 20%, ${alpha("#ffffff", 0.16)} 32%, transparent 44%)`,
+              translate: `${-40 + 180 * Math.min(m.enter, 1)}% 0`,
+              opacity: m.enter > 0 && m.enter < 1.4 ? 1 : 0,
+            }}
+          />
         </div>
       </div>
       <div

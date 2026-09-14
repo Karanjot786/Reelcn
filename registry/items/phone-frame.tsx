@@ -66,10 +66,13 @@ export function PhoneFrame({
         height: frameH,
         borderRadius: outerRadius,
         background: body,
-        boxShadow: `0 ${u(24)}px ${u(64)}px ${alpha("#000000", 0.35)}, inset 0 0 0 ${u(2)}px ${alpha("#000000", 0.25)}`,
+        boxShadow: `inset 0 0 0 ${u(2)}px ${alpha("#000000", 0.25)}`,
         opacity: Math.min(1, Math.max(0, m.enter)) * (1 - m.exit),
         translate: `0 ${(1 - m.enter) * u(50) - m.exit * u(28)}px`,
+        transform: "perspective(1400px) rotateX(3deg) rotateY(-2deg)",
+        transformStyle: "preserve-3d",
         scale: String(0.94 + 0.06 * m.enter),
+        filter: `drop-shadow(0 ${u(theme.material?.floorShadow === "soft" ? 40 : 24)}px ${u(theme.material?.floorShadow === "soft" ? 50 : 16)}px ${alpha(theme.colors.shadow, theme.material?.floorShadow === "soft" ? 0.26 : 0.4)})`,
         ...style,
       }}
     >
@@ -86,6 +89,18 @@ export function PhoneFrame({
         }}
       >
         {children}
+        {/* Key-light sheen: one clipped highlight sweep across the glass, at most once, on load (rule M9). */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            inset: 0,
+            pointerEvents: "none",
+            background: `linear-gradient(115deg, transparent 20%, ${alpha("#ffffff", 0.16)} 32%, transparent 44%)`,
+            translate: `${-40 + 180 * Math.min(m.enter, 1)}% 0`,
+            opacity: m.enter > 0 && m.enter < 1.4 ? 1 : 0,
+          }}
+        />
       </div>
       {/* Camera/sensor cutout — a hole in the bezel, so it stays near-black regardless of theme. */}
       <div
