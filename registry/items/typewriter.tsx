@@ -21,6 +21,8 @@ export type TypewriterProps = MotionProps & {
   text: string;
   /** Characters per second. A `duration` wins over it and becomes the total typing time in frames. */
   cps?: number;
+  /** Total typing time in frames. Wins over `duration` and `cps` when set. */
+  typingFrames?: number;
   /** Frames a bare `^` waits. Defaults to 0.5s. */
   pause?: number;
   caret?: "bar" | "block" | "none";
@@ -59,6 +61,7 @@ function parse(text: string, pause: number) {
 export function Typewriter({
   text,
   cps = 18,
+  typingFrames,
   pause,
   caret = "bar",
   size = 72,
@@ -76,7 +79,8 @@ export function Typewriter({
   const m = useMotion(motion);
   const fontPx = u(size);
   const { chars, waits } = parse(text, pause ?? Math.round(m.fps * 0.5));
-  const perChar = motion.duration ? motion.duration / Math.max(chars.length, 1) : m.fps / cps;
+  const totalFrames = typingFrames ?? motion.duration;
+  const perChar = totalFrames ? totalFrames / Math.max(chars.length, 1) : m.fps / cps;
 
   let typed = 0;
   let end = m.delay;

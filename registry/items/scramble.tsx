@@ -24,6 +24,8 @@ export type ScrambleProps = MotionProps & {
   charset?: string;
   /** Frames between one character starting to scramble and the next. `duration` is how long each one scrambles. */
   stagger?: number;
+  /** Frames each character scrambles before resolving. Wins over `duration`. Defaults to 0.6s. */
+  perCharFrames?: number;
   /** Font size in design units. */
   size?: number;
   weight?: number;
@@ -41,6 +43,7 @@ export function Scramble({
   seed = "scramble",
   charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%&*+=?",
   stagger,
+  perCharFrames,
   size = 96,
   weight,
   font = "heading",
@@ -61,8 +64,9 @@ export function Scramble({
 
   const renderChar = (char: string, key: number) => {
     const i = index++;
+    const scrambleFrames = perCharFrames ?? m.enterFrames;
     const start = m.delay + i * step;
-    const resolved = m.frame >= start + m.enterFrames;
+    const resolved = m.frame >= start + scrambleFrames;
     const glyph =
       m.frame >= start && !resolved
         ? glyphs[Math.floor(random(`scramble-${seed}-${i}-${m.frame}`) * glyphs.length)]

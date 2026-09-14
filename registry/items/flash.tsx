@@ -23,6 +23,8 @@ export type FlashProps = MotionProps & {
   attack?: number;
   /** How the flash blends with the frame below, e.g. `screen` to brighten rather than cover. */
   blendMode?: React.CSSProperties["mixBlendMode"];
+  /** Frames from the peak until about 1% is left. Wins over `duration`. Defaults to 0.6s. */
+  decayFrames?: number;
   style?: React.CSSProperties;
   className?: string;
 };
@@ -33,6 +35,7 @@ export function Flash({
   strength = 0.9,
   attack = 2,
   blendMode = "normal",
+  decayFrames,
   style,
   className,
   ...motion
@@ -41,7 +44,8 @@ export function Flash({
   const m = useMotion(motion);
   const attackFrames = Math.max(Math.round(attack), 1);
   const since = m.frame - m.delay;
-  const decay = (since - attackFrames) / Math.max(m.enterFrames, 1);
+  const decayFramesResolved = decayFrames ?? m.enterFrames;
+  const decay = (since - attackFrames) / Math.max(decayFramesResolved, 1);
   const level =
     since < 0
       ? 0

@@ -295,7 +295,7 @@ export function tween(
 export type MotionProps = {
   /** Frames to wait before entering. */
   delay?: number;
-  /** Enter duration in frames. Defaults to 0.6s. */
+  /** Enter duration in frames. Defaults to 0.6s. Some items reuse `duration` for an unrelated local timing — see that item's own prop docs. */
   duration?: number;
   /** Exit at the end of the parent `<Sequence>`. `false` keeps it on screen, a number sets the exit length in frames. */
   exit?: boolean | number;

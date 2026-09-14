@@ -27,6 +27,8 @@ export type LightLeakProps = MotionProps & {
   strength?: number;
   /** Frames held at the peak before the fade. Defaults to 0.3s. */
   hold?: number;
+  /** Frames to swell to the peak. Wins over `duration`. Defaults to 0.6s. */
+  swellFrames?: number;
   seed?: string | number;
   style?: React.CSSProperties;
   className?: string;
@@ -41,6 +43,7 @@ export function LightLeak({
   side = "left",
   strength = 0.85,
   hold,
+  swellFrames,
   seed = "light-leak",
   style,
   className,
@@ -51,11 +54,12 @@ export function LightLeak({
   const m = useMotion(motion);
   const main = color ?? theme.colors.highlight;
   const second = secondaryColor ?? theme.colors.accent;
+  const swell = swellFrames ?? m.enterFrames;
   const holdFrames = hold ?? Math.round(m.fps * 0.3);
-  const fadeFrames = m.enterFrames * 2;
-  const total = m.enterFrames + holdFrames + fadeFrames;
+  const fadeFrames = swell * 2;
+  const total = swell + holdFrames + fadeFrames;
   const fade = tween(m.frame, m.fps, {
-    from: m.delay + m.enterFrames + holdFrames,
+    from: m.delay + swell + holdFrames,
     duration: fadeFrames,
     motion: "gentle",
   });
