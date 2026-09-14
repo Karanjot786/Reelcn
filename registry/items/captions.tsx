@@ -17,6 +17,25 @@ import type React from "react";
 import { AbsoluteFill, Sequence, useCurrentFrame, useVideoConfig } from "remotion";
 import { alpha, tween, useTheme, useViewport } from "./core";
 
+/** Relative luminance, sRGB. */
+function luminance(hex: string): number {
+  const [r, g, b] = [1, 3, 5].map((i) => Number.parseInt(hex.slice(i, i + 2), 16) / 255);
+  const lin = (c: number) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+  return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+}
+
+/** WCAG contrast ratio between two #rrggbb colors. */
+function contrastRatio(a: string, b: string): number {
+  const [l1, l2] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+  return (l1 + 0.05) / (l2 + 0.05);
+}
+
+/** Whichever of the two candidates contrasts more with `background`. Falls back to `light` for non-hex colors (theme tokens are always #rrggbb literals, see core.tsx). */
+function readableOn(background: string, dark: string, light: string): string {
+  if (!/^#[0-9a-f]{6}$/i.test(background)) return light;
+  return contrastRatio(background, dark) >= contrastRatio(background, light) ? dark : light;
+}
+
 export type CaptionsVariant =
   | "bold-pop"
   | "karaoke"
@@ -192,12 +211,13 @@ function CaptionPage({
       );
     }
     if (variant === "highlight-box") {
+      const boxText = readableOn(emphasisColor, theme.colors.background, theme.colors.foreground);
       return (
         <span
           key={index}
           style={{
             ...base,
-            color: active ? theme.colors.background : tone,
+            color: active ? boxText : tone,
             background: active ? emphasisColor : "transparent",
             padding: `0 ${u(6)}px`,
             borderRadius: u(4),
