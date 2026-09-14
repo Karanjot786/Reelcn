@@ -21,7 +21,7 @@
  */
 import type React from "react";
 import { AbsoluteFill } from "remotion";
-import { type MotionProps, tween, useMotion, useViewport } from "./core";
+import { type MotionProps, type PoseKey, useKeyframePath, useMotion, useViewport } from "./core";
 
 export type CameraKeyframe = {
   /** Frame at which the camera arrives here, counted from `delay`. */
@@ -90,19 +90,9 @@ export function Camera({
   const { u } = useViewport();
   const m = useMotion({ ...motion, exit });
   const poses = resolvePoses(keyframes);
-  let pose: Pose = poses[0] ?? rest;
-  for (let index = 1; index < poses.length; index++) {
-    const from = poses[index - 1];
-    const to = poses[index];
-    const p = tween(m.frame, m.fps, { from: m.delay + from.frame, duration: to.frame - from.frame, motion: m.preset });
-    if (p <= 0) break;
-    pose = {
-      x: from.x + (to.x - from.x) * p,
-      y: from.y + (to.y - from.y) * p,
-      zoom: from.zoom + (to.zoom - from.zoom) * p,
-      rotate: from.rotate + (to.rotate - from.rotate) * p,
-    };
-  }
+  const keys: PoseKey[] = poses.map((p) => ({ frame: m.delay + p.frame, x: p.x, y: p.y, scale: p.zoom, rotate: p.rotate }));
+  const path = useKeyframePath(keys, { motion: m.preset });
+  const pose: Pose = { x: path.x, y: path.y, zoom: path.scale ?? 1, rotate: path.rotate ?? 0 };
   const t = (m.frame / m.fps) * shakeSpeed * Math.PI;
   const shakeX = u(shake) * wobble(t, 0);
   const shakeY = u(shake) * wobble(t, 2.4);

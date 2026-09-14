@@ -23,7 +23,7 @@
  */
 import type React from "react";
 import { AbsoluteFill } from "remotion";
-import { alpha, type MotionProps, tween, useMotion, useTheme, useViewport } from "./core";
+import { alpha, type MotionProps, type PoseKey, tween, useKeyframePath, useMotion, useTheme, useViewport } from "./core";
 
 export type CursorWaypoint = {
   /** Position in % of the canvas (0–100 on each axis). */
@@ -72,20 +72,10 @@ export function Cursor({
   const ring = ringColor ?? theme.colors.accent;
   const points = waypoints.slice().sort((a, b) => a.frame - b.frame);
 
-  let x = points.length > 0 ? points[0].x : 50;
-  let y = points.length > 0 ? points[0].y : 50;
-  for (let i = 1; i < points.length; i++) {
-    const from = points[i - 1];
-    const to = points[i];
-    const p = tween(m.frame, m.fps, {
-      from: m.delay + from.frame,
-      duration: Math.max(to.frame - from.frame, 1),
-      motion: m.preset,
-    });
-    if (p <= 0) break;
-    x = from.x + (to.x - from.x) * p;
-    y = from.y + (to.y - from.y) * p;
-  }
+  const keys: PoseKey[] = points.map((p) => ({ frame: m.delay + p.frame, x: p.x, y: p.y }));
+  const path = useKeyframePath(keys, { motion: m.preset });
+  const x = points.length > 0 ? path.x : 50;
+  const y = points.length > 0 ? path.y : 50;
 
   const appear =
     points.length > 0

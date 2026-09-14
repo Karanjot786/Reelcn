@@ -21,7 +21,7 @@
  */
 import type React from "react";
 import { AbsoluteFill } from "remotion";
-import { type MotionProps, tween, useMotion } from "./core";
+import { type MotionProps, type PoseKey, useKeyframePath, useMotion } from "./core";
 
 export type ScreenZoomFocus = {
   /** Frame the frame finishes arriving here, counted from `delay`. */
@@ -49,25 +49,12 @@ const REST: ScreenZoomFocus = { frame: 0, x: 0, y: 0, width: 100, height: 100 };
 export function ScreenZoom({ focus, exit = false, children, style, className, ...motion }: ScreenZoomProps) {
   const m = useMotion({ ...motion, exit });
   const points = focus.slice().sort((a, b) => a.frame - b.frame);
-
-  let rect: ScreenZoomFocus = points[0] ?? REST;
-  for (let i = 1; i < points.length; i++) {
-    const from = points[i - 1];
-    const to = points[i];
-    const p = tween(m.frame, m.fps, {
-      from: m.delay + from.frame,
-      duration: Math.max(to.frame - from.frame, 1),
-      motion: m.preset,
-    });
-    if (p <= 0) break;
-    rect = {
-      frame: to.frame,
-      x: from.x + (to.x - from.x) * p,
-      y: from.y + (to.y - from.y) * p,
-      width: from.width + (to.width - from.width) * p,
-      height: from.height + (to.height - from.height) * p,
-    };
-  }
+  const keys: PoseKey[] = points.map((p) => ({ frame: m.delay + p.frame, x: p.x, y: p.y, width: p.width, height: p.height }));
+  const path = useKeyframePath(keys, { motion: m.preset });
+  const rect: ScreenZoomFocus =
+    points.length > 0
+      ? { frame: path.frame, x: path.x, y: path.y, width: path.width ?? 100, height: path.height ?? 100 }
+      : REST;
 
   // Percentage translate is resolved against this element's own box, so the math holds whether ScreenZoom
   // fills the whole canvas or sits nested inside a smaller frame like `browser-window`.

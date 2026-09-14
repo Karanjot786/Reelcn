@@ -651,3 +651,49 @@ export function useTypedText(
   const caretOn = !done || Math.floor(Math.abs(frame) / Math.max(1, Math.round(fps / 2))) % 2 === 0;
   return { visible: chars.slice(0, shown).join(""), caretOn, done };
 }
+
+/* ───────────────────────────────── Paths ───────────────────────────────── */
+
+export type PoseKey = { frame: number; x: number; y: number; scale?: number; rotate?: number; width?: number; height?: number };
+
+function catmullRom(p0: number, p1: number, p2: number, p3: number, t: number): number {
+  const t2 = t * t;
+  const t3 = t2 * t;
+  return 0.5 * (2 * p1 + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 + (-p0 + 3 * p1 - 3 * p2 + p3) * t3);
+}
+
+/** The pose at `frame`, interpolated through every key with one global Catmull-Rom curve instead of per-segment lines. */
+export function useKeyframePath(keys: PoseKey[], opts?: { motion?: MotionPreset }): PoseKey {
+  const { fps } = useVideoConfig();
+  const frame = useCurrentFrame();
+  const sorted = keys.slice().sort((a, b) => a.frame - b.frame);
+  if (sorted.length === 0) return { frame, x: 0, y: 0, scale: 1, rotate: 0 };
+  if (sorted.length === 1) return sorted[0];
+
+  const clamped = Math.min(Math.max(frame, sorted[0].frame), sorted[sorted.length - 1].frame);
+  let segment = 0;
+  while (segment < sorted.length - 2 && clamped >= sorted[segment + 1].frame) segment++;
+
+  const at = (i: number) => sorted[Math.min(Math.max(i, 0), sorted.length - 1)];
+  const p0 = at(segment - 1);
+  const p1 = at(segment);
+  const p2 = at(segment + 1);
+  const p3 = at(segment + 2);
+  const span = Math.max(p2.frame - p1.frame, 1);
+  const localT = tween(clamped, fps, { from: p1.frame, duration: span, motion: opts?.motion ?? "linear" });
+
+  type Field = "x" | "y" | "scale" | "rotate" | "width" | "height";
+  const field = (key: PoseKey, name: Field, fallback: number) => key[name] ?? fallback;
+  const at4 = (name: Field, fallback: number) =>
+    catmullRom(field(p0, name, fallback), field(p1, name, fallback), field(p2, name, fallback), field(p3, name, fallback), localT);
+
+  return {
+    frame: clamped,
+    x: at4("x", 0),
+    y: at4("y", 0),
+    scale: at4("scale", 1),
+    rotate: at4("rotate", 0),
+    width: at4("width", 100),
+    height: at4("height", 100),
+  };
+}
