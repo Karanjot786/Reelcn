@@ -16,6 +16,7 @@
 import type React from "react";
 import { AbsoluteFill } from "remotion";
 import { alpha, type MotionProps, useMotion, useTheme, useViewport } from "./core";
+import { FlatAccentLook, FlatBlocksLook, GrainFieldLook, GridSweepLook } from "./core-physical-light";
 
 export type GradientMeshProps = MotionProps & {
   /** Base fill. Defaults to the theme background. */
@@ -44,6 +45,17 @@ const anchors = [
 
 const clamp01 = (value: number) => Math.min(Math.max(value, 0), 1);
 
+type GradientMeshLook = "blobs" | "grid-sweep" | "grain-field" | "flat-blocks" | "flat-accent";
+
+const LOOK_BY_THEME: Record<string, GradientMeshLook> = {
+  daylight: "blobs",
+  sunset: "blobs",
+  midnight: "grid-sweep",
+  paper: "grain-field",
+  neon: "flat-blocks",
+  mono: "flat-accent",
+};
+
 export function GradientMesh({
   background,
   colors,
@@ -61,6 +73,55 @@ export function GradientMesh({
   const seconds = (m.frame / m.fps) * speed;
   const size = Math.max(width, height) * blobSize;
   const strength = intensity * m.presence;
+
+  const look = LOOK_BY_THEME[theme.name] ?? "blobs";
+
+  if (look === "grid-sweep")
+    return (
+      <GridSweepLook
+        theme={theme}
+        seconds={seconds}
+        strength={strength * 0.7}
+        background={background}
+        className={className}
+        style={style}
+      />
+    );
+  if (look === "grain-field")
+    return (
+      <GrainFieldLook
+        theme={theme}
+        seconds={seconds}
+        strength={strength * 0.6}
+        palette={palette}
+        background={background}
+        className={className}
+        style={style}
+      />
+    );
+  if (look === "flat-blocks")
+    return (
+      <FlatBlocksLook
+        theme={theme}
+        seconds={seconds}
+        strength={strength * 0.6}
+        palette={palette}
+        background={background}
+        className={className}
+        style={style}
+      />
+    );
+  if (look === "flat-accent")
+    return (
+      <FlatAccentLook
+        theme={theme}
+        seconds={seconds}
+        strength={strength * 0.6}
+        background={background}
+        className={className}
+        style={style}
+      />
+    );
 
   return (
     <AbsoluteFill className={className} style={{ background: background ?? theme.colors.background, ...style }}>
