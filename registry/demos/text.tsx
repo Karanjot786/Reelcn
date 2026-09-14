@@ -60,6 +60,15 @@ export default [
     ),
   },
   {
+    id: "typewriter-follow",
+    duration: 130,
+    component: () => (
+      <Center>
+        <Typewriter text="Make a launch video^ for vertical" cps={20} follow={{ zoom: 2.5 }} />
+      </Center>
+    ),
+  },
+  {
     id: "word-rotator-slide",
     duration: 130,
     component: () => (

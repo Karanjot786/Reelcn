@@ -18,7 +18,18 @@
  * </Center>
  */
 import type React from "react";
-import { alpha, type MotionProps, tween, useMotion, useTheme, useTypedText, useViewport } from "./core";
+import {
+  alpha,
+  type CaretFollow,
+  FollowCaret,
+  type MotionProps,
+  tween,
+  useMotion,
+  useTextMetrics,
+  useTheme,
+  useTypedText,
+  useViewport,
+} from "./core";
 
 export type CommandItem = {
   label: string;
@@ -44,6 +55,8 @@ export type CommandPaletteProps = MotionProps & {
   mutedColor?: string;
   accentColor?: string;
   radius?: number;
+  /** Zooms the camera to trail the caret as it types. Omitted (default): today's behavior, unchanged. */
+  follow?: CaretFollow;
   style?: React.CSSProperties;
   className?: string;
 };
@@ -63,6 +76,7 @@ export function CommandPalette({
   mutedColor,
   accentColor,
   radius,
+  follow,
   style,
   className,
   ...motion
@@ -90,6 +104,17 @@ export function CommandPalette({
   const typedText = useTypedText(query, m.frame - start, m.fps, { cps });
   const typed = typedText.visible;
   const typing = !typedText.done;
+
+  // Follow: the caret position `lag` frames ago, from the same typed-length logic above evaluated at an
+  // earlier frame — always computed (cheap, pure), only measured/used when `follow` is set. Command
+  // palette is single-line, so `y` is always the query row's fixed y-offset, no line-counting needed.
+  const laggedTyped = useTypedText(query, m.frame - (follow?.lag ?? 6) - start, m.fps, { cps });
+  const caretMetrics = useTextMetrics(laggedTyped.visible, {
+    fontFamily: theme.fonts.body,
+    fontSize: u(24),
+    fontWeight: 400,
+  });
+  const caretPosition = { x: caretMetrics.width, y: u(29) };
   const blinkOn = Math.floor(m.frame / Math.round(m.fps * 0.5)) % 2 === 0;
   const filtered = filteredAt(typed);
 
@@ -117,103 +142,105 @@ export function CommandPalette({
   const listShown = clamp01(m.enter);
 
   return (
-    <div
-      className={className}
-      style={{
-        width: boxW,
-        borderRadius: u(radius ?? theme.radius),
-        overflow: "hidden",
-        background: background ?? theme.colors.surface,
-        border: `1px solid ${border}`,
-        boxShadow: `0 ${u(24)}px ${u(64)}px ${alpha("#000000", 0.35)}`,
-        fontFamily: theme.fonts.body,
-        opacity: clamp01(m.enter) * (1 - m.exit),
-        translate: `0 ${(1 - clamp01(m.enter)) * u(24)}px`,
-        ...style,
-      }}
-    >
+    <FollowCaret follow={follow} caret={caretPosition}>
       <div
+        className={className}
         style={{
-          display: "flex",
-          alignItems: "center",
-          gap: u(12),
-          padding: `0 ${u(18)}px`,
-          height: u(58),
-          borderBottom: `1px solid ${border}`,
+          width: boxW,
+          borderRadius: u(radius ?? theme.radius),
+          overflow: "hidden",
+          background: background ?? theme.colors.surface,
+          border: `1px solid ${border}`,
+          boxShadow: `0 ${u(24)}px ${u(64)}px ${alpha("#000000", 0.35)}`,
+          fontFamily: theme.fonts.body,
+          opacity: clamp01(m.enter) * (1 - m.exit),
+          translate: `0 ${(1 - clamp01(m.enter)) * u(24)}px`,
+          ...style,
         }}
       >
-        <svg
-          aria-hidden="true"
-          viewBox="0 0 24 24"
-          width={u(20)}
-          height={u(20)}
-          fill="none"
-          stroke={mutedColor ?? theme.colors.muted}
-          strokeWidth={2.2}
-          strokeLinecap="round"
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: u(12),
+            padding: `0 ${u(18)}px`,
+            height: u(58),
+            borderBottom: `1px solid ${border}`,
+          }}
         >
-          <circle cx="11" cy="11" r="7" />
-          <path d="M21 21l-4.3-4.3" />
-        </svg>
-        <div style={{ fontSize: u(24), color: textColor ?? theme.colors.foreground }}>
-          {typed}
-          <span style={{ opacity: typing || blinkOn ? 1 : 0, color: accent }}>|</span>
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            width={u(20)}
+            height={u(20)}
+            fill="none"
+            stroke={mutedColor ?? theme.colors.muted}
+            strokeWidth={2.2}
+            strokeLinecap="round"
+          >
+            <circle cx="11" cy="11" r="7" />
+            <path d="M21 21l-4.3-4.3" />
+          </svg>
+          <div style={{ fontSize: u(24), color: textColor ?? theme.colors.foreground }}>
+            {typed}
+            <span style={{ opacity: typing || blinkOn ? 1 : 0, color: accent }}>|</span>
+          </div>
+        </div>
+        <div style={{ position: "relative", padding: u(8) }}>
+          {filtered.length > 0 && (
+            <div
+              style={{
+                position: "absolute",
+                left: u(8),
+                right: u(8),
+                top: u(8) + highlightRow * rowH,
+                height: rowH,
+                borderRadius: u(radius ?? theme.radius * 0.6),
+                background: alpha(accent, 0.16 + 0.3 * pressed),
+                opacity: listShown,
+              }}
+            />
+          )}
+          {filtered.map((item, index) => {
+            const rowIn = clamp01(
+              tween(m.frame, m.fps, {
+                from: start + index * Math.round(m.fps * (2 / 30)),
+                duration: Math.round(m.fps * 0.3),
+                motion: "smooth",
+              }),
+            );
+            const active = item.label === targetLabel;
+            return (
+              <div
+                key={item.label}
+                style={{
+                  position: "relative",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  height: rowH,
+                  padding: `0 ${u(14)}px`,
+                  fontSize: u(23),
+                  color: active ? (textColor ?? theme.colors.foreground) : (mutedColor ?? theme.colors.muted),
+                  fontWeight: active ? 600 : 400,
+                  opacity: rowIn,
+                  scale: active ? String(1 - 0.02 * pressed) : "1",
+                }}
+              >
+                <span>{item.label}</span>
+                {item.hint && (
+                  <span style={{ fontSize: u(18), color: mutedColor ?? theme.colors.muted }}>{item.hint}</span>
+                )}
+              </div>
+            );
+          })}
+          {filtered.length === 0 && (
+            <div style={{ padding: `${u(18)}px ${u(14)}px`, color: mutedColor ?? theme.colors.muted, fontSize: u(22) }}>
+              No matches
+            </div>
+          )}
         </div>
       </div>
-      <div style={{ position: "relative", padding: u(8) }}>
-        {filtered.length > 0 && (
-          <div
-            style={{
-              position: "absolute",
-              left: u(8),
-              right: u(8),
-              top: u(8) + highlightRow * rowH,
-              height: rowH,
-              borderRadius: u(radius ?? theme.radius * 0.6),
-              background: alpha(accent, 0.16 + 0.3 * pressed),
-              opacity: listShown,
-            }}
-          />
-        )}
-        {filtered.map((item, index) => {
-          const rowIn = clamp01(
-            tween(m.frame, m.fps, {
-              from: start + index * Math.round(m.fps * (2 / 30)),
-              duration: Math.round(m.fps * 0.3),
-              motion: "smooth",
-            }),
-          );
-          const active = item.label === targetLabel;
-          return (
-            <div
-              key={item.label}
-              style={{
-                position: "relative",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                height: rowH,
-                padding: `0 ${u(14)}px`,
-                fontSize: u(23),
-                color: active ? (textColor ?? theme.colors.foreground) : (mutedColor ?? theme.colors.muted),
-                fontWeight: active ? 600 : 400,
-                opacity: rowIn,
-                scale: active ? String(1 - 0.02 * pressed) : "1",
-              }}
-            >
-              <span>{item.label}</span>
-              {item.hint && (
-                <span style={{ fontSize: u(18), color: mutedColor ?? theme.colors.muted }}>{item.hint}</span>
-              )}
-            </div>
-          );
-        })}
-        {filtered.length === 0 && (
-          <div style={{ padding: `${u(18)}px ${u(14)}px`, color: mutedColor ?? theme.colors.muted, fontSize: u(22) }}>
-            No matches
-          </div>
-        )}
-      </div>
-    </div>
+    </FollowCaret>
   );
 }

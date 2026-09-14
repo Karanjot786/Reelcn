@@ -19,7 +19,18 @@
  */
 import type React from "react";
 import { type Token, tokenColors, tokenize } from "./code-tokens";
-import { alpha, type MotionProps, tween, useMotion, useTheme, useTypedText, useViewport } from "./core";
+import {
+  alpha,
+  type CaretFollow,
+  FollowCaret,
+  type MotionProps,
+  tween,
+  useMotion,
+  useTextMetrics,
+  useTheme,
+  useTypedText,
+  useViewport,
+} from "./core";
 
 export type TerminalLine = { type: "command"; text: string } | { type: "output"; text: string };
 
@@ -54,6 +65,8 @@ export type TerminalProps = MotionProps & {
   outputColor?: string;
   /** Corner radius in design units. Defaults to 60% of the theme radius. */
   radius?: number;
+  /** Zooms the camera to trail the caret as it types. Omitted (default): today's behavior, unchanged. */
+  follow?: CaretFollow;
   style?: React.CSSProperties;
   className?: string;
 };
@@ -81,6 +94,7 @@ export function Terminal({
   promptColor,
   outputColor,
   radius,
+  follow,
   style,
   className,
   ...motion
@@ -131,6 +145,22 @@ export function Terminal({
   const active = visible[visible.length - 1];
   const blinkOn = Math.floor(m.frame / Math.round(m.fps * 0.5)) % 2 === 0;
 
+  // Follow: the active row's caret position `lag` frames ago. `useTypedText` is pure, so calling it a
+  // second time here (conditionally, since there may be no active row yet) isn't a Rules-of-Hooks
+  // issue — only `useTextMetrics` below is a real hook, and it's called unconditionally, once.
+  const laggedFrame = m.frame - (follow?.lag ?? 6);
+  const activeHasCaret = active !== undefined && active.kind !== "output";
+  const laggedTyped = activeHasCaret ? useTypedText(active.text, laggedFrame - active.typeFrom, m.fps, { cps }) : null;
+  const laggedPrefix =
+    active?.kind === "command" ? `${prompt} ${laggedTyped?.visible ?? ""}` : (laggedTyped?.visible ?? "");
+  const caretMetrics = useTextMetrics(laggedPrefix, {
+    fontFamily: theme.fonts.mono,
+    fontSize: fontPx,
+    fontWeight: 500,
+  });
+  const activeRowIndex = active ? visible.indexOf(active) : 0;
+  const caretPosition = { x: caretMetrics.width, y: activeRowIndex * lineH };
+
   const renderRow = (row: Row, index: number) => {
     if (row.kind === "output") {
       return (
@@ -172,65 +202,70 @@ export function Terminal({
   };
 
   return (
-    <div
-      className={className}
-      style={{
-        width: maxW,
-        borderRadius: u(radius ?? theme.radius * 0.6),
-        overflow: "hidden",
-        background: background ?? `color-mix(in srgb, ${theme.colors.surface} 55%, ${theme.colors.background})`,
-        border: `1px solid ${border}`,
-        boxShadow: `0 ${u(2)}px ${u(6)}px ${alpha("#000000", 0.12)}, 0 ${u(28)}px ${u(72)}px ${alpha("#000000", 0.3)}`,
-        opacity: Math.min(1, Math.max(0, m.enter)) * (1 - m.exit),
-        translate: `0 ${(1 - m.enter) * u(40) - m.exit * u(24)}px`,
-        scale: String(0.97 + 0.03 * m.enter),
-        ...style,
-      }}
-    >
+    <FollowCaret follow={follow} caret={caretPosition}>
       <div
+        className={className}
         style={{
-          display: "grid",
-          gridTemplateColumns: "1fr auto 1fr",
-          alignItems: "center",
-          height: titleH,
-          padding: `0 ${u(22)}px`,
-          background: theme.colors.surface,
-          borderBottom: `1px solid ${border}`,
-          fontFamily: theme.fonts.body,
-          fontSize: u(20),
-          fontWeight: 500,
-          color: theme.colors.muted,
-        }}
-      >
-        <div style={{ display: "flex", gap: u(9) }}>
-          {[0, 1, 2].map((dot) => (
-            <div
-              key={dot}
-              style={{ width: u(13), height: u(13), borderRadius: "50%", background: alpha(theme.colors.muted, 0.4) }}
-            />
-          ))}
-        </div>
-        <div>{title}</div>
-      </div>
-      <div
-        style={{
-          height: rowCount * lineH + padY * 2,
-          padding: `${padY}px ${padX}px`,
+          width: maxW,
+          borderRadius: u(radius ?? theme.radius * 0.6),
           overflow: "hidden",
-          fontFamily: theme.fonts.mono,
-          fontSize: fontPx,
-          lineHeight: `${lineH}px`,
-          color: theme.colors.foreground,
+          background: background ?? `color-mix(in srgb, ${theme.colors.surface} 55%, ${theme.colors.background})`,
+          border: `1px solid ${border}`,
+          boxShadow: `0 ${u(2)}px ${u(6)}px ${alpha("#000000", 0.12)}, 0 ${u(28)}px ${u(72)}px ${alpha("#000000", 0.3)}`,
+          opacity: Math.min(1, Math.max(0, m.enter)) * (1 - m.exit),
+          translate: `0 ${(1 - m.enter) * u(40) - m.exit * u(24)}px`,
+          scale: String(0.97 + 0.03 * m.enter),
+          ...style,
         }}
       >
-        <div style={{ translate: `0 ${-scroll}px` }}>
-          {visible.map((row, index) => (
-            <div key={index} style={{ height: lineH, whiteSpace: "pre", overflow: "hidden", opacity: appear(row.at) }}>
-              {renderRow(row, index)}
-            </div>
-          ))}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr auto 1fr",
+            alignItems: "center",
+            height: titleH,
+            padding: `0 ${u(22)}px`,
+            background: theme.colors.surface,
+            borderBottom: `1px solid ${border}`,
+            fontFamily: theme.fonts.body,
+            fontSize: u(20),
+            fontWeight: 500,
+            color: theme.colors.muted,
+          }}
+        >
+          <div style={{ display: "flex", gap: u(9) }}>
+            {[0, 1, 2].map((dot) => (
+              <div
+                key={dot}
+                style={{ width: u(13), height: u(13), borderRadius: "50%", background: alpha(theme.colors.muted, 0.4) }}
+              />
+            ))}
+          </div>
+          <div>{title}</div>
+        </div>
+        <div
+          style={{
+            height: rowCount * lineH + padY * 2,
+            padding: `${padY}px ${padX}px`,
+            overflow: "hidden",
+            fontFamily: theme.fonts.mono,
+            fontSize: fontPx,
+            lineHeight: `${lineH}px`,
+            color: theme.colors.foreground,
+          }}
+        >
+          <div style={{ translate: `0 ${-scroll}px` }}>
+            {visible.map((row, index) => (
+              <div
+                key={index}
+                style={{ height: lineH, whiteSpace: "pre", overflow: "hidden", opacity: appear(row.at) }}
+              >
+                {renderRow(row, index)}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </FollowCaret>
   );
 }

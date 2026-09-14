@@ -136,6 +136,20 @@ function CodeBlockTyping() {
   );
 }
 
+function CodeBlockFollow() {
+  return (
+    <Center>
+      <CodeBlock
+        title="render.ts"
+        language="ts"
+        code={'const video = await render({\n  fps: 30,\n  codec: "h264",\n  width: 1920,\n  height: 1080,\n});'}
+        typing={40}
+        follow={{ zoom: 2.5 }}
+      />
+    </Center>
+  );
+}
+
 function CodeBlockDiff() {
   return (
     <Center>
@@ -162,6 +176,22 @@ function TerminalInstall() {
           { type: "command", text: "pnpm build" },
           { type: "output", text: "Build complete in 1.2s" },
         ]}
+      />
+    </Center>
+  );
+}
+
+function TerminalFollow() {
+  return (
+    <Center>
+      <Terminal
+        lines={[
+          { type: "command", text: "npx shadcn@latest add ./r/terminal.json" },
+          { type: "output", text: "Created 3 files" },
+          { type: "command", text: "pnpm build" },
+          { type: "output", text: "Build complete in 1.2s" },
+        ]}
+        follow={{ zoom: 2.5 }}
       />
     </Center>
   );
@@ -377,6 +407,25 @@ function CommandPaletteDemo() {
   );
 }
 
+function CommandPaletteFollow() {
+  return (
+    <Center>
+      <CommandPalette
+        items={[
+          { label: "New project" },
+          { label: "New template" },
+          { label: "Open settings", hint: "⌘," },
+          { label: "Invite teammate" },
+        ]}
+        query="new t"
+        select="New template"
+        selectAt={90}
+        follow={{ zoom: 2.5 }}
+      />
+    </Center>
+  );
+}
+
 /* ─────────────────────────────── feature-card ─────────────────────────────── */
 
 // A function, not a constant: JSX evaluated at module load runs before React is available.
@@ -433,8 +482,10 @@ function SvgDrawDemo() {
 
 export default [
   { id: "code-block-typing", duration: 90, component: CodeBlockTyping },
+  { id: "code-block-follow", duration: 90, component: CodeBlockFollow },
   { id: "code-block-diff", duration: 75, component: CodeBlockDiff },
   { id: "terminal-install", duration: 120, component: TerminalInstall },
+  { id: "terminal-follow", duration: 120, component: TerminalFollow },
   { id: "browser-window-dashboard", duration: 75, component: BrowserWindowDemo },
   { id: "browser-window-poster", duration: 75, component: BrowserWindowPosterDemo },
   { id: "phone-frame-feed", duration: 75, component: PhoneFrameDemo },
@@ -448,6 +499,7 @@ export default [
   { id: "toast-settle", duration: 90, bare: true, component: ToastSettle },
   { id: "chat-thread-reply", duration: 110, component: ChatThreadDemo },
   { id: "command-palette-filter", duration: 100, component: CommandPaletteDemo },
+  { id: "command-palette-follow", duration: 100, component: CommandPaletteFollow },
   { id: "feature-card-rise", duration: 75, component: FeatureCardDemo },
   { id: "before-after-wipe", duration: 75, component: BeforeAfterDemo },
   { id: "svg-draw-check", duration: 75, component: SvgDrawDemo },

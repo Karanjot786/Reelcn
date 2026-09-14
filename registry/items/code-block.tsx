@@ -20,7 +20,18 @@
  */
 import type React from "react";
 import { type CodeLanguage, type Token, type TokenKind, tokenColors, tokenize } from "./code-tokens";
-import { alpha, type MotionProps, tween, useMotion, useRoleMotion, useTheme, useViewport } from "./core";
+import {
+  alpha,
+  type CaretFollow,
+  FollowCaret,
+  type MotionProps,
+  tween,
+  useMotion,
+  useRoleMotion,
+  useTextMetrics,
+  useTheme,
+  useViewport,
+} from "./core";
 
 export type CodeBlockProps = MotionProps & {
   code: string;
@@ -51,6 +62,8 @@ export type CodeBlockProps = MotionProps & {
   removeColor?: string;
   /** Corner radius in design units. Defaults to 70% of the theme radius. */
   radius?: number;
+  /** Zooms the camera to trail the caret as it types. Omitted (default): today's behavior, unchanged. */
+  follow?: CaretFollow;
   style?: React.CSSProperties;
   className?: string;
 };
@@ -88,6 +101,7 @@ export function CodeBlock({
   addColor,
   removeColor,
   radius,
+  follow,
   style,
   className,
   ...motion
@@ -143,6 +157,21 @@ export function CodeBlock({
   const focus = highlightLines.length > 0 ? sweep(0) : 0;
   const blinkOn = Math.floor(m.frame / Math.round(m.fps * 0.5)) % 2 === 0;
   const showCaret = typed && (shown < code.length || (m.frame < focusFrom && blinkOn));
+
+  // Follow: the caret position `lag` frames ago, from the same shown-character formula above evaluated
+  // at an earlier frame — always computed (cheap, pure), only measured/used when `follow` is set.
+  const laggedShown = typed
+    ? Math.max(0, Math.floor(((m.frame - (follow?.lag ?? 6) - start) * (typing as number)) / m.fps))
+    : code.length;
+  const laggedCode = code.slice(0, laggedShown);
+  const laggedCodeLines = laggedCode.split("\n");
+  const laggedLineText = laggedCodeLines[laggedCodeLines.length - 1];
+  const caretMetrics = useTextMetrics(laggedLineText, {
+    fontFamily: theme.fonts.mono,
+    fontSize: fontPx,
+    fontWeight: 500,
+  });
+  const caretPosition = { x: caretMetrics.width, y: (laggedCodeLines.length - 1) * lineH };
 
   let offset = 0;
   const rows = lines.map((tokens, index) => {
@@ -224,87 +253,89 @@ export function CodeBlock({
   });
 
   return (
-    <div
-      className={className}
-      style={{
-        width: cardW,
-        borderRadius: u(radius ?? theme.radius * 0.7),
-        overflow: "hidden",
-        background: surface,
-        border: `1px solid ${border}`,
-        boxShadow: `0 ${u(2)}px ${u(6)}px ${alpha(theme.colors.shadow, 0.12)}, 0 ${u(28)}px ${u(72)}px ${alpha(theme.colors.shadow, 0.3)}`,
-        fontFamily: theme.fonts.mono,
-        color: theme.colors.foreground,
-        opacity: role.opacity,
-        translate: `0 ${(1 - m.enter) * u(40) - m.exit * role.travel(u(40)).exitPx}px`,
-        scale: String(0.97 + 0.03 * m.enter),
-        ...style,
-      }}
-    >
+    <FollowCaret follow={follow} caret={caretPosition}>
       <div
+        className={className}
         style={{
-          display: "flex",
-          alignItems: "center",
-          gap: u(20),
-          height: tabH,
-          padding: `0 ${u(24)}px`,
-          background: `color-mix(in srgb, ${surface} 55%, ${theme.colors.background})`,
-          borderBottom: `1px solid ${border}`,
-          fontFamily: theme.fonts.body,
-          fontSize: u(22),
+          width: cardW,
+          borderRadius: u(radius ?? theme.radius * 0.7),
+          overflow: "hidden",
+          background: surface,
+          border: `1px solid ${border}`,
+          boxShadow: `0 ${u(2)}px ${u(6)}px ${alpha(theme.colors.shadow, 0.12)}, 0 ${u(28)}px ${u(72)}px ${alpha(theme.colors.shadow, 0.3)}`,
+          fontFamily: theme.fonts.mono,
+          color: theme.colors.foreground,
+          opacity: role.opacity,
+          translate: `0 ${(1 - m.enter) * u(40) - m.exit * role.travel(u(40)).exitPx}px`,
+          scale: String(0.97 + 0.03 * m.enter),
+          ...style,
         }}
       >
-        <div style={{ display: "flex", gap: u(9) }}>
-          {[0, 1, 2].map((dot) => (
-            <div
-              key={dot}
-              style={{ width: u(13), height: u(13), borderRadius: "50%", background: alpha(theme.colors.muted, 0.4) }}
-            />
-          ))}
-        </div>
-        {title && (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              alignSelf: "stretch",
-              gap: u(10),
-              padding: `0 ${u(20)}px`,
-              marginBottom: -1,
-              background: surface,
-              borderLeft: `1px solid ${border}`,
-              borderRight: `1px solid ${border}`,
-              boxShadow: `inset 0 ${u(2)}px 0 ${theme.colors.accent}`,
-            }}
-          >
-            <svg
-              aria-hidden="true"
-              viewBox="0 0 24 24"
-              width={u(20)}
-              height={u(20)}
-              fill="none"
-              stroke={theme.colors.muted}
-              strokeWidth={2}
-            >
-              <path d="M6 3h8l4 4v14H6z" strokeLinejoin="round" />
-              <path d="M14 3v4h4" strokeLinejoin="round" />
-            </svg>
-            {title}
-          </div>
-        )}
         <div
           style={{
-            marginLeft: "auto",
-            fontFamily: theme.fonts.mono,
-            fontSize: u(18),
-            letterSpacing: "0.08em",
-            color: theme.colors.muted,
+            display: "flex",
+            alignItems: "center",
+            gap: u(20),
+            height: tabH,
+            padding: `0 ${u(24)}px`,
+            background: `color-mix(in srgb, ${surface} 55%, ${theme.colors.background})`,
+            borderBottom: `1px solid ${border}`,
+            fontFamily: theme.fonts.body,
+            fontSize: u(22),
           }}
         >
-          {language.toUpperCase()}
+          <div style={{ display: "flex", gap: u(9) }}>
+            {[0, 1, 2].map((dot) => (
+              <div
+                key={dot}
+                style={{ width: u(13), height: u(13), borderRadius: "50%", background: alpha(theme.colors.muted, 0.4) }}
+              />
+            ))}
+          </div>
+          {title && (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                alignSelf: "stretch",
+                gap: u(10),
+                padding: `0 ${u(20)}px`,
+                marginBottom: -1,
+                background: surface,
+                borderLeft: `1px solid ${border}`,
+                borderRight: `1px solid ${border}`,
+                boxShadow: `inset 0 ${u(2)}px 0 ${theme.colors.accent}`,
+              }}
+            >
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                width={u(20)}
+                height={u(20)}
+                fill="none"
+                stroke={theme.colors.muted}
+                strokeWidth={2}
+              >
+                <path d="M6 3h8l4 4v14H6z" strokeLinejoin="round" />
+                <path d="M14 3v4h4" strokeLinejoin="round" />
+              </svg>
+              {title}
+            </div>
+          )}
+          <div
+            style={{
+              marginLeft: "auto",
+              fontFamily: theme.fonts.mono,
+              fontSize: u(18),
+              letterSpacing: "0.08em",
+              color: theme.colors.muted,
+            }}
+          >
+            {language.toUpperCase()}
+          </div>
         </div>
+        <div style={{ padding: `${padY}px 0`, fontSize: fontPx, lineHeight: `${lineH}px` }}>{rows}</div>
       </div>
-      <div style={{ padding: `${padY}px 0`, fontSize: fontPx, lineHeight: `${lineH}px` }}>{rows}</div>
-    </div>
+    </FollowCaret>
   );
 }

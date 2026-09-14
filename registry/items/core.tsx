@@ -700,6 +700,42 @@ export function useTextMetrics(
   return { width, ready };
 }
 
+export type CaretFollow = { zoom?: number; lag?: number };
+
+/**
+ * Zooms toward `caret` (design-unit coordinates the caller already measured) when `follow` is set;
+ * otherwise a no-op passthrough — the opt-in, backward-compatible default every typing item's `follow`
+ * prop relies on. Clamped inside `useViewport().safe` so the zoomed caret never leaves the frame's safe
+ * zone.
+ */
+export function FollowCaret({
+  follow,
+  caret,
+  children,
+}: {
+  follow?: CaretFollow;
+  caret: { x: number; y: number };
+  children: React.ReactNode;
+}) {
+  const { width, height, safe } = useViewport();
+  if (!follow) return <>{children}</>;
+  const zoom = follow.zoom ?? 2.5;
+  const clampedX = Math.min(Math.max(caret.x, safe.x), width - safe.x);
+  const clampedY = Math.min(Math.max(caret.y, safe.top), height - safe.bottom);
+  return (
+    <AbsoluteFill style={{ overflow: "hidden" }}>
+      <AbsoluteFill
+        style={{
+          transformOrigin: "0 0",
+          transform: `translate(${width / 2 - zoom * clampedX}px, ${height / 2 - zoom * clampedY}px) scale(${zoom})`,
+        }}
+      >
+        {children}
+      </AbsoluteFill>
+    </AbsoluteFill>
+  );
+}
+
 /* ───────────────────────────────── Paths ───────────────────────────────── */
 
 export type PoseKey = {
