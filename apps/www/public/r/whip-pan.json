@@ -1,0 +1,42 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "whip-pan",
+  "title": "Whip Pan",
+  "description": "A fast directional blur hides a hard cut between two scenes, like a camera whipped from one framing to the next.",
+  "dependencies": [
+    "@remotion/transitions",
+    "remotion"
+  ],
+  "registryDependencies": [
+    "https://www.reelcn.dev/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/whip-pan.tsx",
+      "content": "/**\n * @title Whip Pan\n * @category transitions\n * @description A fast directional blur hides a hard cut between two scenes, like a camera whipped from one framing to the next.\n * @duration 18\n * @use Fast-paced cuts between shots, especially ones that already move the same direction\n * @use Sports, action and hype-reel scene changes\n * @tags whip, pan, blur, speed, directional, cut\n * @example\n * <TransitionSeries>\n *   <TransitionSeries.Sequence durationInFrames={60}>\n *     <SceneA />\n *   </TransitionSeries.Sequence>\n *   <TransitionSeries.Transition presentation={whipPan({ axis: \"x\" })} timing={linearTiming({ durationInFrames: 18 })} />\n *   <TransitionSeries.Sequence durationInFrames={60}>\n *     <SceneB />\n *   </TransitionSeries.Sequence>\n * </TransitionSeries>\n */\n\nimport type { TransitionPresentation, TransitionPresentationComponentProps } from \"@remotion/transitions\";\nimport { useId } from \"react\";\nimport { AbsoluteFill } from \"remotion\";\nimport { coverPhase, punchCurve, useViewport } from \"./core\";\n\nexport type WhipPanProps = {\n  /** Which axis the blur runs along. */\n  axis?: \"x\" | \"y\";\n  /** Blur/overscan multiplier. 1 is the tuned default. */\n  strength?: number;\n};\n\n/** Sharper than a plain parabola — the research's own whip pan uses `p≈3`. */\nconst PUNCH_EXPONENT = 3;\n\nfunction WhipPanPresentation({\n  children,\n  presentationDirection,\n  presentationProgress,\n  passedProps,\n}: TransitionPresentationComponentProps<WhipPanProps>) {\n  const { u, width, height } = useViewport();\n  const axis = passedProps.axis ?? \"x\";\n  const strength = passedProps.strength ?? 1;\n  const exiting = presentationDirection === \"exiting\";\n  const { showsNext } = coverPhase(presentationProgress);\n  const visible = exiting ? !showsNext : showsNext;\n  const shaped = punchCurve(presentationProgress, PUNCH_EXPONENT);\n  // Parabola peaking mid-transition, exactly 0 at both ends since `shaped` already is.\n  const speed = 4 * shaped * (1 - shaped);\n  const shortSide = Math.min(width, height);\n  const sigma = speed * strength * u(20);\n  const overscan = 1 + (6 * sigma) / shortSide;\n  // Per-instance, not per-axis/direction: two whip-pan transitions on screen at once (a split-screen, a\n  // nested Series) must not collide on the same SVG filter id (`core.tsx:768`, `glitch.tsx:50`, `grain.tsx:53`).\n  const filterId = `whip-pan-${useId().replace(/[^a-zA-Z0-9_-]/g, \"\")}`;\n  const hasBlur = sigma > 0.01;\n\n  return (\n    <AbsoluteFill style={{ overflow: \"hidden\", opacity: visible ? 1 : 0 }}>\n      {hasBlur && (\n        <svg aria-hidden=\"true\" width={0} height={0} style={{ position: \"absolute\" }}>\n          <defs>\n            <filter id={filterId} x=\"-50%\" y=\"-50%\" width=\"200%\" height=\"200%\">\n              <feGaussianBlur stdDeviation={axis === \"x\" ? `${sigma},0` : `0,${sigma}`} />\n            </filter>\n          </defs>\n        </svg>\n      )}\n      <AbsoluteFill style={{ transform: `scale(${overscan})`, filter: hasBlur ? `url(#${filterId})` : undefined }}>\n        {children}\n      </AbsoluteFill>\n    </AbsoluteFill>\n  );\n}\n\nexport function whipPan(props: WhipPanProps = {}): TransitionPresentation<WhipPanProps> {\n  return { component: WhipPanPresentation, props };\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/whip-pan.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "18",
+    "use": [
+      "Fast-paced cuts between shots, especially ones that already move the same direction",
+      "Sports, action and hype-reel scene changes"
+    ],
+    "avoid": [],
+    "tags": [
+      "whip",
+      "pan",
+      "blur",
+      "speed",
+      "directional",
+      "cut"
+    ]
+  },
+  "docs": "Usage:\n\n<TransitionSeries>\n  <TransitionSeries.Sequence durationInFrames={60}>\n    <SceneA />\n  </TransitionSeries.Sequence>\n  <TransitionSeries.Transition presentation={whipPan({ axis: \"x\" })} timing={linearTiming({ durationInFrames: 18 })} />\n  <TransitionSeries.Sequence durationInFrames={60}>\n    <SceneB />\n  </TransitionSeries.Sequence>\n</TransitionSeries>",
+  "categories": [
+    "transitions"
+  ],
+  "type": "registry:item"
+}

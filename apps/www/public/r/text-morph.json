@@ -1,0 +1,37 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "text-morph",
+  "title": "Text Morph",
+  "description": "Morphs one phrase into another: shared letters fly to their new position, leftover letters blur in or out instead of a plain cross-fade.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://www.reelcn.dev/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/text-morph.tsx",
+      "content": "/**\n * @title Text Morph\n * @category text\n * @description Morphs one phrase into another: shared letters fly to their new position, leftover letters blur in or out instead of a plain cross-fade.\n * @duration 36\n * @use Before/after headlines, \"problem → solution\" hooks\n * @use A single word swap that should feel connected, not like two separate reveals\n * @tags morph, kinetic, headline, grapheme\n * @example\n * <Center>\n *   <TextMorph from=\"Build faster\" to=\"Ship faster\" />\n * </Center>\n */\n\nimport type React from \"react\";\nimport { Fragment } from \"react\";\nimport {\n  graphemes,\n  type MotionProps,\n  matchGraphemes,\n  measurePx,\n  tween,\n  useMotion,\n  useTextMetrics,\n  useTheme,\n  useViewport,\n} from \"./core\";\n\nexport type TextMorphProps = MotionProps & {\n  from: string;\n  to: string;\n  holdFrames?: number;\n  size?: number;\n  color?: string;\n  accentColor?: string;\n  /** Faint trailing copies of matched letters as they move. Off by default. */\n  trail?: boolean;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\nfunction graphemeXPositions(chars: string[], font: string): number[] {\n  let x = 0;\n  const positions: number[] = [];\n  for (const char of chars) {\n    positions.push(x);\n    x += measurePx(char, font);\n  }\n  return positions;\n}\n\nexport function TextMorph({\n  from,\n  to,\n  holdFrames = 18,\n  size = 96,\n  color,\n  accentColor,\n  trail = false,\n  style,\n  className,\n  ...motion\n}: TextMorphProps) {\n  const theme = useTheme();\n  const { u } = useViewport();\n  const m = useMotion(motion);\n  const fontPx = u(size);\n  const fontString = `${theme.headingWeight} ${fontPx}px ${theme.fonts.heading}`;\n  const gate = useTextMetrics(`${from}${to}`, {\n    fontFamily: theme.fonts.heading,\n    fontSize: fontPx,\n    fontWeight: theme.headingWeight,\n  });\n  const fromChars = graphemes(from);\n  const toChars = graphemes(to);\n  const fromX = gate.ready ? graphemeXPositions(fromChars, fontString) : fromChars.map(() => 0);\n  const toX = gate.ready ? graphemeXPositions(toChars, fontString) : toChars.map(() => 0);\n  const pairs = matchGraphemes(fromChars, toChars);\n  const progress = tween(m.frame, m.fps, { from: m.delay, duration: m.enterFrames, motion: m.preset });\n  const trailCopies = trail ? [1, 2, 3] : [];\n\n  return (\n    <div\n      className={className}\n      style={{\n        position: \"relative\",\n        height: fontPx * 1.2,\n        fontFamily: theme.fonts.heading,\n        fontSize: fontPx,\n        fontWeight: theme.headingWeight,\n        color: color ?? theme.colors.foreground,\n        opacity: gate.ready ? 1 - m.exit : 0,\n        ...style,\n      }}\n    >\n      {pairs.map((pair, key) => {\n        if (pair.fromIndex >= 0 && pair.toIndex >= 0) {\n          const fromPos = fromX[pair.fromIndex];\n          const toPos = toX[pair.toIndex];\n          const x = fromPos + (toPos - fromPos) * progress;\n          return (\n            <Fragment key={key}>\n              {trailCopies.map((k) => {\n                const trailProgress = Math.max(progress - k * 0.06, 0);\n                const trailX = fromPos + (toPos - fromPos) * trailProgress;\n                return (\n                  <span\n                    key={k}\n                    style={{\n                      position: \"absolute\",\n                      left: trailX,\n                      top: 0,\n                      display: \"inline-block\",\n                      whiteSpace: \"pre\",\n                      opacity: 0.12 / k,\n                    }}\n                  >\n                    {toChars[pair.toIndex]}\n                  </span>\n                );\n              })}\n              <span style={{ position: \"absolute\", left: x, top: 0, display: \"inline-block\", whiteSpace: \"pre\" }}>\n                {toChars[pair.toIndex]}\n              </span>\n            </Fragment>\n          );\n        }\n        if (pair.toIndex >= 0) {\n          const enter = Math.max(0, Math.min(1, (progress - 0.3) / 0.7));\n          return (\n            <span\n              key={key}\n              style={{\n                position: \"absolute\",\n                left: toX[pair.toIndex],\n                top: 0,\n                display: \"inline-block\",\n                whiteSpace: \"pre\",\n                opacity: enter,\n                filter: `blur(${(1 - enter) * fontPx * 0.15}px)`,\n                color: accentColor ?? theme.colors.accent,\n              }}\n            >\n              {toChars[pair.toIndex]}\n            </span>\n          );\n        }\n        const exitP = Math.max(0, Math.min(1, progress / 0.5));\n        return (\n          <span\n            key={key}\n            style={{\n              position: \"absolute\",\n              left: fromX[pair.fromIndex],\n              top: 0,\n              display: \"inline-block\",\n              whiteSpace: \"pre\",\n              opacity: 1 - exitP,\n              filter: `blur(${exitP * fontPx * 0.15}px)`,\n            }}\n          >\n            {fromChars[pair.fromIndex]}\n          </span>\n        );\n      })}\n    </div>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/text-morph.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "36",
+    "use": [
+      "Before/after headlines, \"problem → solution\" hooks",
+      "A single word swap that should feel connected, not like two separate reveals"
+    ],
+    "avoid": [],
+    "tags": [
+      "morph",
+      "kinetic",
+      "headline",
+      "grapheme"
+    ]
+  },
+  "docs": "Usage:\n\n<Center>\n  <TextMorph from=\"Build faster\" to=\"Ship faster\" />\n</Center>",
+  "categories": [
+    "text"
+  ],
+  "type": "registry:item"
+}

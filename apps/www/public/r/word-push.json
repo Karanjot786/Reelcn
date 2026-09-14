@@ -1,0 +1,38 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "word-push",
+  "title": "Word Push",
+  "description": "Words accelerate in one after another, each adding a small cumulative zoom so the whole line reads as one continuous push.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://www.reelcn.dev/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/word-push.tsx",
+      "content": "/**\n * @title Word Push\n * @category text\n * @description Words accelerate in one after another, each adding a small cumulative zoom so the whole line reads as one continuous push.\n * @duration data-driven\n * @use Hook lines and headline builds on Shorts/Reels-style content\n * @use Any word-by-word reveal that should speed up, not stay evenly paced\n * @tags word, push, accelerando, kinetic, hook\n * @example\n * <Center>\n *   <WordPush words={[\"Ship\", \"videos,\", \"not\", \"keyframes\"]} />\n * </Center>\n */\nimport type React from \"react\";\nimport { geometricCadence, type MotionProps, tween, useMotion, useTheme, useViewport } from \"./core\";\n\nexport type WordPushOptions = { gap?: number; accel?: number };\n\n/** One entry per word: `delay` in frames (a geometric accelerando, not a constant stagger), `zoomBoost`\n * a small cumulative scale so later words read as part of one continuous push. Pure — no measurement,\n * no hook; positions come from ordinary inline-block DOM flow in the consumer, which already measures\n * the real font the way the browser lays out any text (see the Phase 3a plan's Deviation 3). */\nexport function useWordPush(\n  words: string[],\n  { gap = 6, accel = 0.82 }: WordPushOptions = {},\n): { delay: number; zoomBoost: number }[] {\n  const entries: { delay: number; zoomBoost: number }[] = [];\n  for (let i = 0; i < words.length; i++) {\n    entries.push({ delay: geometricCadence(i, gap, accel), zoomBoost: 0.035 * i });\n  }\n  return entries;\n}\n\nexport type WordPushProps = MotionProps & {\n  words: string[];\n  gap?: number;\n  accel?: number;\n  size?: number;\n  font?: \"heading\" | \"body\" | \"mono\";\n  color?: string;\n  accentColor?: string;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\nexport function WordPush({\n  words,\n  gap,\n  accel,\n  size = 96,\n  font = \"heading\",\n  color,\n  accentColor,\n  style,\n  className,\n  ...motion\n}: WordPushProps) {\n  const theme = useTheme();\n  const { u, width, safe } = useViewport();\n  const m = useMotion(motion);\n  const fontPx = u(size);\n  const cadence = useWordPush(words, { gap, accel });\n\n  return (\n    <div\n      className={className}\n      style={{\n        fontFamily: theme.fonts[font],\n        fontSize: fontPx,\n        fontWeight: font === \"heading\" ? theme.headingWeight : 500,\n        color: color ?? theme.colors.foreground,\n        lineHeight: 1.1,\n        textAlign: \"center\",\n        textWrap: \"balance\",\n        maxWidth: width - safe.x * 2,\n        opacity: 1 - m.exit,\n      }}\n    >\n      {words.map((word, i) => {\n        const entry = cadence[i];\n        const progress = tween(m.frame, m.fps, {\n          from: m.delay + entry.delay,\n          duration: m.enterFrames,\n          motion: m.preset,\n        });\n        const opacity = Math.min(Math.max(progress, 0), 1);\n        const zoom = 1 + entry.zoomBoost * progress;\n        // The cumulative zoom sells the \"push\", but scaling a word about its own center bleeds its\n        // painted glyphs past its unscaled layout box on both sides — with only a plain space\n        // character's width reserved between words, that bleed (from the words on both sides of a gap)\n        // eats straight through it and merges them (see the visual-check bug). Anchoring the scale to\n        // the word's own left edge confines its growth to bleeding rightward into its own trailing gap\n        // instead of also eating into the gap before it, so each gap only has to outgrow the one word's\n        // own bleed — proportional to `zoomBoost` (how much it grows) and its length (how far that\n        // growth reaches) — plus a fixed safety pad. Later words push harder and bleed further, so the\n        // reserved gap actually grows even as the *visible* gap (what's left after bleed eats into it)\n        // keeps shrinking, which is what should read as the accelerando never fully closing the gap.\n        const gapEm = i < words.length - 1 ? Math.max(0.3, entry.zoomBoost * word.length * 0.6 + 0.2) : 0;\n        return (\n          <span\n            key={i}\n            style={{\n              display: \"inline-block\",\n              whiteSpace: \"pre\",\n              opacity,\n              scale: String(zoom),\n              transformOrigin: \"0% 50%\",\n              marginRight: gapEm ? `${gapEm}em` : undefined,\n              color: i % 2 === 1 ? (accentColor ?? theme.colors.accent) : undefined,\n            }}\n          >\n            {word}\n          </span>\n        );\n      })}\n    </div>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/word-push.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "Hook lines and headline builds on Shorts/Reels-style content",
+      "Any word-by-word reveal that should speed up, not stay evenly paced"
+    ],
+    "avoid": [],
+    "tags": [
+      "word",
+      "push",
+      "accelerando",
+      "kinetic",
+      "hook"
+    ]
+  },
+  "docs": "Usage:\n\n<Center>\n  <WordPush words={[\"Ship\", \"videos,\", \"not\", \"keyframes\"]} />\n</Center>",
+  "categories": [
+    "text"
+  ],
+  "type": "registry:item"
+}

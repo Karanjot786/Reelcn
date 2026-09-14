@@ -1,0 +1,41 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "zoom-through",
+  "title": "Zoom Through",
+  "description": "Pushes through the outgoing scene and pulls back out of the incoming one, like the camera flew through the cut.",
+  "dependencies": [
+    "@remotion/transitions",
+    "remotion"
+  ],
+  "registryDependencies": [
+    "https://www.reelcn.dev/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/zoom-through.tsx",
+      "content": "/**\n * @title Zoom Through\n * @category transitions\n * @description Pushes through the outgoing scene and pulls back out of the incoming one, like the camera flew through the cut.\n * @duration 24\n * @use Feature-to-feature walkthroughs and product demo cuts\n * @use Any transition that should feel like forward momentum, not a flat cut\n * @tags zoom, push, dolly, scale, blur\n * @example\n * <TransitionSeries>\n *   <TransitionSeries.Sequence durationInFrames={60}>\n *     <FeatureOne />\n *   </TransitionSeries.Sequence>\n *   <TransitionSeries.Transition presentation={zoomThrough()} timing={linearTiming({ durationInFrames: 24 })} />\n *   <TransitionSeries.Sequence durationInFrames={60}>\n *     <FeatureTwo />\n *   </TransitionSeries.Sequence>\n * </TransitionSeries>\n */\nimport type { TransitionPresentation, TransitionPresentationComponentProps } from \"@remotion/transitions\";\nimport { useId } from \"react\";\nimport { AbsoluteFill } from \"remotion\";\nimport { coverPhase, useViewport } from \"./core\";\n\nexport type ZoomThroughProps = {\n  /** How far the camera pushes through, as a scale ratio. */\n  maxScale?: number;\n  /** Peak isotropic blur in design units. */\n  blurPeak?: number;\n  /** `\"in\"` pushes through the outgoing scene and pulls back into the incoming one (default). `\"out\"` reverses it. */\n  direction?: \"in\" | \"out\";\n};\n\nfunction ZoomThroughPresentation({\n  children,\n  presentationDirection,\n  presentationProgress,\n  passedProps,\n}: TransitionPresentationComponentProps<ZoomThroughProps>) {\n  const { u } = useViewport();\n  const maxScale = passedProps.maxScale ?? 2.4;\n  const blurPeak = passedProps.blurPeak ?? 8;\n  const direction = passedProps.direction ?? \"in\";\n  const exiting = presentationDirection === \"exiting\";\n  const { cover, reveal, showsNext } = coverPhase(presentationProgress);\n  const visible = exiting ? !showsNext : showsNext;\n  // `displace` is 0 at the start of this layer's own window and 1 once it's fully covered/revealed.\n  const displace = exiting ? cover : reveal;\n  const speed = 4 * displace * (1 - displace);\n  const sigma = speed * u(blurPeak);\n  const pinch = 1 / maxScale;\n  const exitScale = direction === \"in\" ? 1 + (maxScale - 1) * displace : 1 - (1 - pinch) * displace;\n  const enterScale = direction === \"in\" ? pinch + (1 - pinch) * displace : maxScale - (maxScale - 1) * displace;\n  const scale = exiting ? exitScale : enterScale;\n  // Per-instance, not per-direction: see whip-pan's identical fix for why a static id collides.\n  const filterId = `zoom-through-${useId().replace(/[^a-zA-Z0-9_-]/g, \"\")}`;\n  const hasBlur = sigma > 0.01;\n\n  return (\n    <AbsoluteFill style={{ overflow: \"hidden\", opacity: visible ? 1 : 0 }}>\n      {hasBlur && (\n        <svg width={0} height={0} style={{ position: \"absolute\" }} aria-hidden=\"true\">\n          <defs>\n            <filter id={filterId} x=\"-50%\" y=\"-50%\" width=\"200%\" height=\"200%\">\n              <feGaussianBlur stdDeviation={sigma} />\n            </filter>\n          </defs>\n        </svg>\n      )}\n      <AbsoluteFill style={{ transform: `scale(${scale})`, filter: hasBlur ? `url(#${filterId})` : undefined }}>\n        {children}\n      </AbsoluteFill>\n    </AbsoluteFill>\n  );\n}\n\nexport function zoomThrough(props: ZoomThroughProps = {}): TransitionPresentation<ZoomThroughProps> {\n  return { component: ZoomThroughPresentation, props };\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/zoom-through.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "24",
+    "use": [
+      "Feature-to-feature walkthroughs and product demo cuts",
+      "Any transition that should feel like forward momentum, not a flat cut"
+    ],
+    "avoid": [],
+    "tags": [
+      "zoom",
+      "push",
+      "dolly",
+      "scale",
+      "blur"
+    ]
+  },
+  "docs": "Usage:\n\n<TransitionSeries>\n  <TransitionSeries.Sequence durationInFrames={60}>\n    <FeatureOne />\n  </TransitionSeries.Sequence>\n  <TransitionSeries.Transition presentation={zoomThrough()} timing={linearTiming({ durationInFrames: 24 })} />\n  <TransitionSeries.Sequence durationInFrames={60}>\n    <FeatureTwo />\n  </TransitionSeries.Sequence>\n</TransitionSeries>",
+  "categories": [
+    "transitions"
+  ],
+  "type": "registry:item"
+}

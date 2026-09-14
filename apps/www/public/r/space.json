@@ -1,0 +1,43 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "space",
+  "title": "Space",
+  "description": "Scoped 3D: children placed at x/y/z, visited by a look-at camera that slerps between beats. Our own ~80-line matrix/quaternion math, no three.js.",
+  "dependencies": [
+    "remotion"
+  ],
+  "registryDependencies": [
+    "https://www.reelcn.dev/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/space.tsx",
+      "content": "/**\n * @title Space\n * @category motion\n * @description Scoped 3D: children placed at x/y/z, visited by a look-at camera that slerps between beats. Our own ~80-line matrix/quaternion math, no three.js.\n * @duration data-driven\n * @use A small product or feature cluster the camera pushes through or reframes around\n * @use A 3D \"gallery\" of cards or screenshots without CSS 3D's sibling depth-sorting problem\n * @avoid Scenes with many overlapping opaque volumes — this only depth-sorts flat children, painter's-algorithm style\n * @tags 3d, camera, space, perspective, slerp, matrix\n * @example\n * <Space\n *   beats={[\n *     { frame: 0, lookAt: [0, 0, 0], distance: 6 },\n *     { frame: 60, lookAt: [1.2, 0, 0], distance: 4 },\n *   ]}\n * >\n *   {[\n *     { x: 0, y: 0, z: 0, children: <Img src={staticFile(\"a.png\")} style={{ width: 200 }} /> },\n *     { x: 1.4, y: 0, z: -0.4, children: <Img src={staticFile(\"b.png\")} style={{ width: 200 }} /> },\n *   ]}\n * </Space>\n */\nimport type React from \"react\";\nimport { AbsoluteFill, useCurrentFrame, useVideoConfig } from \"remotion\";\nimport {\n  type Mat4,\n  mat4LookAt,\n  projectPoint,\n  type Quat,\n  quatFromLookAt,\n  quatSlerp,\n  tween,\n  useViewport,\n  type Vec3,\n} from \"./core\";\n\nexport type SpaceChild = { x: number; y: number; z: number; rotateY?: number; children: React.ReactNode };\nexport type SpaceBeat = { frame: number; lookAt: [number, number, number]; distance: number; roll?: number };\nexport type SpaceProps = { beats: SpaceBeat[]; fov?: number; children: SpaceChild[] };\n\nconst vadd = (a: Vec3, b: Vec3): Vec3 => ({ x: a.x + b.x, y: a.y + b.y, z: a.z + b.z });\nconst vscale = (a: Vec3, s: number): Vec3 => ({ x: a.x * s, y: a.y * s, z: a.z * s });\nconst vlerp = (a: Vec3, b: Vec3, t: number): Vec3 => vadd(a, vscale(vadd(b, vscale(a, -1)), t));\nconst vcross = (a: Vec3, b: Vec3): Vec3 => ({\n  x: a.y * b.z - a.z * b.y,\n  y: a.z * b.x - a.x * b.z,\n  z: a.x * b.y - a.y * b.x,\n});\n\n/** Rotates the camera's forward axis `(0,0,-1)` by `q` — the standard `v + 2*cross(qv, cross(qv,v) + q.w*v)` formula. */\nfunction forwardAxis(q: Quat): Vec3 {\n  const v: Vec3 = { x: 0, y: 0, z: -1 };\n  const qv: Vec3 = { x: q.x, y: q.y, z: q.z };\n  const uv = vcross(qv, v);\n  const uuv = vcross(qv, uv);\n  return vadd(vadd(v, vscale(uv, 2 * q.w)), vscale(uuv, 2));\n}\n\nfunction beatCamera(beat: SpaceBeat) {\n  const target: Vec3 = { x: beat.lookAt[0], y: beat.lookAt[1], z: beat.lookAt[2] };\n  const eye: Vec3 = { x: target.x, y: target.y, z: target.z + beat.distance };\n  return { eye, quat: quatFromLookAt(eye, target) };\n}\n\nexport function Space({ beats, fov = 50, children }: SpaceProps) {\n  const frame = useCurrentFrame();\n  const { fps } = useVideoConfig();\n  const { width, height, orientation } = useViewport();\n  const sorted = beats.slice().sort((a, b) => a.frame - b.frame);\n  const firstFrame = sorted[0]?.frame ?? 0;\n  const lastFrame = sorted[sorted.length - 1]?.frame ?? 0;\n  const clamped = Math.min(Math.max(frame, firstFrame), lastFrame);\n  let index = 0;\n  while (index < sorted.length - 2 && clamped >= sorted[index + 1].frame) index++;\n  const fromBeat = sorted[Math.min(index, sorted.length - 1)];\n  const toBeat = sorted[Math.min(index + 1, sorted.length - 1)];\n  const from = beatCamera(fromBeat);\n  const to = beatCamera(toBeat);\n  const span = Math.max(toBeat.frame - fromBeat.frame, 1);\n  const t = sorted.length > 1 ? tween(clamped, fps, { from: fromBeat.frame, duration: span, motion: \"linear\" }) : 0;\n\n  const eye = vlerp(from.eye, to.eye, t);\n  const quat = quatSlerp(from.quat, to.quat, t);\n  const target = vadd(eye, forwardAxis(quat));\n  const view: Mat4 = mat4LookAt(eye, target);\n\n  // Portrait reframes with a closer camera and a touch more fov instead of letterboxing to one fit-to-box scale.\n  const reframedFov = orientation === \"portrait\" ? fov * 1.15 : fov;\n  const aspect = width / height;\n  const shortSide = Math.min(width, height);\n\n  type Placed = { key: number; child: SpaceChild; x: number; y: number; depth: number; scale: number };\n  const placed: Placed[] = [];\n  for (let key = 0; key < children.length; key++) {\n    const child = children[key];\n    const projected = projectPoint({ x: child.x, y: child.y, z: child.z }, view, reframedFov, aspect);\n    if (projected.depth <= 0) continue;\n    placed.push({\n      key,\n      child,\n      x: projected.x,\n      y: projected.y,\n      depth: projected.depth,\n      scale: shortSide / 2 / projected.depth,\n    });\n  }\n  // Painter's algorithm: farthest first, so nearer children draw on top — no CSS 3D sibling sorting.\n  placed.sort((a, b) => b.depth - a.depth);\n\n  return (\n    <AbsoluteFill style={{ overflow: \"hidden\" }}>\n      {placed.map(({ key, child, x, y, scale }) => (\n        <div\n          key={key}\n          style={{\n            position: \"absolute\",\n            left: width / 2 + (x * shortSide) / 2,\n            top: height / 2 - (y * shortSide) / 2,\n            transform: `translate(-50%, -50%) scale(${scale}) rotateY(${child.rotateY ?? 0}deg)`,\n          }}\n        >\n          {child.children}\n        </div>\n      ))}\n    </AbsoluteFill>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/space.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "A small product or feature cluster the camera pushes through or reframes around",
+      "A 3D \"gallery\" of cards or screenshots without CSS 3D's sibling depth-sorting problem"
+    ],
+    "avoid": [
+      "Scenes with many overlapping opaque volumes — this only depth-sorts flat children, painter's-algorithm style"
+    ],
+    "tags": [
+      "3d",
+      "camera",
+      "space",
+      "perspective",
+      "slerp",
+      "matrix"
+    ]
+  },
+  "docs": "Usage:\n\n<Space\n  beats={[\n    { frame: 0, lookAt: [0, 0, 0], distance: 6 },\n    { frame: 60, lookAt: [1.2, 0, 0], distance: 4 },\n  ]}\n>\n  {[\n    { x: 0, y: 0, z: 0, children: <Img src={staticFile(\"a.png\")} style={{ width: 200 }} /> },\n    { x: 1.4, y: 0, z: -0.4, children: <Img src={staticFile(\"b.png\")} style={{ width: 200 }} /> },\n  ]}\n</Space>",
+  "categories": [
+    "motion"
+  ],
+  "type": "registry:item"
+}

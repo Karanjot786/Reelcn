@@ -1,0 +1,41 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "rack-focus",
+  "title": "Rack Focus",
+  "description": "The outgoing scene blurs and blows out as the incoming one sharpens into focus, like a lens racking focus between two subjects.",
+  "dependencies": [
+    "@remotion/transitions",
+    "remotion"
+  ],
+  "registryDependencies": [
+    "https://www.reelcn.dev/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/rack-focus.tsx",
+      "content": "/**\n * @title Rack Focus\n * @category transitions\n * @description The outgoing scene blurs and blows out as the incoming one sharpens into focus, like a lens racking focus between two subjects.\n * @duration 20\n * @use A premium, film-shot feel between two scenes at the same physical distance\n * @use Interview or talking-head cuts that should feel handled, not switched\n * @tags focus, blur, brightness, lens, cross-blur\n * @example\n * <TransitionSeries>\n *   <TransitionSeries.Sequence durationInFrames={60}>\n *     <Subject />\n *   </TransitionSeries.Sequence>\n *   <TransitionSeries.Transition presentation={rackFocus()} timing={linearTiming({ durationInFrames: 20 })} />\n *   <TransitionSeries.Sequence durationInFrames={60}>\n *     <OtherSubject />\n *   </TransitionSeries.Sequence>\n * </TransitionSeries>\n */\nimport type { TransitionPresentation, TransitionPresentationComponentProps } from \"@remotion/transitions\";\nimport { AbsoluteFill, interpolate } from \"remotion\";\nimport { CLAMP, easings, useViewport } from \"./core\";\n\nexport type RackFocusProps = {\n  /** Peak blur in design units for the scene going out of focus. */\n  blurPeak?: number;\n};\n\nfunction RackFocusPresentation({\n  children,\n  presentationDirection,\n  presentationProgress,\n  passedProps,\n}: TransitionPresentationComponentProps<RackFocusProps>) {\n  const { u } = useViewport();\n  const blurPeak = passedProps.blurPeak ?? 16;\n  const exiting = presentationDirection === \"exiting\";\n  const at = (from: number, to: number) =>\n    interpolate(presentationProgress, [0, 1], [from, to], { ...CLAMP, easing: easings.gentle });\n  const scale = exiting ? at(1, 1.05) : at(0.97, 1);\n  const blur = exiting ? at(0, blurPeak) : at(blurPeak, 0);\n  const brightness = exiting ? at(1, 1.3) : at(1.25, 1);\n  // The exiting layer stays fully opaque and blurs/brightens away; the entering layer fades in on top\n  // over the same window while it unblurs, so both are genuinely visible mid-transition — a real\n  // cross-blur, not the entering layer's opaque `<AbsoluteFill>` fully occluding the exiting one from\n  // frame 1 (TransitionSeries paints the entering side on top by default — confirmed by `card-push.tsx`'s\n  // exiting branch explicitly setting `zIndex: 1` to override that same default). `zIndex` is set here\n  // too, explicitly, rather than relying on the unstated default.\n  const opacity = exiting ? 1 : at(0, 1);\n\n  return (\n    <AbsoluteFill\n      style={{\n        zIndex: exiting ? 0 : 1,\n        opacity,\n        transform: `scale(${scale})`,\n        filter: `blur(${u(blur)}px) brightness(${brightness})`,\n      }}\n    >\n      {children}\n    </AbsoluteFill>\n  );\n}\n\nexport function rackFocus(props: RackFocusProps = {}): TransitionPresentation<RackFocusProps> {\n  return { component: RackFocusPresentation, props };\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/rack-focus.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "20",
+    "use": [
+      "A premium, film-shot feel between two scenes at the same physical distance",
+      "Interview or talking-head cuts that should feel handled, not switched"
+    ],
+    "avoid": [],
+    "tags": [
+      "focus",
+      "blur",
+      "brightness",
+      "lens",
+      "cross-blur"
+    ]
+  },
+  "docs": "Usage:\n\n<TransitionSeries>\n  <TransitionSeries.Sequence durationInFrames={60}>\n    <Subject />\n  </TransitionSeries.Sequence>\n  <TransitionSeries.Transition presentation={rackFocus()} timing={linearTiming({ durationInFrames: 20 })} />\n  <TransitionSeries.Sequence durationInFrames={60}>\n    <OtherSubject />\n  </TransitionSeries.Sequence>\n</TransitionSeries>",
+  "categories": [
+    "transitions"
+  ],
+  "type": "registry:item"
+}

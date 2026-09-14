@@ -1,0 +1,41 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "stage",
+  "title": "Stage",
+  "description": "Perspective studio plane: a look-at camera that pans and zooms between normalized targets, plus a contact-shadow floor and a soft key light, both usable standalone.",
+  "dependencies": [
+    "remotion"
+  ],
+  "registryDependencies": [
+    "https://www.reelcn.dev/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/stage.tsx",
+      "content": "/**\n * @title Stage\n * @category motion\n * @description Perspective studio plane: a look-at camera that pans and zooms between normalized targets, plus a contact-shadow floor and a soft key light, both usable standalone.\n * @duration data-driven\n * @use A product shot staged on a lit floor that the camera moves around\n * @use Pairing with `laptop-frame`/`phone-frame`/`browser-window` for a studio-lit device shot\n * @tags stage, studio, floor, light, look-at, camera\n * @example\n * <Stage keyframes={[{ frame: 0, targetX: 0.5, targetY: 0.5 }, { frame: 60, targetX: 0.7, targetY: 0.3, zoom: 1.6 }]}>\n *   <Stage.Floor shadow=\"soft\" />\n *   <Stage.KeyLight angle={35} />\n *   <Img src={staticFile(\"product.png\")} style={{ width: \"100%\" }} />\n * </Stage>\n */\nimport type React from \"react\";\nimport { AbsoluteFill } from \"remotion\";\nimport { alpha, lookAtOffset, type PoseKey, useKeyframePath, useTheme, useViewport } from \"./core\";\n\nexport type StageKeyframe = {\n  frame: number;\n  /** 0-1 of the content, left to right. */\n  targetX: number;\n  /** 0-1 of the content, top to bottom. */\n  targetY: number;\n  zoom?: number;\n};\n\nexport type StageProps = {\n  keyframes: StageKeyframe[];\n  children?: React.ReactNode;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\nexport function StageFloor({ shadow }: { shadow?: \"hard\" | \"soft\" }) {\n  const theme = useTheme();\n  const { u } = useViewport();\n  const soft = (shadow ?? theme.material?.floorShadow ?? \"soft\") === \"soft\";\n  return (\n    <div\n      style={{\n        position: \"absolute\",\n        left: \"10%\",\n        right: \"10%\",\n        bottom: u(-40),\n        height: u(soft ? 140 : 60),\n        borderRadius: \"50%\",\n        background: alpha(theme.colors.shadow, soft ? 0.35 : 0.55),\n        filter: `blur(${u(soft ? 60 : 14)}px)`,\n      }}\n    />\n  );\n}\n\nexport function StageKeyLight({ angle = 35, intensity = 0.5 }: { angle?: number; intensity?: number }) {\n  const rad = (angle * Math.PI) / 180;\n  const x = 50 + Math.cos(rad) * 60;\n  const y = 50 - Math.sin(rad) * 60;\n  return (\n    <AbsoluteFill\n      style={{\n        background: `radial-gradient(circle at ${x}% ${y}%, rgba(255,255,255,${0.22 * intensity}), transparent 55%)`,\n        pointerEvents: \"none\",\n      }}\n    />\n  );\n}\n\nexport function Stage({ keyframes, children, style, className }: StageProps) {\n  const { width, height } = useViewport();\n  const keys: PoseKey[] = keyframes.map((k) => ({ frame: k.frame, x: k.targetX, y: k.targetY, scale: k.zoom ?? 1 }));\n  const path = useKeyframePath(keys);\n  const zoom = path.scale ?? 1;\n  const offset = lookAtOffset({ x: path.x, y: path.y }, zoom, { width, height });\n\n  return (\n    <AbsoluteFill className={className} style={{ overflow: \"hidden\", ...style }}>\n      <AbsoluteFill\n        style={{ transformOrigin: \"0 0\", transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})` }}\n      >\n        {children}\n      </AbsoluteFill>\n    </AbsoluteFill>\n  );\n}\n\nStage.Floor = StageFloor;\nStage.KeyLight = StageKeyLight;\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/stage.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "A product shot staged on a lit floor that the camera moves around",
+      "Pairing with `laptop-frame`/`phone-frame`/`browser-window` for a studio-lit device shot"
+    ],
+    "avoid": [],
+    "tags": [
+      "stage",
+      "studio",
+      "floor",
+      "light",
+      "look-at",
+      "camera"
+    ]
+  },
+  "docs": "Usage:\n\n<Stage keyframes={[{ frame: 0, targetX: 0.5, targetY: 0.5 }, { frame: 60, targetX: 0.7, targetY: 0.3, zoom: 1.6 }]}>\n  <Stage.Floor shadow=\"soft\" />\n  <Stage.KeyLight angle={35} />\n  <Img src={staticFile(\"product.png\")} style={{ width: \"100%\" }} />\n</Stage>",
+  "categories": [
+    "motion"
+  ],
+  "type": "registry:item"
+}

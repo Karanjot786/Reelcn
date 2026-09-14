@@ -1,0 +1,41 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "text-mask-video",
+  "title": "Text Mask Video",
+  "description": "Type acts as a window onto footage: the glyphs are the only place the video or image beneath shows through.",
+  "dependencies": [
+    "@remotion/media",
+    "remotion"
+  ],
+  "registryDependencies": [
+    "https://www.reelcn.dev/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/text-mask-video.tsx",
+      "content": "/**\n * @title Text Mask Video\n * @category text\n * @description Type acts as a window onto footage: the glyphs are the only place the video or image beneath shows through.\n * @duration data-driven\n * @use A headline that IS the footage, not a caption on top of it\n * @use Brand reveals where the type and the shot are the same idea\n * @tags mask, video, type, window, svg\n * @example\n * <TextMaskVideo text=\"MOTION\" src={staticFile(\"b-roll.mp4\")} />\n */\nimport { Video } from \"@remotion/media\";\nimport { useId } from \"react\";\nimport { AbsoluteFill } from \"remotion\";\nimport { type MotionProps, useMotion, useTheme, useViewport } from \"./core\";\n\nexport type TextMaskVideoProps = MotionProps & {\n  text: string;\n  src: string;\n  size?: number;\n  font?: \"heading\" | \"body\" | \"mono\";\n  weight?: number;\n};\n\nexport function TextMaskVideo({ text, src, size = 220, font = \"heading\", weight, ...motion }: TextMaskVideoProps) {\n  const theme = useTheme();\n  const { width, height, u } = useViewport();\n  const m = useMotion(motion);\n  const fontPx = u(size);\n  // Per-instance, not a literal constant: two <TextMaskVideo> calls in the same template must not\n  // collide on the same SVG mask id (same fix as whip-pan's filter id).\n  const maskId = `text-mask-video-${useId().replace(/[^a-zA-Z0-9_-]/g, \"\")}`;\n\n  return (\n    <AbsoluteFill style={{ overflow: \"hidden\", opacity: 1 - m.exit }}>\n      <svg aria-hidden=\"true\" width={0} height={0} style={{ position: \"absolute\" }}>\n        <defs>\n          <mask id={maskId} maskUnits=\"userSpaceOnUse\" x={0} y={0} width={width} height={height}>\n            <rect x={0} y={0} width={width} height={height} fill=\"black\" />\n            <text\n              // Pixel coordinates, not \"50%\"/\"50%\": percentages inside a <mask> resolve against the\n              // referencing <svg>'s own width/height, which is 0×0 here (spike confirmed a near-black\n              // render with percentages — text collapsed to the top-left corner).\n              x={width / 2}\n              y={height / 2}\n              dominantBaseline=\"middle\"\n              textAnchor=\"middle\"\n              fontFamily={theme.fonts[font]}\n              fontSize={fontPx}\n              fontWeight={weight ?? theme.headingWeight}\n              fill=\"white\"\n            >\n              {text}\n            </text>\n          </mask>\n        </defs>\n      </svg>\n      <AbsoluteFill style={{ mask: `url(#${maskId})`, WebkitMask: `url(#${maskId})` }}>\n        <Video src={src} objectFit=\"cover\" style={{ width: \"100%\", height: \"100%\" }} />\n      </AbsoluteFill>\n    </AbsoluteFill>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/text-mask-video.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "A headline that IS the footage, not a caption on top of it",
+      "Brand reveals where the type and the shot are the same idea"
+    ],
+    "avoid": [],
+    "tags": [
+      "mask",
+      "video",
+      "type",
+      "window",
+      "svg"
+    ]
+  },
+  "docs": "Usage:\n\n<TextMaskVideo text=\"MOTION\" src={staticFile(\"b-roll.mp4\")} />",
+  "categories": [
+    "text"
+  ],
+  "type": "registry:item"
+}
