@@ -336,6 +336,22 @@ export function projectPoint(
   return { x: (vx * focal) / (safeDepth * aspect), y: (vy * focal) / safeDepth, depth };
 }
 
+/**
+ * The translate needed to put `target` (normalized 0-1 of the content) at frame center after scaling by
+ * `zoom`, computed from the actual measured canvas size instead of a hardcoded stage size — the
+ * `terminal-cursor-zoom`/`stage` bug this row exists to fix. Pair with `transformOrigin: "0 0"` and
+ * `transform: translate(offset.x, offset.y) scale(zoom)`.
+ */
+export function lookAtOffset(
+  target: { x: number; y: number },
+  zoom: number,
+  canvasSize: { width: number; height: number },
+): { x: number; y: number } {
+  const targetPx = { x: target.x * canvasSize.width, y: target.y * canvasSize.height };
+  const center = { x: canvasSize.width / 2, y: canvasSize.height / 2 };
+  return { x: center.x - zoom * targetPx.x, y: center.y - zoom * targetPx.y };
+}
+
 /* ───────────────────────────────── Typing ──────────────────────────────── */
 
 export type TypingModel = {

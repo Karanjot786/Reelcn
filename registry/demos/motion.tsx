@@ -3,8 +3,10 @@ import { Animate, type AnimateEffect } from "../items/animate";
 import { BentoGrid } from "../items/bento-grid";
 import { Camera } from "../items/camera";
 import { alpha, Center, useTheme, useViewport } from "../items/core";
+import { LaptopFrame } from "../items/laptop-frame";
 import { Marquee } from "../items/marquee";
 import { SplitScreen } from "../items/split-screen";
+import { Stage } from "../items/stage";
 import { Stagger } from "../items/stagger";
 import type { Demo } from "./index";
 
@@ -320,6 +322,44 @@ function MarqueeBands() {
   );
 }
 
+/* ──────────────────────────────── stage ─────────────────────────────── */
+
+function StageTour() {
+  const theme = useTheme();
+  const { u } = useViewport();
+  return (
+    <Stage
+      keyframes={[
+        { frame: 0, targetX: 0.5, targetY: 0.5, zoom: 1 },
+        { frame: 60, targetX: 0.7, targetY: 0.3, zoom: 1.6 },
+        { frame: 110, targetX: 0.5, targetY: 0.5, zoom: 1 },
+      ]}
+    >
+      <Stage.Floor shadow="soft" />
+      <Stage.KeyLight angle={35} />
+      <Center>
+        <LaptopFrame>
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              display: "grid",
+              placeItems: "center",
+              background: theme.colors.background,
+              fontFamily: theme.fonts.heading,
+              fontWeight: theme.headingWeight,
+              fontSize: u(40),
+              color: theme.colors.foreground,
+            }}
+          >
+            Studio
+          </div>
+        </LaptopFrame>
+      </Center>
+    </Stage>
+  );
+}
+
 export default [
   { id: "animate", duration: 75, component: AnimateGrid },
   { id: "stagger-steps", duration: 90, component: StaggerSteps },
@@ -329,4 +369,5 @@ export default [
   { id: "split-screen-quad", duration: 90, component: SplitQuad },
   { id: "bento-grid-features", duration: 105, component: BentoFeatures },
   { id: "marquee-bands", duration: 120, component: MarqueeBands },
+  { id: "stage-tour", duration: 120, component: StageTour },
 ] satisfies Demo[];

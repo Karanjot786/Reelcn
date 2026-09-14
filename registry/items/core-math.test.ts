@@ -83,3 +83,24 @@ test("golden projection: a point to the camera's right projects to positive x", 
   const projected = projectPoint({ x: 1, y: 0, z: 0 }, view, 50, 1);
   assert.ok(projected.x > 0, `expected positive x, got ${projected.x}`);
 });
+
+import { lookAtOffset } from "./core-math.ts";
+
+test("lookAtOffset centers the target when zoom is 1 and target is already centered", () => {
+  const offset = lookAtOffset({ x: 0.5, y: 0.5 }, 1, { width: 1000, height: 1000 });
+  assert.equal(offset.x, 0);
+  assert.equal(offset.y, 0);
+});
+
+test("lookAtOffset scales the correction with zoom", () => {
+  const offset = lookAtOffset({ x: 0.5, y: 0.5 }, 2, { width: 1000, height: 1000 });
+  assert.equal(offset.x, -500);
+  assert.equal(offset.y, -500);
+});
+
+test("lookAtOffset moves off-center targets toward frame center", () => {
+  const offset = lookAtOffset({ x: 0.8, y: 0.2 }, 1, { width: 1000, height: 1000 });
+  // target px = (800, 200); center = (500, 500); offset = center - zoom*targetPx
+  assert.equal(offset.x, -300);
+  assert.equal(offset.y, 300);
+});
