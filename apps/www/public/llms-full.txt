@@ -35,6 +35,18 @@ const delay = staggerDelay(2, 5, { step: 4 }); // 8
 const initial = graphemeInitial("👩‍🚀 Ada"); // "👩‍🚀"
 ```
 
+- [Core Physical Light](https://www.reelcn.dev/r/core-physical-light.json): Shared "physical light" background looks for midnight/paper/neon/mono, reused by aurora, gradient-mesh, beams and spotlight. Not a catalog item on its own — each background item still owns its per-theme LOOK_BY_THEME mapping and its own default (curtains/blobs/shafts/pool) look for daylight/sunset.
+
+```tsx
+<GridSweepLook theme={theme} seconds={seconds} strength={0.6} background={theme.colors.background} />
+```
+
+- [Core Stroke](https://www.reelcn.dev/r/core-stroke.json): Pure stroke-width math behind theme.stroke's `brush` look, kept separate from core-math.ts so its one export stays easy to find and test on its own.
+
+```tsx
+const width = baseWidth * strokeWidthProfile(0.5, "arrow"); // thickest mid-stroke
+```
+
 - [Core](https://www.reelcn.dev/r/core.json): Theme tokens, responsive design units, platform safe zones and motion presets. Every reelcn component builds on this file.
 
 ```tsx

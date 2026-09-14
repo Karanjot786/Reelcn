@@ -17,6 +17,8 @@ How they work:
 - [Chart Scale](https://www.reelcn.dev/r/chart-scale.json): Pure math shared by the data components: nice axis ticks, linear scales, an on-theme series palette and jitter-free number formatting.
 - [Code Tokens](https://www.reelcn.dev/r/code-tokens.json): Tiny dependency-free syntax tokenizer for ts, js, tsx, py, bash and json. Powers code-block and terminal.
 - [Core Math](https://www.reelcn.dev/r/core-math.json): Pure, dependency-free math behind Core's motion and text helpers: motion quantization, stagger ordering, Catmull-Rom keyframe interpolation, the typing-reveal model, grapheme splitting and 0-1 clamping. No React, no DOM — safe to unit-test directly.
+- [Core Physical Light](https://www.reelcn.dev/r/core-physical-light.json): Shared "physical light" background looks for midnight/paper/neon/mono, reused by aurora, gradient-mesh, beams and spotlight. Not a catalog item on its own — each background item still owns its per-theme LOOK_BY_THEME mapping and its own default (curtains/blobs/shafts/pool) look for daylight/sunset.
+- [Core Stroke](https://www.reelcn.dev/r/core-stroke.json): Pure stroke-width math behind theme.stroke's `brush` look, kept separate from core-math.ts so its one export stays easy to find and test on its own.
 - [Core](https://www.reelcn.dev/r/core.json): Theme tokens, responsive design units, platform safe zones and motion presets. Every reelcn component builds on this file.
 - [Fonts](https://www.reelcn.dev/r/fonts.json): Loads the curated font set used by the built-in themes, so renders look identical on every machine.
 - [SFX](https://www.reelcn.dev/r/sfx.json): Thirty CC0 sound effects, played from one component. Streams from www.reelcn.dev, or from your own public folder after `reelcn-sfx-pull`.

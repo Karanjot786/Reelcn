@@ -300,7 +300,8 @@
         "remotion"
       ],
       "registryDependencies": [
-        "https://www.reelcn.dev/r/core.json"
+        "https://www.reelcn.dev/r/core.json",
+        "https://www.reelcn.dev/r/core-physical-light.json"
       ],
       "files": [
         {
@@ -419,7 +420,8 @@
         "remotion"
       ],
       "registryDependencies": [
-        "https://www.reelcn.dev/r/core.json"
+        "https://www.reelcn.dev/r/core.json",
+        "https://www.reelcn.dev/r/core-physical-light.json"
       ],
       "files": [
         {
@@ -1609,6 +1611,71 @@
       }
     },
     {
+      "name": "core-physical-light",
+      "type": "registry:item",
+      "title": "Core Physical Light",
+      "description": "Shared \"physical light\" background looks for midnight/paper/neon/mono, reused by aurora, gradient-mesh, beams and spotlight. Not a catalog item on its own — each background item still owns its per-theme LOOK_BY_THEME mapping and its own default (curtains/blobs/shafts/pool) look for daylight/sunset.",
+      "categories": [
+        "lib"
+      ],
+      "dependencies": [
+        "remotion"
+      ],
+      "registryDependencies": [
+        "https://www.reelcn.dev/r/core.json",
+        "https://www.reelcn.dev/r/grain.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/core-physical-light.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/core-physical-light.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<GridSweepLook theme={theme} seconds={seconds} strength={0.6} background={theme.colors.background} />",
+      "meta": {
+        "use": [],
+        "avoid": [],
+        "tags": [
+          "background",
+          "light",
+          "grain",
+          "grid",
+          "theme"
+        ]
+      }
+    },
+    {
+      "name": "core-stroke",
+      "type": "registry:item",
+      "title": "Core Stroke",
+      "description": "Pure stroke-width math behind theme.stroke's `brush` look, kept separate from core-math.ts so its one export stays easy to find and test on its own.",
+      "categories": [
+        "lib"
+      ],
+      "dependencies": [
+        "remotion"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "registry/items/core-stroke.ts",
+          "type": "registry:file",
+          "target": "~/src/reelcn/core-stroke.ts"
+        }
+      ],
+      "docs": "Usage:\n\nconst width = baseWidth * strokeWidthProfile(0.5, \"arrow\"); // thickest mid-stroke",
+      "meta": {
+        "use": [],
+        "avoid": [],
+        "tags": [
+          "stroke",
+          "brush",
+          "taper"
+        ]
+      }
+    },
+    {
       "name": "core",
       "type": "registry:item",
       "title": "Core",
@@ -1621,6 +1688,7 @@
       ],
       "registryDependencies": [
         "https://www.reelcn.dev/r/core-math.json",
+        "https://www.reelcn.dev/r/core-stroke.json",
         "https://www.reelcn.dev/r/fonts.json"
       ],
       "files": [
@@ -2159,7 +2227,8 @@
         "lib"
       ],
       "dependencies": [
-        "@remotion/google-fonts"
+        "@remotion/google-fonts",
+        "remotion"
       ],
       "registryDependencies": [],
       "files": [
@@ -2229,7 +2298,8 @@
         "remotion"
       ],
       "registryDependencies": [
-        "https://www.reelcn.dev/r/core.json"
+        "https://www.reelcn.dev/r/core.json",
+        "https://www.reelcn.dev/r/core-physical-light.json"
       ],
       "files": [
         {
@@ -3798,7 +3868,8 @@
         "remotion"
       ],
       "registryDependencies": [
-        "https://www.reelcn.dev/r/core.json"
+        "https://www.reelcn.dev/r/core.json",
+        "https://www.reelcn.dev/r/core-physical-light.json"
       ],
       "files": [
         {
