@@ -204,12 +204,23 @@ export function Viewport({ width, height, children }: { width: number; height: n
   return <ViewportContext.Provider value={{ width, height }}>{children}</ViewportContext.Provider>;
 }
 
+export type SafeZonePlatform = "generic" | "tiktok" | "reels" | "shorts";
+
+/** Extra right-edge inset in portrait, as a fraction of width, matching `safe-zone-guide`'s own numbers. */
+const PORTRAIT_RIGHT_INSET: Record<SafeZonePlatform, number> = {
+  generic: 0.07,
+  tiktok: 0.16,
+  reels: 0.15,
+  shorts: 0.14,
+};
+
 /**
  * Canvas size, orientation and design units.
  * `u(n)` = n px on a canvas whose short side is 1080px, so one component looks right at 1920×1080, 1080×1920, 1080×1080 and 1280×720.
  * `safe` = insets that keep content clear of TikTok / Reels / Shorts UI in portrait, and title-safe margins elsewhere.
+ * `platform` (default `"generic"`) widens the portrait right inset to match that platform's own action rail; every other value is unchanged.
  */
-export function useViewport() {
+export function useViewport(platform: SafeZonePlatform = "generic") {
   const config = useVideoConfig();
   const override = useContext(ViewportContext);
   const { width, height } = override ?? config;
@@ -218,8 +229,8 @@ export function useViewport() {
   const orientation: Orientation = aspect > 1.15 ? "landscape" : aspect < 0.87 ? "portrait" : "square";
   const safe =
     orientation === "portrait"
-      ? { top: height * 0.12, bottom: height * 0.2, x: width * 0.07 }
-      : { top: height * 0.08, bottom: height * 0.08, x: width * 0.06 };
+      ? { top: height * 0.12, bottom: height * 0.2, x: width * 0.07, right: width * PORTRAIT_RIGHT_INSET[platform] }
+      : { top: height * 0.08, bottom: height * 0.08, x: width * 0.06, right: width * 0.06 };
   return {
     width,
     height,
