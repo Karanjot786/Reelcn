@@ -178,6 +178,15 @@ function CaptionPage({
   const fontPx = u(size) * Math.min(1, 26 / Math.max(26, characters));
   const enter = tween(frame, fps, { duration: Math.round(fps * 0.18), motion: "snappy" });
   const stack = variant === "word-stack";
+  // Asymmetric ramp: 4 frames to snap up to the peak scale, 9 to settle back down — reads as a real
+  // emphasis pop, not a symmetric pulse (spec P2-6a). `active` is computed per-word below; this is the
+  // shape of the ramp, evaluated per-word at its own fromMs/toMs.
+  const emphasisScale = (activeSinceFrames: number) =>
+    activeSinceFrames < 0
+      ? 1
+      : activeSinceFrames <= 4
+        ? 1 + (0.55 * activeSinceFrames) / 4
+        : Math.max(1, 1.55 - (0.55 * Math.min(activeSinceFrames - 4, 9)) / 9);
 
   const words = page.tokens.map((token, index) => {
     const active = token.fromMs <= nowMs && nowMs < token.toMs;
@@ -249,18 +258,40 @@ function CaptionPage({
         </span>
       );
     }
-    // bold-pop and word-stack: the spoken word grows.
-    return (
+    // bold-pop and word-stack: the spoken word grows, substantially, on an asymmetric ramp (P2-6a).
+    const activeSinceFrames = active ? Math.round(((nowMs - token.fromMs) / 1000) * fps) : -1;
+    const scale = emphasisScale(activeSinceFrames);
+    const neonPill = theme.name === "neon" && active;
+    const wordSpan = (
       <span
-        key={index}
         style={{
-          ...base,
-          color: tone,
-          scale: active ? String(1.08) : "1",
+          display: "inline-block",
+          whiteSpace: "pre",
+          color: neonPill ? theme.colors.accentForeground : tone,
+          scale: String(scale),
           translate: stack && active ? `0 ${-u(4)}px` : undefined,
         }}
       >
         {token.text}
+      </span>
+    );
+    if (!neonPill) return <span key={index}>{wordSpan}</span>;
+    // neon/Pop: a real filled pill behind the active word, sized with padding and font-size — not a
+    // CSS transform:scale() on a fixed box, which doesn't reserve layout space and clips neighboring
+    // text (the exact bug the approved theme mockups fixed; see out/theme-proposals/README.md's
+    // "rendering fixes" note).
+    return (
+      <span
+        key={index}
+        style={{
+          display: "inline-flex",
+          padding: `0.05em ${u(10)}px`,
+          margin: `0 ${u(2)}px`,
+          borderRadius: u(theme.radius),
+          background: theme.colors.accent,
+        }}
+      >
+        {wordSpan}
       </span>
     );
   });
