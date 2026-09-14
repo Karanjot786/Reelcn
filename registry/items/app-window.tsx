@@ -72,7 +72,7 @@ export function AppWindow({
         overflow: "hidden",
         background: background ?? theme.colors.background,
         border: `1px solid ${border}`,
-        boxShadow: `0 ${u(2)}px ${u(6)}px ${alpha("#000000", 0.12)}, 0 ${u(28)}px ${u(72)}px ${alpha("#000000", 0.3)}`,
+        boxShadow: `0 ${u(2)}px ${u(6)}px ${alpha(theme.colors.shadow, 0.12)}, 0 ${u(28)}px ${u(72)}px ${alpha(theme.colors.shadow, 0.3)}`,
         fontFamily: theme.fonts.body,
         opacity: role.opacity,
         translate: `0 ${(1 - m.enter) * u(40) - m.exit * role.travel(u(40)).exitPx}px`,

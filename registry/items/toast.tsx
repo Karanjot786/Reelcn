@@ -80,10 +80,10 @@ export function Toast({
   const m = useMotion(motion);
   const side = edge ?? (isPortrait ? "top" : "bottom-right");
   const defaultTone: Record<ToastVariant, string> = {
-    success: "#22c55e",
+    success: theme.colors.success,
     info: theme.colors.accent,
-    warning: "#f59e0b",
-    error: "#ef4444",
+    warning: theme.colors.warning,
+    error: theme.colors.danger,
   };
   const tone = accentColor ?? defaultTone[variant];
   const border = borderColor ?? theme.colors.border;
@@ -117,7 +117,7 @@ export function Toast({
         borderRadius: u(radius ?? theme.radius * 0.7),
         background: background ?? theme.colors.surface,
         border: `1px solid ${border}`,
-        boxShadow: `0 ${u(16)}px ${u(44)}px ${alpha("#000000", 0.28)}`,
+        boxShadow: `0 ${u(16)}px ${u(44)}px ${alpha(theme.colors.shadow, 0.28)}`,
         opacity: enter * (1 - m.exit),
         translate,
         fontFamily: theme.fonts.body,

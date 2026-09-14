@@ -85,14 +85,16 @@ export function CodeBlock({
   colors,
   background,
   borderColor,
-  addColor = "#3fb950",
-  removeColor = "#f85149",
+  addColor,
+  removeColor,
   radius,
   style,
   className,
   ...motion
 }: CodeBlockProps) {
   const theme = useTheme();
+  const add = addColor ?? theme.colors.success;
+  const remove = removeColor ?? theme.colors.danger;
   const { u, width, height, safe, isLandscape } = useViewport();
   const m = useMotion(motion);
   const role = useRoleMotion(m);
@@ -149,7 +151,7 @@ export function CodeBlock({
     const added = adds.indexOf(n) >= 0;
     const removed = removes.indexOf(n) >= 0;
     const focused = highlightLines.indexOf(n) >= 0;
-    const bandColor = added ? addColor : removed ? removeColor : focused ? theme.colors.accent : undefined;
+    const bandColor = added ? add : removed ? remove : focused ? theme.colors.accent : undefined;
     const band = added || removed ? sweep(marked.indexOf(n)) : focused ? focus : 0;
     const reached = shown >= lineStart;
     return (
@@ -228,7 +230,7 @@ export function CodeBlock({
         overflow: "hidden",
         background: surface,
         border: `1px solid ${border}`,
-        boxShadow: `0 ${u(2)}px ${u(6)}px ${alpha("#000000", 0.12)}, 0 ${u(28)}px ${u(72)}px ${alpha("#000000", 0.3)}`,
+        boxShadow: `0 ${u(2)}px ${u(6)}px ${alpha(theme.colors.shadow, 0.12)}, 0 ${u(28)}px ${u(72)}px ${alpha(theme.colors.shadow, 0.3)}`,
         fontFamily: theme.fonts.mono,
         color: theme.colors.foreground,
         opacity: role.opacity,

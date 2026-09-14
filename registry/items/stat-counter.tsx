@@ -71,14 +71,16 @@ export function StatCounter({
   rolling = false,
   align = "center",
   delta,
-  positiveColor = "#34d399",
-  negativeColor = "#f87171",
+  positiveColor,
+  negativeColor,
   caption,
   style,
   className,
   ...motion
 }: StatCounterProps) {
   const theme = useTheme();
+  const posColor = positiveColor ?? theme.colors.success;
+  const negColor = negativeColor ?? theme.colors.danger;
   const { u } = useViewport();
   const m = useMotion(motion);
   const step = Math.round(m.fps * 0.12);
@@ -87,7 +89,7 @@ export function StatCounter({
     tween(m.frame, m.fps, { from: m.delay + step * 4, duration: m.enterFrames, motion: m.preset }),
   );
   const up = (delta ?? 0) >= 0;
-  const deltaColor = up ? positiveColor : negativeColor;
+  const deltaColor = up ? posColor : negColor;
   const places = decimals([delta ?? 0]);
   const deltaFormat = new Intl.NumberFormat(locale, {
     style: "percent",

@@ -45,6 +45,16 @@ export type Theme = {
     accentForeground: string;
     /** Emphasis: marker strokes, active caption word. */
     highlight: string;
+    /** Positive/confirmed status (toasts, deltas, diffs). */
+    success: string;
+    /** Caution status. */
+    warning: string;
+    /** Negative/error status (toasts, deltas, diffs). */
+    danger: string;
+    /** Neutral informational status. */
+    info: string;
+    /** Base color for drop shadows, before `alpha()`. */
+    shadow: string;
   };
   fonts: { heading: string; body: string; mono: string };
   /** Weight for headings. Serif display faces look best at 400. */
@@ -53,6 +63,8 @@ export type Theme = {
   radius: number;
   /** Default motion personality for every component. */
   motion: MotionPreset;
+  /** Line quality Phase 2 will use for arrow/highlight/scribble/svg-draw. No item reads this yet. */
+  stroke: "vector" | "marker" | "brush";
 };
 
 const sans = (family: string) => `${family}, ui-sans-serif, system-ui, sans-serif`;
@@ -71,11 +83,17 @@ export const themes = {
       accent: "#6d7cff",
       accentForeground: "#ffffff",
       highlight: "#ffd84d",
+      success: "#22c55e",
+      warning: "#f59e0b",
+      danger: "#ef4444",
+      info: "#3b82f6",
+      shadow: "#000000",
     },
     fonts: { heading: sans(fonts.inter), body: sans(fonts.inter), mono },
     headingWeight: 700,
     radius: 20,
     motion: "smooth",
+    stroke: "vector",
   },
   daylight: {
     name: "daylight",
@@ -88,11 +106,17 @@ export const themes = {
       accent: "#2563eb",
       accentForeground: "#ffffff",
       highlight: "#fde047",
+      success: "#22c55e",
+      warning: "#f59e0b",
+      danger: "#ef4444",
+      info: "#3b82f6",
+      shadow: "#000000",
     },
     fonts: { heading: sans(fonts.inter), body: sans(fonts.inter), mono },
     headingWeight: 700,
     radius: 20,
     motion: "smooth",
+    stroke: "vector",
   },
   paper: {
     name: "paper",
@@ -105,12 +129,18 @@ export const themes = {
       accent: "#d9480f",
       accentForeground: "#ffffff",
       highlight: "#ffd166",
+      success: "#22c55e",
+      warning: "#f59e0b",
+      danger: "#ef4444",
+      info: "#3b82f6",
+      shadow: "#000000",
     },
     // paper — Instrument Serif has a single 400 weight; faux-bolding it looks broken
     fonts: { heading: serif(fonts.instrumentSerif), body: sans(fonts.inter), mono },
     headingWeight: 400,
     radius: 8,
     motion: "gentle",
+    stroke: "vector",
   },
   neon: {
     name: "neon",
@@ -123,11 +153,17 @@ export const themes = {
       accent: "#b4ff39",
       accentForeground: "#07060d",
       highlight: "#ff2fb9",
+      success: "#22c55e",
+      warning: "#f59e0b",
+      danger: "#ef4444",
+      info: "#3b82f6",
+      shadow: "#000000",
     },
     fonts: { heading: sans(fonts.spaceGrotesk), body: sans(fonts.spaceGrotesk), mono },
     headingWeight: 700,
     radius: 14,
     motion: "snappy",
+    stroke: "vector",
   },
   mono: {
     name: "mono",
@@ -140,11 +176,17 @@ export const themes = {
       accent: "#ffffff",
       accentForeground: "#000000",
       highlight: "#ffffff",
+      success: "#22c55e",
+      warning: "#f59e0b",
+      danger: "#ef4444",
+      info: "#3b82f6",
+      shadow: "#000000",
     },
     fonts: { heading: sans(fonts.inter), body: sans(fonts.inter), mono },
     headingWeight: 700,
     radius: 6,
     motion: "snappy",
+    stroke: "vector",
   },
   sunset: {
     name: "sunset",
@@ -157,11 +199,17 @@ export const themes = {
       accent: "#ff7a45",
       accentForeground: "#1a0f1f",
       highlight: "#ffc857",
+      success: "#22c55e",
+      warning: "#f59e0b",
+      danger: "#ef4444",
+      info: "#3b82f6",
+      shadow: "#000000",
     },
     fonts: { heading: sans(fonts.bricolage), body: sans(fonts.inter), mono },
     headingWeight: 800,
     radius: 28,
     motion: "bouncy",
+    stroke: "vector",
   },
 } satisfies Record<string, Theme>;
 
