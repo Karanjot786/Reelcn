@@ -21,8 +21,14 @@ export type EndScreenProps = MotionProps & {
   /** Thumbnail for the next video; pass an `<Img>`. A placeholder frame is drawn when omitted. */
   thumbnail?: React.ReactNode;
   channel?: string;
+  /** Channel avatar/thumbnail; pass an `<Img>`. A solid accent circle is drawn when omitted. */
+  channelAvatar?: React.ReactNode;
   /** Countdown shown on the next-video card. */
   seconds?: number;
+  /** Heading over the subscribe circle. Defaults to "Subscribe". */
+  subscribeLabel?: string;
+  /** Line under the subscribe heading. Defaults to "It is free". */
+  subscribeSubtitle?: string;
   style?: React.CSSProperties;
   className?: string;
 };
@@ -32,7 +38,10 @@ export function EndScreen({
   nextTitle,
   thumbnail,
   channel,
+  channelAvatar,
   seconds = 8,
+  subscribeLabel = "Subscribe",
+  subscribeSubtitle = "It is free",
   style,
   className,
   ...motion
@@ -46,7 +55,7 @@ export function EndScreen({
     duration: m.enterFrames,
     motion: m.preset,
   });
-  const left = Math.max(0, seconds - Math.floor(m.frame / m.fps));
+  const left = Math.max(0, seconds - Math.floor((m.frame - m.delay) / m.fps));
 
   return (
     <AbsoluteFill
@@ -122,9 +131,19 @@ export function EndScreen({
           translate: `0 ${(1 - Math.min(side, 1)) * u(26)}px`,
         }}
       >
-        <div style={{ width: u(88), height: u(88), borderRadius: "50%", background: theme.colors.accent }} />
-        <div style={{ fontSize: u(26), fontWeight: 650, color: theme.colors.foreground }}>Subscribe</div>
-        <div style={{ fontSize: u(20), color: theme.colors.muted }}>It is free</div>
+        <div
+          style={{
+            width: u(88),
+            height: u(88),
+            borderRadius: "50%",
+            background: theme.colors.accent,
+            overflow: "hidden",
+          }}
+        >
+          {channelAvatar}
+        </div>
+        <div style={{ fontSize: u(26), fontWeight: 650, color: theme.colors.foreground }}>{subscribeLabel}</div>
+        <div style={{ fontSize: u(20), color: theme.colors.muted }}>{subscribeSubtitle}</div>
       </div>
     </AbsoluteFill>
   );
