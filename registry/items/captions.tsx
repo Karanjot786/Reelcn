@@ -275,7 +275,19 @@ function CaptionPage({
         {token.text}
       </span>
     );
-    if (!neonPill) return <span key={index}>{wordSpan}</span>;
+    if (!neonPill) {
+      // The scale transform above doesn't reserve layout space, so at peak scale the word can
+      // touch its neighbors. Reserve a matching horizontal gap sized off the same `scale` and the
+      // word's own character count (in `ch`, so it tracks glyph width without measuring the DOM) —
+      // a longer word overflows its box by more absolute space at the same scale, so it needs a
+      // proportionally wider gap.
+      const gap = `${((scale - 1) / 2) * token.text.trim().length}ch`;
+      return (
+        <span key={index} style={{ display: "inline-block", marginInline: gap }}>
+          {wordSpan}
+        </span>
+      );
+    }
     // neon/Pop: a real filled pill behind the active word, sized with padding and font-size — not a
     // CSS transform:scale() on a fixed box, which doesn't reserve layout space and clips neighboring
     // text (the exact bug the approved theme mockups fixed; see out/theme-proposals/README.md's
