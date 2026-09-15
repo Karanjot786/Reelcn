@@ -3715,6 +3715,44 @@
       }
     },
     {
+      "name": "select",
+      "type": "registry:item",
+      "title": "Select",
+      "description": "Dropdown that opens with a panel wipe and highlights rows through a continuous, proximity-weighted blend instead of snapping row to row.",
+      "categories": [
+        "product"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://www.reelcn.dev/r/core.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/select.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/select.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Center>\n  <Select\n    id=\"plan\"\n    options={[\"Starter\", \"Growth\", \"Scale\"]}\n    steps={[{ at: 0, state: \"closed\" }, { at: 0.5, state: \"open\" }, { at: 1.2, state: { highlight: 1 } }]}\n  />\n</Center>",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "A settings/plan picker in a UI-sim walkthrough",
+          "A `ui` scene's `component: \"select\"`"
+        ],
+        "avoid": [
+          "A single fixed choice with no menu — use plain text"
+        ],
+        "tags": [
+          "select",
+          "dropdown",
+          "menu",
+          "ui",
+          "kit"
+        ]
+      }
+    },
+    {
       "name": "sfx",
       "type": "registry:item",
       "title": "SFX",

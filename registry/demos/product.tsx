@@ -24,6 +24,7 @@ import { Input } from "../items/input";
 import { LaptopFrame } from "../items/laptop-frame";
 import { PhoneFrame } from "../items/phone-frame";
 import { ScreenZoom } from "../items/screen-zoom";
+import { Select } from "../items/select";
 import { STORY_FPS } from "../items/story";
 import { SvgDraw } from "../items/svg-draw";
 import { Switch } from "../items/switch";
@@ -640,6 +641,25 @@ function InputDemo() {
   );
 }
 
+/* ──────────────────────────────── select ──────────────────────────────── */
+
+function SelectDemo() {
+  return (
+    <Center>
+      <Select
+        id="plan"
+        options={["Starter", "Growth", "Scale"]}
+        steps={[
+          { at: 0, state: "closed" },
+          { at: 0.5, state: "open" },
+          { at: 1.2, state: { highlight: 1 } },
+          { at: 1.8, state: { highlight: 2 } },
+        ]}
+      />
+    </Center>
+  );
+}
+
 export default [
   { id: "code-block-typing", duration: 90, component: CodeBlockTyping },
   { id: "code-block-follow", duration: 90, component: CodeBlockFollow },
@@ -680,5 +700,10 @@ export default [
     id: "input",
     duration: stepsDuration([{ at: 0 }, { at: 0.6 }, { at: 0.8 }], 45, STORY_FPS),
     component: InputDemo,
+  },
+  {
+    id: "select",
+    duration: stepsDuration([{ at: 0 }, { at: 0.5 }, { at: 1.2 }, { at: 1.8 }], 30, STORY_FPS),
+    component: SelectDemo,
   },
 ] satisfies Demo[];

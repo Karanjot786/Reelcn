@@ -868,6 +868,18 @@ storyFrames({
 </BrowserWindow>
 ```
 
+- [Select](https://www.reelcn.dev/r/select.json): Dropdown that opens with a panel wipe and highlights rows through a continuous, proximity-weighted blend instead of snapping row to row. (length data-driven · use for A settings/plan picker in a UI-sim walkthrough; A `ui` scene's `component: "select"` · avoid A single fixed choice with no menu — use plain text)
+
+```tsx
+<Center>
+  <Select
+    id="plan"
+    options={["Starter", "Growth", "Scale"]}
+    steps={[{ at: 0, state: "closed" }, { at: 0.5, state: "open" }, { at: 1.2, state: { highlight: 1 } }]}
+  />
+</Center>
+```
+
 - [Svg Draw](https://www.reelcn.dev/r/svg-draw.json): Draws any set of SVG paths on stroke by stroke, staggered, with an optional fill fade once each finishes. (length data-driven · use for A logo mark, icon or custom illustration drawing itself on screen; Sketching a diagram or shape that a `callout` or label then points at · avoid A single hand-drawn circle or arrow — use `scribble-circle` or `arrow`)
 
 ```tsx

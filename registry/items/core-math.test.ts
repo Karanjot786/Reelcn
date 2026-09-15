@@ -233,3 +233,22 @@ test("stepsDuration: unordered `at` values still use the last array entry, not t
   ];
   assert.equal(stepsDuration(steps, 0, 30), 30); // last entry is at=1, not the max at=3
 });
+
+import { proximityWeight } from "./core-math.ts";
+
+test("proximityWeight: exactly 1 when the row is the offset itself", () => {
+  assert.equal(proximityWeight(2, 2), 1);
+});
+
+test("proximityWeight: 0 exactly one row away", () => {
+  assert.equal(proximityWeight(2, 3), 0);
+  assert.equal(proximityWeight(2, 1), 0);
+});
+
+test("proximityWeight: symmetric — same distance either direction gives the same weight", () => {
+  assert.equal(proximityWeight(2, 2.5), proximityWeight(2, 1.5));
+});
+
+test("proximityWeight: clamped at 0 beyond one row away, never negative", () => {
+  assert.equal(proximityWeight(0, 5), 0);
+});

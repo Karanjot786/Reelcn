@@ -187,6 +187,11 @@ export function stepsDuration(steps: Step<unknown>[], holdFrames: number, fps: n
   return Math.round(last.at * fps) + holdFrames;
 }
 
+/** Continuous highlight blend: 1 at the row itself, fading linearly to 0 one row away in either direction. */
+export function proximityWeight(i: number, offset: number): number {
+  return clamp01(1 - Math.abs(i - offset));
+}
+
 /** Looks up `id` in `anchors`, throwing a named error instead of returning `undefined` — the one
  * consistent contract all four `target` consumers use (ponytail-review should-fix 4). */
 export function requireAnchor(anchors: Record<string, AnchorRect>, id: string, itemName: string): AnchorRect {
