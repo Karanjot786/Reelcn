@@ -1,6 +1,10 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { FilmStrip } from "@/components/film-strip";
 import "./not-found.css";
+
+// Without its own metadata a 404 carries the home page's title and description.
+export const metadata: Metadata = { title: "Page not found", description: "Nothing is at this address." };
 
 // Blank leader: four unexposed frames, the third circled.
 const leader = [{}, {}, {}, {}];

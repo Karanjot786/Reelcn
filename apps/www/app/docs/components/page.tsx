@@ -1,8 +1,10 @@
 import { DocsBody, DocsDescription, DocsPage, DocsTitle } from "fumadocs-ui/layouts/docs/page";
 import type { Metadata } from "next";
 import { CatalogTile } from "@/components/catalog-tile";
+import { JsonLd } from "@/components/json-ld";
 import { firstDemo } from "@/lib/demos";
-import { categories, items } from "@/lib/registry";
+import { breadcrumbList } from "@/lib/json-ld";
+import { categories, componentUrl, items, SITE_URL, sentenceCase } from "@/lib/registry";
 
 export const metadata: Metadata = {
   title: "Components",
@@ -12,9 +14,29 @@ export const metadata: Metadata = {
 
 const toc = categories.map((category) => ({ title: category.title, url: `#${category.id}`, depth: 2 }));
 
+const catalogJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "reelcn components",
+  numberOfItems: items.length,
+  itemListElement: items.map((item, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    name: sentenceCase(item.title),
+    url: `${SITE_URL}${componentUrl(item.name)}`,
+  })),
+};
+const breadcrumbJsonLd = breadcrumbList([
+  ["reelcn", SITE_URL],
+  ["Docs", `${SITE_URL}/docs`],
+  ["Components", `${SITE_URL}/docs/components`],
+]);
+
 export default function Page() {
   return (
     <DocsPage toc={toc} tableOfContent={{ style: "clerk", single: true }} breadcrumb={{ enabled: false }}>
+      <JsonLd data={catalogJsonLd} />
+      <JsonLd data={breadcrumbJsonLd} />
       <DocsTitle>Components</DocsTitle>
       <DocsDescription>Every item in the registry, grouped by category.</DocsDescription>
       <DocsBody>

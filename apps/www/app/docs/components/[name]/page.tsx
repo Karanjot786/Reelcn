@@ -14,8 +14,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { InstallBlock } from "@/components/install-block";
 import { ItemPreview } from "@/components/item-preview";
+import { JsonLd } from "@/components/json-ld";
 import { demosFor, formatsFor, themeNames } from "@/lib/demos";
 import { linkifyBackticks } from "@/lib/item-markdown";
+import { breadcrumbList } from "@/lib/json-ld";
 import { REPO_URL } from "@/lib/layout.shared";
 import { propsTable } from "@/lib/props-table";
 import {
@@ -26,8 +28,25 @@ import {
   isLib,
   itemSourcePath,
   items,
+  SITE_URL,
   sentenceCase,
 } from "@/lib/registry";
+
+// What people search for, by category ("remotion text animation", "remotion transition"); used in page titles.
+const SEARCH_NOUN: Record<string, string> = {
+  text: "text animation",
+  motion: "animation",
+  transitions: "transition",
+  backgrounds: "animated background",
+  overlays: "overlay",
+  product: "product demo",
+  data: "animated chart",
+  audio: "audio",
+  social: "social video",
+  templates: "video template",
+  tools: "tool",
+  lib: "library",
+};
 
 function AvoidLine({ text }: { text: string }) {
   const segments = linkifyBackticks(text, (name) => (getItem(name) ? componentUrl(name) : undefined));
@@ -90,10 +109,31 @@ export default async function Page(props: PageProps<"/docs/components/[name]">) 
     ["built-from", "Built from", hasScenes ? 3 : 2, builtFromNames.length > 0],
     ["use", "Use", 2, item.meta.use.length > 0],
     ["avoid", "Avoid", 2, item.meta.avoid.length > 0],
+    ["guides", "Guides", 2, !isLib(item)],
     ["source", "Source", 2, true],
     ["related", "Related", 2, related.length > 0],
   ];
   const toc = sections.filter(([, , , shown]) => shown).map(([id, title, depth]) => ({ title, url: `#${id}`, depth }));
+  const pageUrl = `${SITE_URL}${componentUrl(item.name)}`;
+  const componentJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareSourceCode",
+    name: sentenceCase(item.title),
+    description: item.description,
+    url: pageUrl,
+    codeRepository: REPO_URL,
+    programmingLanguage: "TypeScript",
+    runtimePlatform: "Remotion",
+    license: "https://opensource.org/licenses/MIT",
+    keywords: item.meta.tags.join(", ") || undefined,
+    isPartOf: { "@id": `${SITE_URL}/#library` },
+  };
+  const breadcrumbJsonLd = breadcrumbList([
+    ["reelcn", SITE_URL],
+    ["Docs", `${SITE_URL}/docs`],
+    ["Components", `${SITE_URL}/docs/components`],
+    [sentenceCase(item.title), pageUrl],
+  ]);
 
   const installation = (
     <section>
@@ -177,6 +217,8 @@ export default async function Page(props: PageProps<"/docs/components/[name]">) 
 
   return (
     <DocsPage toc={toc} tableOfContent={{ style: "clerk", single: true }} breadcrumb={{ enabled: false }}>
+      <JsonLd data={componentJsonLd} />
+      <JsonLd data={breadcrumbJsonLd} />
       <div className="dhead">
         <div>
           <DocsTitle>{sentenceCase(item.title)}</DocsTitle>
@@ -246,6 +288,27 @@ export default async function Page(props: PageProps<"/docs/components/[name]">) 
           </section>
         )}
 
+        {!isLib(item) && (
+          <section>
+            <h2 id="guides">Guides</h2>
+            <p>
+              Components take their colors from a theme, their timing from motion props and their layout from the
+              canvas.
+            </p>
+            <div className="chips">
+              <Link className="chip" href="/docs/theming">
+                Theming
+              </Link>
+              <Link className="chip" href="/docs/motion">
+                Motion
+              </Link>
+              <Link className="chip" href="/docs/formats">
+                Formats & safe zones
+              </Link>
+            </div>
+          </section>
+        )}
+
         <section>
           <h2 id="source">Source</h2>
           <details>
@@ -279,5 +342,9 @@ export async function generateMetadata(props: PageProps<"/docs/components/[name]
   const { name } = await props.params;
   const item = getItem(name);
   if (!item) notFound();
-  return { title: item.title, description: item.description, alternates: { canonical: componentUrl(item.name) } };
+  return {
+    title: `${item.title} – Remotion ${SEARCH_NOUN[categoryOf(item)] ?? "component"}`,
+    description: item.description,
+    alternates: { canonical: componentUrl(item.name) },
+  };
 }

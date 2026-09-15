@@ -6,17 +6,33 @@ import { FormatTrio } from "@/components/format-trio";
 import { FrameSheet } from "@/components/frame-sheet";
 import { HeadlineSweep } from "@/components/headline-sweep";
 import { HeroEditor } from "@/components/hero-editor";
+import { JsonLd } from "@/components/json-ld";
 import { LogoMark } from "@/components/logo";
 import { SearchButton } from "@/components/search-button";
 import { ThemeCycle } from "@/components/theme-cycle";
 import { TypeOnView } from "@/components/type-on-view";
 import { firstDemo, themeNames } from "@/lib/demos";
 import { REPO_URL } from "@/lib/layout.shared";
-import { categoryOf, componentUrl, getItem, installUrl, items } from "@/lib/registry";
+import { categoryOf, componentUrl, getItem, installUrl, items, SITE_URL } from "@/lib/registry";
 import "./landing.css";
 
 // Title and description come from the root layout; canonicals are per page, since a layout one would be inherited.
 export const metadata: Metadata = { alternates: { canonical: "/" } };
+
+// The library itself: source you copy in, not an app you install.
+const libraryJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareSourceCode",
+  "@id": `${SITE_URL}/#library`,
+  name: "reelcn",
+  description: "Copy-paste Remotion components and templates, installed with the shadcn CLI.",
+  url: SITE_URL,
+  codeRepository: REPO_URL,
+  programmingLanguage: "TypeScript",
+  runtimePlatform: "Remotion",
+  license: "https://opensource.org/licenses/MIT",
+  publisher: { "@id": `${SITE_URL}/#organization` },
+};
 
 // Icons copied from assets/reelcn-07/mockup.html; `.draw` strokes redraw on hover and rest fully drawn.
 const len = (n: number) => ({ "--len": n }) as CSSProperties;
@@ -185,6 +201,7 @@ const sheet = [
 export default function Home() {
   return (
     <div className="landing">
+      <JsonLd data={libraryJsonLd} />
       <header className="nav">
         <div className="wrap">
           <Link className="logo" href="/">
