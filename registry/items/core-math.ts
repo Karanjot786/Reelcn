@@ -227,7 +227,14 @@ export function mat4Multiply(a: Mat4, b: Mat4): Mat4 {
 
 /** Right-handed view matrix: transforms a world point into the camera's own space (camera looks down -z). */
 export function mat4LookAt(eye: Vec3, target: Vec3, up: Vec3 = { x: 0, y: 1, z: 0 }): Mat4 {
-  const zAxis = vnormalize(vsub(eye, target));
+  const diff = vsub(eye, target);
+  // eye === target has no look direction; vnormalize would silently divide a zero vector by 1 and
+  // collapse every axis to zero instead of a real matrix. An identity view (no rotation, no translation)
+  // is the only sane transform for a camera that hasn't decided where to look yet.
+  if (diff.x === 0 && diff.y === 0 && diff.z === 0) {
+    return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+  }
+  const zAxis = vnormalize(diff);
   const xAxis = vnormalize(vcross(up, zAxis));
   const yAxis = vcross(zAxis, xAxis);
   return [

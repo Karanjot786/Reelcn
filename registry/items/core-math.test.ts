@@ -84,6 +84,19 @@ test("golden projection: a point to the camera's right projects to positive x", 
   assert.ok(projected.x > 0, `expected positive x, got ${projected.x}`);
 });
 
+test("mat4LookAt returns the identity matrix when eye equals target", () => {
+  const m = mat4LookAt({ x: 3, y: -1, z: 5 }, { x: 3, y: -1, z: 5 });
+  assert.deepEqual(
+    m.map((n) => Math.round(n * 1e6) / 1e6),
+    [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+  );
+});
+
+test("mat4LookAt returns identity at the world origin too (eye === target === {0,0,0})", () => {
+  const m = mat4LookAt({ x: 0, y: 0, z: 0 }, { x: 0, y: 0, z: 0 });
+  assert.deepEqual(m, [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
+});
+
 import { lookAtOffset } from "./core-math.ts";
 
 test("lookAtOffset centers the target when zoom is 1 and target is already centered", () => {
