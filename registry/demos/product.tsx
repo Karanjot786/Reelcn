@@ -872,6 +872,32 @@ function UiSceneSignupDemo() {
   );
 }
 
+// A click on a tab's own child anchor (`anchorId("nav", 1)`) advances `active` to that tab's index, and
+// a bare `state: "2"` (uiStepSchema.state is a plain string) parses to `{ active: 2 }` — the two paths
+// `stepStateFor`'s `"tabs"` case adds (should-fix a).
+const UI_SCENE_TABS_STEPS = [
+  { at: 0.5, click: anchorId("nav", 1) },
+  { at: 1.6, target: "nav", state: "2" },
+];
+
+function UiSceneTabsDemo() {
+  return (
+    <Storyboard
+      scenes={[uiScene]}
+      story={{
+        scenes: [
+          {
+            type: "ui",
+            components: [{ id: "nav", component: "tabs", props: { labels: ["Overview", "Usage", "Billing"] } }],
+            steps: UI_SCENE_TABS_STEPS,
+            cursor: true,
+          },
+        ],
+      }}
+    />
+  );
+}
+
 export default [
   { id: "code-block-typing", duration: 90, component: CodeBlockTyping },
   { id: "code-block-follow", duration: 90, component: CodeBlockFollow },
@@ -949,5 +975,15 @@ export default [
     ),
     bare: true,
     component: UiSceneSignupDemo,
+  },
+  {
+    id: "ui-scene-tabs",
+    duration: stepsDuration(
+      UI_SCENE_TABS_STEPS.map((s) => ({ at: s.at })),
+      30,
+      STORY_FPS,
+    ),
+    bare: true,
+    component: UiSceneTabsDemo,
   },
 ] satisfies Demo[];

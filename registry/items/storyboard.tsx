@@ -37,6 +37,7 @@ import { cardPush } from "./card-push";
 import { circleBurst } from "./circle-burst";
 import {
   type AnchorRect,
+  anchorId,
   createTheme,
   measurePx,
   Stage,
@@ -309,15 +310,25 @@ export const uiSceneSchema = z
   // Spec §4 Formats: an unknown target/click id fails schema validation with a scene-path error
   // (`scenes.2.steps.1.click`), not at render time (ponytail-review should-fix 3).
   .superRefine((scene, ctx) => {
-    const ids = new Set(scene.components.map((c) => c.id));
+    const byId = new Map(scene.components.map((c) => [c.id, c] as const));
+    // A `tabs` component's own tab is addressable as `anchorId(id, index)` (e.g. `"nav.item[2]"`), the
+    // same child-anchor convention `useTabsAnchors` already exports — valid alongside a bare component id.
+    const isValidTabChild = (id: string): boolean => {
+      const match = /^(.+)\.item\[(\d+)\]$/.exec(id);
+      if (!match) return false;
+      const base = byId.get(match[1]);
+      if (base?.component !== "tabs") return false;
+      const labels = (base.props as { labels?: string[] } | undefined)?.labels ?? [];
+      return Number(match[2]) < labels.length;
+    };
     scene.steps.forEach((step, i) => {
       for (const field of ["target", "click"] as const) {
         const id = step[field];
-        if (id !== undefined && !ids.has(id)) {
+        if (id !== undefined && !byId.has(id) && !isValidTabChild(id)) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             path: ["steps", i, field],
-            message: `unknown component id "${id}"; expected one of ${Array.from(ids).join(", ")}`,
+            message: `unknown component id "${id}"; expected one of ${Array.from(byId.keys()).join(", ")}`,
           });
         }
       }
@@ -326,8 +337,16 @@ export const uiSceneSchema = z
 
 /** A scene-level step's target component's own `Step<unknown>[]` entry: `click` becomes `"press"` for a
  * button and `"active"` for an input (the spec's own two named mappings); an explicit `state` always wins;
- * any other kind with a bare `click` and no `state` is skipped (nothing to infer without one). */
+ * any other kind with a bare `click` and no `state` is skipped (nothing to infer without one). `tabs` is
+ * its own case — it has no named states, only a numeric `active` index — so `state: "2"` parses to
+ * `{ active: 2 }`, and a `click` naming one tab's own child anchor (`anchorId(id, index)`, e.g.
+ * `"nav.item[2]"`) sets `active` to that tab's index. */
 function stepStateFor(kind: UiComponentConfig["component"], step: UiStep): unknown {
+  if (kind === "tabs") {
+    if (step.state !== undefined) return { active: Number(step.state) };
+    const match = step.click ? /\.item\[(\d+)\]$/.exec(step.click) : null;
+    return match ? { active: Number(match[1]) } : undefined;
+  }
   if (step.state !== undefined) return step.state;
   if (step.click) {
     if (kind === "button") return "press";
@@ -340,18 +359,24 @@ function stepStateFor(kind: UiComponentConfig["component"], step: UiStep): unkno
 
 /** Each kind's own resting state before any scene step touches it — matches the `initial` every kit's
  * own `useKeyframeState(steps, initial, …)` call already falls back to. */
-const KIND_IDLE_STATE: Partial<Record<UiComponentConfig["component"], string>> = {
+const KIND_IDLE_STATE: Partial<Record<UiComponentConfig["component"], unknown>> = {
   button: "idle",
   input: "idle",
   switch: "off",
   select: "closed",
   dialog: "closed",
+  tabs: { active: 0 },
 };
+
+/** A step's `target`/`click` names this component either directly or, for `tabs`, via one of its own
+ * child anchors (`anchorId(id, index)`, e.g. `"nav.item[2]"`). */
+const namesComponent = (value: string | undefined, id: string): boolean =>
+  value !== undefined && (value === id || value.startsWith(`${id}.item[`));
 
 function stepsForComponent(id: string, kind: UiComponentConfig["component"], steps: UiStep[], fps: number) {
   const result: { at: number; state?: unknown; type?: string; click?: boolean }[] = [];
   for (const step of steps) {
-    if (step.target !== id && step.click !== id) continue;
+    if (!namesComponent(step.target, id) && !namesComponent(step.click, id)) continue;
     const state = stepStateFor(kind, step);
     if (state === undefined && step.type === undefined) continue;
     result.push({ at: step.at, state, type: step.type, click: Boolean(step.click) });
@@ -406,6 +431,9 @@ function UiSceneRenderer({ components, steps, cursor }: z.infer<typeof uiSceneSc
     // component, in this same fixed `.map()` order (`measurePx` is pure, safe in a loop; the one hook,
     // `gate`, was already called unconditionally above).
     let box: { width: number; height: number };
+    // Set only for `tabs`, so its own child anchors (one per tab) can be derived below from the same
+    // pure `tabsBoxSize` offsets/widths this component's own box already came from.
+    let tabsChildren: { offsets: number[]; widths: number[] } | undefined;
     if (config.component === "button") {
       const label = String((config.props as { label?: string })?.label ?? "");
       const size = (config.props as { size?: number })?.size;
@@ -423,6 +451,7 @@ function UiSceneRenderer({ components, steps, cursor }: z.infer<typeof uiSceneSc
       );
       const tabsBox = tabsBoxSize(u, measuredWidths);
       box = { width: tabsBox.total, height: tabsBox.height };
+      tabsChildren = tabsBox;
     } else if (config.component === "input") {
       box = inputBoxSize(u);
     } else if (config.component === "switch") {
@@ -434,6 +463,17 @@ function UiSceneRenderer({ components, steps, cursor }: z.infer<typeof uiSceneSc
     const wPct = (wPx / width) * 100;
     const hPct = (hPx / height) * 100;
     anchors[config.id] = { x: place.x - wPct / 2, y: place.y - hPct / 2, width: wPct, height: hPct };
+    if (tabsChildren) {
+      const row = anchors[config.id];
+      tabsChildren.offsets.forEach((offset, tabIndex) => {
+        anchors[anchorId(config.id, tabIndex)] = {
+          x: row.x + (offset / width) * 100,
+          y: row.y,
+          width: (tabsChildren.widths[tabIndex] / width) * 100,
+          height: row.height,
+        };
+      });
+    }
 
     switch (config.component) {
       case "button":
