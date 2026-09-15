@@ -660,6 +660,7 @@
         "templates"
       ],
       "dependencies": [
+        "remotion",
         "zod"
       ],
       "registryDependencies": [
