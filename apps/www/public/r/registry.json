@@ -1906,6 +1906,47 @@
       }
     },
     {
+      "name": "dialog",
+      "type": "registry:item",
+      "title": "Dialog",
+      "description": "Modal that opens with an overlay fade and a 0.95→1 popup scale, capped by the safe zone so it never bleeds off-screen in portrait.",
+      "categories": [
+        "product"
+      ],
+      "dependencies": [
+        "remotion"
+      ],
+      "registryDependencies": [
+        "https://www.reelcn.dev/r/core.json",
+        "https://www.reelcn.dev/r/core-math.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/dialog.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/dialog.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Dialog id=\"confirm\" title=\"Delete staging-db-7?\" steps={[{ at: 0, state: \"closed\" }, { at: 0.5, state: \"open\" }]} place={{ x: 50, y: 50 }}>\n  <Button id=\"submit\" label=\"Delete database\" variant=\"primary\" place={{ x: 50, y: 60 }} />\n</Dialog>",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "A confirmation or form modal in a UI-sim walkthrough, composing `button`/`input` as its body",
+          "A `ui` scene's `component: \"dialog\"`"
+        ],
+        "avoid": [
+          "A modal with no real content — use `callout`"
+        ],
+        "tags": [
+          "dialog",
+          "modal",
+          "popup",
+          "ui",
+          "kit"
+        ]
+      }
+    },
+    {
       "name": "donut",
       "type": "registry:item",
       "title": "Donut",

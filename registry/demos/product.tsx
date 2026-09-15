@@ -9,6 +9,7 @@ import { CommandPalette } from "../items/command-palette";
 import {
   type AnchorRect,
   alpha,
+  anchorId,
   anchorToContentPercent,
   Center,
   type Place,
@@ -19,6 +20,7 @@ import {
 } from "../items/core";
 import { stepsDuration } from "../items/core-math";
 import { Cursor } from "../items/cursor";
+import { Dialog, useDialogAnchors } from "../items/dialog";
 import { FeatureCard } from "../items/feature-card";
 import { Input } from "../items/input";
 import { LaptopFrame } from "../items/laptop-frame";
@@ -678,6 +680,42 @@ function TabsDemo() {
   );
 }
 
+/* ──────────────────────────────── dialog ──────────────────────────────── */
+
+function DialogDemo() {
+  const dialogProps = { id: "confirm", title: "Delete staging-db-7?", place: { x: 50, y: 50 } };
+  const submitProps = { id: "submit", label: "Delete database", place: { x: 50, y: 60 } };
+  return (
+    <Dialog
+      {...dialogProps}
+      steps={[
+        { at: 0, state: "closed" },
+        { at: 0.5, state: "open" },
+      ]}
+    >
+      <Button {...submitProps} variant="primary" />
+    </Dialog>
+  );
+}
+
+function DialogAnchorProofDemo() {
+  const dialogProps = { id: "confirm", title: "Delete staging-db-7?", place: { x: 50, y: 50 } };
+  const submitProps = { id: "submit", label: "Delete database", place: { x: 50, y: 60 } };
+  // The nested button's anchor, prefixed with the dialog's own id via `anchorId` — the same string
+  // `anchorId("confirm", "submit")` produces — merged into one map exactly as a `ui`-scene-style author
+  // would by hand, then targeted by a cursor to prove the prefixed id resolves to the real rect.
+  const anchors = {
+    ...useDialogAnchors(dialogProps),
+    [anchorId("confirm", "submit")]: useButtonAnchors(submitProps).submit,
+  };
+  return (
+    <Dialog {...dialogProps} steps={[{ at: 0, state: "open" }]}>
+      <Button {...submitProps} variant="primary" />
+      <Cursor waypoints={[{ x: 10, y: 10, frame: 0 }]} target={{ anchors, id: "confirm.submit" }} />
+    </Dialog>
+  );
+}
+
 export default [
   { id: "code-block-typing", duration: 90, component: CodeBlockTyping },
   { id: "code-block-follow", duration: 90, component: CodeBlockFollow },
@@ -729,4 +767,10 @@ export default [
     duration: stepsDuration([{ at: 0 }, { at: 1 }], 30, STORY_FPS),
     component: TabsDemo,
   },
+  {
+    id: "dialog",
+    duration: stepsDuration([{ at: 0 }, { at: 0.5 }], 45, STORY_FPS),
+    component: DialogDemo,
+  },
+  { id: "dialog-anchor-proof", duration: 30, component: DialogAnchorProofDemo },
 ] satisfies Demo[];
