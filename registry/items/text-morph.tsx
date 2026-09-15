@@ -15,6 +15,7 @@
 import type React from "react";
 import { Fragment } from "react";
 import {
+  clamp01,
   graphemes,
   type MotionProps,
   matchGraphemes,
@@ -76,7 +77,15 @@ export function TextMorph({
   const fromX = gate.ready ? graphemeXPositions(fromChars, fontString) : fromChars.map(() => 0);
   const toX = gate.ready ? graphemeXPositions(toChars, fontString) : toChars.map(() => 0);
   const pairs = matchGraphemes(fromChars, toChars);
+  // `progress` keeps the theme's own motion shape (including settle/bouncy overshoot) for the letter
+  // position lerp below, where an overshoot-then-settle read is the intended personality. `t` is a plain
+  // linear time fraction across the full `enterFrames` window, independent of motion shape — the blur-in/
+  // blur-out timing below needs a value that only reaches 1 at the end of the window, not at 40% of it
+  // (which is what settle's own overshoot curve does, and is what produced the "morph finishes in 2-3
+  // frames under daylight" bug: settle crosses these formulas' own 0.5/0.7 thresholds within the first
+  // fifth of the window).
   const progress = tween(m.frame, m.fps, { from: m.delay, duration: m.enterFrames, motion: m.preset });
+  const t = clamp01((m.frame - m.delay) / Math.max(m.enterFrames, 1));
   const trailCopies = trail ? [1, 2, 3] : [];
 
   return (
@@ -126,7 +135,7 @@ export function TextMorph({
           );
         }
         if (pair.toIndex >= 0) {
-          const enter = Math.max(0, Math.min(1, (progress - 0.3) / 0.7));
+          const enter = Math.max(0, Math.min(1, (t - 0.3) / 0.7));
           return (
             <span
               key={key}
@@ -145,7 +154,7 @@ export function TextMorph({
             </span>
           );
         }
-        const exitP = Math.max(0, Math.min(1, progress / 0.5));
+        const exitP = Math.max(0, Math.min(1, t / 0.5));
         return (
           <span
             key={key}
