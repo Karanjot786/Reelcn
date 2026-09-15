@@ -18,12 +18,12 @@
  * />
  */
 
-import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, type CalculateMetadataFunction, useCurrentFrame, useVideoConfig } from "remotion";
 import { z } from "zod";
 import { clamp01, flipInterpolate, layoutRectsFor, type Rect, tween, useTheme, useViewport } from "./core";
 import { Input } from "./input";
-import type { CustomScene, Scene, Story } from "./story";
-import { defineScene, Storyboard, templateMetadata, templateSchema, templateStory } from "./storyboard";
+import { type CustomScene, type Scene, type Story, storyFrames } from "./story";
+import { defineScene, Storyboard, templateSchema, templateStory } from "./storyboard";
 
 export const aiGenerationSchema = templateSchema.extend({
   prompt: z.string(),
@@ -174,8 +174,16 @@ export function aiGenerationStory(props: AiGenerationProps): Story {
   return templateStory(props, scenes as Scene[]);
 }
 
+const aiGenerationScenes = [aiGenerationScene];
+
 export function AiGeneration(props: AiGenerationProps) {
-  return <Storyboard story={aiGenerationStory(props)} scenes={[aiGenerationScene]} />;
+  return <Storyboard story={aiGenerationStory(props)} scenes={aiGenerationScenes} />;
 }
 
-export const aiGenerationMetadata = templateMetadata(aiGenerationStory);
+// Not `templateMetadata(aiGenerationStory)`: that helper calls `storyFrames(story)` with no custom scene
+// rules, and this story's one scene is the template-local `defineScene` type above ("ai-generation-beat")
+// — without its rule, `sceneSeconds` falls through to `Scene`'s own switch, matches no case, and returns
+// `undefined`, making `durationInFrames` NaN (same failure mode documented in product-launch.tsx).
+export const aiGenerationMetadata: CalculateMetadataFunction<AiGenerationProps> = ({ props }) => ({
+  durationInFrames: storyFrames(aiGenerationStory(props), aiGenerationScenes),
+});

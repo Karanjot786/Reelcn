@@ -879,11 +879,15 @@ export default [
   { id: "terminal-install", duration: 120, component: TerminalInstall },
   { id: "terminal-follow", duration: 120, component: TerminalFollow },
   { id: "browser-window-dashboard", duration: 75, component: BrowserWindowDemo },
-  { id: "browser-window-poster", duration: 75, component: BrowserWindowPosterDemo },
+  // poster:true (useMotion) renders fully entered with no exit for a still thumbnail — every frame is
+  // identical by design, so this stays a 1-frame composition rather than tripping stills.ts's
+  // pixel-identical/"blank or static demo" smoke check meant for demos that should actually move.
+  { id: "browser-window-poster", duration: 1, component: BrowserWindowPosterDemo },
   { id: "phone-frame-feed", duration: 75, component: PhoneFrameDemo },
   { id: "laptop-frame-dashboard", duration: 75, component: LaptopFrameDemo },
   { id: "app-window-overview", duration: 75, component: AppWindowDemo },
-  { id: "app-window-poster", duration: 75, component: AppWindowPosterDemo },
+  // Same reasoning as browser-window-poster above: poster:true is a frozen, fully-entered render.
+  { id: "app-window-poster", duration: 1, component: AppWindowPosterDemo },
   { id: "cursor-click-path", duration: 90, bare: true, component: CursorDemo },
   { id: "screen-zoom-detail", duration: 100, component: ScreenZoomDemo },
   { id: "redact", duration: 60, bare: true, component: RedactBlurDemo },

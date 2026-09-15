@@ -17,12 +17,13 @@
  *   width={1920} height={1080} fps={30} durationInFrames={1}
  * />
  */
+import type { CalculateMetadataFunction } from "remotion";
 import { z } from "zod";
 import { useTheme, useViewport } from "./core";
 import { LayoutMorph } from "./layout-morph";
 import type { CustomScene, Scene, Story } from "./story";
-import { brandSchema } from "./story";
-import { defineScene, Storyboard, templateMetadata, templateSchema, templateStory } from "./storyboard";
+import { brandSchema, storyFrames } from "./story";
+import { defineScene, Storyboard, templateSchema, templateStory } from "./storyboard";
 
 export const brandReelSchema = templateSchema.extend({
   brand: brandSchema,
@@ -94,8 +95,17 @@ export function brandReelStory(props: BrandReelProps): Story {
   return templateStory(props, scenes as Scene[]);
 }
 
+const brandReelScenes = [brandPaletteScene, brandCollageScene];
+
 export function BrandReel(props: BrandReelProps) {
-  return <Storyboard story={brandReelStory(props)} scenes={[brandPaletteScene, brandCollageScene]} />;
+  return <Storyboard story={brandReelStory(props)} scenes={brandReelScenes} />;
 }
 
-export const brandReelMetadata = templateMetadata(brandReelStory);
+// Not `templateMetadata(brandReelStory)`: that helper calls `storyFrames(story)` with no custom scene
+// rules, and this story carries the two template-local `defineScene` types above ("brand-palette",
+// "brand-collage") — without their rules, `sceneSeconds` falls through to `Scene`'s own switch, matches
+// no case, and returns `undefined`, making `durationInFrames` NaN (same failure mode documented in
+// product-launch.tsx).
+export const brandReelMetadata: CalculateMetadataFunction<BrandReelProps> = ({ props }) => ({
+  durationInFrames: storyFrames(brandReelStory(props), brandReelScenes),
+});

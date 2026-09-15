@@ -17,19 +17,23 @@
  *   width={1920} height={1080} fps={30} durationInFrames={1}
  * />
  */
-import { AbsoluteFill, Img, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, type CalculateMetadataFunction, Img, useCurrentFrame, useVideoConfig } from "remotion";
 import { z } from "zod";
 import { CodeBlock } from "./code-block";
 import { codeLivePreviewSchedule, useTheme, useViewport } from "./core";
 import { SplitScreen } from "./split-screen";
 import type { CustomScene, Scene, Story } from "./story";
-import { CODE_CPS, LANGUAGES } from "./story";
-import { defineScene, Storyboard, templateMetadata, templateSchema, templateStory } from "./storyboard";
+import { CODE_CPS, LANGUAGES, storyFrames } from "./story";
+import { defineScene, Storyboard, templateSchema, templateStory } from "./storyboard";
 
 export const codeLiveSchema = templateSchema.extend({
   code: z.string(),
   language: z.enum(LANGUAGES).optional(),
-  previews: z.array(z.object({ atLine: z.number(), src: z.string() })).min(1),
+  /** Screenshots to swap in as typing crosses each `atLine`. Omitted: the preview pane stays a plain
+   * surface fill — this default has no local asset to point at (Task 20 final-gate fix: the previous
+   * `/preview-empty.png`/`/preview-filled.png` defaults were local paths with no file behind them,
+   * broken in any real consumer project). Pass real screenshot URLs to see the swap. */
+  previews: z.array(z.object({ atLine: z.number(), src: z.string() })).optional(),
 });
 
 export type CodeLiveProps = z.infer<typeof codeLiveSchema>;
@@ -44,20 +48,17 @@ export const codeLiveDefaults: CodeLiveProps = {
     "});",
   ].join("\n"),
   language: "ts",
-  previews: [
-    { atLine: 2, src: "/preview-empty.png" },
-    { atLine: 6, src: "/preview-filled.png" },
-  ],
+  previews: [],
 };
 
 function CodeLiveScene({
   code,
   language,
-  previews,
+  previews = [],
 }: {
   code: string;
   language?: (typeof LANGUAGES)[number];
-  previews: { atLine: number; src: string }[];
+  previews?: { atLine: number; src: string }[];
 }) {
   const theme = useTheme();
   const frame = useCurrentFrame();
@@ -110,7 +111,7 @@ const codeLiveScene = defineScene({
   schema: z.object({
     code: z.string(),
     language: z.enum(LANGUAGES).optional(),
-    previews: z.array(z.object({ atLine: z.number(), src: z.string() })),
+    previews: z.array(z.object({ atLine: z.number(), src: z.string() })).optional(),
   }),
   component: CodeLiveScene,
   duration: (scene: { code: string }) => scene.code.length / CODE_CPS + 2,
@@ -124,8 +125,16 @@ export function codeLiveStory(props: CodeLiveProps): Story {
   return templateStory(props, scenes as Scene[]);
 }
 
+const codeLiveScenes = [codeLiveScene];
+
 export function CodeLive(props: CodeLiveProps) {
-  return <Storyboard story={codeLiveStory(props)} scenes={[codeLiveScene]} />;
+  return <Storyboard story={codeLiveStory(props)} scenes={codeLiveScenes} />;
 }
 
-export const codeLiveMetadata = templateMetadata(codeLiveStory);
+// Not `templateMetadata(codeLiveStory)`: that helper calls `storyFrames(story)` with no custom scene
+// rules, and this story's one scene is the template-local `defineScene` type above ("code-live-beat")
+// — without its rule, `sceneSeconds` falls through to `Scene`'s own switch, matches no case, and returns
+// `undefined`, making `durationInFrames` NaN (same failure mode documented in product-launch.tsx).
+export const codeLiveMetadata: CalculateMetadataFunction<CodeLiveProps> = ({ props }) => ({
+  durationInFrames: storyFrames(codeLiveStory(props), codeLiveScenes),
+});

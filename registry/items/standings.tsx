@@ -17,11 +17,11 @@
  *   width={1920} height={1080} fps={30} durationInFrames={1}
  * />
  */
-import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, type CalculateMetadataFunction, useCurrentFrame, useVideoConfig } from "remotion";
 import { z } from "zod";
 import { clamp01, rankSlots, tween, useTheme, useViewport } from "./core";
-import type { CustomScene, Scene, Story } from "./story";
-import { defineScene, Storyboard, templateMetadata, templateSchema, templateStory } from "./storyboard";
+import { type CustomScene, type Scene, type Story, storyFrames } from "./story";
+import { defineScene, Storyboard, templateSchema, templateStory } from "./storyboard";
 import { TextReveal } from "./text-reveal";
 
 const rowSchema = z.object({ name: z.string(), value: z.number() });
@@ -145,8 +145,16 @@ export function standingsStory(props: StandingsProps): Story {
   return templateStory(props, scenes as Scene[]);
 }
 
+const standingsScenes = [standingsScene];
+
 export function Standings(props: StandingsProps) {
-  return <Storyboard story={standingsStory(props)} scenes={[standingsScene]} />;
+  return <Storyboard story={standingsStory(props)} scenes={standingsScenes} />;
 }
 
-export const standingsMetadata = templateMetadata(standingsStory);
+// Not `templateMetadata(standingsStory)`: that helper calls `storyFrames(story)` with no custom scene
+// rules, and this story's one scene is the template-local `defineScene` type above ("standings-beat")
+// — without its rule, `sceneSeconds` falls through to `Scene`'s own switch, matches no case, and returns
+// `undefined`, making `durationInFrames` NaN (same failure mode documented in product-launch.tsx).
+export const standingsMetadata: CalculateMetadataFunction<StandingsProps> = ({ props }) => ({
+  durationInFrames: storyFrames(standingsStory(props), standingsScenes),
+});
