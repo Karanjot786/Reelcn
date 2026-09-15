@@ -23,6 +23,9 @@ import {
   useVideoConfig,
 } from "remotion";
 import {
+  type AnchorRect,
+  anchorId,
+  anchorToContentPercent,
   catmullRom,
   clamp01,
   coverPhase,
@@ -42,6 +45,7 @@ import {
   quantizeMotion,
   quatFromLookAt,
   quatSlerp,
+  requireAnchor,
   type StaggerOrder,
   type StaggerShape,
   staggerDelay,
@@ -57,6 +61,9 @@ import { fonts } from "./fonts";
 // helpers) lives in ./core-math so node --test can import it directly — core.tsx is JSX and can't be
 // loaded by node's native TypeScript loader. Re-exported here so no item's import site changes.
 export {
+  type AnchorRect,
+  anchorId,
+  anchorToContentPercent,
   clamp01,
   coverPhase,
   geometricCadence,
@@ -75,6 +82,7 @@ export {
   quantizeMotion,
   quatFromLookAt,
   quatSlerp,
+  requireAnchor,
   type StaggerOrder,
   type StaggerShape,
   staggerDelay,

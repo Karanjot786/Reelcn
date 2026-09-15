@@ -166,3 +166,46 @@ test("matchGraphemes accounts for every character exactly once", () => {
   assert.deepEqual(froms, [0, 1, 2]);
   assert.deepEqual(tos, [0, 1, 2]);
 });
+
+import { anchorId } from "./core-math.ts";
+
+test("anchorId: a bare base id has no child suffix", () => {
+  assert.equal(anchorId("email"), "email");
+});
+
+test("anchorId: a numeric child becomes a list-index suffix", () => {
+  assert.equal(anchorId("list", 2), "list.item[2]");
+});
+
+test("anchorId: a string child becomes a dotted suffix", () => {
+  assert.equal(anchorId("email", "caret"), "email.caret");
+  assert.equal(anchorId("confirm", "submit"), "confirm.submit");
+});
+
+import { anchorToContentPercent, requireAnchor } from "./core-math.ts";
+
+test("requireAnchor: returns the rect when the id is present", () => {
+  const anchors = { submit: { x: 10, y: 20, width: 30, height: 8 } };
+  assert.deepEqual(requireAnchor(anchors, "submit", "Test"), anchors.submit);
+});
+
+test("requireAnchor: throws, naming the item and the missing id", () => {
+  assert.throws(() => requireAnchor({}, "submit", "Cursor"), /Cursor.*"submit"/);
+});
+
+test("anchorToContentPercent: identity contentBox (full-canvas ScreenZoom) is a no-op", () => {
+  const rect = { x: 40, y: 30, width: 20, height: 10 };
+  const identity = { x: 0, y: 0, width: 100, height: 100 };
+  assert.deepEqual(anchorToContentPercent(rect, identity), rect);
+});
+
+test("anchorToContentPercent: a nested ScreenZoom's contentBox rescales the anchor into the wrapper's own %", () => {
+  // A BrowserWindow occupying the right half of the canvas (x: 50-100%), with a button anchored at
+  // canvas-x 75% (the middle of that half) — content-relative, that's 50% of the wrapper's own width.
+  const rect = { x: 62.5, y: 40, width: 25, height: 10 };
+  const contentBox = { x: 50, y: 0, width: 50, height: 100 };
+  const content = anchorToContentPercent(rect, contentBox);
+  assert.equal(content.x, 25); // (62.5 - 50) / 50 * 100
+  assert.equal(content.width, 50); // 25 / 50 * 100
+  assert.equal(content.y, 40); // content box's own top is 0, height 100: unchanged
+});

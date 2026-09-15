@@ -13,14 +13,27 @@
  * </Center>
  */
 import type React from "react";
-import { type MotionProps, StrokeOverlay, tween, useMotion, useTheme, useViewport } from "./core";
+import { AbsoluteFill } from "remotion";
+import {
+  type AnchorRect,
+  type MotionProps,
+  requireAnchor,
+  StrokeOverlay,
+  tween,
+  useMotion,
+  useTheme,
+  useViewport,
+} from "./core";
 
 export type HighlightVariant = "marker" | "underline" | "box" | "circle";
 
 export type HighlightProps = MotionProps & {
-  text: string;
-  /** Phrase inside `text` to emphasize (first match, case-sensitive). It never wraps, so keep it short. */
-  highlight: string;
+  /** Required unless `target` is given. */
+  text?: string;
+  /** Phrase inside `text` to emphasize (first match, case-sensitive). It never wraps, so keep it short. Required unless `target` is given. */
+  highlight?: string;
+  /** A kit anchor's rect to highlight instead of a text phrase — only with `variant: "box"` or `"circle"` (no text to flow `marker`/`underline` around). */
+  target?: { anchors: Record<string, AnchorRect>; id: string };
   variant?: HighlightVariant;
   /** Font size in design units. */
   size?: number;
@@ -64,8 +77,9 @@ function readableOn(background: string, a: string, b: string) {
 }
 
 export function Highlight({
-  text,
-  highlight,
+  text = "",
+  highlight = "",
+  target,
   variant = "marker",
   size = 88,
   weight,
@@ -79,11 +93,10 @@ export function Highlight({
   ...motion
 }: HighlightProps) {
   const theme = useTheme();
-  const { u, width, safe } = useViewport();
+  const { u, width, height, safe } = useViewport();
   const m = useMotion(motion);
   const fontPx = u(size);
   const mark = highlightColor ?? theme.colors.highlight;
-  const at = highlight ? text.indexOf(highlight) : -1;
   // The mark starts drawing once the sentence has mostly arrived.
   const drawn = Math.min(
     Math.max(
@@ -105,6 +118,47 @@ export function Highlight({
     strokeDasharray: 1,
     strokeDashoffset: 1 - drawn,
   };
+
+  if (target) {
+    if (variant !== "box" && variant !== "circle") {
+      throw new Error(
+        'Highlight: "target" needs variant "box" or "circle" (marker/underline have no rect to draw around)',
+      );
+    }
+    const rect = requireAnchor(target.anchors, target.id, "Highlight");
+    const pad = u(16);
+    const left = (rect.x / 100) * width - pad;
+    const top = (rect.y / 100) * height - pad;
+    const w = (rect.width / 100) * width + pad * 2;
+    const h = (rect.height / 100) * height + pad * 2;
+    return (
+      <AbsoluteFill className={className} style={{ opacity: m.presence, ...style }}>
+        <svg
+          aria-hidden="true"
+          viewBox={variant === "circle" ? "0 0 100 40" : undefined}
+          preserveAspectRatio={variant === "circle" ? "none" : undefined}
+          style={{ position: "absolute", left, top, width: w, height: h, overflow: "visible" }}
+        >
+          {variant === "box" ? (
+            <rect width="100%" height="100%" rx={Math.min(u(theme.radius), Math.min(w, h) * 0.2)} {...stroke} />
+          ) : (
+            <StrokeOverlay
+              d={CIRCLE}
+              kind={theme.stroke}
+              seed="highlight-circle-target"
+              color={mark}
+              strokeWidth={fontPx * 0.06}
+              drawn={drawn}
+              extraProps={{ vectorEffect: "non-scaling-stroke", strokeLinecap: "round" }}
+            />
+          )}
+        </svg>
+      </AbsoluteFill>
+    );
+  }
+
+  const at = highlight ? text.indexOf(highlight) : -1;
+
   const overlay: React.CSSProperties = { position: "absolute", overflow: "visible", pointerEvents: "none" };
 
   const markFor = (phrase: string) => {

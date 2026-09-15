@@ -157,6 +157,41 @@ export const graphemes = (text: string) =>
 /** Clamp to 0-1. */
 export const clamp01 = (n: number): number => Math.min(Math.max(n, 0), 1);
 
+/** A kit component's placed rect, % of canvas, top-left origin — the same shape `CalloutRect` already uses. */
+export type AnchorRect = { x: number; y: number; width: number; height: number };
+
+/**
+ * Builds a composite kit component's child anchor id: a numeric `child` is a list index
+ * (`anchorId("list", 2)` → `"list.item[2]"`), a string `child` is a dotted suffix
+ * (`anchorId("email", "caret")` → `"email.caret"`), and no `child` returns `base` unchanged.
+ */
+export function anchorId(base: string, child?: string | number): string {
+  if (child === undefined) return base;
+  return typeof child === "number" ? `${base}.item[${child}]` : `${base}.${child}`;
+}
+
+/** Looks up `id` in `anchors`, throwing a named error instead of returning `undefined` — the one
+ * consistent contract all four `target` consumers use (ponytail-review should-fix 4). */
+export function requireAnchor(anchors: Record<string, AnchorRect>, id: string, itemName: string): AnchorRect {
+  const rect = anchors[id];
+  if (!rect) throw new Error(`${itemName}: anchor id "${id}" not found`);
+  return rect;
+}
+
+/** Converts a canvas-relative `%` rect into a rect relative to `contentBox` (also canvas-relative `%`) —
+ * `AnchorRect`s are always canvas-% (Task 1), but `ScreenZoomFocus`'s existing `x/y/width/height` is
+ * content-relative-% (ponytail-review blocker 1: the two conventions were being mixed with no conversion).
+ * The identity `contentBox` (`{x:0,y:0,width:100,height:100}`) is the common case: a `ScreenZoom` that
+ * fills the whole canvas, where canvas-% and content-% are the same number. */
+export function anchorToContentPercent(rect: AnchorRect, contentBox: AnchorRect): AnchorRect {
+  return {
+    x: ((rect.x - contentBox.x) / contentBox.width) * 100,
+    y: ((rect.y - contentBox.y) / contentBox.height) * 100,
+    width: (rect.width / contentBox.width) * 100,
+    height: (rect.height / contentBox.height) * 100,
+  };
+}
+
 /** First user-perceived character of `name`, safe for emoji, CJK and combining marks (`graphemes` already handles the segmentation). */
 export const graphemeInitial = (name: string): string => graphemes(name)[0] ?? "";
 

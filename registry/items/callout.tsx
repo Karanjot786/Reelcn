@@ -14,16 +14,26 @@
  */
 import type React from "react";
 import { AbsoluteFill } from "remotion";
-import { alpha, type MotionProps, tween, useMotion, useTheme, useViewport } from "./core";
+import {
+  type AnchorRect,
+  alpha,
+  type MotionProps,
+  requireAnchor,
+  tween,
+  useMotion,
+  useTheme,
+  useViewport,
+} from "./core";
 
 export type CalloutRect = { x: number; y: number; width: number; height: number };
 
 export type CalloutProps = MotionProps & {
   /**
    * Area to spotlight, in % of the canvas (0-100): `x`/`y` is the top-left corner, `width`/`height` the size.
-   * Percentages keep the spotlight on the same UI when the canvas changes format.
+   * Percentages keep the spotlight on the same UI when the canvas changes format. A kit anchor
+   * (`{ anchors, id }`) resolves to the exact same rect shape instead of a literal one.
    */
-  target: CalloutRect;
+  target: CalloutRect | { anchors: Record<string, AnchorRect>; id: string };
   label?: string;
   /** Where the label sits. `auto` tries below, then above, then the roomier side, staying inside the safe zone. */
   side?: "auto" | "top" | "bottom" | "left" | "right";
@@ -61,11 +71,15 @@ export function Callout({
   const { u, width, height, safe } = useViewport();
   const m = useMotion(motion);
   const accent = accentColor ?? theme.colors.accent;
+  // `AnchorRect` and `CalloutRect` are the same shape; a kit anchor resolves to a rect (throwing on a
+  // missing id, ponytail-review should-fix 4's consistent contract) before anything below touches it, so
+  // every line after this stays exactly what it was.
+  const rect: CalloutRect = "anchors" in target ? requireAnchor(target.anchors, target.id, "Callout") : target;
   const pad = u(padding);
-  const left = (target.x / 100) * width - pad;
-  const top = (target.y / 100) * height - pad;
-  const w = (target.width / 100) * width + pad * 2;
-  const h = (target.height / 100) * height + pad * 2;
+  const left = (rect.x / 100) * width - pad;
+  const top = (rect.y / 100) * height - pad;
+  const w = (rect.width / 100) * width + pad * 2;
+  const h = (rect.height / 100) * height + pad * 2;
   const cx = left + w / 2;
   const cy = top + h / 2;
   const shown = Math.min(Math.max(m.enter, 0), 1) * (1 - m.exit);
