@@ -153,11 +153,11 @@ export function Terminal({
   const laggedTyped = activeHasCaret ? useTypedText(active.text, laggedFrame - active.typeFrom, m.fps, { cps }) : null;
   const laggedPrefix =
     active?.kind === "command" ? `${prompt} ${laggedTyped?.visible ?? ""}` : (laggedTyped?.visible ?? "");
-  const caretMetrics = useTextMetrics(laggedPrefix, {
-    fontFamily: theme.fonts.mono,
-    fontSize: fontPx,
-    fontWeight: 500,
-  });
+  const caretMetrics = useTextMetrics(
+    laggedPrefix,
+    { fontFamily: theme.fonts.mono, fontSize: fontPx, fontWeight: 500 },
+    { skip: !follow },
+  );
   const activeRowIndex = active ? visible.indexOf(active) : 0;
   const caretPosition = { x: caretMetrics.width, y: activeRowIndex * lineH };
 

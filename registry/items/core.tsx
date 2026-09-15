@@ -672,13 +672,17 @@ const FONT_READY_TIMEOUT_MS = 2000;
 export function useTextMetrics(
   text: string,
   style: { fontFamily: string; fontSize: number; fontWeight?: number; letterSpacing?: number },
+  opts?: {
+    /** Skips the delayRender/font-ready gate and the measurement itself — for a value that's computed but not always used, like a follow-caret position when `follow` is unset. Always call the hook; vary this flag, never the call itself. */ skip?: boolean;
+  },
 ): { width: number; ready: boolean } {
+  const skip = opts?.skip ?? false;
   const { fontFamily, fontSize, fontWeight = 400, letterSpacing = 0 } = style;
-  const [handle] = useState(() => delayRender("useTextMetrics font"));
-  const [ready, setReady] = useState(() => fontFaceReady(fontFamily, fontWeight));
+  const [handle] = useState(() => (skip ? null : delayRender("useTextMetrics font")));
+  const [ready, setReady] = useState(() => skip || fontFaceReady(fontFamily, fontWeight));
 
   useEffect(() => {
-    if (ready) return;
+    if (skip || ready) return;
     let cancelled = false;
     document.fonts.ready.then(() => {
       if (!cancelled && fontFaceReady(fontFamily, fontWeight)) setReady(true);
@@ -692,15 +696,16 @@ export function useTextMetrics(
       cancelled = true;
       clearTimeout(timeout);
     };
-  }, [ready, fontFamily, fontWeight]);
+  }, [skip, ready, fontFamily, fontWeight]);
 
   useEffect(() => {
-    if (ready) continueRender(handle);
-  }, [ready, handle]);
+    if (!skip && ready && handle !== null) continueRender(handle);
+  }, [skip, ready, handle]);
 
-  const width = ready
-    ? measurePx(text, `${fontWeight} ${fontSize}px ${fontFamily}`) + Math.max(text.length - 1, 0) * letterSpacing
-    : 0;
+  const width =
+    !skip && ready
+      ? measurePx(text, `${fontWeight} ${fontSize}px ${fontFamily}`) + Math.max(text.length - 1, 0) * letterSpacing
+      : 0;
   return { width, ready };
 }
 

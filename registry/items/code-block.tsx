@@ -166,11 +166,11 @@ export function CodeBlock({
   const laggedCode = code.slice(0, laggedShown);
   const laggedCodeLines = laggedCode.split("\n");
   const laggedLineText = laggedCodeLines[laggedCodeLines.length - 1];
-  const caretMetrics = useTextMetrics(laggedLineText, {
-    fontFamily: theme.fonts.mono,
-    fontSize: fontPx,
-    fontWeight: 500,
-  });
+  const caretMetrics = useTextMetrics(
+    laggedLineText,
+    { fontFamily: theme.fonts.mono, fontSize: fontPx, fontWeight: 500 },
+    { skip: !follow },
+  );
   const caretPosition = { x: caretMetrics.width, y: (laggedCodeLines.length - 1) * lineH };
 
   let offset = 0;

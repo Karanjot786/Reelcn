@@ -109,11 +109,11 @@ export function CommandPalette({
   // earlier frame — always computed (cheap, pure), only measured/used when `follow` is set. Command
   // palette is single-line, so `y` is always the query row's fixed y-offset, no line-counting needed.
   const laggedTyped = useTypedText(query, m.frame - (follow?.lag ?? 6) - start, m.fps, { cps });
-  const caretMetrics = useTextMetrics(laggedTyped.visible, {
-    fontFamily: theme.fonts.body,
-    fontSize: u(24),
-    fontWeight: 400,
-  });
+  const caretMetrics = useTextMetrics(
+    laggedTyped.visible,
+    { fontFamily: theme.fonts.body, fontSize: u(24), fontWeight: 400 },
+    { skip: !follow },
+  );
   const caretPosition = { x: caretMetrics.width, y: u(29) };
   const blinkOn = Math.floor(m.frame / Math.round(m.fps * 0.5)) % 2 === 0;
   const filtered = filteredAt(typed);

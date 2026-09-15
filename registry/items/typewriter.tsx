@@ -115,11 +115,15 @@ export function Typewriter({
     if (laggedFrame >= laggedEnd) laggedTyped = i + 1;
   }
   const laggedText = chars.slice(0, laggedTyped).join("");
-  const caretMetrics = useTextMetrics(laggedText, {
-    fontFamily: theme.fonts[font],
-    fontSize: fontPx,
-    fontWeight: weight ?? (font === "heading" ? theme.headingWeight : 500),
-  });
+  const caretMetrics = useTextMetrics(
+    laggedText,
+    {
+      fontFamily: theme.fonts[font],
+      fontSize: fontPx,
+      fontWeight: weight ?? (font === "heading" ? theme.headingWeight : 500),
+    },
+    { skip: !follow },
+  );
   const laggedLines = laggedText.split("\n").length - 1;
 
   // The div is centered horizontally by its usual layout (see the `@example`'s `<Center>`), and its
@@ -128,11 +132,15 @@ export function Typewriter({
   // width. Without this, caret.x above was a bare local offset that implicitly assumed the box started
   // flush at the frame's left edge (x=0), which sent `follow`'s zoom off-frame for this, the default,
   // centered rendering (see CONTRIBUTING.md's `follow` guidance).
-  const fullTextMetrics = useTextMetrics(chars.join(""), {
-    fontFamily: theme.fonts[font],
-    fontSize: fontPx,
-    fontWeight: weight ?? (font === "heading" ? theme.headingWeight : 500),
-  });
+  const fullTextMetrics = useTextMetrics(
+    chars.join(""),
+    {
+      fontFamily: theme.fonts[font],
+      fontSize: fontPx,
+      fontWeight: weight ?? (font === "heading" ? theme.headingWeight : 500),
+    },
+    { skip: !follow },
+  );
   const maxTextWidth = width - safe.x * 2;
   const boxWidth = Math.min(fullTextMetrics.width, maxTextWidth);
   const originX = (width - boxWidth) / 2;
