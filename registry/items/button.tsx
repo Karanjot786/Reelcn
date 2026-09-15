@@ -47,8 +47,8 @@ export type ButtonProps = MotionProps & {
   className?: string;
 };
 
-const PAD_X = 28;
-const HEIGHT = 56;
+export const PAD_X = 28;
+export const HEIGHT = 56;
 export const FONT_SIZE = 22;
 const CHECK = "M4 12l5 5L20 6";
 

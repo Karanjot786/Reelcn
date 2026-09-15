@@ -28,6 +28,7 @@ import { PhoneFrame } from "../items/phone-frame";
 import { ScreenZoom } from "../items/screen-zoom";
 import { Select } from "../items/select";
 import { STORY_FPS } from "../items/story";
+import { Storyboard, uiScene } from "../items/storyboard";
 import { SvgDraw } from "../items/svg-draw";
 import { Switch } from "../items/switch";
 import { Tabs } from "../items/tabs";
@@ -716,6 +717,39 @@ function DialogAnchorProofDemo() {
   );
 }
 
+/* ──────────────────────────────── ui scene ──────────────────────────────── */
+
+const UI_SCENE_SIGNUP_STEPS = [
+  { at: 0.5, target: "email", type: "ada@hexhaus.dev" },
+  { at: 2, target: "notifications", click: "notifications" },
+  { at: 2.8, click: "submit" },
+];
+
+function UiSceneSignupDemo() {
+  return (
+    <Storyboard
+      scenes={[uiScene]}
+      story={{
+        scenes: [
+          {
+            type: "ui",
+            components: [
+              { id: "email", component: "input", props: { label: "Work email", placeholder: "you@company.com" } },
+              { id: "notifications", component: "switch", props: { label: "Email me about outages" } },
+              { id: "submit", component: "button", props: { label: "Create account", variant: "primary" } },
+            ],
+            steps: UI_SCENE_SIGNUP_STEPS,
+            // A literal story object (unlike JSON fed through calculateMetadata) skips schema
+            // defaulting, so `cursor`'s zod default never applies here — set explicitly so the demo
+            // actually shows the cursor path it exists to demonstrate.
+            cursor: true,
+          },
+        ],
+      }}
+    />
+  );
+}
+
 export default [
   { id: "code-block-typing", duration: 90, component: CodeBlockTyping },
   { id: "code-block-follow", duration: 90, component: CodeBlockFollow },
@@ -773,4 +807,14 @@ export default [
     component: DialogDemo,
   },
   { id: "dialog-anchor-proof", duration: 30, component: DialogAnchorProofDemo },
+  {
+    id: "ui-scene-signup",
+    duration: stepsDuration(
+      UI_SCENE_SIGNUP_STEPS.map((s) => ({ at: s.at })),
+      30,
+      STORY_FPS,
+    ),
+    bare: true,
+    component: UiSceneSignupDemo,
+  },
 ] satisfies Demo[];

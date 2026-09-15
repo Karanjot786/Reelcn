@@ -35,8 +35,8 @@ export type SwitchProps = MotionProps & {
   className?: string;
 };
 
-const TRACK_W = 56;
-const TRACK_H = 32;
+export const TRACK_W = 56;
+export const TRACK_H = 32;
 const THUMB_D = 26;
 const THUMB_INSET = 3;
 

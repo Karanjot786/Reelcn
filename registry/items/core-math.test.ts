@@ -252,3 +252,50 @@ test("proximityWeight: symmetric — same distance either direction gives the sa
 test("proximityWeight: clamped at 0 beyond one row away, never negative", () => {
   assert.equal(proximityWeight(0, 5), 0);
 });
+
+import { type Orientation, stackLayout } from "./core-math.ts";
+
+const SAFE_LANDSCAPE = { x: 6, top: 8, bottom: 8 };
+const SAFE_PORTRAIT = { x: 7, top: 12, bottom: 20 };
+
+test("stackLayout: places sit inside the safe zone, in every orientation", () => {
+  for (const [orientation, safe] of [
+    ["landscape", SAFE_LANDSCAPE],
+    ["portrait", SAFE_PORTRAIT],
+    ["square", SAFE_LANDSCAPE],
+  ] as [Orientation, typeof SAFE_LANDSCAPE][]) {
+    for (let count = 1; count <= 6; count++) {
+      const places = stackLayout(count, orientation, safe);
+      assert.equal(places.length, count);
+      for (const p of places) {
+        assert.ok(p.y >= safe.top, `${orientation} count=${count}: ${p.y} >= ${safe.top}`);
+        assert.ok(p.y <= 100 - safe.bottom, `${orientation} count=${count}: ${p.y} <= ${100 - safe.bottom}`);
+        assert.equal(p.x, 50);
+      }
+    }
+  }
+});
+
+test("stackLayout: no two placed rows collide — strictly increasing, evenly spaced", () => {
+  const places = stackLayout(4, "landscape", SAFE_LANDSCAPE);
+  for (let i = 1; i < places.length; i++) {
+    assert.ok(places[i].y > places[i - 1].y, "rows must be strictly increasing");
+  }
+  const gap0 = places[1].y - places[0].y;
+  for (let i = 2; i < places.length; i++) {
+    assert.ok(Math.abs(places[i].y - places[i - 1].y - gap0) < 1e-9, "even spacing");
+  }
+});
+
+test("stackLayout: portrait spacing is tighter than landscape for the same count", () => {
+  const landscape = stackLayout(3, "landscape", SAFE_LANDSCAPE);
+  const portrait = stackLayout(3, "portrait", SAFE_PORTRAIT);
+  const gapLandscape = landscape[1].y - landscape[0].y;
+  const gapPortrait = portrait[1].y - portrait[0].y;
+  assert.ok(gapPortrait < gapLandscape);
+});
+
+test("stackLayout: a single component centers itself in the safe zone", () => {
+  const [p] = stackLayout(1, "landscape", SAFE_LANDSCAPE);
+  assert.equal(p.y, (SAFE_LANDSCAPE.top + (100 - SAFE_LANDSCAPE.bottom)) / 2);
+});

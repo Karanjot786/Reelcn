@@ -192,6 +192,32 @@ export function proximityWeight(i: number, offset: number): number {
   return clamp01(1 - Math.abs(i - offset));
 }
 
+/** The three canvas shapes `useViewport()` reports — duplicated here (not imported from `core.tsx`, which
+ * is JSX and can't be loaded by `node --test`) since it's a one-line, dependency-free union. */
+export type Orientation = "landscape" | "portrait" | "square";
+
+/**
+ * Centers `count` components in a single column inside the safe zone (all % of canvas, `Place`'s
+ * center-origin convention), evenly spaced, tighter in portrait. `safe` is already in % (the caller
+ * converts `useViewport().safe`'s px values before calling this, keeping the function itself pure).
+ */
+export function stackLayout(
+  count: number,
+  orientation: Orientation,
+  safe: { x: number; top: number; bottom: number },
+): Place[] {
+  if (count <= 0) return [];
+  const usableTop = safe.top;
+  const usableHeight = 100 - safe.bottom - safe.top;
+  const divisor = orientation === "portrait" ? 2.4 : 1.6;
+  const gap = count > 1 ? usableHeight / (count * divisor) : 0;
+  const totalSpan = gap * (count - 1);
+  const startY = usableTop + (usableHeight - totalSpan) / 2;
+  const places: Place[] = [];
+  for (let i = 0; i < count; i++) places.push({ x: 50, y: startY + gap * i });
+  return places;
+}
+
 /** Looks up `id` in `anchors`, throwing a named error instead of returning `undefined` — the one
  * consistent contract all four `target` consumers use (ponytail-review should-fix 4). */
 export function requireAnchor(anchors: Record<string, AnchorRect>, id: string, itemName: string): AnchorRect {

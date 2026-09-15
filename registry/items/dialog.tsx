@@ -36,8 +36,8 @@ export type DialogProps = MotionProps & {
   className?: string;
 };
 
-const POPUP_WIDTH = 420;
-const POPUP_HEIGHT = 220;
+export const POPUP_WIDTH = 420;
+export const POPUP_HEIGHT = 220;
 const PAD = 28;
 
 /** Pure: capped by the safe zone — shared by `useDialogAnchors`, `Dialog` and the `ui` scene (Task 9),

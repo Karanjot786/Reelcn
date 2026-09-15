@@ -43,10 +43,10 @@ export type SelectProps = MotionProps & {
   className?: string;
 };
 
-const TRIGGER_HEIGHT = 52;
+export const TRIGGER_HEIGHT = 52;
 const ROW_HEIGHT = 44;
-const PAD_X = 16;
-const FONT_SIZE = 18;
+export const PAD_X = 16;
+export const FONT_SIZE = 18;
 
 const isHighlightState = (s: unknown): s is { highlight: number } =>
   typeof s === "object" && s !== null && typeof (s as { highlight?: unknown }).highlight === "number";

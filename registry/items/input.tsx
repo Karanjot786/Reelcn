@@ -47,8 +47,8 @@ export type InputProps = MotionProps & {
   className?: string;
 };
 
-const FIELD_WIDTH = 340;
-const FIELD_HEIGHT = 52;
+export const FIELD_WIDTH = 340;
+export const FIELD_HEIGHT = 52;
 const PAD_X = 16;
 const FONT_SIZE = 20;
 /** Characters per second the field types at — fixed, independent of the step's own `at` spacing (the bug

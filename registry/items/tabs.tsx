@@ -37,10 +37,10 @@ export type TabsProps = MotionProps & {
   className?: string;
 };
 
-const TAB_HEIGHT = 48;
-const PAD_X = 22;
-const FONT_SIZE = 18;
-const FONT_WEIGHT = 600;
+export const TAB_HEIGHT = 48;
+export const PAD_X = 22;
+export const FONT_SIZE = 18;
+export const FONT_WEIGHT = 600;
 
 /** `values[index]`, linearly interpolated between its two neighboring integer entries. */
 function lerpAt(values: number[], index: number): number {
