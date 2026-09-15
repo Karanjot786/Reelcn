@@ -217,7 +217,8 @@ export function productLaunchStory(props: ProductLaunchProps): Story {
   return templateStory(props, scenes as Scene[]);
 }
 
-const productLaunchScenes = [deviceStageScene, featureCtaScene];
+/** This template's own scene rules: pass them to `storyFrames` and `sceneMarks` with `productLaunchStory`'s story. */
+export const productLaunchScenes = [deviceStageScene, featureCtaScene];
 
 export function ProductLaunch(props: ProductLaunchProps) {
   return <Storyboard story={productLaunchStory(props)} scenes={productLaunchScenes} />;

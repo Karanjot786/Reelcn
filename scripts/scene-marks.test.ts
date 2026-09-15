@@ -1,8 +1,23 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { z } from "zod";
 import { sceneIndexAt, sceneMarks } from "../registry/demos/scene-marks.ts";
+import type { Story } from "../registry/items/story.ts";
 
 const ten = "Ten words take a viewer about four seconds to read";
+
+test("scene marks time template-local scenes with their rules", () => {
+  // product-launch's "device-stage" runs 3.5s (105 frames); without its rule every later start is NaN.
+  const rule = { type: "device-stage", schema: z.object({}), duration: () => 3.5 };
+  const story = {
+    scenes: [{ type: "text", text: ten }, { type: "device-stage" }, { type: "stat", label: "Users", value: 10 }],
+  } as unknown as Story;
+  assert.deepEqual(sceneMarks(story, [rule]), [
+    { name: "text", from: 0 },
+    { name: "device-stage", from: 135 },
+    { name: "stat", from: 225 },
+  ]);
+});
 
 test("scene marks start where the previous scene's fade begins", () => {
   // 150 + 90 + 120 frames with two 15-frame fades: starts at 0, 135 and 210.
