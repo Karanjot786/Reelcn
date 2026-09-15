@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next";
 import { RootProvider } from "fumadocs-ui/provider/next";
 import type { Metadata } from "next";
 import { IBM_Plex_Mono, IBM_Plex_Sans, IBM_Plex_Sans_Condensed } from "next/font/google";
@@ -53,6 +54,8 @@ export default function Layout({ children }: LayoutProps<"/">) {
         <RootProvider theme={{ defaultTheme: "dark", forcedTheme: "dark" }} search={{ options: { type: "static" } }}>
           {children}
         </RootProvider>
+        {/* Page views and referrers, so search traffic is visible. Collects nothing until Web Analytics is on in Vercel. */}
+        <Analytics />
       </body>
     </html>
   );

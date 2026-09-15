@@ -12,6 +12,7 @@
   "dependencies": {
     "@reelcn/registry": "workspace:*",
     "@remotion/player": "catalog:",
+    "@vercel/analytics": "2.0.1",
     "fumadocs-core": "16.15.9",
     "fumadocs-mdx": "15.4.0",
     "fumadocs-ui": "npm:@fumadocs/base-ui@16.15.9",
