@@ -5,6 +5,7 @@ import { FormatTrio } from "@/components/format-trio";
 import { FrameSheet } from "@/components/frame-sheet";
 import { HeadlineSweep } from "@/components/headline-sweep";
 import { HeroEditor } from "@/components/hero-editor";
+import { LogoMark } from "@/components/logo";
 import { SearchButton } from "@/components/search-button";
 import { ThemeCycle } from "@/components/theme-cycle";
 import { TypeOnView } from "@/components/type-on-view";
@@ -183,11 +184,7 @@ export default function Home() {
       <header className="nav">
         <div className="wrap">
           <Link className="logo" href="/">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <rect x="2" y="4" width="20" height="16" rx="3" stroke="currentColor" strokeWidth="1.8" />
-              <path d="M9 4v16" stroke="currentColor" strokeWidth="1.8" />
-              <path d="M9 12h13" stroke="#FFB224" strokeWidth="1.8" />
-            </svg>
+            <LogoMark />
             reelcn
           </Link>
           <nav aria-label="Main">
