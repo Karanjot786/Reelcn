@@ -2967,6 +2967,47 @@
       }
     },
     {
+      "name": "logo-sting",
+      "type": "registry:item",
+      "title": "Logo Sting",
+      "description": "Draws a real SVG mark in stroke order, snaps to a filled mark with one sound at the moment the last path finishes, then holds fully still for at least a second.",
+      "categories": [
+        "motion"
+      ],
+      "dependencies": [
+        "remotion"
+      ],
+      "registryDependencies": [
+        "https://www.reelcn.dev/r/core.json",
+        "https://www.reelcn.dev/r/sfx.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/logo-sting.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/logo-sting.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Center>\n  <LogoSting viewBox=\"0 0 48 48\" paths={[\"M8 24 L24 8 L40 24 L24 40 Z\"]} size={160} sfx=\"chime\" />\n</Center>",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "A brand's own logo mark drawing itself, not a generic \"LOGO\" placeholder",
+          "The opening or closing beat of `brand-reel`"
+        ],
+        "avoid": [
+          "A logo that needs to keep moving after it lands — pair with `svg-draw` directly instead"
+        ],
+        "tags": [
+          "logo",
+          "sting",
+          "draw",
+          "brand",
+          "sfx"
+        ]
+      }
+    },
+    {
       "name": "lower-third",
       "type": "registry:item",
       "title": "Lower Third",

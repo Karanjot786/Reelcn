@@ -33,13 +33,13 @@ Agents: `npx skills add Karanjot786/reelcn` installs the reelcn skill, and https
 ## Catalog
 
 <!-- catalog:start -->
-149 items.
+150 items.
 
 | Category | Items | Examples |
 |---|---|---|
 | lib | 10 | `chart-scale`, `code-tokens`, `core-math`, `core-physical-light`, `core-stroke`, … |
 | text | 18 | `blur-in`, `char-rise`, `counter`, `drop-in`, `fit-title`, … |
-| motion | 9 | `animate`, `bento-grid`, `camera`, `layout-morph`, `marquee`, … |
+| motion | 10 | `animate`, `bento-grid`, `camera`, `layout-morph`, `logo-sting`, … |
 | transitions | 15 | `brand-sweep`, `card-push`, `circle-burst`, `glitch`, `light-flash`, … |
 | backgrounds | 10 | `aurora`, `beams`, `bokeh`, `brand-solid`, `dots`, … |
 | overlays | 10 | `arrow`, `callout`, `confetti`, `flash`, `light-leak`, … |

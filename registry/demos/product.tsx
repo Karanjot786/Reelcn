@@ -26,6 +26,7 @@ import { FeatureCard } from "../items/feature-card";
 import { Input } from "../items/input";
 import { LaptopFrame } from "../items/laptop-frame";
 import { LayoutMorph } from "../items/layout-morph";
+import { LogoSting } from "../items/logo-sting";
 import { PhoneFrame } from "../items/phone-frame";
 import { Redact } from "../items/redact";
 import { ScreenZoom } from "../items/screen-zoom";
@@ -679,6 +680,21 @@ function SvgDrawDemo() {
   );
 }
 
+/* ──────────────────────────────── logo-sting ──────────────────────────────── */
+
+function LogoStingDemo() {
+  return (
+    <Center>
+      <LogoSting
+        viewBox="0 0 48 48"
+        paths={["M8 24 L24 8 L40 24 L24 40 Z", "M18 24 L24 18 L30 24 L24 30 Z"]}
+        size={160}
+        sfx="chime"
+      />
+    </Center>
+  );
+}
+
 function SwitchDemo() {
   return (
     <Center>
@@ -919,6 +935,7 @@ export default [
   { id: "dialog-anchor-proof", duration: 30, component: DialogAnchorProofDemo },
   { id: "checklist", duration: checklistDuration(CHECKLIST_ITEMS) + 30, component: ChecklistDemo },
   { id: "layout-morph", duration: 150, bare: true, component: LayoutMorphDemo },
+  { id: "logo-sting", duration: 150, component: LogoStingDemo },
   {
     id: "ui-scene-signup",
     duration: stepsDuration(

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "logo-sting",
+  "title": "Logo Sting",
+  "description": "Draws a real SVG mark in stroke order, snaps to a filled mark with one sound at the moment the last path finishes, then holds fully still for at least a second.",
+  "dependencies": [
+    "remotion"
+  ],
+  "registryDependencies": [
+    "https://www.reelcn.dev/r/core.json",
+    "https://www.reelcn.dev/r/sfx.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/logo-sting.tsx",
+      "content": "/**\n * @title Logo Sting\n * @category motion\n * @description Draws a real SVG mark in stroke order, snaps to a filled mark with one sound at the moment the last path finishes, then holds fully still for at least a second.\n * @duration data-driven\n * @use A brand's own logo mark drawing itself, not a generic \"LOGO\" placeholder\n * @use The opening or closing beat of `brand-reel`\n * @avoid A logo that needs to keep moving after it lands — pair with `svg-draw` directly instead\n * @tags logo, sting, draw, brand, sfx\n * @example\n * <Center>\n *   <LogoSting viewBox=\"0 0 48 48\" paths={[\"M8 24 L24 8 L40 24 L24 40 Z\"]} size={160} sfx=\"chime\" />\n * </Center>\n */\nimport type React from \"react\";\nimport { Sequence, useVideoConfig } from \"remotion\";\nimport { type MotionProps, StrokeOverlay, tween, useMotion, useTheme, useViewport } from \"./core\";\nimport { Sfx, type SfxName } from \"./sfx\";\n\nexport type LogoStingProps = MotionProps & {\n  viewBox: string;\n  paths: string[];\n  size?: number;\n  color?: string;\n  /** Fires once, the moment the last path finishes drawing. `false` for silence. */\n  sfx?: SfxName | false;\n  /** Minimum static hold after the snap, in frames. Defaults to `fps` (a hard ≥1s floor, M3). */\n  holdFrames?: number;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\nexport function LogoSting({\n  viewBox,\n  paths,\n  size = 200,\n  color,\n  sfx = \"chime\",\n  holdFrames,\n  style,\n  className,\n  ...motion\n}: LogoStingProps) {\n  const theme = useTheme();\n  const { u } = useViewport();\n  const { fps } = useVideoConfig();\n  const m = useMotion({ ...motion, holdFrames: holdFrames ?? fps });\n  const fill = color ?? theme.colors.foreground;\n  const step = Math.round(m.fps * 0.15);\n  const box = viewBox.split(/[\\s,]+/).map(Number);\n  const vbWidth = box[2];\n  const vbHeight = box[3];\n  const renderWidth = u(size);\n  const renderHeight = vbWidth > 0 ? renderWidth * (vbHeight / vbWidth) : renderWidth;\n  const lastDrawEnd = m.delay + (paths.length - 1) * step + m.enterFrames;\n  const snap = Math.max(\n    0,\n    Math.min(1, tween(m.frame, m.fps, { from: lastDrawEnd, duration: Math.round(m.fps * 0.25), motion: \"snappy\" })),\n  );\n\n  return (\n    <>\n      <svg\n        aria-hidden=\"true\"\n        className={className}\n        width={renderWidth}\n        height={renderHeight}\n        viewBox={viewBox}\n        style={{ opacity: 1 - m.exit, overflow: \"visible\", ...style }}\n      >\n        {paths.map((d, index) => {\n          const drawn = Math.max(\n            0,\n            Math.min(\n              1,\n              tween(m.frame, m.fps, { from: m.delay + index * step, duration: m.enterFrames, motion: m.preset }),\n            ),\n          );\n          return (\n            <g key={index} opacity={drawn > 0 ? 1 : 0}>\n              <path d={d} fill={fill} fillOpacity={snap} stroke=\"none\" />\n              <StrokeOverlay\n                d={d}\n                kind={theme.stroke}\n                seed={`logo-sting-${index}`}\n                color={fill}\n                strokeWidth={3}\n                drawn={drawn}\n                extraProps={{ strokeLinecap: \"round\", strokeLinejoin: \"round\", strokeOpacity: 1 - snap }}\n              />\n            </g>\n          );\n        })}\n      </svg>\n      {sfx !== false ? (\n        <Sequence from={Math.max(0, lastDrawEnd)}>\n          <Sfx name={sfx} />\n        </Sequence>\n      ) : null}\n    </>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/logo-sting.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "A brand's own logo mark drawing itself, not a generic \"LOGO\" placeholder",
+      "The opening or closing beat of `brand-reel`"
+    ],
+    "avoid": [
+      "A logo that needs to keep moving after it lands — pair with `svg-draw` directly instead"
+    ],
+    "tags": [
+      "logo",
+      "sting",
+      "draw",
+      "brand",
+      "sfx"
+    ]
+  },
+  "docs": "Usage:\n\n<Center>\n  <LogoSting viewBox=\"0 0 48 48\" paths={[\"M8 24 L24 8 L40 24 L24 40 Z\"]} size={160} sfx=\"chime\" />\n</Center>",
+  "categories": [
+    "motion"
+  ],
+  "type": "registry:item"
+}

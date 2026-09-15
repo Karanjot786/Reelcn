@@ -286,6 +286,14 @@ storyFrames({
 />
 ```
 
+- [Logo Sting](https://www.reelcn.dev/r/logo-sting.json): Draws a real SVG mark in stroke order, snaps to a filled mark with one sound at the moment the last path finishes, then holds fully still for at least a second. (length data-driven · use for A brand's own logo mark drawing itself, not a generic "LOGO" placeholder; The opening or closing beat of `brand-reel` · avoid A logo that needs to keep moving after it lands — pair with `svg-draw` directly instead)
+
+```tsx
+<Center>
+  <LogoSting viewBox="0 0 48 48" paths={["M8 24 L24 8 L40 24 L24 40 Z"]} size={160} sfx="chime" />
+</Center>
+```
+
 - [Marquee](https://www.reelcn.dev/r/marquee.json): Endless ticker of words or logos that scrolls at a steady speed with softly faded edges. (length sustained · use for Logo walls, keyword bands, "as seen in" strips and breaking-news tickers; A tilted accent band behind a headline for extra movement · avoid A short list that should arrive and then hold still, use `stagger`)
 
 ```tsx
