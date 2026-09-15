@@ -14,7 +14,7 @@
  */
 import type React from "react";
 import { Sequence, useVideoConfig } from "remotion";
-import { type MotionProps, StrokeOverlay, tween, useMotion, useTheme, useViewport } from "./core";
+import { clamp01, type MotionProps, StrokeOverlay, tween, useMotion, useTheme, useViewport } from "./core";
 import { Sfx, type SfxName } from "./sfx";
 
 export type LogoStingProps = MotionProps & {
@@ -57,9 +57,8 @@ export function LogoSting({
   const renderWidth = u(size);
   const renderHeight = vbWidth > 0 ? renderWidth * (vbHeight / vbWidth) : renderWidth;
   const lastDrawEnd = m.delay + (paths.length - 1) * step + m.enterFrames;
-  const snap = Math.max(
-    0,
-    Math.min(1, tween(m.frame, m.fps, { from: lastDrawEnd, duration: Math.round(m.fps * 0.25), motion: "snappy" })),
+  const snap = clamp01(
+    tween(m.frame, m.fps, { from: lastDrawEnd, duration: Math.round(m.fps * 0.25), motion: "snappy" }),
   );
 
   return (

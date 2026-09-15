@@ -23,7 +23,7 @@
 import { AbsoluteFill, type CalculateMetadataFunction, Img, useCurrentFrame, useVideoConfig } from "remotion";
 import { z } from "zod";
 import { BrowserWindow } from "./browser-window";
-import { Center, flipInterpolate, type Rect, tween, useTheme, useViewport } from "./core";
+import { Center, clamp01, flipInterpolate, type Rect, tween, useTheme, useViewport } from "./core";
 import { LaptopFrame } from "./laptop-frame";
 import { PhoneFrame } from "./phone-frame";
 import { Stage as PerspectiveStage } from "./stage";
@@ -130,7 +130,7 @@ function FeatureCtaScene({
   const { fps } = useVideoConfig();
   const HOLD = Math.round(fps * 1.2);
   const MORPH = Math.round(fps * 0.6);
-  const t = Math.max(0, Math.min(1, tween(frame, fps, { from: HOLD, duration: MORPH, motion: "smooth" })));
+  const t = clamp01(tween(frame, fps, { from: HOLD, duration: MORPH, motion: "smooth" }));
   const fromRect: Rect = { x: width / 2 - u(140), y: height * 0.68, width: u(280), height: u(56) };
   const toRect: Rect = { x: width / 2 - u(220), y: height * 0.42, width: u(440), height: u(96) };
   const rect = flipInterpolate(fromRect, toRect, t);

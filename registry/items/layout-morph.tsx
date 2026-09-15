@@ -16,6 +16,7 @@
 import type React from "react";
 import { AbsoluteFill, Img } from "remotion";
 import {
+  clamp01,
   flipInterpolate,
   layoutRectsFor,
   type MotionProps,
@@ -47,16 +48,12 @@ export function LayoutMorph({ items, layouts, style, className, ...motion }: Lay
   const fromRects = layoutRectsFor(prev.layout, items.length, orientation, { width, height });
   const toRects = next ? layoutRectsFor(next.layout, items.length, orientation, { width, height }) : fromRects;
   const t = next
-    ? Math.max(
-        0,
-        Math.min(
-          1,
-          tween(m.frame, m.fps, {
-            from: atFrame(prev),
-            duration: Math.max(1, atFrame(next) - atFrame(prev)),
-            motion: m.preset,
-          }),
-        ),
+    ? clamp01(
+        tween(m.frame, m.fps, {
+          from: atFrame(prev),
+          duration: Math.max(1, atFrame(next) - atFrame(prev)),
+          motion: m.preset,
+        }),
       )
     : 1;
 

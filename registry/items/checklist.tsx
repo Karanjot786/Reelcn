@@ -13,7 +13,16 @@
  * </Center>
  */
 import type React from "react";
-import { checklistSchedule, type MotionProps, StrokeOverlay, tween, useMotion, useTheme, useViewport } from "./core";
+import {
+  checklistSchedule,
+  clamp01,
+  type MotionProps,
+  StrokeOverlay,
+  tween,
+  useMotion,
+  useTheme,
+  useViewport,
+} from "./core";
 
 export type ChecklistProps = MotionProps & {
   /** `at` in seconds; omitted entries derive a content-based, accelerating schedule (`checklistSchedule`). */
@@ -41,23 +50,15 @@ export function Checklist({ items, checkColor, style, className, ...motion }: Ch
     >
       {items.map((item, i) => {
         const arrivalFrame = m.delay + (item.at !== undefined ? Math.round(item.at * m.fps) : schedule[i]);
-        const drawn = Math.max(
-          0,
-          Math.min(
-            1,
-            tween(m.frame, m.fps, { from: arrivalFrame, duration: Math.round(m.fps * 0.35), motion: "smooth" }),
-          ),
+        const drawn = clamp01(
+          tween(m.frame, m.fps, { from: arrivalFrame, duration: Math.round(m.fps * 0.35), motion: "smooth" }),
         );
-        const settled = Math.max(
-          0,
-          Math.min(
-            1,
-            tween(m.frame, m.fps, {
-              from: arrivalFrame + Math.round(m.fps * 0.35),
-              duration: Math.round(m.fps * 0.4),
-              motion: "smooth",
-            }),
-          ),
+        const settled = clamp01(
+          tween(m.frame, m.fps, {
+            from: arrivalFrame + Math.round(m.fps * 0.35),
+            duration: Math.round(m.fps * 0.4),
+            motion: "smooth",
+          }),
         );
         return (
           <div key={item.text} style={{ display: "flex", alignItems: "center", gap: u(14), height: u(ROW_HEIGHT) }}>
