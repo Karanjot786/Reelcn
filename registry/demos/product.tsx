@@ -25,6 +25,7 @@ import { Dialog, useDialogAnchors } from "../items/dialog";
 import { FeatureCard } from "../items/feature-card";
 import { Input } from "../items/input";
 import { LaptopFrame } from "../items/laptop-frame";
+import { LayoutMorph } from "../items/layout-morph";
 import { PhoneFrame } from "../items/phone-frame";
 import { Redact } from "../items/redact";
 import { ScreenZoom } from "../items/screen-zoom";
@@ -801,6 +802,27 @@ function ChecklistDemo() {
   );
 }
 
+/* ──────────────────────────────── layout morph ──────────────────────────────── */
+
+const LAYOUT_MORPH_ITEMS = [
+  { src: staticFile("reelcn-demo/screenshots/fictional-analytics.webp") },
+  { src: staticFile("reelcn-demo/screenshots/fictional-mobile-feed.webp") },
+  { src: staticFile("reelcn-demo/screenshots/reelcn-docs.webp") },
+];
+
+function LayoutMorphDemo() {
+  return (
+    <LayoutMorph
+      items={LAYOUT_MORPH_ITEMS}
+      layouts={[
+        { at: 0, layout: "grid" },
+        { at: 1.5, layout: "mosaic" },
+        { at: 3, layout: "strip" },
+      ]}
+    />
+  );
+}
+
 /* ──────────────────────────────── ui scene ──────────────────────────────── */
 
 const UI_SCENE_SIGNUP_STEPS = [
@@ -896,6 +918,7 @@ export default [
   },
   { id: "dialog-anchor-proof", duration: 30, component: DialogAnchorProofDemo },
   { id: "checklist", duration: checklistDuration(CHECKLIST_ITEMS) + 30, component: ChecklistDemo },
+  { id: "layout-morph", duration: 150, bare: true, component: LayoutMorphDemo },
   {
     id: "ui-scene-signup",
     duration: stepsDuration(

@@ -253,6 +253,79 @@ export function checklistDuration(items: unknown[], fps = 30): number {
   return last + Math.round(fps * 1.2);
 }
 
+export type Rect = { x: number; y: number; width: number; height: number };
+export type NamedLayout = "grid" | "mosaic" | "strip";
+
+function gridDims(count: number, orientation: Orientation): { cols: number; rows: number } {
+  if (count <= 1) return { cols: 1, rows: 1 };
+  const targetRatio = orientation === "portrait" ? 9 / 16 : 16 / 9;
+  const cols = Math.max(1, Math.min(count, Math.round(Math.sqrt(count * targetRatio))));
+  const rows = Math.ceil(count / cols);
+  return { cols, rows };
+}
+
+/**
+ * Closed-form tile rects for a named layout — never measures the DOM (the FLIP technique this replaces
+ * would), so both the "from" and "to" rects for a morph are known before any frame renders. `orientation`
+ * changes the arrangement, not just the scale: a `strip` is vertical in portrait, horizontal otherwise.
+ */
+export function layoutRectsFor(
+  layout: NamedLayout,
+  count: number,
+  orientation: Orientation,
+  canvas: { width: number; height: number },
+): Rect[] {
+  if (count <= 0) return [];
+  if (layout === "grid") {
+    const { cols, rows } = gridDims(count, orientation);
+    const w = canvas.width / cols;
+    const h = canvas.height / rows;
+    return Array.from({ length: count }, (_, i) => ({
+      x: (i % cols) * w,
+      y: Math.floor(i / cols) * h,
+      width: w,
+      height: h,
+    }));
+  }
+  if (layout === "strip") {
+    const vertical = orientation === "portrait";
+    const size = (vertical ? canvas.height : canvas.width) / count;
+    return Array.from({ length: count }, (_, i) =>
+      vertical
+        ? { x: 0, y: i * size, width: canvas.width, height: size }
+        : { x: i * size, y: 0, width: size, height: canvas.height },
+    );
+  }
+  // mosaic: one hero tile (60% of the long axis), the rest sharing the remainder in a row or column.
+  if (count === 1) return [{ x: 0, y: 0, width: canvas.width, height: canvas.height }];
+  const rects: Rect[] = [];
+  const heroFrac = 0.6;
+  if (orientation === "portrait") {
+    const heroH = canvas.height * heroFrac;
+    rects.push({ x: 0, y: 0, width: canvas.width, height: heroH });
+    const restW = canvas.width / (count - 1);
+    for (let i = 0; i < count - 1; i++)
+      rects.push({ x: i * restW, y: heroH, width: restW, height: canvas.height - heroH });
+  } else {
+    const heroW = canvas.width * heroFrac;
+    rects.push({ x: 0, y: 0, width: heroW, height: canvas.height });
+    const restH = canvas.height / (count - 1);
+    for (let i = 0; i < count - 1; i++)
+      rects.push({ x: heroW, y: i * restH, width: canvas.width - heroW, height: restH });
+  }
+  return rects;
+}
+
+/** Linear interpolation of every field between two rects — the "to" side of a FLIP morph. */
+export function flipInterpolate(from: Rect, to: Rect, t: number): Rect {
+  return {
+    x: from.x + (to.x - from.x) * t,
+    y: from.y + (to.y - from.y) * t,
+    width: from.width + (to.width - from.width) * t,
+    height: from.height + (to.height - from.height) * t,
+  };
+}
+
 /** Looks up `id` in `anchors`, throwing a named error instead of returning `undefined` — the one
  * consistent contract all four `target` consumers use (ponytail-review should-fix 4). */
 export function requireAnchor(anchors: Record<string, AnchorRect>, id: string, itemName: string): AnchorRect {

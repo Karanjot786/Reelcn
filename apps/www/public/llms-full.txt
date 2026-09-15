@@ -277,6 +277,15 @@ storyFrames({
 </Camera>
 ```
 
+- [Layout Morph](https://www.reelcn.dev/r/layout-morph.json): Images rearrange between named layouts (grid, mosaic, strip) with a closed-form tile morph — each image is always rendered full-canvas and only its clip-path window moves, so nothing ever reflows or distorts mid-morph. (length data-driven · use for A brand collage or portfolio grid that rearranges itself; Any beat that needs several images to feel like one continuous composition, not a cut · avoid Two images — use `split-screen` or a plain crossfade)
+
+```tsx
+<LayoutMorph
+  items={[{ src: "/a.jpg" }, { src: "/b.jpg" }, { src: "/c.jpg" }, { src: "/d.jpg" }]}
+  layouts={[{ at: 0, layout: "grid" }, { at: 1.5, layout: "mosaic" }]}
+/>
+```
+
 - [Marquee](https://www.reelcn.dev/r/marquee.json): Endless ticker of words or logos that scrolls at a steady speed with softly faded edges. (length sustained · use for Logo walls, keyword bands, "as seen in" strips and breaking-news tickers; A tilted accent band behind a headline for extra movement · avoid A short list that should arrive and then hold still, use `stagger`)
 
 ```tsx

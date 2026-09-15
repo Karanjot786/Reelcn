@@ -1,0 +1,43 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "layout-morph",
+  "title": "Layout Morph",
+  "description": "Images rearrange between named layouts (grid, mosaic, strip) with a closed-form tile morph — each image is always rendered full-canvas and only its clip-path window moves, so nothing ever reflows or distorts mid-morph.",
+  "dependencies": [
+    "remotion"
+  ],
+  "registryDependencies": [
+    "https://www.reelcn.dev/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/layout-morph.tsx",
+      "content": "/**\n * @title Layout Morph\n * @category motion\n * @description Images rearrange between named layouts (grid, mosaic, strip) with a closed-form tile morph — each image is always rendered full-canvas and only its clip-path window moves, so nothing ever reflows or distorts mid-morph.\n * @duration data-driven\n * @use A brand collage or portfolio grid that rearranges itself\n * @use Any beat that needs several images to feel like one continuous composition, not a cut\n * @avoid Two images — use `split-screen` or a plain crossfade\n * @tags layout, morph, grid, mosaic, collage, flip\n * @example\n * <LayoutMorph\n *   items={[{ src: \"/a.jpg\" }, { src: \"/b.jpg\" }, { src: \"/c.jpg\" }, { src: \"/d.jpg\" }]}\n *   layouts={[{ at: 0, layout: \"grid\" }, { at: 1.5, layout: \"mosaic\" }]}\n * />\n */\nimport type React from \"react\";\nimport { AbsoluteFill, Img } from \"remotion\";\nimport {\n  flipInterpolate,\n  layoutRectsFor,\n  type MotionProps,\n  type NamedLayout,\n  tween,\n  useMotion,\n  useTheme,\n  useViewport,\n} from \"./core\";\n\nexport type LayoutMorphProps = MotionProps & {\n  items: { src: string }[];\n  /** `at` in seconds. The layout holds at the first entry's arrangement until the next `at`. */\n  layouts: { at: number; layout: NamedLayout }[];\n  style?: React.CSSProperties;\n  className?: string;\n};\n\nexport function LayoutMorph({ items, layouts, style, className, ...motion }: LayoutMorphProps) {\n  const theme = useTheme();\n  const { u, width, height, orientation } = useViewport();\n  const m = useMotion(motion);\n  const sorted = layouts.slice().sort((a, b) => a.at - b.at);\n  const atFrame = (l: { at: number }) => m.delay + Math.round(l.at * m.fps);\n  let prevIndex = 0;\n  for (let i = 0; i < sorted.length; i++) if (atFrame(sorted[i]) <= m.frame) prevIndex = i;\n  const prev = sorted[prevIndex] ?? { at: 0, layout: \"grid\" as NamedLayout };\n  const next = sorted[prevIndex + 1];\n  const fromRects = layoutRectsFor(prev.layout, items.length, orientation, { width, height });\n  const toRects = next ? layoutRectsFor(next.layout, items.length, orientation, { width, height }) : fromRects;\n  const t = next\n    ? Math.max(\n        0,\n        Math.min(\n          1,\n          tween(m.frame, m.fps, {\n            from: atFrame(prev),\n            duration: Math.max(1, atFrame(next) - atFrame(prev)),\n            motion: m.preset,\n          }),\n        ),\n      )\n    : 1;\n\n  return (\n    <AbsoluteFill className={className} style={{ opacity: m.presence, ...style }}>\n      {items.map((item, i) => {\n        const rect = flipInterpolate(fromRects[i], toRects[i], t);\n        const inset = `${rect.y}px ${width - rect.x - rect.width}px ${height - rect.y - rect.height}px ${rect.x}px`;\n        return (\n          <Img\n            key={item.src}\n            src={item.src}\n            style={{\n              position: \"absolute\",\n              left: 0,\n              top: 0,\n              width,\n              height,\n              objectFit: \"cover\",\n              clipPath: `inset(${inset} round ${u(theme.radius)}px)`,\n            }}\n          />\n        );\n      })}\n    </AbsoluteFill>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/layout-morph.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "A brand collage or portfolio grid that rearranges itself",
+      "Any beat that needs several images to feel like one continuous composition, not a cut"
+    ],
+    "avoid": [
+      "Two images — use `split-screen` or a plain crossfade"
+    ],
+    "tags": [
+      "layout",
+      "morph",
+      "grid",
+      "mosaic",
+      "collage",
+      "flip"
+    ]
+  },
+  "docs": "Usage:\n\n<LayoutMorph\n  items={[{ src: \"/a.jpg\" }, { src: \"/b.jpg\" }, { src: \"/c.jpg\" }, { src: \"/d.jpg\" }]}\n  layouts={[{ at: 0, layout: \"grid\" }, { at: 1.5, layout: \"mosaic\" }]}\n/>",
+  "categories": [
+    "motion"
+  ],
+  "type": "registry:item"
+}

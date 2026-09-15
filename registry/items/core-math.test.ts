@@ -370,3 +370,53 @@ test("checklistDuration: at least covers the last item's own arrival", () => {
 test("checklistDuration: an empty list is just the hold budget, not negative", () => {
   assert.ok(checklistDuration([]) >= 0);
 });
+
+import { flipInterpolate, layoutRectsFor, type Rect } from "./core-math.ts";
+
+const CANVAS = { width: 1920, height: 1080 };
+
+test("layoutRectsFor: returns one rect per item, all inside the canvas", () => {
+  const rects = layoutRectsFor("grid", 6, "landscape", CANVAS);
+  assert.equal(rects.length, 6);
+  for (const r of rects) {
+    assert.ok(r.x >= 0 && r.x + r.width <= CANVAS.width + 1e-6);
+    assert.ok(r.y >= 0 && r.y + r.height <= CANVAS.height + 1e-6);
+  }
+});
+
+test("layoutRectsFor: grid vs mosaic actually differ in arrangement, not just uniformly scaled", () => {
+  const grid = layoutRectsFor("grid", 6, "landscape", CANVAS);
+  const mosaic = layoutRectsFor("mosaic", 6, "landscape", CANVAS);
+  // grid: every rect close to the same size. mosaic: one rect much larger than the rest.
+  const gridSizes = grid.map((r) => r.width * r.height);
+  const mosaicSizes = mosaic.map((r) => r.width * r.height);
+  const gridSpread = Math.max(...gridSizes) / Math.min(...gridSizes);
+  const mosaicSpread = Math.max(...mosaicSizes) / Math.min(...mosaicSizes);
+  assert.ok(
+    mosaicSpread > gridSpread * 2,
+    `mosaic (${mosaicSpread}) should be far less uniform than grid (${gridSpread})`,
+  );
+});
+
+test("layoutRectsFor: strip is vertical in portrait, horizontal in landscape", () => {
+  const portrait = layoutRectsFor("strip", 3, "portrait", { width: 1080, height: 1920 });
+  const landscape = layoutRectsFor("strip", 3, "landscape", CANVAS);
+  assert.ok(portrait[1].y > portrait[0].y && portrait[1].x === portrait[0].x, "portrait strip stacks vertically");
+  assert.ok(
+    landscape[1].x > landscape[0].x && landscape[1].y === landscape[0].y,
+    "landscape strip stacks horizontally",
+  );
+});
+
+test("flipInterpolate: t=0 is exactly `from`, t=1 is exactly `to`", () => {
+  const from: Rect = { x: 0, y: 0, width: 100, height: 100 };
+  const to: Rect = { x: 200, y: 50, width: 300, height: 150 };
+  assert.deepEqual(flipInterpolate(from, to, 0), from);
+  assert.deepEqual(flipInterpolate(from, to, 1), to);
+});
+
+test("flipInterpolate: t=0.5 is the midpoint on every field", () => {
+  const from: Rect = { x: 0, y: 0, width: 100, height: 100 };
+  const to: Rect = { x: 200, y: 100, width: 300, height: 200 };
+  assert.deepEqual(flipInterpolate(from, to, 0.5), { x: 100, y: 50, width: 200, height: 150 });
+});

@@ -2726,6 +2726,47 @@
       }
     },
     {
+      "name": "layout-morph",
+      "type": "registry:item",
+      "title": "Layout Morph",
+      "description": "Images rearrange between named layouts (grid, mosaic, strip) with a closed-form tile morph — each image is always rendered full-canvas and only its clip-path window moves, so nothing ever reflows or distorts mid-morph.",
+      "categories": [
+        "motion"
+      ],
+      "dependencies": [
+        "remotion"
+      ],
+      "registryDependencies": [
+        "https://www.reelcn.dev/r/core.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/layout-morph.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/layout-morph.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<LayoutMorph\n  items={[{ src: \"/a.jpg\" }, { src: \"/b.jpg\" }, { src: \"/c.jpg\" }, { src: \"/d.jpg\" }]}\n  layouts={[{ at: 0, layout: \"grid\" }, { at: 1.5, layout: \"mosaic\" }]}\n/>",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "A brand collage or portfolio grid that rearranges itself",
+          "Any beat that needs several images to feel like one continuous composition, not a cut"
+        ],
+        "avoid": [
+          "Two images — use `split-screen` or a plain crossfade"
+        ],
+        "tags": [
+          "layout",
+          "morph",
+          "grid",
+          "mosaic",
+          "collage",
+          "flip"
+        ]
+      }
+    },
+    {
       "name": "light-flash",
       "type": "registry:item",
       "title": "Light Flash",
