@@ -32,6 +32,7 @@ const SEARCH_TITLES: Record<string, string> = {
   "/docs/determinism": "Deterministic Remotion rendering",
   "/docs/agents": "reelcn for AI agents: shadcn MCP and llms.txt",
   "/docs/agent-skill": "Remotion agent skill: make videos with Claude Code",
+  "/docs/recipes": "Remotion prompts: eight agent video recipes",
   "/docs/license": "Is Remotion free? reelcn and Remotion licenses",
   "/docs/remotion-vs-hyperframes": "Remotion vs HyperFrames: which to use",
 };
