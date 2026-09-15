@@ -1422,6 +1422,42 @@
   }
 }
 
+/* Hero scroll zoom (hero-editor.tsx sets --zoom and scale): the editor pins, grows to cover the screen, then settles. */
+.landing {
+  overflow-x: clip;
+}
+.landing .stage-card {
+  position: relative;
+}
+@media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+  /* The sticky pin stops at the content box, so padding here would release it before the scroll math's range ends. */
+  .landing .stage {
+    height: 380vh;
+    padding-bottom: 0;
+    margin-bottom: 40px;
+  }
+  .landing .stage-pin {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+  }
+  .landing .stage-card {
+    width: 100%;
+  }
+  /* Scale and --zoom arrive with hydration; hold the entrance until then so the editor never shows unzoomed and snaps. */
+  @media (scripting: enabled) {
+    .landing .stage-card:not([style]) .editor {
+      animation-play-state: paused;
+    }
+  }
+  .landing .stage-card .editor {
+    border-radius: calc(var(--r4) * (1 - var(--zoom, 0)));
+    border-color: color-mix(in srgb, var(--line) calc(100% - 100% * var(--zoom, 0)), transparent);
+  }
+}
+
 /* Interactive hero: template buttons in the bin, editable props, the feature stepper and the scrub surfaces. */
 .landing .bin li button {
   display: flex;
