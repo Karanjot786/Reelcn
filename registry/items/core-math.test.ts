@@ -342,3 +342,31 @@ test("stackOffset: a toast that has left contributes nothing to slots below it",
   ];
   assert.equal(stackOffset(items, 1), 0); // toast 0 contributes nothing — the stack closed up
 });
+
+import { checklistDuration, checklistSchedule } from "./core-math.ts";
+
+test("checklistSchedule: arrival frames are monotonic, non-decreasing", () => {
+  const schedule = checklistSchedule([1, 2, 3, 4, 5], 5);
+  for (let i = 1; i < schedule.length; i++) assert.ok(schedule[i] >= schedule[i - 1]);
+});
+
+test("checklistSchedule: the first item arrives at frame 0", () => {
+  assert.equal(checklistSchedule([1, 2, 3])[0], 0);
+});
+
+test("checklistSchedule: gaps shorten as the list grows (accelerando, M2)", () => {
+  const schedule = checklistSchedule([1, 2, 3, 4, 5], 5);
+  const firstGap = schedule[1] - schedule[0];
+  const lastGap = schedule[4] - schedule[3];
+  assert.ok(lastGap <= firstGap);
+});
+
+test("checklistDuration: at least covers the last item's own arrival", () => {
+  const items = [1, 2, 3];
+  const schedule = checklistSchedule(items);
+  assert.ok(checklistDuration(items) >= schedule[schedule.length - 1]);
+});
+
+test("checklistDuration: an empty list is just the hold budget, not negative", () => {
+  assert.ok(checklistDuration([]) >= 0);
+});

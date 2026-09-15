@@ -1,0 +1,40 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "checklist",
+  "title": "Checklist",
+  "description": "Rows that check themselves off with the existing stroke-draw check technique, accelerating pace as the list winds down, and mute once checked.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://www.reelcn.dev/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/checklist.tsx",
+      "content": "/**\n * @title Checklist\n * @category product\n * @description Rows that check themselves off with the existing stroke-draw check technique, accelerating pace as the list winds down, and mute once checked.\n * @duration data-driven\n * @use A features/setup-steps list that completes itself in a product demo\n * @use Any \"here's everything done\" beat that shouldn't feel mechanically linear\n * @avoid A single item — use plain text with `svg-draw`'s check path directly\n * @tags checklist, checkmark, list, tasks, stagger\n * @example\n * <Center>\n *   <Checklist items={[{ text: \"Connect your repo\" }, { text: \"Add a webhook\" }, { text: \"Ship your first release\" }]} />\n * </Center>\n */\nimport type React from \"react\";\nimport { checklistSchedule, type MotionProps, StrokeOverlay, tween, useMotion, useTheme, useViewport } from \"./core\";\n\nexport type ChecklistProps = MotionProps & {\n  /** `at` in seconds; omitted entries derive a content-based, accelerating schedule (`checklistSchedule`). */\n  items: { text: string; at?: number }[];\n  checkColor?: string;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\nconst ROW_HEIGHT = 52;\nconst CHECK_SIZE = 22;\nconst CHECK = \"M4 12l5 5L20 6\";\n\nexport function Checklist({ items, checkColor, style, className, ...motion }: ChecklistProps) {\n  const theme = useTheme();\n  const { u } = useViewport();\n  const m = useMotion(motion);\n  const schedule = checklistSchedule(items);\n  const check = checkColor ?? theme.colors.success;\n\n  return (\n    <div\n      className={className}\n      style={{ display: \"flex\", flexDirection: \"column\", gap: u(4), opacity: m.presence, ...style }}\n    >\n      {items.map((item, i) => {\n        const arrivalFrame = m.delay + (item.at !== undefined ? Math.round(item.at * m.fps) : schedule[i]);\n        const drawn = Math.max(\n          0,\n          Math.min(\n            1,\n            tween(m.frame, m.fps, { from: arrivalFrame, duration: Math.round(m.fps * 0.35), motion: \"smooth\" }),\n          ),\n        );\n        const settled = Math.max(\n          0,\n          Math.min(\n            1,\n            tween(m.frame, m.fps, {\n              from: arrivalFrame + Math.round(m.fps * 0.35),\n              duration: Math.round(m.fps * 0.4),\n              motion: \"smooth\",\n            }),\n          ),\n        );\n        return (\n          <div key={item.text} style={{ display: \"flex\", alignItems: \"center\", gap: u(14), height: u(ROW_HEIGHT) }}>\n            <svg aria-hidden=\"true\" width={u(CHECK_SIZE)} height={u(CHECK_SIZE)} viewBox=\"0 0 24 24\">\n              <circle cx={12} cy={12} r={10.5} fill=\"none\" stroke={check} strokeWidth={1.6} opacity={drawn} />\n              <StrokeOverlay\n                d={CHECK}\n                kind=\"vector\"\n                seed={`checklist-${i}`}\n                color={check}\n                strokeWidth={2.4}\n                drawn={drawn}\n                extraProps={{ strokeLinecap: \"round\", strokeLinejoin: \"round\" }}\n              />\n            </svg>\n            <span\n              style={{\n                fontFamily: theme.fonts.body,\n                fontSize: u(22),\n                color: `color-mix(in srgb, ${theme.colors.muted} ${Math.round(settled * 100)}%, ${theme.colors.foreground})`,\n              }}\n            >\n              {item.text}\n            </span>\n          </div>\n        );\n      })}\n    </div>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/checklist.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "A features/setup-steps list that completes itself in a product demo",
+      "Any \"here's everything done\" beat that shouldn't feel mechanically linear"
+    ],
+    "avoid": [
+      "A single item — use plain text with `svg-draw`'s check path directly"
+    ],
+    "tags": [
+      "checklist",
+      "checkmark",
+      "list",
+      "tasks",
+      "stagger"
+    ]
+  },
+  "docs": "Usage:\n\n<Center>\n  <Checklist items={[{ text: \"Connect your repo\" }, { text: \"Add a webhook\" }, { text: \"Ship your first release\" }]} />\n</Center>",
+  "categories": [
+    "product"
+  ],
+  "type": "registry:item"
+}

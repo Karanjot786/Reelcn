@@ -1394,6 +1394,44 @@
       }
     },
     {
+      "name": "checklist",
+      "type": "registry:item",
+      "title": "Checklist",
+      "description": "Rows that check themselves off with the existing stroke-draw check technique, accelerating pace as the list winds down, and mute once checked.",
+      "categories": [
+        "product"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://www.reelcn.dev/r/core.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/checklist.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/checklist.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Center>\n  <Checklist items={[{ text: \"Connect your repo\" }, { text: \"Add a webhook\" }, { text: \"Ship your first release\" }]} />\n</Center>",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "A features/setup-steps list that completes itself in a product demo",
+          "Any \"here's everything done\" beat that shouldn't feel mechanically linear"
+        ],
+        "avoid": [
+          "A single item — use plain text with `svg-draw`'s check path directly"
+        ],
+        "tags": [
+          "checklist",
+          "checkmark",
+          "list",
+          "tasks",
+          "stagger"
+        ]
+      }
+    },
+    {
       "name": "circle-burst",
       "type": "registry:item",
       "title": "Circle Burst",

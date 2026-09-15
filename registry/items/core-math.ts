@@ -238,6 +238,21 @@ export function stackOffset(items: { occupancy: number; height: number }[], inde
   return sum;
 }
 
+/** Per-item arrival frame, accelerating as the list grows (M2: speed comes from acceleration, ties the
+ * pace to "how many tasks are left" as a physical metaphor) — `staggerDelay`'s own `"compress"` shape,
+ * whose sub-linear growth is what actually shortens later gaps (`"accelerando"`'s gaps grow, the opposite). */
+export function checklistSchedule(items: unknown[], gap = 5): number[] {
+  return items.map((_, i) => staggerDelay(i, items.length, { step: gap, shape: "compress" }));
+}
+
+/** Content-derived duration when a checklist sets no explicit `at`s: the last item's arrival plus a fixed
+ * hold, in frames. */
+export function checklistDuration(items: unknown[], fps = 30): number {
+  const schedule = checklistSchedule(items);
+  const last = schedule.length > 0 ? schedule[schedule.length - 1] : 0;
+  return last + Math.round(fps * 1.2);
+}
+
 /** Looks up `id` in `anchors`, throwing a named error instead of returning `undefined` — the one
  * consistent contract all four `target` consumers use (ponytail-review should-fix 4). */
 export function requireAnchor(anchors: Record<string, AnchorRect>, id: string, itemName: string): AnchorRect {

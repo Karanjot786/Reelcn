@@ -768,6 +768,14 @@ storyFrames({
 </PhoneFrame>
 ```
 
+- [Checklist](https://www.reelcn.dev/r/checklist.json): Rows that check themselves off with the existing stroke-draw check technique, accelerating pace as the list winds down, and mute once checked. (length data-driven · use for A features/setup-steps list that completes itself in a product demo; Any "here's everything done" beat that shouldn't feel mechanically linear · avoid A single item — use plain text with `svg-draw`'s check path directly)
+
+```tsx
+<Center>
+  <Checklist items={[{ text: "Connect your repo" }, { text: "Add a webhook" }, { text: "Ship your first release" }]} />
+</Center>
+```
+
 - [Code Block](https://www.reelcn.dev/r/code-block.json): Themed editor card with syntax colors, line numbers and a file tab that can type code out, focus lines and mark a diff. (length data-driven · use for Showing an API, config file or snippet in a launch, docs or tutorial video; Typing code on screen, then focusing the lines that matter · avoid Shell sessions with commands and output — use `terminal`)
 
 ```tsx

@@ -4,6 +4,7 @@ import { BeforeAfter } from "../items/before-after";
 import { BrowserWindow } from "../items/browser-window";
 import { Button, buttonBoxSize, FONT_SIZE, useButtonAnchors } from "../items/button";
 import { ChatThread } from "../items/chat-thread";
+import { Checklist } from "../items/checklist";
 import { CodeBlock } from "../items/code-block";
 import { CommandPalette } from "../items/command-palette";
 import {
@@ -18,7 +19,7 @@ import {
   useTheme,
   useViewport,
 } from "../items/core";
-import { stepsDuration } from "../items/core-math";
+import { checklistDuration, stepsDuration } from "../items/core-math";
 import { Cursor } from "../items/cursor";
 import { Dialog, useDialogAnchors } from "../items/dialog";
 import { FeatureCard } from "../items/feature-card";
@@ -783,6 +784,23 @@ function DialogAnchorProofDemo() {
   );
 }
 
+/* ──────────────────────────────── checklist ──────────────────────────────── */
+
+const CHECKLIST_ITEMS = [
+  { text: "Connect your repo" },
+  { text: "Add a webhook" },
+  { text: "Ship your first release" },
+  { text: "Invite your team" },
+];
+
+function ChecklistDemo() {
+  return (
+    <Center>
+      <Checklist items={CHECKLIST_ITEMS} />
+    </Center>
+  );
+}
+
 /* ──────────────────────────────── ui scene ──────────────────────────────── */
 
 const UI_SCENE_SIGNUP_STEPS = [
@@ -877,6 +895,7 @@ export default [
     component: DialogDemo,
   },
   { id: "dialog-anchor-proof", duration: 30, component: DialogAnchorProofDemo },
+  { id: "checklist", duration: checklistDuration(CHECKLIST_ITEMS) + 30, component: ChecklistDemo },
   {
     id: "ui-scene-signup",
     duration: stepsDuration(
