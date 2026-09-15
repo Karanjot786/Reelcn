@@ -4533,6 +4533,43 @@
       }
     },
     {
+      "name": "switch",
+      "type": "registry:item",
+      "title": "Switch",
+      "description": "Toggle that flips between off and on with one physical move: the thumb's travel, on the theme's bouncy motion, nothing else animates.",
+      "categories": [
+        "product"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://www.reelcn.dev/r/core.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/switch.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/switch.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Center>\n  <Switch id=\"notifications\" label=\"Push notifications\" steps={[{ at: 0, state: \"off\" }, { at: 1, state: \"on\" }]} />\n</Center>",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "A settings row in a UI-sim walkthrough",
+          "A `ui` scene's `component: \"switch\"`"
+        ],
+        "avoid": [
+          "A single static state with no flip — use plain text or an icon"
+        ],
+        "tags": [
+          "switch",
+          "toggle",
+          "ui",
+          "kit"
+        ]
+      }
+    },
+    {
       "name": "talking-head-short",
       "type": "registry:item",
       "title": "Talking Head Short",

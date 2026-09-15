@@ -863,6 +863,14 @@ storyFrames({
 </Center>
 ```
 
+- [Switch](https://www.reelcn.dev/r/switch.json): Toggle that flips between off and on with one physical move: the thumb's travel, on the theme's bouncy motion, nothing else animates. (length data-driven · use for A settings row in a UI-sim walkthrough; A `ui` scene's `component: "switch"` · avoid A single static state with no flip — use plain text or an icon)
+
+```tsx
+<Center>
+  <Switch id="notifications" label="Push notifications" steps={[{ at: 0, state: "off" }, { at: 1, state: "on" }]} />
+</Center>
+```
+
 - [Terminal](https://www.reelcn.dev/r/terminal.json): Terminal window that types commands, prints their output line by line and scrolls as it fills. (length data-driven · use for Install steps, CLI demos and deploy logs in product and tutorial videos; Any sequence of shell commands with their output · avoid Source files or snippets without a prompt — use `code-block`)
 
 ```tsx

@@ -25,6 +25,7 @@ import { PhoneFrame } from "../items/phone-frame";
 import { ScreenZoom } from "../items/screen-zoom";
 import { STORY_FPS } from "../items/story";
 import { SvgDraw } from "../items/svg-draw";
+import { Switch } from "../items/switch";
 import { Terminal } from "../items/terminal";
 import { Toast } from "../items/toast";
 import type { Demo } from "./index";
@@ -604,6 +605,21 @@ function SvgDrawDemo() {
   );
 }
 
+function SwitchDemo() {
+  return (
+    <Center>
+      <Switch
+        id="notifications"
+        label="Push notifications"
+        steps={[
+          { at: 0, state: "off" },
+          { at: 1, state: "on" },
+        ]}
+      />
+    </Center>
+  );
+}
+
 export default [
   { id: "code-block-typing", duration: 90, component: CodeBlockTyping },
   { id: "code-block-follow", duration: 90, component: CodeBlockFollow },
@@ -635,4 +651,9 @@ export default [
   { id: "button-anchor-proof-resolver", duration: 25, component: ButtonAnchorProofResolverDemo },
   { id: "button-anchor-proof-literal", duration: 25, component: ButtonAnchorProofLiteralDemo },
   { id: "screen-zoom-nested-target", duration: 90, bare: true, component: ScreenZoomNestedTargetDemo },
+  {
+    id: "switch",
+    duration: stepsDuration([{ at: 0 }, { at: 1 }], 30, STORY_FPS),
+    component: SwitchDemo,
+  },
 ] satisfies Demo[];
