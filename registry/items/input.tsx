@@ -80,8 +80,8 @@ function useDisplayedValue(
 ): string {
   const typing = typingStepAt(steps, frame, fps);
   // useTypedText is pure (no internal hook calls), so calling it conditionally here isn't a Rules-of-Hooks issue.
-  const typed = typing ? useTypedText(typing.text, frame - typing.startFrame, fps, { cps: INPUT_CPS }) : null;
-  return typing ? typed!.visible : (value ?? "");
+  if (!typing) return value ?? "";
+  return useTypedText(typing.text, frame - typing.startFrame, fps, { cps: INPUT_CPS }).visible;
 }
 
 /** Pure: fixed field proportions — the overall box never depends on the displayed text (only the

@@ -27,7 +27,7 @@ import { Center, flipInterpolate, type Rect, tween, useTheme, useViewport } from
 import { LaptopFrame } from "./laptop-frame";
 import { PhoneFrame } from "./phone-frame";
 import { Stage as PerspectiveStage } from "./stage";
-import { type CustomScene, type Scene, storyFrames, type Story } from "./story";
+import { type CustomScene, type Scene, type Story, storyFrames } from "./story";
 import { defineScene, Storyboard, templateSchema, templateStory } from "./storyboard";
 
 export const productLaunchSchema = templateSchema.extend({
@@ -97,7 +97,11 @@ function DeviceStageScene({
 
 const deviceStageScene = defineScene({
   type: "device-stage",
-  schema: z.object({ device: z.enum(["phone", "laptop", "browser"]), src: z.string().optional(), url: z.string().optional() }),
+  schema: z.object({
+    device: z.enum(["phone", "laptop", "browser"]),
+    src: z.string().optional(),
+    url: z.string().optional(),
+  }),
   component: DeviceStageScene,
   duration: () => 3.5,
 });
@@ -172,7 +176,12 @@ function FeatureCtaScene({
 
 const featureCtaScene = defineScene({
   type: "feature-cta",
-  schema: z.object({ lastFeatureTitle: z.string(), ctaTitle: z.string(), ctaButton: z.string().optional(), url: z.string().optional() }),
+  schema: z.object({
+    lastFeatureTitle: z.string(),
+    ctaTitle: z.string(),
+    ctaButton: z.string().optional(),
+    url: z.string().optional(),
+  }),
   component: FeatureCtaScene,
   duration: () => 2.2,
 });
@@ -196,7 +205,13 @@ export function productLaunchStory(props: ProductLaunchProps): Story {
     { type: "title", kicker: "Introducing", title: name, subtitle: tagline, background: "gradient-mesh" },
     ...featureScenes.slice(0, -1),
     ...screens.map((src): CustomScene => ({ type: "device-stage", device: "browser", src, url })),
-    { type: "feature-cta", lastFeatureTitle: lastFeature?.title ?? name, ctaTitle: cta, ctaButton: cta, url } as CustomScene,
+    {
+      type: "feature-cta",
+      lastFeatureTitle: lastFeature?.title ?? name,
+      ctaTitle: cta,
+      ctaButton: cta,
+      url,
+    } as CustomScene,
   ];
   // One array-level cast, not per-scene `any` — see brand-reel.tsx's own note (Task 15).
   return templateStory(props, scenes as Scene[]);

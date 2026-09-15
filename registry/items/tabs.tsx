@@ -16,8 +16,8 @@ import type React from "react";
 import {
   type AnchorRect,
   anchorId,
-  measurePx,
   type MotionProps,
+  measurePx,
   type Place,
   proximityWeight,
   type Step,
@@ -66,7 +66,11 @@ export function tabsBoxSize(u: (n: number) => number, measuredLabelWidths: numbe
 /** Each label's own raw width, measured once font-ready is known. */
 function useTabLayout(labels: string[], size: number, u: (n: number) => number, skip: boolean) {
   const theme = useTheme();
-  const gate = useTextMetrics(labels.join(""), { fontFamily: theme.fonts.body, fontSize: u(size), fontWeight: FONT_WEIGHT }, { skip });
+  const gate = useTextMetrics(
+    labels.join(""),
+    { fontFamily: theme.fonts.body, fontSize: u(size), fontWeight: FONT_WEIGHT },
+    { skip },
+  );
   const fontString = `${FONT_WEIGHT} ${u(size)}px ${theme.fonts.body}`;
   const measuredWidths = labels.map((l) => (gate.ready ? measurePx(l, fontString) : u(48)));
   return tabsBoxSize(u, measuredWidths);

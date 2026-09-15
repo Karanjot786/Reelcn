@@ -424,7 +424,9 @@ test("flipInterpolate: t=0.5 is the midpoint on every field", () => {
 import { codeLivePreviewSchedule } from "./core-math.ts";
 
 test("codeLivePreviewSchedule: a 3-preview fixture — arrival frame grows with each preview's line", () => {
-  const code = ["import { z } from \"zod\";", "", "export const schema = z.object({", "  name: z.string(),", "});"].join("\n");
+  const code = ['import { z } from "zod";', "", "export const schema = z.object({", "  name: z.string(),", "});"].join(
+    "\n",
+  );
   const previews = [{ atLine: 0 }, { atLine: 2 }, { atLine: 4 }];
   const schedule = codeLivePreviewSchedule(code, previews, 30, 40);
   assert.equal(schedule.length, 3);
