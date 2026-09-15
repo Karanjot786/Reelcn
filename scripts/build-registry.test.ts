@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 import { parseHeader, parseImports, replaceBlock, themeNamesFromSource } from "./build-registry.ts";
 
@@ -117,6 +118,12 @@ export const x = 1;
 `;
   assert.deepEqual(parseHeader(tool, "transcribe.ts").env, ["OPENAI_API_KEY"]);
   assert.deepEqual(parseHeader(source, "text-reveal.tsx").env, []);
+});
+
+test("llms.txt lists the docs guides", () => {
+  const txt = readFileSync("apps/www/public/llms.txt", "utf8");
+  assert.match(txt, /^## docs$/m);
+  assert.match(txt, /- \[Installation\]\(https:\/\/www\.reelcn\.dev\/docs\/installation\): /);
 });
 
 test("replaceBlock swaps the text between named markers and keeps everything else", () => {

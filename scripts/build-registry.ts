@@ -217,6 +217,17 @@ function llms(items: Item[], base: string, themes: string[], full: boolean) {
     "- Components exit automatically at the end of their `<Sequence>`; pass `exit={false}` to hold.",
     "",
   ];
+  const meta = JSON.parse(readFileSync("apps/www/content/docs/meta.json", "utf8")) as { pages: string[] };
+  const guides = meta.pages.flatMap((page) => {
+    const file = `apps/www/content/docs/${page}.mdx`;
+    if (!existsSync(file)) return [];
+    const front = readFileSync(file, "utf8").split("---")[1] ?? "";
+    const title = front.match(/^title:\s*(.+)$/m)?.[1]?.trim();
+    const description = front.match(/^description:\s*(.+)$/m)?.[1]?.trim();
+    if (!title || !description) return [];
+    return [`- [${title}](${base}/docs${page === "index" ? "" : `/${page}`}): ${description}`];
+  });
+  if (guides.length > 0) lines.push("## docs", "", ...guides, "");
   for (const category of CATEGORIES) {
     const group = items.filter((item) => item.categories[0] === category);
     if (group.length === 0) continue;

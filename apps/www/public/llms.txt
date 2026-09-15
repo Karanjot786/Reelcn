@@ -10,6 +10,22 @@ How they work:
 - Motion props are frames: `delay`, `duration`, `exit`, `motion` (smooth, snappy, bouncy, gentle, linear).
 - Components exit automatically at the end of their `<Sequence>`; pass `exit={false}` to hold.
 
+## docs
+
+- [Introduction](https://www.reelcn.dev/docs): Copy-paste Remotion components that restyle from one theme and fit every format.
+- [Installation](https://www.reelcn.dev/docs/installation): Add a component with the shadcn CLI. Files land in src/reelcn/, ready to edit.
+- [Theming](https://www.reelcn.dev/docs/theming): One ThemeProvider restyles colors, fonts, radius and motion for everything inside it.
+- [Motion](https://www.reelcn.dev/docs/motion): Every animated component shares one enter/exit clock, in frames.
+- [Formats & safe zones](https://www.reelcn.dev/docs/formats): One timeline, three canvases. useViewport tells a component where it's allowed to put content.
+- [Captions](https://www.reelcn.dev/docs/captions): Word-synced captions, from a transcript to a burned-in style.
+- [Audio and SFX](https://www.reelcn.dev/docs/audio-and-sfx): Visuals that move with the sound, and thirty CC0 sound effects.
+- [Templates](https://www.reelcn.dev/docs/templates): Fourteen finished videos you fill with your own content. Their length, layout and format follow the content.
+- [Storyboard](https://www.reelcn.dev/docs/storyboard): Write a video as JSON (theme, brand, audio and a list of scenes), and Storyboard renders it and works out its length.
+- [Determinism](https://www.reelcn.dev/docs/determinism): The same frame, rendered twice, has to come out pixel-identical.
+- [Agents](https://www.reelcn.dev/docs/agents): An agent skill with eight video recipes, the shadcn MCP server for installing components, and llms.txt for a quick answer.
+- [Agent skill](https://www.reelcn.dev/docs/agent-skill): Teach your coding agent to plan, build, check and render videos with reelcn, with eight recipes for common videos.
+- [License](https://www.reelcn.dev/docs/license): reelcn's code is MIT. Remotion, which it renders with, has its own license.
+
 ## lib
 
 - [Chart Scale](https://www.reelcn.dev/r/chart-scale.json): Pure math shared by the data components: nice axis ticks, linear scales, an on-theme series palette and jitter-free number formatting.
