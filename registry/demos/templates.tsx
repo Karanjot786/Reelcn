@@ -5,6 +5,7 @@ import { AppPromo, appPromoDefaults, appPromoStory } from "../items/app-promo";
 import { Audiogram, audiogramDefaults } from "../items/audiogram";
 import { BrandReel, brandReelDefaults } from "../items/brand-reel";
 import { Changelog, changelogDefaults, changelogStory } from "../items/changelog";
+import { CodeLive, codeLiveDefaults } from "../items/code-live";
 import { DataStory, dataStoryDefaults, dataStoryStory } from "../items/data-story";
 import { FeatureShort, featureShortDefaults, featureShortStory } from "../items/feature-short";
 import { ListicleShort, listicleShortDefaults, listicleShortStory } from "../items/listicle-short";
@@ -87,6 +88,20 @@ const productDemos: Demo[] = [
   storyDemo("app-promo", AppPromo, appPromoStory, appPromoDefaults),
   { id: "brand-reel", duration: 285, bare: true, component: BrandReelDemo },
   { id: "ai-generation", duration: 180, bare: true, component: () => <AiGeneration {...aiGenerationDefaults} /> },
+  {
+    id: "code-live",
+    duration: 180,
+    bare: true,
+    component: () => (
+      <CodeLive
+        {...codeLiveDefaults}
+        previews={[
+          { atLine: 2, src: staticFile("reelcn-demo/screenshots/fictional-analytics.webp") },
+          { atLine: 6, src: staticFile("reelcn-demo/screenshots/reelcn-docs.webp") },
+        ]}
+      />
+    ),
+  },
 ];
 
 const creatorDemos: Demo[] = [

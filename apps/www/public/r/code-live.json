@@ -1,0 +1,47 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "code-live",
+  "title": "Code Live",
+  "description": "Code types beside a live preview pane that swaps images the moment typing crosses each preview's line — a content-derived schedule, not a hand-timed cut.",
+  "dependencies": [
+    "remotion",
+    "zod"
+  ],
+  "registryDependencies": [
+    "https://www.reelcn.dev/r/code-block.json",
+    "https://www.reelcn.dev/r/core.json",
+    "https://www.reelcn.dev/r/split-screen.json",
+    "https://www.reelcn.dev/r/story.json",
+    "https://www.reelcn.dev/r/storyboard.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/code-live.tsx",
+      "content": "/**\n * @title Code Live\n * @category templates\n * @description Code types beside a live preview pane that swaps images the moment typing crosses each preview's line — a content-derived schedule, not a hand-timed cut.\n * @duration data-driven\n * @use A dev-tool or API launch that shows the code and its result side by side\n * @use A tutorial beat where the reader sees code and output update together\n * @avoid A single static code block with no preview — use `code-block` directly\n * @tags code, live, preview, split, template\n * @example\n * <Composition\n *   id=\"CodeLive\"\n *   component={CodeLive}\n *   schema={codeLiveSchema}\n *   defaultProps={codeLiveDefaults}\n *   calculateMetadata={codeLiveMetadata}\n *   width={1920} height={1080} fps={30} durationInFrames={1}\n * />\n */\nimport { AbsoluteFill, Img, useCurrentFrame, useVideoConfig } from \"remotion\";\nimport { z } from \"zod\";\nimport { CodeBlock } from \"./code-block\";\nimport { codeLivePreviewSchedule, useTheme } from \"./core\";\nimport { SplitScreen } from \"./split-screen\";\nimport type { CustomScene, Scene, Story } from \"./story\";\nimport { CODE_CPS, LANGUAGES } from \"./story\";\nimport { defineScene, Storyboard, templateMetadata, templateSchema, templateStory } from \"./storyboard\";\n\nexport const codeLiveSchema = templateSchema.extend({\n  code: z.string(),\n  language: z.enum(LANGUAGES).optional(),\n  previews: z.array(z.object({ atLine: z.number(), src: z.string() })).min(1),\n});\n\nexport type CodeLiveProps = z.infer<typeof codeLiveSchema>;\n\nexport const codeLiveDefaults: CodeLiveProps = {\n  code: [\n    'import { z } from \"zod\";',\n    \"\",\n    \"export const orderSchema = z.object({\",\n    \"  sku: z.string(),\",\n    \"  quantity: z.number().int().positive(),\",\n    \"});\",\n  ].join(\"\\n\"),\n  language: \"ts\",\n  previews: [\n    { atLine: 2, src: \"/preview-empty.png\" },\n    { atLine: 6, src: \"/preview-filled.png\" },\n  ],\n};\n\nfunction CodeLiveScene({\n  code,\n  language,\n  previews,\n}: {\n  code: string;\n  language?: (typeof LANGUAGES)[number];\n  previews: { atLine: number; src: string }[];\n}) {\n  const theme = useTheme();\n  const frame = useCurrentFrame();\n  const { fps } = useVideoConfig();\n  const schedule = codeLivePreviewSchedule(code, previews, fps, CODE_CPS);\n  let activeIndex = -1;\n  for (let i = 0; i < schedule.length; i++) if (schedule[i] <= frame) activeIndex = i;\n  const activeSrc = activeIndex >= 0 ? previews[activeIndex].src : undefined;\n\n  return (\n    <SplitScreen labels={[\"Code\", \"Preview\"]}>\n      <CodeBlock code={code} language={language} typing={CODE_CPS} />\n      {activeSrc ? (\n        <Img src={activeSrc} style={{ width: \"100%\", height: \"100%\", objectFit: \"cover\" }} />\n      ) : (\n        <AbsoluteFill style={{ background: theme.colors.surface }} />\n      )}\n    </SplitScreen>\n  );\n}\n\nconst codeLiveScene = defineScene({\n  type: \"code-live-beat\",\n  schema: z.object({\n    code: z.string(),\n    language: z.enum(LANGUAGES).optional(),\n    previews: z.array(z.object({ atLine: z.number(), src: z.string() })),\n  }),\n  component: CodeLiveScene,\n  duration: (scene: { code: string }) => scene.code.length / CODE_CPS + 2,\n});\n\nexport function codeLiveStory(props: CodeLiveProps): Story {\n  const scenes: (Scene | CustomScene)[] = [\n    { type: \"code-live-beat\", code: props.code, language: props.language, previews: props.previews } as CustomScene,\n  ];\n  // One array-level cast, not per-scene `any` — see brand-reel.tsx's own note (Task 15).\n  return templateStory(props, scenes as Scene[]);\n}\n\nexport function CodeLive(props: CodeLiveProps) {\n  return <Storyboard story={codeLiveStory(props)} scenes={[codeLiveScene]} />;\n}\n\nexport const codeLiveMetadata = templateMetadata(codeLiveStory);\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/code-live.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "A dev-tool or API launch that shows the code and its result side by side",
+      "A tutorial beat where the reader sees code and output update together"
+    ],
+    "avoid": [
+      "A single static code block with no preview — use `code-block` directly"
+    ],
+    "tags": [
+      "code",
+      "live",
+      "preview",
+      "split",
+      "template"
+    ]
+  },
+  "docs": "Usage:\n\n<Composition\n  id=\"CodeLive\"\n  component={CodeLive}\n  schema={codeLiveSchema}\n  defaultProps={codeLiveDefaults}\n  calculateMetadata={codeLiveMetadata}\n  width={1920} height={1080} fps={30} durationInFrames={1}\n/>",
+  "categories": [
+    "templates"
+  ],
+  "type": "registry:item"
+}

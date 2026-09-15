@@ -420,3 +420,23 @@ test("flipInterpolate: t=0.5 is the midpoint on every field", () => {
   const to: Rect = { x: 200, y: 100, width: 300, height: 200 };
   assert.deepEqual(flipInterpolate(from, to, 0.5), { x: 100, y: 50, width: 200, height: 150 });
 });
+
+import { codeLivePreviewSchedule } from "./core-math.ts";
+
+test("codeLivePreviewSchedule: a 3-preview fixture — arrival frame grows with each preview's line", () => {
+  const code = ["import { z } from \"zod\";", "", "export const schema = z.object({", "  name: z.string(),", "});"].join("\n");
+  const previews = [{ atLine: 0 }, { atLine: 2 }, { atLine: 4 }];
+  const schedule = codeLivePreviewSchedule(code, previews, 30, 40);
+  assert.equal(schedule.length, 3);
+  assert.equal(schedule[0], 0); // atLine 0: nothing typed yet
+  assert.ok(schedule[1] > schedule[0]);
+  assert.ok(schedule[2] > schedule[1]);
+});
+
+test("codeLivePreviewSchedule: doubling cps halves every arrival frame", () => {
+  const code = "line one\nline two\nline three";
+  const previews = [{ atLine: 2 }];
+  const slow = codeLivePreviewSchedule(code, previews, 30, 20);
+  const fast = codeLivePreviewSchedule(code, previews, 30, 40);
+  assert.equal(fast[0], Math.ceil(slow[0] / 2));
+});

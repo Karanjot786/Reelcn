@@ -326,6 +326,17 @@ export function flipInterpolate(from: Rect, to: Rect, t: number): Rect {
   };
 }
 
+/** Per-preview arrival frame from typed-line progress: how many frames of typing at `cps` it takes to
+ * reach the characters before `atLine`. `fps`/`cps` default to this catalog's own story/code defaults
+ * (`STORY_FPS`/`CODE_CPS` in `story.ts`) but are explicit params here to keep this file import-free. */
+export function codeLivePreviewSchedule(code: string, previews: { atLine: number }[], fps = 30, cps = 40): number[] {
+  const lines = code.split("\n");
+  return previews.map((p) => {
+    const charsUpToLine = lines.slice(0, Math.max(0, p.atLine)).reduce((sum, l) => sum + l.length + 1, 0);
+    return Math.ceil((charsUpToLine * fps) / cps);
+  });
+}
+
 /** Looks up `id` in `anchors`, throwing a named error instead of returning `undefined` — the one
  * consistent contract all four `target` consumers use (ponytail-review should-fix 4). */
 export function requireAnchor(anchors: Record<string, AnchorRect>, id: string, itemName: string): AnchorRect {

@@ -1599,6 +1599,51 @@
       }
     },
     {
+      "name": "code-live",
+      "type": "registry:item",
+      "title": "Code Live",
+      "description": "Code types beside a live preview pane that swaps images the moment typing crosses each preview's line — a content-derived schedule, not a hand-timed cut.",
+      "categories": [
+        "templates"
+      ],
+      "dependencies": [
+        "remotion",
+        "zod"
+      ],
+      "registryDependencies": [
+        "https://www.reelcn.dev/r/code-block.json",
+        "https://www.reelcn.dev/r/core.json",
+        "https://www.reelcn.dev/r/split-screen.json",
+        "https://www.reelcn.dev/r/story.json",
+        "https://www.reelcn.dev/r/storyboard.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/code-live.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/code-live.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Composition\n  id=\"CodeLive\"\n  component={CodeLive}\n  schema={codeLiveSchema}\n  defaultProps={codeLiveDefaults}\n  calculateMetadata={codeLiveMetadata}\n  width={1920} height={1080} fps={30} durationInFrames={1}\n/>",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "A dev-tool or API launch that shows the code and its result side by side",
+          "A tutorial beat where the reader sees code and output update together"
+        ],
+        "avoid": [
+          "A single static code block with no preview — use `code-block` directly"
+        ],
+        "tags": [
+          "code",
+          "live",
+          "preview",
+          "split",
+          "template"
+        ]
+      }
+    },
+    {
       "name": "code-tokens",
       "type": "registry:item",
       "title": "Code Tokens",

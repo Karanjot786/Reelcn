@@ -1385,6 +1385,19 @@ const { pulse, beat } = useBeat({ bpm: 120 });
 />
 ```
 
+- [Code Live](https://www.reelcn.dev/r/code-live.json): Code types beside a live preview pane that swaps images the moment typing crosses each preview's line — a content-derived schedule, not a hand-timed cut. (length data-driven · use for A dev-tool or API launch that shows the code and its result side by side; A tutorial beat where the reader sees code and output update together · avoid A single static code block with no preview — use `code-block` directly)
+
+```tsx
+<Composition
+  id="CodeLive"
+  component={CodeLive}
+  schema={codeLiveSchema}
+  defaultProps={codeLiveDefaults}
+  calculateMetadata={codeLiveMetadata}
+  width={1920} height={1080} fps={30} durationInFrames={1}
+/>
+```
+
 - [Data Story](https://www.reelcn.dev/r/data-story.json): Report video that walks through numbers: a title, then one bar, line, donut or stat scene per section with its caption. (length data-driven · use for Quarterly results, year-in-review and research findings; Turning a dashboard into a narrated walkthrough · avoid A single number — use `stat-counter`)
 
 ```tsx
