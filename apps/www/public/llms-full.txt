@@ -820,6 +820,19 @@ storyFrames({
 </Center>
 ```
 
+- [Input](https://www.reelcn.dev/r/input.json): Text field that types a value at a fixed characters-per-second rate on a "typing" step, independent of the step's own duration, with hover/active/blur/invalid states. (length data-driven · use for A sign-up or checkout field a cursor clicks into and types; A `ui` scene's `component: "input"` · avoid A field that never receives focus — use plain text)
+
+```tsx
+<Center>
+  <Input
+    id="email"
+    label="Work email"
+    placeholder="you@company.com"
+    steps={[{ at: 0, state: "idle" }, { at: 0.6, state: "active" }, { at: 0.8, state: "typing", type: "ada@hexhaus.dev" }]}
+  />
+</Center>
+```
+
 - [Laptop Frame](https://www.reelcn.dev/r/laptop-frame.json): Laptop lid with a bezel around your screen content, sitting on a simple deck with a hinge line. (length data-driven · use for Framing a desktop app, dashboard or website screenshot in a launch video; Two builds side by side inside `split-screen` for a before/after · avoid A phone or tablet screen — use `phone-frame`)
 
 ```tsx

@@ -20,6 +20,7 @@ import {
 import { stepsDuration } from "../items/core-math";
 import { Cursor } from "../items/cursor";
 import { FeatureCard } from "../items/feature-card";
+import { Input } from "../items/input";
 import { LaptopFrame } from "../items/laptop-frame";
 import { PhoneFrame } from "../items/phone-frame";
 import { ScreenZoom } from "../items/screen-zoom";
@@ -620,6 +621,25 @@ function SwitchDemo() {
   );
 }
 
+/* ──────────────────────────────── input ──────────────────────────────── */
+
+function InputDemo() {
+  return (
+    <Center>
+      <Input
+        id="email"
+        label="Work email"
+        placeholder="you@company.com"
+        steps={[
+          { at: 0, state: "idle" },
+          { at: 0.6, state: "active" },
+          { at: 0.8, state: "typing", type: "ada@hexhaus.dev" },
+        ]}
+      />
+    </Center>
+  );
+}
+
 export default [
   { id: "code-block-typing", duration: 90, component: CodeBlockTyping },
   { id: "code-block-follow", duration: 90, component: CodeBlockFollow },
@@ -655,5 +675,10 @@ export default [
     id: "switch",
     duration: stepsDuration([{ at: 0 }, { at: 1 }], 30, STORY_FPS),
     component: SwitchDemo,
+  },
+  {
+    id: "input",
+    duration: stepsDuration([{ at: 0 }, { at: 0.6 }, { at: 0.8 }], 45, STORY_FPS),
+    component: InputDemo,
   },
 ] satisfies Demo[];

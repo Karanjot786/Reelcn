@@ -2527,6 +2527,47 @@
       }
     },
     {
+      "name": "input",
+      "type": "registry:item",
+      "title": "Input",
+      "description": "Text field that types a value at a fixed characters-per-second rate on a \"typing\" step, independent of the step's own duration, with hover/active/blur/invalid states.",
+      "categories": [
+        "product"
+      ],
+      "dependencies": [
+        "remotion"
+      ],
+      "registryDependencies": [
+        "https://www.reelcn.dev/r/core.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/input.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/input.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Center>\n  <Input\n    id=\"email\"\n    label=\"Work email\"\n    placeholder=\"you@company.com\"\n    steps={[{ at: 0, state: \"idle\" }, { at: 0.6, state: \"active\" }, { at: 0.8, state: \"typing\", type: \"ada@hexhaus.dev\" }]}\n  />\n</Center>",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "A sign-up or checkout field a cursor clicks into and types",
+          "A `ui` scene's `component: \"input\"`"
+        ],
+        "avoid": [
+          "A field that never receives focus — use plain text"
+        ],
+        "tags": [
+          "input",
+          "field",
+          "form",
+          "typing",
+          "ui",
+          "kit"
+        ]
+      }
+    },
+    {
       "name": "kpi-grid",
       "type": "registry:item",
       "title": "KPI Grid",
