@@ -39,6 +39,7 @@ import {
   mat4LookAt,
   mat4Multiply,
   matchGraphemes,
+  type Place,
   projectPoint,
   punchCurve,
   type Quat,
@@ -48,7 +49,9 @@ import {
   requireAnchor,
   type StaggerOrder,
   type StaggerShape,
+  type Step,
   staggerDelay,
+  stepsDuration,
   type TypingModel,
   useTypedText,
   useVariableFontAxis,
@@ -76,6 +79,7 @@ export {
   mat4LookAt,
   mat4Multiply,
   matchGraphemes,
+  type Place,
   projectPoint,
   punchCurve,
   type Quat,
@@ -85,7 +89,9 @@ export {
   requireAnchor,
   type StaggerOrder,
   type StaggerShape,
+  type Step,
   staggerDelay,
+  stepsDuration,
   type TypingModel,
   useTypedText,
   useVariableFontAxis,
@@ -805,6 +811,46 @@ export function useKeyframePath(keys: PoseKey[], opts?: { motion?: MotionPreset 
     width: at4("width", 100),
     height: at4("height", 100),
   };
+}
+
+/**
+ * Folds `steps` (timestamps in seconds) over the current frame: the previous step in array order is
+ * `from`, the entered step is `state` (the "to"), `progress` is `tween`'s eased 0-1 between them, shaped
+ * by the theme's own motion personality unless `opts.motion` overrides it. Before the first step's frame,
+ * or once the last step has fully arrived, `from === state` and `progress` is 1 — nothing left to tween.
+ * A component with no `steps` at all renders its `initial` state, statically (`progress: 1`).
+ */
+export function useKeyframeState<S>(
+  steps: Step<S>[] | undefined,
+  initial: S,
+  opts?: { motion?: MotionPersonality },
+): { state: S; from: S; progress: number } {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const theme = useTheme();
+  const list = steps && steps.length > 0 ? steps : [{ at: 0, state: initial }];
+  const personality = quantizeMotion(opts?.motion ?? theme.motion);
+  const atFrame = (step: Step<S>) => Math.round(step.at * fps);
+
+  // The previous step in array order: the last step whose frame has arrived, or the first step if none
+  // have (spec §3's fold rule — ties resolve by array order, not by numeric proximity).
+  let prevIndex = 0;
+  for (let i = 0; i < list.length; i++) {
+    if (atFrame(list[i]) <= frame) prevIndex = i;
+  }
+  const prev = list[prevIndex];
+  const next = list[prevIndex + 1];
+  const from = prev.state ?? initial;
+  if (!next || frame < atFrame(prev)) return { state: from, from, progress: 1 };
+  const to = next.state ?? from;
+  const progress = tween(frame, fps, {
+    from: atFrame(prev),
+    duration: Math.max(1, atFrame(next) - atFrame(prev)),
+    motion: personality.preset,
+    step: personality.step,
+    jitter: personality.jitter,
+  });
+  return { state: to, from, progress };
 }
 
 export type StrokeKind = Theme["stroke"];

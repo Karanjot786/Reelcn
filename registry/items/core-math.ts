@@ -170,6 +170,23 @@ export function anchorId(base: string, child?: string | number): string {
   return typeof child === "number" ? `${base}.item[${child}]` : `${base}.${child}`;
 }
 
+/** A kit component's center, % of canvas (0-100 on each axis) — the one center-origin convention in the
+ * UI-sim kit; `AnchorRect` stays top-left-origin. */
+export type Place = { x: number; y: number };
+
+/** One named visual state a kit component enters at `at` seconds. `type`/`click` are read by the `ui`
+ * scene (Task 9) when it splits its own `steps` per component; kit components other than `input`/`button`
+ * ignore them. */
+export type Step<S> = { at: number; state?: S; type?: string; click?: boolean };
+
+/** Last step's `at` (seconds), converted to frames, plus a hold budget — the content-derived duration
+ * every kit item's `@duration data-driven` and the `ui` scene (Task 9) both use. */
+export function stepsDuration(steps: Step<unknown>[], holdFrames: number, fps: number): number {
+  if (steps.length === 0) return holdFrames;
+  const last = steps[steps.length - 1];
+  return Math.round(last.at * fps) + holdFrames;
+}
+
 /** Looks up `id` in `anchors`, throwing a named error instead of returning `undefined` — the one
  * consistent contract all four `target` consumers use (ponytail-review should-fix 4). */
 export function requireAnchor(anchors: Record<string, AnchorRect>, id: string, itemName: string): AnchorRect {

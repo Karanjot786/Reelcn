@@ -209,3 +209,27 @@ test("anchorToContentPercent: a nested ScreenZoom's contentBox rescales the anch
   assert.equal(content.width, 50); // 25 / 50 * 100
   assert.equal(content.y, 40); // content box's own top is 0, height 100: unchanged
 });
+
+import { type Step, stepsDuration } from "./core-math.ts";
+
+test("stepsDuration: last step's `at` (seconds) converted to frames, plus a hold budget", () => {
+  const steps: Step<string>[] = [
+    { at: 0, state: "idle" },
+    { at: 2, state: "done" },
+  ];
+  assert.equal(stepsDuration(steps, 15, 30), 75); // 2s * 30fps = 60, + 15 hold frames
+});
+
+test("stepsDuration: no steps is just the hold budget", () => {
+  assert.equal(stepsDuration([], 15, 30), 15);
+});
+
+test("stepsDuration: unordered `at` values still use the last array entry, not the max", () => {
+  // Matches useKeyframeState's own fold rule (array order, not sorted) — an author who writes steps out
+  // of order gets a duration that matches what actually plays last, not a silently-reordered one.
+  const steps: Step<string>[] = [
+    { at: 3, state: "a" },
+    { at: 1, state: "b" },
+  ];
+  assert.equal(stepsDuration(steps, 0, 30), 30); // last entry is at=1, not the max at=3
+});
