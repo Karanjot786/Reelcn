@@ -28,6 +28,7 @@ import { Select } from "../items/select";
 import { STORY_FPS } from "../items/story";
 import { SvgDraw } from "../items/svg-draw";
 import { Switch } from "../items/switch";
+import { Tabs } from "../items/tabs";
 import { Terminal } from "../items/terminal";
 import { Toast } from "../items/toast";
 import type { Demo } from "./index";
@@ -660,6 +661,23 @@ function SelectDemo() {
   );
 }
 
+/* ──────────────────────────────── tabs ──────────────────────────────── */
+
+function TabsDemo() {
+  return (
+    <Center>
+      <Tabs
+        id="view"
+        labels={["Overview", "Usage", "Billing"]}
+        steps={[
+          { at: 0, state: { active: 0 } },
+          { at: 1, state: { active: 2 } },
+        ]}
+      />
+    </Center>
+  );
+}
+
 export default [
   { id: "code-block-typing", duration: 90, component: CodeBlockTyping },
   { id: "code-block-follow", duration: 90, component: CodeBlockFollow },
@@ -705,5 +723,10 @@ export default [
     id: "select",
     duration: stepsDuration([{ at: 0 }, { at: 0.5 }, { at: 1.2 }, { at: 1.8 }], 30, STORY_FPS),
     component: SelectDemo,
+  },
+  {
+    id: "tabs",
+    duration: stepsDuration([{ at: 0 }, { at: 1 }], 30, STORY_FPS),
+    component: TabsDemo,
   },
 ] satisfies Demo[];

@@ -33,7 +33,7 @@ Agents: `npx skills add Karanjot786/reelcn` installs the reelcn skill, and https
 ## Catalog
 
 <!-- catalog:start -->
-143 items.
+144 items.
 
 | Category | Items | Examples |
 |---|---|---|
@@ -43,7 +43,7 @@ Agents: `npx skills add Karanjot786/reelcn` installs the reelcn skill, and https
 | transitions | 15 | `brand-sweep`, `card-push`, `circle-burst`, `glitch`, `light-flash`, … |
 | backgrounds | 10 | `aurora`, `beams`, `bokeh`, `brand-solid`, `dots`, … |
 | overlays | 10 | `arrow`, `callout`, `confetti`, `flash`, `light-leak`, … |
-| product | 18 | `app-window`, `before-after`, `browser-window`, `button`, `chat-thread`, … |
+| product | 19 | `app-window`, `before-after`, `browser-window`, `button`, `chat-thread`, … |
 | social | 19 | `captions-bold-pop`, `captions-boxed`, `captions-highlight-box`, `captions-karaoke`, `captions-minimal`, … |
 | data | 10 | `area-chart`, `bar-chart`, `bar-race`, `donut`, `kpi-grid`, … |
 | audio | 6 | `audio-reactive`, `radial-visualizer`, `speaker-card`, `spectrum`, `use-beat`, … |

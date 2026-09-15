@@ -896,6 +896,14 @@ storyFrames({
 </Center>
 ```
 
+- [Tabs](https://www.reelcn.dev/r/tabs.json): Tab row where one continuous fractional index positions the sliding pill, the lit label color and a small per-row parallax — nothing animates independently of that one number. (length data-driven · use for Switching between views inside a UI-sim walkthrough; A `ui` scene's `component: "tabs"` · avoid Two or fewer static labels with no switch — use plain text)
+
+```tsx
+<Center>
+  <Tabs id="view" labels={["Overview", "Usage", "Billing"]} steps={[{ at: 0, state: { active: 0 } }, { at: 1, state: { active: 2 } }]} />
+</Center>
+```
+
 - [Terminal](https://www.reelcn.dev/r/terminal.json): Terminal window that types commands, prints their output line by line and scrolls as it fills. (length data-driven · use for Install steps, CLI demos and deploy logs in product and tutorial videos; Any sequence of shell commands with their output · avoid Source files or snippets without a prompt — use `code-block`)
 
 ```tsx
