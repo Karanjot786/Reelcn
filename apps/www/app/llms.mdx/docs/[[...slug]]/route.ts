@@ -7,6 +7,9 @@ import { docsLlms, source } from "@/lib/source";
 
 export const revalidate = false;
 
+// Markdown twins are for agents; search engines should index the HTML page (/docs/x.md rewrites here too).
+const MARKDOWN_HEADERS = { "Content-Type": "text/markdown; charset=utf-8", "X-Robots-Tag": "noindex" };
+
 function componentMarkdownSegments(name: string) {
   return ["components", name, "content.md"];
 }
@@ -21,12 +24,12 @@ export async function GET(_req: Request, { params }: RouteContext<"/llms.mdx/doc
     const body = [itemMarkdown(item), rows.length > 0 ? `## Props\n\n${propsMarkdownTable(rows)}` : ""]
       .filter(Boolean)
       .join("\n\n");
-    return new Response(body, { headers: { "Content-Type": "text/markdown; charset=utf-8" } });
+    return new Response(body, { headers: MARKDOWN_HEADERS });
   }
 
   const page = source.getPage(slug.slice(0, -1));
   if (!page) notFound();
-  return new Response(await docsLlms.page(page), { headers: { "Content-Type": "text/markdown; charset=utf-8" } });
+  return new Response(await docsLlms.page(page), { headers: MARKDOWN_HEADERS });
 }
 
 export function generateStaticParams() {

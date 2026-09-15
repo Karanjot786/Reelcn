@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { CopyCommand } from "@/components/copy-command";
@@ -13,6 +14,9 @@ import { firstDemo, themeNames } from "@/lib/demos";
 import { REPO_URL } from "@/lib/layout.shared";
 import { categoryOf, componentUrl, getItem, installUrl, items } from "@/lib/registry";
 import "./landing.css";
+
+// Title and description come from the root layout; canonicals are per page, since a layout one would be inherited.
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 // Icons copied from assets/reelcn-07/mockup.html; `.draw` strokes redraw on hover and rest fully drawn.
 const len = (n: number) => ({ "--len": n }) as CSSProperties;

@@ -7,6 +7,7 @@ import { categories, items } from "@/lib/registry";
 export const metadata: Metadata = {
   title: "Components",
   description: `All ${items.length} reelcn components, grouped by category.`,
+  alternates: { canonical: "/docs/components" },
 };
 
 const toc = categories.map((category) => ({ title: category.title, url: `#${category.id}`, depth: 2 }));

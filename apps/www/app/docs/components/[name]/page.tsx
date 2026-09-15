@@ -279,5 +279,5 @@ export async function generateMetadata(props: PageProps<"/docs/components/[name]
   const { name } = await props.params;
   const item = getItem(name);
   if (!item) notFound();
-  return { title: item.title, description: item.description };
+  return { title: item.title, description: item.description, alternates: { canonical: componentUrl(item.name) } };
 }
