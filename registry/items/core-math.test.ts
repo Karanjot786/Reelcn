@@ -440,3 +440,25 @@ test("codeLivePreviewSchedule: doubling cps halves every arrival frame", () => {
   const fast = codeLivePreviewSchedule(code, previews, 30, 40);
   assert.equal(fast[0], Math.ceil(slow[0] / 2));
 });
+
+import { rankSlots } from "./core-math.ts";
+
+test("rankSlots: highest value gets slot 0", () => {
+  const rows = [
+    { name: "Berlin", value: 5 },
+    { name: "Austin", value: 10 },
+  ];
+  assert.deepEqual(rankSlots(rows), [1, 0]); // Berlin (idx0) ranks below Austin (idx1)
+});
+
+test("rankSlots: a tie resolves by array order, deterministically, every call", () => {
+  const rows = [
+    { name: "Austin", value: 10 },
+    { name: "Berlin", value: 10 },
+    { name: "Cairo", value: 5 },
+  ];
+  const first = rankSlots(rows);
+  const second = rankSlots(rows);
+  assert.deepEqual(first, [0, 1, 2]); // tie: Austin (earlier in the array) keeps slot 0 over Berlin
+  assert.deepEqual(first, second); // determinism: same input, same output, every time
+});

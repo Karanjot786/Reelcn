@@ -4593,6 +4593,50 @@
       }
     },
     {
+      "name": "standings",
+      "type": "registry:item",
+      "title": "Standings",
+      "description": "A ranked table whose rows swap places like a split-flap departures board between weekly snapshots.",
+      "categories": [
+        "templates"
+      ],
+      "dependencies": [
+        "remotion",
+        "zod"
+      ],
+      "registryDependencies": [
+        "https://www.reelcn.dev/r/core.json",
+        "https://www.reelcn.dev/r/story.json",
+        "https://www.reelcn.dev/r/storyboard.json",
+        "https://www.reelcn.dev/r/text-reveal.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/standings.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/standings.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Composition\n  id=\"Standings\"\n  component={Standings}\n  schema={standingsSchema}\n  defaultProps={standingsDefaults}\n  calculateMetadata={standingsMetadata}\n  width={1920} height={1080} fps={30} durationInFrames={1}\n/>",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "A leaderboard, ranking or standings reveal across several time periods",
+          "Any \"who's on top now\" beat with real, specific rows — not a generic bar chart"
+        ],
+        "avoid": [
+          "A single static ranking with no re-sort — use `bar-race` or `bar-chart` instead"
+        ],
+        "tags": [
+          "standings",
+          "leaderboard",
+          "rank",
+          "split-flap",
+          "template"
+        ]
+      }
+    },
+    {
       "name": "starfield",
       "type": "registry:item",
       "title": "Starfield",

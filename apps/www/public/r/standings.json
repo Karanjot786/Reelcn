@@ -1,0 +1,46 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "standings",
+  "title": "Standings",
+  "description": "A ranked table whose rows swap places like a split-flap departures board between weekly snapshots.",
+  "dependencies": [
+    "remotion",
+    "zod"
+  ],
+  "registryDependencies": [
+    "https://www.reelcn.dev/r/core.json",
+    "https://www.reelcn.dev/r/story.json",
+    "https://www.reelcn.dev/r/storyboard.json",
+    "https://www.reelcn.dev/r/text-reveal.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/standings.tsx",
+      "content": "/**\n * @title Standings\n * @description A ranked table whose rows swap places like a split-flap departures board between weekly snapshots.\n * @category templates\n * @use A leaderboard, ranking or standings reveal across several time periods\n * @use Any \"who's on top now\" beat with real, specific rows — not a generic bar chart\n * @avoid A single static ranking with no re-sort — use `bar-race` or `bar-chart` instead\n * @tags standings, leaderboard, rank, split-flap, template\n * @duration data-driven\n * @example\n * <Composition\n *   id=\"Standings\"\n *   component={Standings}\n *   schema={standingsSchema}\n *   defaultProps={standingsDefaults}\n *   calculateMetadata={standingsMetadata}\n *   width={1920} height={1080} fps={30} durationInFrames={1}\n * />\n */\nimport { AbsoluteFill, useCurrentFrame, useVideoConfig } from \"remotion\";\nimport { z } from \"zod\";\nimport { clamp01, rankSlots, tween, useTheme, useViewport } from \"./core\";\nimport type { CustomScene, Scene, Story } from \"./story\";\nimport { defineScene, Storyboard, templateMetadata, templateSchema, templateStory } from \"./storyboard\";\nimport { TextReveal } from \"./text-reveal\";\n\nconst rowSchema = z.object({ name: z.string(), value: z.number() });\n\nexport const standingsSchema = templateSchema.extend({\n  rows: z.array(rowSchema),\n  /** Several weekly snapshots to animate between. Omitted: `rows` is shown as a single static ranking. */\n  weeks: z.array(z.array(rowSchema)).optional(),\n});\n\nexport type StandingsProps = z.infer<typeof standingsSchema>;\n\nexport const standingsDefaults: StandingsProps = {\n  rows: [\n    { name: \"Austin\", value: 412 },\n    { name: \"Denver\", value: 398 },\n    { name: \"Raleigh\", value: 355 },\n    { name: \"Boise\", value: 301 },\n  ],\n  weeks: [\n    [\n      { name: \"Austin\", value: 412 },\n      { name: \"Denver\", value: 398 },\n      { name: \"Raleigh\", value: 355 },\n      { name: \"Boise\", value: 301 },\n    ],\n    [\n      { name: \"Denver\", value: 430 },\n      { name: \"Austin\", value: 415 },\n      { name: \"Boise\", value: 340 },\n      { name: \"Raleigh\", value: 320 },\n    ],\n  ],\n};\n\ntype Row = { name: string; value: number };\n\nfunction StandingsScene({ rows, weeks }: { rows: Row[]; weeks?: Row[][] }) {\n  const theme = useTheme();\n  const { u } = useViewport();\n  const frame = useCurrentFrame();\n  const { fps } = useVideoConfig();\n  const snapshots = weeks && weeks.length > 0 ? weeks : [rows];\n  const HOLD = Math.round(fps * 1.5);\n  const TRANSITION = Math.round(fps * 0.8);\n  const period = HOLD + TRANSITION;\n  const index = Math.min(snapshots.length - 1, Math.floor(frame / period));\n  const nextIndex = Math.min(snapshots.length - 1, index + 1);\n  const t = clamp01(tween(frame - index * period, fps, { from: HOLD, duration: TRANSITION, motion: \"smooth\" }));\n  const current = snapshots[index];\n  const fromSlots = rankSlots(current);\n  const toSlots = rankSlots(snapshots[nextIndex]);\n  const rowH = u(64);\n\n  return (\n    <AbsoluteFill style={{ alignItems: \"center\", justifyContent: \"center\" }}>\n      <div style={{ position: \"relative\", width: u(640), height: rowH * current.length }}>\n        {current.map((row, i) => {\n          const fromSlot = fromSlots[i];\n          const toSlot = i < snapshots[nextIndex].length ? toSlots[i] : fromSlot;\n          const y = (fromSlot + (toSlot - fromSlot) * t) * rowH;\n          const delta = toSlot - fromSlot;\n          const arrowColor = delta < 0 ? theme.colors.success : delta > 0 ? theme.colors.danger : theme.colors.muted;\n          return (\n            <div\n              key={row.name}\n              style={{\n                position: \"absolute\",\n                top: y,\n                left: 0,\n                right: 0,\n                height: rowH,\n                display: \"flex\",\n                alignItems: \"center\",\n                gap: u(18),\n              }}\n            >\n              <div style={{ width: u(44) }}>\n                <TextReveal\n                  key={`${row.name}-${index}`}\n                  text={String(fromSlot + 1)}\n                  effect=\"split-flap\"\n                  split=\"char\"\n                  size={30}\n                  font=\"mono\"\n                  // The rank digit must stay put through the scene's own final frame — `useMotion`'s\n                  // default auto-fade near the end of the enclosing Sequence (this scene spans every\n                  // week, not just the one this row belongs to) would otherwise fade the last-shown\n                  // rank to nothing right before the video ends.\n                  exit={false}\n                />\n              </div>\n              <span style={{ color: theme.colors.foreground, fontFamily: theme.fonts.body, fontSize: u(26), flex: 1 }}>\n                {row.name}\n              </span>\n              <span style={{ color: theme.colors.muted, fontFamily: theme.fonts.mono, fontSize: u(20) }}>\n                {row.value}\n              </span>\n              <span style={{ color: arrowColor, fontSize: u(20), width: u(20) }}>\n                {delta < 0 ? \"▲\" : delta > 0 ? \"▼\" : \"–\"}\n              </span>\n            </div>\n          );\n        })}\n      </div>\n    </AbsoluteFill>\n  );\n}\n\nconst standingsScene = defineScene({\n  type: \"standings-beat\",\n  schema: z.object({ rows: z.array(rowSchema), weeks: z.array(z.array(rowSchema)).optional() }),\n  component: StandingsScene,\n  duration: (scene: { weeks?: Row[][] }) => Math.max(1, scene.weeks?.length ?? 1) * 2.3,\n});\n\nexport function standingsStory(props: StandingsProps): Story {\n  const scenes: (Scene | CustomScene)[] = [\n    { type: \"standings-beat\", rows: props.rows, weeks: props.weeks } as CustomScene,\n  ];\n  return templateStory(props, scenes as Scene[]);\n}\n\nexport function Standings(props: StandingsProps) {\n  return <Storyboard story={standingsStory(props)} scenes={[standingsScene]} />;\n}\n\nexport const standingsMetadata = templateMetadata(standingsStory);\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/standings.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "A leaderboard, ranking or standings reveal across several time periods",
+      "Any \"who's on top now\" beat with real, specific rows — not a generic bar chart"
+    ],
+    "avoid": [
+      "A single static ranking with no re-sort — use `bar-race` or `bar-chart` instead"
+    ],
+    "tags": [
+      "standings",
+      "leaderboard",
+      "rank",
+      "split-flap",
+      "template"
+    ]
+  },
+  "docs": "Usage:\n\n<Composition\n  id=\"Standings\"\n  component={Standings}\n  schema={standingsSchema}\n  defaultProps={standingsDefaults}\n  calculateMetadata={standingsMetadata}\n  width={1920} height={1080} fps={30} durationInFrames={1}\n/>",
+  "categories": [
+    "templates"
+  ],
+  "type": "registry:item"
+}

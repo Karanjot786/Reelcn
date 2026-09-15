@@ -12,6 +12,7 @@ import { ListicleShort, listicleShortDefaults, listicleShortStory } from "../ite
 import { PodcastTeaser, podcastTeaserDefaults } from "../items/podcast-teaser";
 import { PostToVideo, postToVideoDefaults, postToVideoStory } from "../items/post-to-video";
 import { ProductLaunch, productLaunchDefaults, productLaunchStory } from "../items/product-launch";
+import { Standings, standingsDefaults } from "../items/standings";
 import type { Story } from "../items/story";
 import { captionsSeconds, storyFrames } from "../items/story";
 import { Storyboard } from "../items/storyboard";
@@ -102,6 +103,7 @@ const productDemos: Demo[] = [
       />
     ),
   },
+  { id: "standings", duration: 138, bare: true, component: () => <Standings {...standingsDefaults} /> },
 ];
 
 const creatorDemos: Demo[] = [

@@ -1494,6 +1494,19 @@ const { pulse, beat } = useBeat({ bpm: 120 });
 />
 ```
 
+- [Standings](https://www.reelcn.dev/r/standings.json): A ranked table whose rows swap places like a split-flap departures board between weekly snapshots. (length data-driven · use for A leaderboard, ranking or standings reveal across several time periods; Any "who's on top now" beat with real, specific rows — not a generic bar chart · avoid A single static ranking with no re-sort — use `bar-race` or `bar-chart` instead)
+
+```tsx
+<Composition
+  id="Standings"
+  component={Standings}
+  schema={standingsSchema}
+  defaultProps={standingsDefaults}
+  calculateMetadata={standingsMetadata}
+  width={1920} height={1080} fps={30} durationInFrames={1}
+/>
+```
+
 - [Storyboard](https://www.reelcn.dev/r/storyboard.json): Turns a JSON story (theme, brand, audio and a list of scenes) into a finished video whose length comes from its content. (length data-driven · use for Whole videos written as data, by hand or by an agent; Rendering one story at 16:9, 9:16 and 1:1 · avoid Scenes you lay out by hand in JSX — use `scenes`)
 
 ```tsx

@@ -337,6 +337,17 @@ export function codeLivePreviewSchedule(code: string, previews: { atLine: number
   });
 }
 
+/** Stable rank-to-slot assignment: slot 0 is the highest `value`, ties broken by array order (a stable
+ * sort, not `random(seed)` — the same `rows` always produce the same slots). */
+export function rankSlots(rows: { name: string; value: number }[]): number[] {
+  const order = rows.map((_, i) => i).sort((a, b) => rows[b].value - rows[a].value || a - b);
+  const slots = new Array(rows.length);
+  order.forEach((originalIndex, slot) => {
+    slots[originalIndex] = slot;
+  });
+  return slots;
+}
+
 /** Looks up `id` in `anchors`, throwing a named error instead of returning `undefined` — the one
  * consistent contract all four `target` consumers use (ponytail-review should-fix 4). */
 export function requireAnchor(anchors: Record<string, AnchorRect>, id: string, itemName: string): AnchorRect {
