@@ -13,6 +13,7 @@
     "determinism",
     "agents",
     "agent-skill",
-    "license"
+    "license",
+    "remotion-vs-hyperframes"
   ]
 }

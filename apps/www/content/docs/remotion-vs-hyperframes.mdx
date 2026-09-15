@@ -1,0 +1,55 @@
+---
+title: Remotion vs HyperFrames
+description: Both turn web code into video. One takes React, the other takes HTML. How to pick, and where reelcn fits.
+---
+
+Both tools render video by opening a browser, drawing every frame and encoding the result. What differs is what you hand them, and what you own afterwards.
+
+Checked against the HyperFrames docs and the Remotion license on 15 September 2026.
+
+## The short answer
+
+Pick Remotion when your video lives next to a React app: typed props, your design system, your own data.
+
+Pick HyperFrames when your source is already HTML and CSS, or when you want Apache 2.0 with no seat counting.
+
+reelcn sits on Remotion. Components install as source files, so the code is yours after the install.
+
+## What you write
+
+| | Remotion | HyperFrames |
+|---|---|---|
+| Input | React components | HTML, CSS, JavaScript |
+| Timing | Your code reads the frame number | Data attributes on elements |
+| License | Remotion's own license | Apache 2.0 |
+| Agents | Skills exist, including reelcn's | Ships its own skills |
+
+## Cost and team size
+
+Remotion is free for individuals and companies of up to three people. Larger companies buy a license. Read the current terms on [remotion.dev](https://www.remotion.dev/docs/license/).
+
+HyperFrames is Apache 2.0, so team size does not change what you pay.
+
+reelcn's own code is MIT. See [License](/docs/license).
+
+## What reelcn adds
+
+You still need scenes, timing, captions and a look. reelcn ships those as files you install:
+
+- 154 components and 19 templates, installed with the shadcn CLI
+- one theme that restyles every component
+- sizes in design units, so one timeline renders at 16:9, 9:16 and 1:1
+- an [agent skill](/docs/agent-skill) with eight [recipes](/docs/recipes)
+
+## When to switch
+
+Move to HyperFrames when your team does not write React, or when the license matters more than the ecosystem.
+
+Stay on Remotion when you ship React already and want the video to read your app's data and design tokens.
+
+## Next steps
+
+<Cards>
+  <Card title="Install your first component" href="/docs/installation" />
+  <Card title="Browse templates" href="/docs/templates" />
+</Cards>
