@@ -11,7 +11,7 @@ import { FeatureShort, featureShortDefaults, featureShortStory } from "../items/
 import { ListicleShort, listicleShortDefaults, listicleShortStory } from "../items/listicle-short";
 import { PodcastTeaser, podcastTeaserDefaults } from "../items/podcast-teaser";
 import { PostToVideo, postToVideoDefaults, postToVideoStory } from "../items/post-to-video";
-import { ProductLaunch, productLaunchDefaults, productLaunchStory } from "../items/product-launch";
+import { ProductLaunch, productLaunchDefaults } from "../items/product-launch";
 import { Standings, standingsDefaults } from "../items/standings";
 import type { Story } from "../items/story";
 import { captionsSeconds, storyFrames } from "../items/story";
@@ -82,8 +82,13 @@ function BrandReelDemo() {
   );
 }
 
+// product-launch's story now mixes in two template-local `defineScene` types ("device-stage",
+// "feature-cta"), which `storyDemo`'s `storyFrames`/`sceneMarks` calls don't know about (they take no
+// custom-scene rules) — so, like `brand-reel`'s own demo above, this is a plain literal-duration entry
+// instead of `storyDemo` (537 frames: computed from `productLaunchStory(productLaunchDefaults)`'s real
+// scene lengths plus the two custom scenes' own 3.5s/2.2s durations).
 const productDemos: Demo[] = [
-  storyDemo("product-launch", ProductLaunch, productLaunchStory, productLaunchDefaults),
+  { id: "product-launch", duration: 537, bare: true, component: () => <ProductLaunch {...productLaunchDefaults} /> },
   storyDemo("feature-short", FeatureShort, featureShortStory, featureShortDefaults),
   storyDemo("changelog", Changelog, changelogStory, changelogDefaults),
   storyDemo("app-promo", AppPromo, appPromoStory, appPromoDefaults),

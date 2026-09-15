@@ -3502,9 +3502,15 @@
         "templates"
       ],
       "dependencies": [
+        "remotion",
         "zod"
       ],
       "registryDependencies": [
+        "https://www.reelcn.dev/r/browser-window.json",
+        "https://www.reelcn.dev/r/core.json",
+        "https://www.reelcn.dev/r/laptop-frame.json",
+        "https://www.reelcn.dev/r/phone-frame.json",
+        "https://www.reelcn.dev/r/stage.json",
         "https://www.reelcn.dev/r/story.json",
         "https://www.reelcn.dev/r/storyboard.json"
       ],
