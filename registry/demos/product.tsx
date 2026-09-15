@@ -2,15 +2,28 @@ import { AbsoluteFill, Img, staticFile } from "remotion";
 import { AppWindow } from "../items/app-window";
 import { BeforeAfter } from "../items/before-after";
 import { BrowserWindow } from "../items/browser-window";
+import { Button, buttonBoxSize, FONT_SIZE, useButtonAnchors } from "../items/button";
 import { ChatThread } from "../items/chat-thread";
 import { CodeBlock } from "../items/code-block";
 import { CommandPalette } from "../items/command-palette";
-import { alpha, Center, useTheme, useViewport } from "../items/core";
+import {
+  type AnchorRect,
+  alpha,
+  anchorToContentPercent,
+  Center,
+  type Place,
+  requireAnchor,
+  useTextMetrics,
+  useTheme,
+  useViewport,
+} from "../items/core";
+import { stepsDuration } from "../items/core-math";
 import { Cursor } from "../items/cursor";
 import { FeatureCard } from "../items/feature-card";
 import { LaptopFrame } from "../items/laptop-frame";
 import { PhoneFrame } from "../items/phone-frame";
 import { ScreenZoom } from "../items/screen-zoom";
+import { STORY_FPS } from "../items/story";
 import { SvgDraw } from "../items/svg-draw";
 import { Terminal } from "../items/terminal";
 import { Toast } from "../items/toast";
@@ -316,6 +329,54 @@ function ScreenZoomDemo() {
   );
 }
 
+/**
+ * Task 1 Step 9b (ponytail-review blocker 1): an end-to-end proof that `anchorToContentPercent` converts
+ * a kit anchor's canvas-% rect into a nested `ScreenZoom`'s own content-% correctly. The real "Pay $48.20"
+ * button sits at its own ambient `place`, anchored the ordinary (unnested) way; a "recording" window
+ * elsewhere on the same wider canvas shows a miniature replica of that same screen, placed via the exact
+ * same `anchorToContentPercent` conversion `ScreenZoom` runs internally for its `target.contentBox` (the
+ * window's own canvas-relative rect) — so the math is provable by construction: if the zoom frames the
+ * replica, the two independent uses of the conversion agree.
+ */
+function ScreenZoomNestedTargetDemo() {
+  const theme = useTheme();
+  const buttonProps = { id: "pay-button", label: "Pay $48.20", place: { x: 24, y: 60 } };
+  const anchors = useButtonAnchors(buttonProps);
+  const anchor = requireAnchor(anchors, buttonProps.id, "ScreenZoomNestedTargetDemo");
+  // The "recording" window's own canvas-relative rect — deliberately not the identity box, so this
+  // exercises a real conversion, not the no-op default.
+  const windowBox: AnchorRect = { x: 52, y: 12, width: 44, height: 70 };
+  const replicaRect = anchorToContentPercent(anchor, windowBox);
+  const replicaPlace: Place = { x: replicaRect.x + replicaRect.width / 2, y: replicaRect.y + replicaRect.height / 2 };
+  return (
+    <AbsoluteFill style={{ background: theme.colors.background }}>
+      <Button {...buttonProps} />
+      <div
+        style={{
+          position: "absolute",
+          left: `${windowBox.x}%`,
+          top: `${windowBox.y}%`,
+          width: `${windowBox.width}%`,
+          height: `${windowBox.height}%`,
+          overflow: "hidden",
+          borderRadius: 8,
+          border: `1px solid ${theme.colors.border}`,
+          background: theme.colors.surface,
+        }}
+      >
+        <ScreenZoom
+          focus={[
+            { frame: 0, x: 0, y: 0, width: 100, height: 100 },
+            { frame: 45, target: { anchors, id: buttonProps.id, contentBox: windowBox } },
+          ]}
+        >
+          <Button {...buttonProps} place={replicaPlace} size={10} />
+        </ScreenZoom>
+      </div>
+    </AbsoluteFill>
+  );
+}
+
 /* ───────────────────────────────── toast ───────────────────────────────── */
 
 function ToastSuccess() {
@@ -464,6 +525,69 @@ function BeforeAfterDemo() {
   return <BeforeAfter labels={["Before", "After"]} before={<FakePlainList />} after={<FakeDashboard />} />;
 }
 
+/* ──────────────────────────────── button ──────────────────────────────── */
+
+function ButtonDemo() {
+  return (
+    <Center>
+      <Button
+        id="pay-button"
+        label="Pay $48.20"
+        steps={[
+          { at: 0, state: "idle" },
+          { at: 1, state: "press" },
+          { at: 1.4, state: "loading" },
+          { at: 2.4, state: "success" },
+        ]}
+      />
+    </Center>
+  );
+}
+
+function ButtonAnchorProofResolverDemo() {
+  const buttonProps = { id: "pay-button", label: "Pay $48.20", place: { x: 50, y: 62 } };
+  return (
+    <Center>
+      <Button {...buttonProps} />
+      <Cursor
+        waypoints={[]}
+        target={{ anchors: useButtonAnchors(buttonProps), id: "pay-button", frame: 20, click: false }}
+      />
+    </Center>
+  );
+}
+
+function ButtonAnchorProofLiteralDemo() {
+  const buttonProps = { id: "pay-button", label: "Pay $48.20", place: { x: 50, y: 62 } };
+  const { u, width, height } = useViewport();
+  const theme = useTheme();
+  // Independently re-derives the canvas-%-conversion arithmetic `useButtonAnchors` does internally — the
+  // actual thing this proof exists to catch a mistake in, not just a re-call of the same function.
+  const metrics = useTextMetrics(buttonProps.label, {
+    fontFamily: theme.fonts.body,
+    fontSize: u(FONT_SIZE),
+    fontWeight: 600,
+  });
+  const box = buttonBoxSize(undefined, u, metrics.width);
+  const wPct = (box.width / width) * 100;
+  const hPct = (box.height / height) * 100;
+  const literalRect = {
+    x: buttonProps.place.x - wPct / 2,
+    y: buttonProps.place.y - hPct / 2,
+    width: wPct,
+    height: hPct,
+  };
+  return (
+    <Center>
+      <Button {...buttonProps} />
+      <Cursor
+        waypoints={[]}
+        target={{ anchors: { "pay-button": literalRect }, id: "pay-button", frame: 20, click: false }}
+      />
+    </Center>
+  );
+}
+
 /* ──────────────────────────────── svg-draw ──────────────────────────────── */
 
 function SvgDrawDemo() {
@@ -503,4 +627,12 @@ export default [
   { id: "feature-card-rise", duration: 75, component: FeatureCardDemo },
   { id: "before-after-wipe", duration: 75, component: BeforeAfterDemo },
   { id: "svg-draw-check", duration: 75, component: SvgDrawDemo },
+  {
+    id: "button",
+    duration: stepsDuration([{ at: 0 }, { at: 1 }, { at: 1.4 }, { at: 2.4 }], 30, STORY_FPS),
+    component: ButtonDemo,
+  },
+  { id: "button-anchor-proof-resolver", duration: 25, component: ButtonAnchorProofResolverDemo },
+  { id: "button-anchor-proof-literal", duration: 25, component: ButtonAnchorProofLiteralDemo },
+  { id: "screen-zoom-nested-target", duration: 90, bare: true, component: ScreenZoomNestedTargetDemo },
 ] satisfies Demo[];

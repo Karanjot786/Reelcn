@@ -725,6 +725,45 @@
       }
     },
     {
+      "name": "button",
+      "type": "registry:item",
+      "title": "Button",
+      "description": "Primary or secondary button that steps through idle, hover, press, loading and success — the loading spinner and success check crossfade in place, so the button never resizes.",
+      "categories": [
+        "product"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://www.reelcn.dev/r/core.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/button.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/button.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Center>\n  <Button\n    id=\"pay-button\"\n    label=\"Pay $48.20\"\n    steps={[{ at: 0, state: \"idle\" }, { at: 1, state: \"press\" }, { at: 1.4, state: \"loading\" }, { at: 2.4, state: \"success\" }]}\n  />\n</Center>",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "A UI-sim walkthrough where a cursor clicks a real, named button",
+          "A `ui` scene's `component: \"button\"`"
+        ],
+        "avoid": [
+          "A static call-to-action with no interaction — use plain text instead"
+        ],
+        "tags": [
+          "button",
+          "ui",
+          "kit",
+          "click",
+          "loading",
+          "success"
+        ]
+      }
+    },
+    {
       "name": "callout",
       "type": "registry:item",
       "title": "Callout",
@@ -2415,7 +2454,9 @@
       "categories": [
         "text"
       ],
-      "dependencies": [],
+      "dependencies": [
+        "remotion"
+      ],
       "registryDependencies": [
         "https://www.reelcn.dev/r/core.json"
       ],

@@ -743,6 +743,18 @@ storyFrames({
 </Center>
 ```
 
+- [Button](https://www.reelcn.dev/r/button.json): Primary or secondary button that steps through idle, hover, press, loading and success — the loading spinner and success check crossfade in place, so the button never resizes. (length data-driven · use for A UI-sim walkthrough where a cursor clicks a real, named button; A `ui` scene's `component: "button"` · avoid A static call-to-action with no interaction — use plain text instead)
+
+```tsx
+<Center>
+  <Button
+    id="pay-button"
+    label="Pay $48.20"
+    steps={[{ at: 0, state: "idle" }, { at: 1, state: "press" }, { at: 1.4, state: "loading" }, { at: 2.4, state: "success" }]}
+  />
+</Center>
+```
+
 - [Chat Thread](https://www.reelcn.dev/r/chat-thread.json): Message thread that shows three bouncing typing dots before a "them" reply, pops bubbles in, and scrolls up as it fills. (length data-driven · use for A DM, support chat or group thread inside a `phone-frame` or app mockup; Showing a bot or assistant "typing" before it answers · avoid A single command-and-output log — use `terminal`)
 
 ```tsx
