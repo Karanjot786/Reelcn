@@ -1311,6 +1311,19 @@ const { pulse, beat } = useBeat({ bpm: 120 });
 
 ## templates
 
+- [Ai Generation](https://www.reelcn.dev/r/ai-generation.json): A prompt types into a neutral input, then morphs into a skeleton loader and flips into result cards — one continuous rect drives the box, a 3D flip drives the cards. (length data-driven · use for An AI product's core generate-and-see-results loop; Any "type a prompt, get structured results" launch demo · avoid A branded chat-bubble look — this stays neutral (no ChatGPT-style chrome))
+
+```tsx
+<Composition
+  id="AiGeneration"
+  component={AiGeneration}
+  schema={aiGenerationSchema}
+  defaultProps={aiGenerationDefaults}
+  calculateMetadata={aiGenerationMetadata}
+  width={1920} height={1080} fps={30} durationInFrames={1}
+/>
+```
+
 - [App Promo](https://www.reelcn.dev/r/app-promo.json): Vertical app ad: the app's name and promise, its screens on a phone or laptop, its rating, and a download call. (length data-driven · use for App store previews and paid social ads; Showing a mobile or desktop app screen by screen · avoid A web product in a browser window — use `product-launch`)
 
 ```tsx

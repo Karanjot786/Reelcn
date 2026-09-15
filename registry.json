@@ -4,6 +4,51 @@
   "homepage": "https://www.reelcn.dev",
   "items": [
     {
+      "name": "ai-generation",
+      "type": "registry:item",
+      "title": "Ai Generation",
+      "description": "A prompt types into a neutral input, then morphs into a skeleton loader and flips into result cards — one continuous rect drives the box, a 3D flip drives the cards.",
+      "categories": [
+        "templates"
+      ],
+      "dependencies": [
+        "remotion",
+        "zod"
+      ],
+      "registryDependencies": [
+        "https://www.reelcn.dev/r/core.json",
+        "https://www.reelcn.dev/r/input.json",
+        "https://www.reelcn.dev/r/story.json",
+        "https://www.reelcn.dev/r/storyboard.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/ai-generation.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/ai-generation.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Composition\n  id=\"AiGeneration\"\n  component={AiGeneration}\n  schema={aiGenerationSchema}\n  defaultProps={aiGenerationDefaults}\n  calculateMetadata={aiGenerationMetadata}\n  width={1920} height={1080} fps={30} durationInFrames={1}\n/>",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "An AI product's core generate-and-see-results loop",
+          "Any \"type a prompt, get structured results\" launch demo"
+        ],
+        "avoid": [
+          "A branded chat-bubble look — this stays neutral (no ChatGPT-style chrome)"
+        ],
+        "tags": [
+          "ai",
+          "generation",
+          "prompt",
+          "skeleton",
+          "flip",
+          "template"
+        ]
+      }
+    },
+    {
       "name": "animate",
       "type": "registry:item",
       "title": "Animate",

@@ -1,5 +1,6 @@
 import type React from "react";
 import { staticFile } from "remotion";
+import { AiGeneration, aiGenerationDefaults } from "../items/ai-generation";
 import { AppPromo, appPromoDefaults, appPromoStory } from "../items/app-promo";
 import { Audiogram, audiogramDefaults } from "../items/audiogram";
 import { BrandReel, brandReelDefaults } from "../items/brand-reel";
@@ -85,6 +86,7 @@ const productDemos: Demo[] = [
   storyDemo("changelog", Changelog, changelogStory, changelogDefaults),
   storyDemo("app-promo", AppPromo, appPromoStory, appPromoDefaults),
   { id: "brand-reel", duration: 285, bare: true, component: BrandReelDemo },
+  { id: "ai-generation", duration: 180, bare: true, component: () => <AiGeneration {...aiGenerationDefaults} /> },
 ];
 
 const creatorDemos: Demo[] = [

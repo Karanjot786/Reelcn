@@ -175,6 +175,7 @@ How they work:
 
 ## templates
 
+- [Ai Generation](https://www.reelcn.dev/r/ai-generation.json): A prompt types into a neutral input, then morphs into a skeleton loader and flips into result cards — one continuous rect drives the box, a 3D flip drives the cards. (length data-driven · use for An AI product's core generate-and-see-results loop; Any "type a prompt, get structured results" launch demo · avoid A branded chat-bubble look — this stays neutral (no ChatGPT-style chrome))
 - [App Promo](https://www.reelcn.dev/r/app-promo.json): Vertical app ad: the app's name and promise, its screens on a phone or laptop, its rating, and a download call. (length data-driven · use for App store previews and paid social ads; Showing a mobile or desktop app screen by screen · avoid A web product in a browser window — use `product-launch`)
 - [Audiogram](https://www.reelcn.dev/r/audiogram.json): Square podcast clip with cover art, show and episode titles, a live waveform of the audio, speaker names and captions. (length data-driven · use for Sharing a podcast episode or segment on social feeds; Turning any voice recording into a video · avoid A short vertical teaser built on one quote — use `podcast-teaser`)
 - [Brand Reel](https://www.reelcn.dev/r/brand-reel.json): A brand's logo, palette, type specimen, image collage and lockup, entirely driven by one brand kit and the theme system. (length data-driven · use for A short agency or brand-kit showcase; Introducing a visual identity before a product launch · avoid A product feature tour — use `product-launch`)
