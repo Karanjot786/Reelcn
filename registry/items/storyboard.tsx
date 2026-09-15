@@ -297,9 +297,23 @@ const uiStepSchema = z.object({
   target: z.string().optional(),
   click: z.string().optional(),
   type: z.string().optional(),
+  /** For a step naming a `tabs` component (via `target` or `click`), must parse to an integer tab index
+   * in `[0, labels.length)` — enforced in `uiSceneSchema`'s `superRefine` below. Previously an open
+   * should-fix: an invalid value here fed straight into `stepStateFor`'s `Number(step.state)`, so a
+   * non-numeric value rendered the Tabs pill at `active: NaN` and an out-of-range index was silently
+   * clamped instead of failing schema validation. */
   state: z.string().optional(),
 });
 type UiStep = z.infer<typeof uiStepSchema>;
+
+/** True when a tabs step's `state` string parses to a whole-number tab index in `[0, labelsLength)` —
+ * the same check `stepStateFor` implicitly relies on when it does `Number(step.state)` for a `tabs`
+ * target. Kept as its own pure, JSX-free function so it stays reachable by a unit test even though the
+ * rest of this file can't be (see storyboard.test.ts). */
+function isValidTabsState(state: string, labelsLength: number): boolean {
+  const index = Number(state);
+  return Number.isInteger(index) && index >= 0 && index < labelsLength;
+}
 
 export const uiSceneSchema = z
   .object({
@@ -321,6 +335,14 @@ export const uiSceneSchema = z
       const labels = (base.props as { labels?: string[] } | undefined)?.labels ?? [];
       return Number(match[2]) < labels.length;
     };
+    // A step's `target`/`click` names a component either directly or, for `tabs`, via one of its own
+    // child anchors (`id.item[n]`) — resolve either spelling back to the component it addresses.
+    const resolveComponent = (id: string | undefined): UiComponentConfig | undefined => {
+      if (id === undefined) return undefined;
+      if (byId.has(id)) return byId.get(id);
+      const match = /^(.+)\.item\[\d+\]$/.exec(id);
+      return match ? byId.get(match[1]) : undefined;
+    };
     scene.steps.forEach((step, i) => {
       for (const field of ["target", "click"] as const) {
         const id = step[field];
@@ -330,6 +352,24 @@ export const uiSceneSchema = z
             path: ["steps", i, field],
             message: `unknown component id "${id}"; expected one of ${Array.from(byId.keys()).join(", ")}`,
           });
+        }
+      }
+      // A `tabs` target's `state` is a numeric index (`stepStateFor` feeds it straight into
+      // `Number(step.state)`) — reject anything that wouldn't be a valid index before it ever reaches
+      // render, instead of producing `active: NaN` or a silently clamped tab.
+      if (step.state !== undefined) {
+        const tabsTarget = [resolveComponent(step.target), resolveComponent(step.click)].find(
+          (c) => c?.component === "tabs",
+        );
+        if (tabsTarget) {
+          const labels = (tabsTarget.props as { labels?: string[] } | undefined)?.labels ?? [];
+          if (!isValidTabsState(step.state, labels.length)) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: ["steps", i, "state"],
+              message: `tabs state "${step.state}" must be an integer tab index in [0, ${labels.length})`,
+            });
+          }
         }
       }
     });
