@@ -299,3 +299,13 @@ test("stackLayout: a single component centers itself in the safe zone", () => {
   const [p] = stackLayout(1, "landscape", SAFE_LANDSCAPE);
   assert.equal(p.y, (SAFE_LANDSCAPE.top + (100 - SAFE_LANDSCAPE.bottom)) / 2);
 });
+
+import { redactRectBudget } from "./core-math.ts";
+
+test("redactRectBudget: 8 rects is fine (the reference implementation's own limit)", () => {
+  assert.doesNotThrow(() => redactRectBudget(8));
+});
+
+test("redactRectBudget: 9 rects throws", () => {
+  assert.throws(() => redactRectBudget(9));
+});

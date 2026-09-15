@@ -218,6 +218,12 @@ export function stackLayout(
   return places;
 }
 
+/** Throws past `max` rects (default 8, matching the reference implementation's own choice) instead of
+ * silently leaving a region uncovered. */
+export function redactRectBudget(count: number, max = 8): void {
+  if (count > max) throw new Error(`redact: ${count} rects exceeds the ${max}-rect budget`);
+}
+
 /** Looks up `id` in `anchors`, throwing a named error instead of returning `undefined` — the one
  * consistent contract all four `target` consumers use (ponytail-review should-fix 4). */
 export function requireAnchor(anchors: Record<string, AnchorRect>, id: string, itemName: string): AnchorRect {

@@ -3519,6 +3519,47 @@
       }
     },
     {
+      "name": "redact",
+      "type": "registry:item",
+      "title": "Redact",
+      "description": "Covers one or more rectangles with an opaque fill and a blur or pixelate effect on top — the opaque fill always renders, so the region is covered even if the effect layer doesn't.",
+      "categories": [
+        "product"
+      ],
+      "dependencies": [
+        "remotion"
+      ],
+      "registryDependencies": [
+        "https://www.reelcn.dev/r/callout.json",
+        "https://www.reelcn.dev/r/core.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/redact.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/redact.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<BrowserWindow url=\"app.dev\">\n  <Dashboard />\n  <Redact rects={[{ x: 62, y: 18, width: 22, height: 6 }]} mode=\"pixelate\" />\n</BrowserWindow>",
+      "meta": {
+        "duration": "1",
+        "use": [
+          "Hiding an API key, email or account number in a real screenshot or screen recording",
+          "Covering a sensitive panel in a dashboard demo without cropping it out"
+        ],
+        "avoid": [
+          "A region that should stay fully visible — this always covers, never partially"
+        ],
+        "tags": [
+          "redact",
+          "blur",
+          "pixelate",
+          "privacy",
+          "censor"
+        ]
+      }
+    },
+    {
       "name": "rise-up",
       "type": "registry:item",
       "title": "Rise Up",

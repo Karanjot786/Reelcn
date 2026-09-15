@@ -25,6 +25,7 @@ import { FeatureCard } from "../items/feature-card";
 import { Input } from "../items/input";
 import { LaptopFrame } from "../items/laptop-frame";
 import { PhoneFrame } from "../items/phone-frame";
+import { Redact } from "../items/redact";
 import { ScreenZoom } from "../items/screen-zoom";
 import { Select } from "../items/select";
 import { STORY_FPS } from "../items/story";
@@ -380,6 +381,53 @@ function ScreenZoomNestedTargetDemo() {
           <Button {...buttonProps} place={replicaPlace} size={10} />
         </ScreenZoom>
       </div>
+    </AbsoluteFill>
+  );
+}
+
+/* ─────────────────────────────────── redact ─────────────────────────────────── */
+
+// `rects` are % of canvas (same as `callout`'s `target`), so — unlike the other product demos above —
+// `FakeDashboard` is used full-bleed here, not nested inside a scaled `BrowserWindow`: matches the
+// `Toast` demos' own `<AbsoluteFill><FakeDashboard /><Overlay /></AbsoluteFill>` fixture usage
+// elsewhere in this file, the one existing pattern where a sibling overlay's canvas-% actually lines
+// up with `FakeDashboard`'s own stat tiles (nesting inside `BrowserWindow`'s letterboxed, scaled
+// content pane would put canvas-% coordinates a `BrowserWindow`-width off from the tiles they should
+// cover).
+const REDACT_RECTS = [
+  { x: 34, y: 0, width: 32, height: 11 },
+  { x: 66, y: 0, width: 33, height: 11 },
+];
+
+function RedactBlurDemo() {
+  return (
+    <AbsoluteFill>
+      <FakeDashboard />
+      <Redact rects={REDACT_RECTS} mode="blur" />
+    </AbsoluteFill>
+  );
+}
+
+function RedactPixelateDemo() {
+  return (
+    <AbsoluteFill>
+      <FakeDashboard />
+      <Redact rects={REDACT_RECTS} mode="pixelate" />
+    </AbsoluteFill>
+  );
+}
+
+/**
+ * Task 10 Step 8: the fail-opaque proof. `cellSize={0}` renders `blur(0px)`, a no-op filter — the
+ * closest deterministic stand-in for "the effect layer contributes nothing" (an actual Chromium
+ * rendering failure can't be forced deterministically). The covered region's opacity must still be
+ * identical to `redact`'s own opaque-only region even though the visual texture differs.
+ */
+function RedactForcedFailureDemo() {
+  return (
+    <AbsoluteFill>
+      <FakeDashboard />
+      <Redact rects={REDACT_RECTS} mode="blur" cellSize={0} />
     </AbsoluteFill>
   );
 }
@@ -764,6 +812,9 @@ export default [
   { id: "app-window-poster", duration: 75, component: AppWindowPosterDemo },
   { id: "cursor-click-path", duration: 90, bare: true, component: CursorDemo },
   { id: "screen-zoom-detail", duration: 100, component: ScreenZoomDemo },
+  { id: "redact", duration: 60, bare: true, component: RedactBlurDemo },
+  { id: "redact-pixelate", duration: 60, bare: true, component: RedactPixelateDemo },
+  { id: "redact-forced-failure", duration: 60, bare: true, component: RedactForcedFailureDemo },
   { id: "toast-success", duration: 90, bare: true, component: ToastSuccess },
   { id: "toast-error", duration: 90, bare: true, component: ToastError },
   { id: "toast-settle", duration: 90, bare: true, component: ToastSettle },

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "redact",
+  "title": "Redact",
+  "description": "Covers one or more rectangles with an opaque fill and a blur or pixelate effect on top — the opaque fill always renders, so the region is covered even if the effect layer doesn't.",
+  "dependencies": [
+    "remotion"
+  ],
+  "registryDependencies": [
+    "https://www.reelcn.dev/r/callout.json",
+    "https://www.reelcn.dev/r/core.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/redact.tsx",
+      "content": "/**\n * @title Redact\n * @category product\n * @description Covers one or more rectangles with an opaque fill and a blur or pixelate effect on top — the opaque fill always renders, so the region is covered even if the effect layer doesn't.\n * @duration 1\n * @use Hiding an API key, email or account number in a real screenshot or screen recording\n * @use Covering a sensitive panel in a dashboard demo without cropping it out\n * @avoid A region that should stay fully visible — this always covers, never partially\n * @tags redact, blur, pixelate, privacy, censor\n * @example\n * <BrowserWindow url=\"app.dev\">\n *   <Dashboard />\n *   <Redact rects={[{ x: 62, y: 18, width: 22, height: 6 }]} mode=\"pixelate\" />\n * </BrowserWindow>\n */\nimport type React from \"react\";\nimport { useId } from \"react\";\nimport { AbsoluteFill } from \"remotion\";\nimport type { CalloutRect } from \"./callout\";\nimport { type MotionProps, redactRectBudget, useMotion, useTheme, useViewport } from \"./core\";\n\nexport type RedactProps = MotionProps & {\n  /** Areas to cover, in % of canvas — same shape `callout`'s `target` uses. At most 8 (`redactRectBudget`). */\n  rects: CalloutRect[];\n  mode?: \"pixelate\" | \"blur\";\n  /** Blur radius, or pixelate cell size, in design units. */\n  cellSize?: number;\n  style?: React.CSSProperties;\n  className?: string;\n};\n\nexport function Redact({ rects, mode = \"blur\", cellSize = 18, style, className, ...motion }: RedactProps) {\n  redactRectBudget(rects.length);\n  const theme = useTheme();\n  const { u, width, height } = useViewport();\n  const m = useMotion(motion);\n  const filterId = `redact-pixelate-${useId().replace(/[^a-zA-Z0-9_-]/g, \"\")}`;\n  const cellPx = u(cellSize);\n\n  return (\n    <AbsoluteFill className={className} style={{ pointerEvents: \"none\", opacity: m.presence, ...style }}>\n      {mode === \"pixelate\" ? (\n        <svg aria-hidden=\"true\" width={0} height={0} style={{ position: \"absolute\" }}>\n          <defs>\n            <filter id={filterId} x=\"-20%\" y=\"-20%\" width=\"140%\" height=\"140%\">\n              <feFlood x=\"0\" y=\"0\" width={cellPx} height={cellPx} />\n              <feComposite width={cellPx * 2} height={cellPx * 2} />\n              <feTile result=\"grid\" />\n              <feComposite in=\"SourceGraphic\" in2=\"grid\" operator=\"in\" />\n              <feMorphology operator=\"dilate\" radius={cellPx / 2} />\n            </filter>\n          </defs>\n        </svg>\n      ) : null}\n      {rects.map((rect, i) => (\n        <div\n          key={i}\n          style={{\n            position: \"absolute\",\n            left: (rect.x / 100) * width,\n            top: (rect.y / 100) * height,\n            width: (rect.width / 100) * width,\n            height: (rect.height / 100) * height,\n            overflow: \"hidden\",\n          }}\n        >\n          {/* Fail-opaque base: always rendered, always fully opaque. See Deviation 6 for the z-order spike\n              this needs before the effect layer below can be trusted to show real content through it. */}\n          <div style={{ position: \"absolute\", inset: 0, background: theme.colors.background }} />\n          <div\n            style={{\n              position: \"absolute\",\n              inset: 0,\n              backdropFilter: mode === \"blur\" ? `blur(${cellPx}px)` : `url(#${filterId})`,\n              WebkitBackdropFilter: mode === \"blur\" ? `blur(${cellPx}px)` : `url(#${filterId})`,\n            }}\n          />\n        </div>\n      ))}\n    </AbsoluteFill>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/redact.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "1",
+    "use": [
+      "Hiding an API key, email or account number in a real screenshot or screen recording",
+      "Covering a sensitive panel in a dashboard demo without cropping it out"
+    ],
+    "avoid": [
+      "A region that should stay fully visible — this always covers, never partially"
+    ],
+    "tags": [
+      "redact",
+      "blur",
+      "pixelate",
+      "privacy",
+      "censor"
+    ]
+  },
+  "docs": "Usage:\n\n<BrowserWindow url=\"app.dev\">\n  <Dashboard />\n  <Redact rects={[{ x: 62, y: 18, width: 22, height: 6 }]} mode=\"pixelate\" />\n</BrowserWindow>",
+  "categories": [
+    "product"
+  ],
+  "type": "registry:item"
+}

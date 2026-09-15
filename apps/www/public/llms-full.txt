@@ -861,6 +861,15 @@ storyFrames({
 </Center>
 ```
 
+- [Redact](https://www.reelcn.dev/r/redact.json): Covers one or more rectangles with an opaque fill and a blur or pixelate effect on top — the opaque fill always renders, so the region is covered even if the effect layer doesn't. (length 1f@30fps · use for Hiding an API key, email or account number in a real screenshot or screen recording; Covering a sensitive panel in a dashboard demo without cropping it out · avoid A region that should stay fully visible — this always covers, never partially)
+
+```tsx
+<BrowserWindow url="app.dev">
+  <Dashboard />
+  <Redact rects={[{ x: 62, y: 18, width: 22, height: 6 }]} mode="pixelate" />
+</BrowserWindow>
+```
+
 - [Screen Zoom](https://www.reelcn.dev/r/screen-zoom.json): Zooms and pans across whatever you wrap so a rectangle of the content — a button, a chart, a card — fills the frame, eased between keyframes. (length data-driven · use for Pushing in on a detail inside a `browser-window`, `app-window` or dashboard mockup; A guided tour that visits several parts of the same screen in turn · avoid Panning and zooming over a photo or footage with pixel offsets — use `camera`)
 
 ```tsx
