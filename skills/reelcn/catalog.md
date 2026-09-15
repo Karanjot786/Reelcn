@@ -26,7 +26,9 @@ How they work:
 - [Determinism](https://www.reelcn.dev/docs/determinism): The same frame, rendered twice, has to come out pixel-identical.
 - [Agents](https://www.reelcn.dev/docs/agents): An agent skill with eight video recipes, the shadcn MCP server for installing components, and llms.txt for a quick answer.
 - [Agent skill](https://www.reelcn.dev/docs/agent-skill): Teach your coding agent to plan, build, check and render videos with reelcn, with eight recipes for common videos.
+- [Recipes](https://www.reelcn.dev/docs/recipes): Eight prompts that turn a request into a finished video, with the template and scene order each one uses.
 - [License](https://www.reelcn.dev/docs/license): reelcn's code is MIT. Remotion, which it renders with, has its own license.
+- [Remotion vs HyperFrames](https://www.reelcn.dev/docs/remotion-vs-hyperframes): Both turn web code into video. One takes React, the other takes HTML. How to pick, and where reelcn fits.
 
 ## lib
 

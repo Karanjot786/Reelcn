@@ -1,0 +1,70 @@
+---
+title: TikTok style captions
+description: Turn a talking head clip into a 9:16 render with word-synced captions burned in.
+---
+
+You end this with a vertical video: word-synced captions burned into a 9:16 render of a talking head clip.
+
+## 1. Transcribe your clip
+
+Install the transcribe tool, then run it on your footage:
+
+```bash
+npx shadcn@latest add https://www.reelcn.dev/r/transcribe.json
+node scripts/reelcn-transcribe.ts talk.mp4
+```
+
+The first run downloads whisper.cpp and a model, then works offline. It writes a transcript next to your clip: an array of `word`, `start`, `end` objects.
+
+## 2. Install a caption style
+
+Each caption style is its own installable component. Pick one and add it the same way:
+
+```bash
+npx shadcn@latest add https://www.reelcn.dev/r/captions-minimal.json
+```
+
+## 3. Wire it into a composition
+
+Point the style at the transcript, and register a composition sized for a vertical render:
+
+```tsx
+import captions from "../../public/captions/talk.json";
+import { CaptionsMinimal } from "./reelcn/captions-minimal";
+import { Video, staticFile, AbsoluteFill, Composition } from "remotion";
+
+const TikTokCaptions = () => (
+  <AbsoluteFill>
+    <Video src={staticFile("talk.mp4")} />
+    <CaptionsMinimal captions={captions} />
+  </AbsoluteFill>
+);
+
+<Composition
+  id="TikTokCaptions"
+  component={TikTokCaptions}
+  durationInFrames={300}
+  fps={30}
+  width={1080}
+  height={1920}
+/>;
+```
+
+The `width={1080} height={1920}` on the composition is what makes this a 9:16 render. Components read that size through `useViewport()`, so the same caption style also works at 16:9 or 1:1. See [Formats](/docs/formats) for why.
+
+## 4. Pick a style for a talking head
+
+reelcn ships eight caption styles on one engine: `captions-bold-pop`, `captions-karaoke`, `captions-boxed`, `captions-minimal`, `captions-neon`, `captions-word-stack`, `captions-subtitle-bar` and `captions-highlight-box`. For a talking head clip, `captions-minimal` works best: it stays out of the way of the face instead of competing with it.
+
+## 5. Render
+
+```bash
+npx remotion render TikTokCaptions out/video.mp4
+```
+
+The 1080x1920 size came from the `<Composition>` you registered, so this command needs no extra flags.
+
+<Cards>
+  <Card title="Captions" href="/docs/captions" />
+  <Card title="Recipes" href="/docs/recipes" />
+</Cards>
