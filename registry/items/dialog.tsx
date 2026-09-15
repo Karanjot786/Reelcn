@@ -63,7 +63,11 @@ export function Dialog({ id: _id, steps, title, children, place, style, classNam
   const fromOpen = from === "open" ? 1 : 0;
   const toOpen = state === "open" ? 1 : 0;
   const openAmount = Math.max(0, Math.min(1, fromOpen + (toOpen - fromOpen) * progress));
-  const popupW = Math.min(u(POPUP_WIDTH), width - safe.x * 2);
+  // Same formula `useDialogAnchors` hands out as this dialog's anchor rect — the card's real box must
+  // match it, or a child placed by `place` (a % of *this* box, per its own containing-block CSS) lands
+  // against a height the card never actually reserves (T1: an auto-height card sized to the title alone
+  // put a `place={{y:60}}` button on top of the title instead of below it).
+  const { width: popupW, height: popupH } = dialogBoxSize(u, width, safe.x);
 
   return (
     <AbsoluteFill style={{ pointerEvents: openAmount > 0.02 ? "auto" : "none", opacity: m.presence }}>
@@ -77,6 +81,7 @@ export function Dialog({ id: _id, steps, title, children, place, style, classNam
             top: place ? `${place.y}%` : undefined,
             translate: place ? "-50% -50%" : undefined,
             width: popupW,
+            height: popupH,
             padding: u(PAD),
             borderRadius: u(theme.radius),
             background: theme.colors.surface,

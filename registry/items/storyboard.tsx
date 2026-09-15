@@ -455,7 +455,7 @@ function UiSceneRenderer({ components, steps, cursor }: z.infer<typeof uiSceneSc
 
   // Cursor waypoints: one per scene step naming a `target`/`click`, arriving 0.4s before the step's `at`.
   const cursorSteps = steps.filter((s) => s.target || s.click);
-  const waypoints: CursorWaypoint[] = cursorSteps.map((s) => {
+  const arrivals: CursorWaypoint[] = cursorSteps.map((s) => {
     const id = (s.click ?? s.target) as string;
     const rect = anchors[id];
     return {
@@ -464,6 +464,21 @@ function UiSceneRenderer({ components, steps, cursor }: z.infer<typeof uiSceneSc
       frame: Math.max(0, Math.round((s.at - 0.4) * fps)),
       click: Boolean(s.click),
     };
+  });
+  // Between two arrivals, `Cursor`'s single eased spline covers the whole gap — and the theme's
+  // (front-loaded) easing reaches the next anchor well inside the first third of that gap, so a long
+  // gap (typing has time to run) leaves the cursor parked on the *next* control long before this one's
+  // own step fires. A same-position hold keyframe, timed a short beat before the next arrival is due,
+  // pins the cursor on the current control for the rest of the gap and confines the actual travel to
+  // that final beat — so it lands on each control at the time that control acts, per every gap length.
+  const CURSOR_TRAVEL_FRAMES = Math.round(fps * 0.4);
+  const waypoints: CursorWaypoint[] = [];
+  arrivals.forEach((point, i) => {
+    waypoints.push(point);
+    const next = arrivals[i + 1];
+    if (next && next.frame - point.frame > CURSOR_TRAVEL_FRAMES) {
+      waypoints.push({ x: point.x, y: point.y, frame: next.frame - CURSOR_TRAVEL_FRAMES, click: false });
+    }
   });
 
   return (

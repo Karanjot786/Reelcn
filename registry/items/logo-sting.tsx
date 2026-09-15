@@ -44,7 +44,11 @@ export function LogoSting({
   const theme = useTheme();
   const { u } = useViewport();
   const { fps } = useVideoConfig();
-  const m = useMotion({ ...motion, holdFrames: holdFrames ?? fps });
+  // A sting's whole point is to snap into place and hold (M3: pixel-static, logo still visible, for the
+  // final second) — `useMotion`'s own default (`exit: true`) would auto-fade it out before that hold ever
+  // starts, since `holdFrames` there only pulls the exit's own end *earlier*, never suppresses it. Default
+  // to no exit; a caller who explicitly wants one still gets it (`exit`/`holdFrames` stay public props).
+  const m = useMotion({ exit: false, ...motion, holdFrames: holdFrames ?? fps });
   const fill = color ?? theme.colors.foreground;
   const step = Math.round(m.fps * 0.15);
   const box = viewBox.split(/[\s,]+/).map(Number);

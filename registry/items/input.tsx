@@ -132,6 +132,19 @@ export function Input({ id: _id, label, steps, value, placeholder, place, style,
   const isInvalid = state === "invalid";
   const isFocused = state === "active" || state === "typing";
   const borderColor = isInvalid ? theme.colors.danger : isFocused ? theme.colors.accent : theme.colors.border;
+  const shownText = displayed || placeholder || "";
+  // T1: a long typed value (past ~30 chars) ran past the field's right edge onto the background — the
+  // field's own box must stay `FIELD_WIDTH`/`FIELD_HEIGHT` throughout (the ai-generation template flips
+  // this exact box into a skeleton), so the text shrinks to fit instead, the same "measure, then scale
+  // the font" approach `CodeBlock`/`Button` already use for their own fixed-box text.
+  const baseFontPx = u(FONT_SIZE);
+  const metrics = useTextMetrics(shownText, { fontFamily: theme.fonts.mono, fontSize: baseFontPx, fontWeight: 500 });
+  const caretAllowance = showCaret ? u(4) : 0;
+  const availableTextWidth = u(FIELD_WIDTH) - u(PAD_X) * 2 - caretAllowance;
+  const fontPx =
+    metrics.ready && metrics.width > availableTextWidth && metrics.width > 0
+      ? baseFontPx * (availableTextWidth / metrics.width)
+      : baseFontPx;
 
   return (
     <div
@@ -161,17 +174,18 @@ export function Input({ id: _id, label, steps, value, placeholder, place, style,
           alignItems: "center",
           padding: `0 ${u(PAD_X)}px`,
           background: theme.colors.surface,
+          overflow: "hidden",
         }}
       >
         <span
           style={{
             fontFamily: theme.fonts.mono,
-            fontSize: u(FONT_SIZE),
+            fontSize: fontPx,
             color: displayed ? theme.colors.foreground : theme.colors.muted,
             whiteSpace: "nowrap",
           }}
         >
-          {displayed || placeholder || ""}
+          {shownText}
         </span>
         {showCaret ? (
           <span
