@@ -2,17 +2,27 @@
 
 import { Player, type PlayerRef } from "@remotion/player";
 import { useEffect, useRef, useState } from "react";
-import { FORMAT_SIZE, type Format, useDemo, useDemoScene, usePrefersReducedMotion } from "./demo-player";
+import {
+  FORMAT_SIZE,
+  type Format,
+  useDemo,
+  useDemoScene,
+  useNearViewport,
+  usePrefersReducedMotion,
+} from "./demo-player";
 
 const FORMATS: Format[] = ["16x9", "9x16", "1x1"];
 
 /** One demo in all three formats, kept in step, with one slider that scrubs all three. */
 export function FormatTrio({ demoId, category }: { demoId: string; category: string }) {
-  const demo = useDemo(category, demoId);
+  const box = useRef<HTMLDivElement>(null);
+  // Three Players cost the landing page a two-second main-thread task at load; fetch and mount them only once the
+  // section nears the viewport. An empty category loads nothing.
+  const near = useNearViewport(box, "600px", true);
+  const demo = useDemo(near ? category : "", demoId);
   const Scene = useDemoScene(demo);
   const reduced = usePrefersReducedMotion();
   const players = useRef<(PlayerRef | null)[]>([]);
-  const box = useRef<HTMLDivElement>(null);
   const [frame, setFrame] = useState(0);
 
   useEffect(() => {

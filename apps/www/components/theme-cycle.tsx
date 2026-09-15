@@ -2,13 +2,15 @@
 // biome-ignore-all lint/performance/noImgElement: static theme stills with width/height
 
 import { useEffect, useRef, useState } from "react";
-import { DemoPlayer, prefersReducedMotion } from "./demo-player";
+import { DemoPlayer, prefersReducedMotion, useNearViewport } from "./demo-player";
 
 /** The ThemeProvider line cycling through every theme, a Player that follows it, and stills that stop the cycle. */
 export function ThemeCycle({ themes }: { themes: string[] }) {
   const [index, setIndex] = useState(Math.max(0, themes.indexOf("sunset")));
   const [auto, setAuto] = useState(true);
   const ref = useRef<HTMLDivElement>(null);
+  // The Player autoplays, so it mounts only while the section is near the viewport and never renders off-screen.
+  const near = useNearViewport(ref);
 
   useEffect(() => {
     if (!auto || prefersReducedMotion()) return;
@@ -35,7 +37,12 @@ export function ThemeCycle({ themes }: { themes: string[] }) {
         <span className="val">{theme}</span>"<span className="tag">&gt;</span>
       </div>
       <div className="theme-stage">
-        <DemoPlayer demoId="product-launch" category="templates" format="16x9" theme={theme} controls={false} />
+        {near ? (
+          <DemoPlayer demoId="product-launch" category="templates" format="16x9" theme={theme} controls={false} />
+        ) : (
+          // Same box DemoPlayer renders while its demo loads, so nothing shifts when the Player mounts.
+          <div className="player-frame" style={{ aspectRatio: "1920 / 1080" }} aria-hidden="true" />
+        )}
       </div>
       <div className="theme-strip">
         {themes.map((name, i) => (

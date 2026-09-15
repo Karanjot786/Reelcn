@@ -4,7 +4,7 @@ import type { Demo } from "@reelcn/registry/demos";
 import { DemoFrame } from "@reelcn/registry/demos/view";
 import type { ThemeName } from "@reelcn/registry/items/core";
 import { Player } from "@remotion/player";
-import { useEffect, useMemo, useState } from "react";
+import { type RefObject, useEffect, useMemo, useState } from "react";
 
 export type Format = "16x9" | "9x16" | "1x1";
 
@@ -47,6 +47,29 @@ export function usePrefersReducedMotion() {
     return () => media.removeEventListener("change", onChange);
   }, []);
   return reduced;
+}
+
+/**
+ * Whether an element is within `margin` of the viewport. Players below the fold are the landing page's heaviest render,
+ * so they mount only near the viewport; `once` keeps them mounted after the first time.
+ */
+export function useNearViewport(ref: RefObject<Element | null>, margin = "600px", once = false) {
+  const [near, setNear] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const hit = Boolean(entry?.isIntersecting);
+        setNear(hit);
+        if (hit && once) observer.disconnect();
+      },
+      { rootMargin: margin },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [ref, margin, once]);
+  return near;
 }
 
 /** Loads one demo from its category chunk, client-side. `null` until it arrives or when the id is unknown. */
