@@ -1343,6 +1343,19 @@ const { pulse, beat } = useBeat({ bpm: 120 });
 />
 ```
 
+- [Brand Reel](https://www.reelcn.dev/r/brand-reel.json): A brand's logo, palette, type specimen, image collage and lockup, entirely driven by one brand kit and the theme system. (length data-driven · use for A short agency or brand-kit showcase; Introducing a visual identity before a product launch · avoid A product feature tour — use `product-launch`)
+
+```tsx
+<Composition
+  id="BrandReel"
+  component={BrandReel}
+  schema={brandReelSchema}
+  defaultProps={brandReelDefaults}
+  calculateMetadata={brandReelMetadata}
+  width={1920} height={1080} fps={30} durationInFrames={1}
+/>
+```
+
 - [Changelog](https://www.reelcn.dev/r/changelog.json): Release video listing what is new, improved and fixed in a version, three changes per card set. (length data-driven · use for Monthly or per-release update videos; Turning a changelog page into something people watch · avoid A whole product story — use `product-launch`)
 
 ```tsx

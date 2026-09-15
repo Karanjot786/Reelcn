@@ -607,6 +607,49 @@
       }
     },
     {
+      "name": "brand-reel",
+      "type": "registry:item",
+      "title": "Brand Reel",
+      "description": "A brand's logo, palette, type specimen, image collage and lockup, entirely driven by one brand kit and the theme system.",
+      "categories": [
+        "templates"
+      ],
+      "dependencies": [
+        "zod"
+      ],
+      "registryDependencies": [
+        "https://www.reelcn.dev/r/core.json",
+        "https://www.reelcn.dev/r/layout-morph.json",
+        "https://www.reelcn.dev/r/story.json",
+        "https://www.reelcn.dev/r/storyboard.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/brand-reel.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/brand-reel.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<Composition\n  id=\"BrandReel\"\n  component={BrandReel}\n  schema={brandReelSchema}\n  defaultProps={brandReelDefaults}\n  calculateMetadata={brandReelMetadata}\n  width={1920} height={1080} fps={30} durationInFrames={1}\n/>",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "A short agency or brand-kit showcase",
+          "Introducing a visual identity before a product launch"
+        ],
+        "avoid": [
+          "A product feature tour — use `product-launch`"
+        ],
+        "tags": [
+          "brand",
+          "identity",
+          "palette",
+          "collage",
+          "template"
+        ]
+      }
+    },
+    {
       "name": "brand-solid",
       "type": "registry:item",
       "title": "Brand Solid",

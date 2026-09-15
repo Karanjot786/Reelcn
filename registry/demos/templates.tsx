@@ -2,6 +2,7 @@ import type React from "react";
 import { staticFile } from "remotion";
 import { AppPromo, appPromoDefaults, appPromoStory } from "../items/app-promo";
 import { Audiogram, audiogramDefaults } from "../items/audiogram";
+import { BrandReel, brandReelDefaults } from "../items/brand-reel";
 import { Changelog, changelogDefaults, changelogStory } from "../items/changelog";
 import { DataStory, dataStoryDefaults, dataStoryStory } from "../items/data-story";
 import { FeatureShort, featureShortDefaults, featureShortStory } from "../items/feature-short";
@@ -61,11 +62,29 @@ function storyDemo<P extends object>(
   };
 }
 
+// brand-reel's story mixes in two template-local `defineScene` types ("brand-palette",
+// "brand-collage"), which `storyDemo`'s `storyFrames`/`sceneMarks` calls don't know about
+// (they take no custom-scene rules) — so, like `product.tsx`'s own `ui`-scene demo, this is a
+// plain literal-duration entry instead of `storyDemo`, with its own named component function.
+function BrandReelDemo() {
+  return (
+    <BrandReel
+      {...brandReelDefaults}
+      collage={[
+        staticFile("reelcn-demo/screenshots/fictional-analytics.webp"),
+        staticFile("reelcn-demo/screenshots/fictional-mobile-feed.webp"),
+        staticFile("reelcn-demo/screenshots/reelcn-docs.webp"),
+      ]}
+    />
+  );
+}
+
 const productDemos: Demo[] = [
   storyDemo("product-launch", ProductLaunch, productLaunchStory, productLaunchDefaults),
   storyDemo("feature-short", FeatureShort, featureShortStory, featureShortDefaults),
   storyDemo("changelog", Changelog, changelogStory, changelogDefaults),
   storyDemo("app-promo", AppPromo, appPromoStory, appPromoDefaults),
+  { id: "brand-reel", duration: 285, bare: true, component: BrandReelDemo },
 ];
 
 const creatorDemos: Demo[] = [
