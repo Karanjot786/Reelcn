@@ -1,9 +1,18 @@
-import { DocsBody, DocsDescription, DocsPage, DocsTitle, MarkdownCopyButton } from "fumadocs-ui/layouts/docs/page";
+import path from "node:path";
+import {
+  DocsBody,
+  DocsDescription,
+  DocsPage,
+  DocsTitle,
+  MarkdownCopyButton,
+  PageLastUpdate,
+} from "fumadocs-ui/layouts/docs/page";
 import { createRelativeLink } from "fumadocs-ui/mdx";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/json-ld";
 import { getMDXComponents } from "@/components/mdx";
+import { lastModified } from "@/lib/git-date";
 import { breadcrumbList } from "@/lib/json-ld";
 import { SITE_URL } from "@/lib/registry";
 import { getPageMarkdownUrl } from "@/lib/shared";
@@ -21,7 +30,8 @@ const SEARCH_TITLES: Record<string, string> = {
   "/docs/templates": "Free Remotion video templates",
   "/docs/storyboard": "Remotion storyboard: write a video as JSON",
   "/docs/determinism": "Deterministic Remotion rendering",
-  "/docs/agents": "Remotion agent skill and shadcn MCP for Claude Code",
+  "/docs/agents": "reelcn for AI agents: shadcn MCP and llms.txt",
+  "/docs/agent-skill": "Remotion agent skill: make videos with Claude Code",
   "/docs/license": "Is Remotion free? reelcn and Remotion licenses",
 };
 
@@ -31,18 +41,20 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
   if (!page) notFound();
   const MDX = page.data.body;
   const url = `${SITE_URL}${page.url}`;
+  const modified = lastModified(path.join("apps/www/content/docs", page.path));
   const trail: [string, string][] = [
     ["reelcn", SITE_URL],
     ["Docs", `${SITE_URL}/docs`],
   ];
   if (page.url !== "/docs") trail.push([page.data.title, url]);
-  // No dates: the guides carry none yet, and invented ones do more harm than none.
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "TechArticle",
     headline: page.data.title,
     description: page.data.description,
     url,
+    // From git history only; left out rather than guessed when the build has none.
+    dateModified: modified?.toISOString(),
     isPartOf: { "@id": `${SITE_URL}/#website` },
     publisher: { "@id": `${SITE_URL}/#organization` },
   };
@@ -59,6 +71,7 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
       <DocsBody>
         <MDX components={getMDXComponents({ a: createRelativeLink(source, page) })} />
       </DocsBody>
+      {modified && <PageLastUpdate date={modified} />}
     </DocsPage>
   );
 }

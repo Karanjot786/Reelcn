@@ -1,28 +1,8 @@
-import { execFileSync } from "node:child_process";
 import path from "node:path";
 import type { MetadataRoute } from "next";
+import { lastModified } from "@/lib/git-date";
 import { componentUrl, itemSourcePath, items, SITE_URL } from "@/lib/registry";
 import { source } from "@/lib/source";
-
-// `next build` runs in apps/www; git runs from the monorepo root.
-const repoRoot = path.join(process.cwd(), "..", "..");
-
-/**
- * When the file behind a page last changed, from git. Undefined without git history (Vercel builds ship no .git):
- * a build-time date would mark every URL as changed on every deploy.
- */
-function lastModified(file: string): Date | undefined {
-  try {
-    const iso = execFileSync("git", ["log", "-1", "--format=%cI", "--", file], {
-      cwd: repoRoot,
-      encoding: "utf8",
-      stdio: ["ignore", "pipe", "ignore"],
-    }).trim();
-    return iso ? new Date(iso) : undefined;
-  } catch {
-    return undefined;
-  }
-}
 
 // Every indexable HTML page, from the same lists that generate the pages: registry items and the docs source.
 export default function sitemap(): MetadataRoute.Sitemap {

@@ -7,6 +7,7 @@ import {
   DocsPage,
   DocsTitle,
   MarkdownCopyButton,
+  PageLastUpdate,
   ViewOptionsPopover,
 } from "fumadocs-ui/layouts/docs/page";
 import type { Metadata } from "next";
@@ -16,6 +17,7 @@ import { InstallBlock } from "@/components/install-block";
 import { ItemPreview } from "@/components/item-preview";
 import { JsonLd } from "@/components/json-ld";
 import { demosFor, formatsFor, themeNames } from "@/lib/demos";
+import { lastModified } from "@/lib/git-date";
 import { linkifyBackticks } from "@/lib/item-markdown";
 import { breadcrumbList } from "@/lib/json-ld";
 import { REPO_URL } from "@/lib/layout.shared";
@@ -109,12 +111,14 @@ export default async function Page(props: PageProps<"/docs/components/[name]">) 
     ["built-from", "Built from", hasScenes ? 3 : 2, builtFromNames.length > 0],
     ["use", "Use", 2, item.meta.use.length > 0],
     ["avoid", "Avoid", 2, item.meta.avoid.length > 0],
+    ["agent", "Make it with an agent", 2, category === "templates"],
     ["guides", "Guides", 2, !isLib(item)],
     ["source", "Source", 2, true],
     ["related", "Related", 2, related.length > 0],
   ];
   const toc = sections.filter(([, , , shown]) => shown).map(([id, title, depth]) => ({ title, url: `#${id}`, depth }));
   const pageUrl = `${SITE_URL}${componentUrl(item.name)}`;
+  const modified = lastModified(sourcePath);
   const componentJsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareSourceCode",
@@ -125,6 +129,7 @@ export default async function Page(props: PageProps<"/docs/components/[name]">) 
     programmingLanguage: "TypeScript",
     runtimePlatform: "Remotion",
     license: "https://opensource.org/licenses/MIT",
+    dateModified: modified?.toISOString(),
     keywords: item.meta.tags.join(", ") || undefined,
     isPartOf: { "@id": `${SITE_URL}/#library` },
   };
@@ -288,6 +293,17 @@ export default async function Page(props: PageProps<"/docs/components/[name]">) 
           </section>
         )}
 
+        {category === "templates" && (
+          <section>
+            <h2 id="agent">Make it with an agent</h2>
+            <p>
+              With the <Link href="/docs/agent-skill">reelcn agent skill</Link> installed, ask for the video in plain
+              words, such as "make a launch video for Relay with reelcn". The skill picks a template, sets its props,
+              reviews a contact sheet and renders.
+            </p>
+          </section>
+        )}
+
         {!isLib(item) && (
           <section>
             <h2 id="guides">Guides</h2>
@@ -330,6 +346,7 @@ export default async function Page(props: PageProps<"/docs/components/[name]">) 
           </section>
         )}
       </DocsBody>
+      {modified && <PageLastUpdate date={modified} />}
     </DocsPage>
   );
 }

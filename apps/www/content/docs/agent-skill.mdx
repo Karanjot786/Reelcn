@@ -1,0 +1,57 @@
+---
+title: Agent skill
+description: Teach your coding agent to plan, build, check and render videos with reelcn, with eight recipes for common videos.
+---
+
+The reelcn skill turns a request in plain words, like "make a launch video for Relay", into a rendered Remotion video. It knows the whole job: which template or storyboard fits, how to brand it, how to check it before rendering, and how to render.
+
+## Install
+
+Run this in your Remotion project:
+
+```bash
+npx skills add Karanjot786/reelcn
+```
+
+The skill ships a catalog snapshot (every item with its length, use and avoid notes) and eight recipes. Its first line points at the live [`llms.txt`](/llms.txt), so the agent always sees the current catalog.
+
+## Ask for a video
+
+Describe the video you want. The skill matches the request to a recipe:
+
+| Ask for | Recipe |
+|---|---|
+| A new product or a major release | Product launch |
+| One feature, as a vertical short | Feature short |
+| Release notes, "what's new" | Changelog |
+| A how-to for a developer tool | Tutorial |
+| A podcast episode or segment | Podcast clip |
+| A recorded person talking, with captions | Talking-head short |
+| Results, metrics or research | Data story |
+| A channel opener | YouTube intro |
+
+Each recipe gives a scene order, lengths, the items to use and a ready JSON example. When nothing matches, the agent writes a [storyboard](/docs/storyboard) from the catalog's scene types.
+
+## What the agent does
+
+1. **Names the video type** and picks the matching recipe.
+2. **Takes the lightest path.** It installs a [template](/docs/templates) when one fits, writes a storyboard when none does, and builds a custom scene in JSX only when neither can express it.
+3. **Brands it** with a theme preset, your accent color, logo and heading font.
+4. **Picks the format**: 16:9 for YouTube and websites, 9:16 for Shorts, Reels and TikTok, 1:1 for feeds. The same props render every format.
+5. **Reviews a contact sheet** before rendering: text inside the safe zones, nothing clipped at 9:16, no empty frames.
+6. **Checks determinism**, so every render comes out the same (see [Determinism](/docs/determinism)).
+7. **Renders** with `npx remotion render`.
+
+## Rules it follows
+
+- Text stays inside the platform safe zones, and sizes come from design units, so one video fits every [format](/docs/formats).
+- One idea per scene, and scene lengths come from the content rather than a guessed duration.
+- Numbers beat adjectives on screen: "4,200 teams", not "thousands of happy teams".
+- No `Math.random`, `Date.now` or CSS animations, which would make renders differ.
+
+## Next steps
+
+<Cards>
+  <Card title="Browse templates" href="/docs/templates" />
+  <Card title="Use reelcn with the shadcn MCP" href="/docs/agents" />
+</Cards>

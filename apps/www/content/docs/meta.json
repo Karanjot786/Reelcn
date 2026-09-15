@@ -12,6 +12,7 @@
     "storyboard",
     "determinism",
     "agents",
+    "agent-skill",
     "license"
   ]
 }

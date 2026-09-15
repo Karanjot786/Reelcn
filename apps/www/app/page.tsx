@@ -229,7 +229,7 @@ export default function Home() {
         <section className="hero wrap" aria-labelledby="hero-title">
           <div className="hero-top">
             <div>
-              <Link className="eyebrow-cmd" href="/docs/agents#agent-skill">
+              <Link className="eyebrow-cmd" href="/docs/agent-skill">
                 <b>new</b>The agent skill ships with 8 video recipes
               </Link>
               <HeadlineSweep text="Every frame, already designed." />
