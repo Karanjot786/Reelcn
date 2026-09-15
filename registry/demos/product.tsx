@@ -35,6 +35,7 @@ import { Switch } from "../items/switch";
 import { Tabs } from "../items/tabs";
 import { Terminal } from "../items/terminal";
 import { Toast } from "../items/toast";
+import { ToastStack } from "../items/toast-stack";
 import type { Demo } from "./index";
 
 /* ─────────────────────────── shared fake UI screens ─────────────────────────── */
@@ -472,6 +473,23 @@ function ToastSettle() {
   );
 }
 
+function ToastStackDemo() {
+  const { isPortrait } = useViewport();
+  return (
+    <AbsoluteFill>
+      <FakeDashboard />
+      <ToastStack
+        edge={isPortrait ? "top" : "bottom-right"}
+        toasts={[
+          { at: 0, toast: { variant: "success", title: "Deployed", description: "Live in 12 regions" } },
+          { at: 1.2, toast: { variant: "info", title: "Cache warmed" } },
+          { at: 2.4, toast: { variant: "success", title: "Health check passed" } },
+        ]}
+      />
+    </AbsoluteFill>
+  );
+}
+
 /* ─────────────────────────────── chat-thread ─────────────────────────────── */
 
 function ChatThreadDemo() {
@@ -818,6 +836,7 @@ export default [
   { id: "toast-success", duration: 90, bare: true, component: ToastSuccess },
   { id: "toast-error", duration: 90, bare: true, component: ToastError },
   { id: "toast-settle", duration: 90, bare: true, component: ToastSettle },
+  { id: "toast-stack", duration: 150, bare: true, component: ToastStackDemo },
   { id: "chat-thread-reply", duration: 110, component: ChatThreadDemo },
   { id: "command-palette-filter", duration: 100, component: CommandPaletteDemo },
   { id: "command-palette-follow", duration: 100, component: CommandPaletteFollow },

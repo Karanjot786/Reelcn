@@ -1,0 +1,42 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toast-stack",
+  "title": "Toast Stack",
+  "description": "Several toasts, staggered in time, that close up smoothly as each one leaves — a running sum of occupancy-weighted heights, no measured DOM.",
+  "dependencies": [
+    "remotion"
+  ],
+  "registryDependencies": [
+    "https://www.reelcn.dev/r/core.json",
+    "https://www.reelcn.dev/r/toast.json"
+  ],
+  "files": [
+    {
+      "path": "registry/items/toast-stack.tsx",
+      "content": "/**\n * @title Toast Stack\n * @category product\n * @description Several toasts, staggered in time, that close up smoothly as each one leaves — a running sum of occupancy-weighted heights, no measured DOM.\n * @duration data-driven\n * @use Several sequential confirmations or status updates in one product demo\n * @use Simulating a busy notification tray without hand-placing each card\n * @avoid A single notification — use `toast`\n * @tags toast, stack, notification, queue\n * @example\n * <ToastStack\n *   toasts={[\n *     { at: 0, toast: { variant: \"success\", title: \"Deployed\", description: \"Live in 12 regions\" } },\n *     { at: 1.2, toast: { variant: \"info\", title: \"Cache warmed\" } },\n *     { at: 2.4, toast: { variant: \"success\", title: \"Health check passed\" } },\n *   ]}\n * />\n */\nimport { Sequence, useCurrentFrame, useVideoConfig } from \"remotion\";\nimport { clamp01, occupancy, stackOffset, tween, useViewport } from \"./core\";\nimport { Toast, type ToastProps } from \"./toast\";\n\nexport type ToastStackProps = {\n  /** Seconds, per toast, and its own `Toast` props (minus `edge`, shared by the whole stack). */\n  toasts: { at: number; toast: Omit<ToastProps, \"edge\">; holdFrames?: number }[];\n  edge?: ToastProps[\"edge\"];\n};\n\n/** `ponytail:` `toast.tsx` exposes no height constant of its own (Deviation 7) — this is a hand-tuned\n * estimate matching its rendered card height, not a measurement. Upgrade path: keep in sync by eye if\n * `toast.tsx`'s own card height ever changes; both are already hand constants today. */\nconst TOAST_HEIGHT = 96;\nconst SLIDE_FRAMES_S = 0.4;\nconst DEFAULT_HOLD_S = 2.2;\n\nexport function ToastStack({ toasts, edge }: ToastStackProps) {\n  const frame = useCurrentFrame();\n  const { fps } = useVideoConfig();\n  const { u, isPortrait } = useViewport();\n  const slide = Math.round(fps * SLIDE_FRAMES_S);\n  // `toast.tsx`'s own default (`edge ?? (isPortrait ? \"top\" : \"bottom-right\")`), re-derived here rather\n  // than read back from the child — two independent evaluations of the same inputs, never a child→parent read.\n  const resolvedEdge = edge ?? (isPortrait ? \"top\" : \"bottom-right\");\n  // Toasts anchored from the top grow the stack downward, away from the anchor (positive offset).\n  // Toasts anchored from the bottom must grow upward instead, or the stack would sink off the bottom edge.\n  const sign = resolvedEdge === \"top\" || resolvedEdge === \"top-right\" ? 1 : -1;\n\n  const items = toasts.map((t) => {\n    const atFrame = Math.round(t.at * fps);\n    const hold = t.holdFrames ?? Math.round(fps * DEFAULT_HOLD_S);\n    const enter = clamp01(tween(frame, fps, { from: atFrame, duration: slide, motion: \"smooth\" }));\n    const leave = clamp01(tween(frame, fps, { from: atFrame + slide + hold, duration: slide, motion: \"smooth\" }));\n    const lifespan = slide + hold + slide;\n    return { ...t, atFrame, lifespan, occupancy: occupancy(enter, leave), height: u(TOAST_HEIGHT) };\n  });\n\n  return (\n    <>\n      {items.map((item, i) => (\n        // Each toast gets its own local timeline: `Toast`'s own `useMotion` anchors its exit window to\n        // \"the end of the parent Sequence\" (`core.tsx`'s `useMotion` docs), so without a per-toast\n        // `Sequence` its exit would fire at the end of the *whole* stack's duration for every toast at\n        // once, not on its own enter → hold → leave schedule — exactly the staggered-close the occupancy\n        // math above assumes. `delay` is intentionally omitted: the Sequence's own `from` already rebases\n        // `useCurrentFrame()` for everything inside it, so passing both would double the offset.\n        <Sequence key={i} from={item.atFrame} durationInFrames={item.lifespan}>\n          <Toast\n            {...item.toast}\n            edge={resolvedEdge}\n            duration={slide}\n            exit={slide}\n            style={{ transform: `translateY(${sign * stackOffset(items, i)}px)`, ...item.toast.style }}\n          />\n        </Sequence>\n      ))}\n    </>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "~/src/reelcn/toast-stack.tsx"
+    }
+  ],
+  "meta": {
+    "duration": "data-driven",
+    "use": [
+      "Several sequential confirmations or status updates in one product demo",
+      "Simulating a busy notification tray without hand-placing each card"
+    ],
+    "avoid": [
+      "A single notification — use `toast`"
+    ],
+    "tags": [
+      "toast",
+      "stack",
+      "notification",
+      "queue"
+    ]
+  },
+  "docs": "Usage:\n\n<ToastStack\n  toasts={[\n    { at: 0, toast: { variant: \"success\", title: \"Deployed\", description: \"Live in 12 regions\" } },\n    { at: 1.2, toast: { variant: \"info\", title: \"Cache warmed\" } },\n    { at: 2.4, toast: { variant: \"success\", title: \"Health check passed\" } },\n  ]}\n/>",
+  "categories": [
+    "product"
+  ],
+  "type": "registry:item"
+}

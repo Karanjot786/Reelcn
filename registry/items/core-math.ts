@@ -224,6 +224,20 @@ export function redactRectBudget(count: number, max = 8): void {
   if (count > max) throw new Error(`redact: ${count} rects exceeds the ${max}-rect budget`);
 }
 
+/** How much vertical space a toast still occupies in its stack: fully in and not yet leaving is 1;
+ * `enter` and `leave` are the same 0-1 progress values `toast.tsx` already computes for its own slide. */
+export function occupancy(enter: number, leave: number): number {
+  return enter * (1 - leave);
+}
+
+/** The running sum of occupancy-weighted heights above `index` — a slot's y-offset in a closing-up stack,
+ * with no measured DOM and no state, just a sum over already-computed per-toast values. */
+export function stackOffset(items: { occupancy: number; height: number }[], index: number): number {
+  let sum = 0;
+  for (let i = 0; i < index; i++) sum += items[i].occupancy * items[i].height;
+  return sum;
+}
+
 /** Looks up `id` in `anchors`, throwing a named error instead of returning `undefined` — the one
  * consistent contract all four `target` consumers use (ponytail-review should-fix 4). */
 export function requireAnchor(anchors: Record<string, AnchorRect>, id: string, itemName: string): AnchorRect {

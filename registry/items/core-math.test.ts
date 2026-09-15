@@ -309,3 +309,36 @@ test("redactRectBudget: 8 rects is fine (the reference implementation's own limi
 test("redactRectBudget: 9 rects throws", () => {
   assert.throws(() => redactRectBudget(9));
 });
+
+import { occupancy, stackOffset } from "./core-math.ts";
+
+test("occupancy: fully entered and not yet leaving is 1", () => {
+  assert.equal(occupancy(1, 0), 1);
+});
+
+test("occupancy: fully left is 0 regardless of enter", () => {
+  assert.equal(occupancy(1, 1), 0);
+});
+
+test("occupancy: half-entered, not leaving, is 0.5", () => {
+  assert.equal(occupancy(0.5, 0), 0.5);
+});
+
+test("stackOffset: a 3-toast fixture with staggered enter/leave — offsets sum only the toasts above", () => {
+  const items = [
+    { occupancy: occupancy(1, 0), height: 100 }, // toast 0: fully in
+    { occupancy: occupancy(1, 0), height: 100 }, // toast 1: fully in
+    { occupancy: occupancy(0.5, 0), height: 100 }, // toast 2: half entered
+  ];
+  assert.equal(stackOffset(items, 0), 0);
+  assert.equal(stackOffset(items, 1), 100); // one full toast above
+  assert.equal(stackOffset(items, 2), 200); // two full toasts above
+});
+
+test("stackOffset: a toast that has left contributes nothing to slots below it", () => {
+  const items = [
+    { occupancy: occupancy(1, 1), height: 100 }, // toast 0: fully left, occupancy 0
+    { occupancy: occupancy(1, 0), height: 100 }, // toast 1: fully in
+  ];
+  assert.equal(stackOffset(items, 1), 0); // toast 0 contributes nothing — the stack closed up
+});

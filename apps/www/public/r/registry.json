@@ -5089,6 +5089,46 @@
       }
     },
     {
+      "name": "toast-stack",
+      "type": "registry:item",
+      "title": "Toast Stack",
+      "description": "Several toasts, staggered in time, that close up smoothly as each one leaves — a running sum of occupancy-weighted heights, no measured DOM.",
+      "categories": [
+        "product"
+      ],
+      "dependencies": [
+        "remotion"
+      ],
+      "registryDependencies": [
+        "https://www.reelcn.dev/r/core.json",
+        "https://www.reelcn.dev/r/toast.json"
+      ],
+      "files": [
+        {
+          "path": "registry/items/toast-stack.tsx",
+          "type": "registry:file",
+          "target": "~/src/reelcn/toast-stack.tsx"
+        }
+      ],
+      "docs": "Usage:\n\n<ToastStack\n  toasts={[\n    { at: 0, toast: { variant: \"success\", title: \"Deployed\", description: \"Live in 12 regions\" } },\n    { at: 1.2, toast: { variant: \"info\", title: \"Cache warmed\" } },\n    { at: 2.4, toast: { variant: \"success\", title: \"Health check passed\" } },\n  ]}\n/>",
+      "meta": {
+        "duration": "data-driven",
+        "use": [
+          "Several sequential confirmations or status updates in one product demo",
+          "Simulating a busy notification tray without hand-placing each card"
+        ],
+        "avoid": [
+          "A single notification — use `toast`"
+        ],
+        "tags": [
+          "toast",
+          "stack",
+          "notification",
+          "queue"
+        ]
+      }
+    },
+    {
       "name": "toast",
       "type": "registry:item",
       "title": "Toast",

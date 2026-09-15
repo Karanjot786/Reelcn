@@ -934,6 +934,18 @@ storyFrames({
 </Center>
 ```
 
+- [Toast Stack](https://www.reelcn.dev/r/toast-stack.json): Several toasts, staggered in time, that close up smoothly as each one leaves — a running sum of occupancy-weighted heights, no measured DOM. (length data-driven · use for Several sequential confirmations or status updates in one product demo; Simulating a busy notification tray without hand-placing each card · avoid A single notification — use `toast`)
+
+```tsx
+<ToastStack
+  toasts={[
+    { at: 0, toast: { variant: "success", title: "Deployed", description: "Live in 12 regions" } },
+    { at: 1.2, toast: { variant: "info", title: "Cache warmed" } },
+    { at: 2.4, toast: { variant: "success", title: "Health check passed" } },
+  ]}
+/>
+```
+
 - [Toast](https://www.reelcn.dev/r/toast.json): Notification card with a status icon that slides in from an edge, holds, then slides back out. (length 90f@30fps · use for Confirming an action, a deploy, an upload or a saved state in a product demo; A short system message that appears over a UI mockup · avoid A message pointing at part of the screen — use `callout`)
 
 ```tsx
