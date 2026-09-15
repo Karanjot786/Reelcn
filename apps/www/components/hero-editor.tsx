@@ -1,7 +1,7 @@
 "use client";
 // biome-ignore-all lint/performance/noImgElement: a static poster and clip stills with width/height; next/image adds nothing here
 
-import { sceneIndexAt, sceneMarks } from "@reelcn/registry/demos/scene-marks";
+import { type SceneMark, sceneIndexAt, sceneMarks } from "@reelcn/registry/demos/scene-marks";
 import { type ThemeName, ThemeProvider, themes } from "@reelcn/registry/items/core";
 import type { ProductLaunchProps } from "@reelcn/registry/items/product-launch";
 import { storyFrames } from "@reelcn/registry/items/story";
@@ -81,6 +81,10 @@ const TEXT_FIELDS: { key: "name" | "tagline" | "cta"; max: number }[] = [
 const pad = (n: number) => String(n).padStart(2, "0");
 const timecode = (frame: number) =>
   `${pad(Math.floor(frame / 1800))}:${pad(Math.floor(frame / 30) % 60)}:${pad(frame % 30)}`;
+// Updates a React-rendered text node in place, so React keeps owning the node it created.
+const setText = (el: Element | null, text: string) => {
+  if (el?.firstChild) el.firstChild.nodeValue = text;
+};
 const percent = (part: number, whole: number) => `${((part / whole) * 100).toFixed(3)}%`;
 const pascal = (name: string) =>
   name
@@ -107,9 +111,16 @@ export function HeroEditor({ poster, install }: { poster: string; install: strin
   // While the stage is pinned, scroll drives the playhead from `base`; `length` is the duration it was set for.
   const scrollAnchor = useRef<{ base: number; length: number } | null>(null);
   const durationRef = useRef(615);
+  const marksRef = useRef<SceneMark[]>([]);
+  const labelEl = useRef<HTMLSpanElement>(null);
+  const timecodeEl = useRef<HTMLSpanElement>(null);
+  const meterEl = useRef<HTMLElement>(null);
+  const rulerEl = useRef<HTMLDivElement>(null);
+  const playheadEl = useRef<HTMLDivElement>(null);
   const [format, setFormat] = useState<Format>("16x9");
   const [theme, setTheme] = useState<ThemeName>("midnight");
-  const [frame, setFrame] = useState(0);
+  // Only the scene index is state: a new value re-renders the timeline highlight and scene panel.
+  const [, setScene] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [safe, setSafe] = useState(true);
   const [muted, setMuted] = useState(true);
@@ -119,7 +130,26 @@ export function HeroEditor({ poster, install }: { poster: string; install: strin
   const [live, setLive] = useState<Draft>(START);
   const [launch, setLaunch] = useState<LaunchModule | null>(null);
 
+  // Per-frame UI (frame label, timecode, scene meter, slider value, playhead) is written straight to the DOM, so
+  // playback and scrubbing don't re-render the whole editor 30 times a second. React re-renders on a scene change.
+  const showFrame = (next: number) => {
+    frameRef.current = next;
+    const marks = marksRef.current;
+    const length = durationRef.current;
+    const index = sceneIndexAt(marks, next);
+    setScene(index);
+    const from = marks[index]?.from ?? 0;
+    const to = marks[index + 1]?.from ?? length;
+    setText(labelEl.current, `f${next}`);
+    setText(timecodeEl.current, timecode(next));
+    rulerEl.current?.setAttribute("aria-valuenow", String(next));
+    rulerEl.current?.setAttribute("aria-valuetext", timecode(next));
+    meterEl.current?.style.setProperty("--w", marks.length ? percent(next - from, to - from) : percent(next, length));
+    playheadEl.current?.style.setProperty("--t", String(next / length));
+  };
+
   // On wide screens the stage is tall and the editor pins; scroll grows it to cover the screen, holds, then settles.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: mounts once; showFrame only reads refs and calls a stable state setter
   useEffect(() => {
     const box = stage.current;
     const el = card.current;
@@ -143,8 +173,7 @@ export function HeroEditor({ poster, install }: { poster: string; install: strin
         Math.abs(gap) < 0.5 ? target : shown + Math.max(-SCRUB_MAX_STEP, Math.min(SCRUB_MAX_STEP, gap * SCRUB_EASE));
       const next = ((Math.round(shown) % anchor.length) + anchor.length) % anchor.length;
       if (next !== frameRef.current) {
-        frameRef.current = next;
-        setFrame(next);
+        showFrame(next);
         player.current?.seekTo(next);
       }
       if (shown !== target) chase = requestAnimationFrame(follow);
@@ -239,6 +268,7 @@ export function HeroEditor({ poster, install }: { poster: string; install: strin
   const duration = story ? storyFrames(story, launch?.productLaunchScenes) : (demo?.duration ?? 615);
   const marks = story ? sceneMarks(story, launch?.productLaunchScenes) : (demo?.scenes ?? []);
   durationRef.current = duration;
+  marksRef.current = marks;
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: a new component remounts the Player, so listeners re-attach and the frame carries over
   useEffect(() => {
@@ -249,8 +279,7 @@ export function HeroEditor({ poster, install }: { poster: string; install: strin
     // A remount mid-scroll (template switch, first edit) autoplays; the pinned stage keeps the playhead.
     if (scrollAnchor.current) p.pause();
     const onFrame: CallbackListener<"frameupdate"> = (event) => {
-      frameRef.current = event.detail.frame;
-      setFrame(event.detail.frame);
+      showFrame(event.detail.frame);
     };
     const onPlay = () => setPlaying(true);
     const onPause = () => setPlaying(false);
@@ -276,7 +305,7 @@ export function HeroEditor({ poster, install }: { poster: string; install: strin
   }, [component, reduced]);
 
   const spans = marks.map((mark, i) => ({ ...mark, to: marks[i + 1]?.from ?? duration }));
-  const current = sceneIndexAt(marks, frame);
+  const current = sceneIndexAt(marks, frameRef.current);
   const { width, height } = FORMAT_SIZE[format];
   const colors = themes[theme].colors;
   const composition = pascal(templateId);
@@ -284,8 +313,7 @@ export function HeroEditor({ poster, install }: { poster: string; install: strin
 
   const seekTo = (next: number) => {
     const clamped = Math.min(duration - 1, Math.max(0, next));
-    frameRef.current = clamped;
-    setFrame(clamped);
+    showFrame(clamped);
     player.current?.seekTo(clamped);
     // A manual seek while pinned: the next scroll carries on from here instead of snapping back.
     if (scrollAnchor.current) scrollAnchor.current.length = 0;
@@ -320,8 +348,8 @@ export function HeroEditor({ poster, install }: { poster: string; install: strin
     }
     const step = event.shiftKey ? 10 : 1;
     const next: Record<string, number> = {
-      ArrowLeft: frame - step,
-      ArrowRight: frame + step,
+      ArrowLeft: frameRef.current - step,
+      ArrowRight: frameRef.current + step,
       Home: 0,
       End: duration - 1,
     };
@@ -331,8 +359,7 @@ export function HeroEditor({ poster, install }: { poster: string; install: strin
     seekTo(next[event.key]);
   };
   const switchTemplate = (id: string) => {
-    frameRef.current = 0;
-    setFrame(0);
+    showFrame(0);
     setTemplateId(id);
   };
   const toggleMute = () => {
@@ -445,7 +472,7 @@ export function HeroEditor({ poster, install }: { poster: string; install: strin
                       />
                     )}
                     <div className="safe" data-off={safe ? undefined : ""} />
-                    <span className="frame-label tab">f{frame}</span>
+                    <span ref={labelEl} className="frame-label tab">{`f${frameRef.current}`}</span>
                   </div>
                 </div>
                 <div className="vbar">
@@ -459,7 +486,9 @@ export function HeroEditor({ poster, install }: { poster: string; install: strin
                       <path d={playing ? "M3 2h2v8H3zM7 2h2v8H7z" : "M3 1.5l7 4.5-7 4.5z"} fill="#0A0B0D" />
                     </svg>
                   </button>
-                  <span className="tc tab">{timecode(frame)}</span>
+                  <span ref={timecodeEl} className="tc tab">
+                    {timecode(frameRef.current)}
+                  </span>
                   <span className="tab">/ {timecode(duration)}</span>
                   <span className="sp" />
                   <button className="toggle-safe" type="button" aria-pressed={!muted} onClick={toggleMute}>
@@ -569,11 +598,12 @@ export function HeroEditor({ poster, install }: { poster: string; install: strin
                   <div className="scene-name">{marks[current]?.name ?? "single scene"}</div>
                   <div className="scene-meter">
                     <i
+                      ref={meterEl}
                       style={
                         {
                           "--w": spans[current]
-                            ? percent(frame - spans[current].from, spans[current].to - spans[current].from)
-                            : percent(frame, duration),
+                            ? percent(frameRef.current - spans[current].from, spans[current].to - spans[current].from)
+                            : percent(frameRef.current, duration),
                         } as CSSProperties
                       }
                     />
@@ -586,14 +616,15 @@ export function HeroEditor({ poster, install }: { poster: string; install: strin
             </div>
             <div className="tl">
               <div
+                ref={rulerEl}
                 className="ruler"
                 role="slider"
                 tabIndex={0}
                 aria-label="Playhead"
                 aria-valuemin={0}
                 aria-valuemax={duration - 1}
-                aria-valuenow={frame}
-                aria-valuetext={timecode(frame)}
+                aria-valuenow={frameRef.current}
+                aria-valuetext={timecode(frameRef.current)}
                 onKeyDown={onSliderKey}
                 {...scrub}
               >
@@ -642,7 +673,12 @@ export function HeroEditor({ poster, install }: { poster: string; install: strin
                   ))}
                 </div>
               </div>
-              <div className="ph" aria-hidden="true" style={{ "--t": frame / duration } as CSSProperties} />
+              <div
+                ref={playheadEl}
+                className="ph"
+                aria-hidden="true"
+                style={{ "--t": frameRef.current / duration } as CSSProperties}
+              />
               <div className="tip" aria-hidden="true" style={{ left: tip?.left, top: tip?.top, opacity: tip ? 1 : 0 }}>
                 {tip?.item} <b>drag to scrub</b>
               </div>

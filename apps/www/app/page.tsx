@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import type { CSSProperties, ReactNode } from "react";
+import { type CSSProperties, type ReactNode, Suspense } from "react";
 import { CopyCommand } from "@/components/copy-command";
 import { FormatTrio } from "@/components/format-trio";
 import { FrameSheet } from "@/components/frame-sheet";
@@ -265,7 +265,11 @@ export default function Home() {
               <span>pixels different, render to render</span>
             </div>
           </div>
-          <HeroEditor poster="/thumbs/hero-launch.jpg" install={`npx shadcn add ${installUrl("product-launch")}`} />
+          {/* Each interactive island sits in its own Suspense boundary, so React hydrates them as separate tasks
+              instead of the whole page in one long one. The HTML is unchanged: nothing here suspends on the server. */}
+          <Suspense>
+            <HeroEditor poster="/thumbs/hero-launch.jpg" install={`npx shadcn add ${installUrl("product-launch")}`} />
+          </Suspense>
         </section>
 
         <section className="block wrap" id="costs" aria-labelledby="costs-title">
@@ -299,54 +303,56 @@ export default function Home() {
             </div>
             <p>Three commands. No components.json, no path aliases, no account.</p>
           </div>
-          <div className="steps">
-            <div className="step">
-              <span className="num">1</span>
-              <div className="term">
-                <div className="term-h">~/launch-video</div>
-                <TypeOnView
-                  command="npx create-video@latest"
-                  lines={[
-                    { text: "✓ Blank template", ok: true },
-                    { text: "✓ Installed remotion 4.0.523" },
-                    { text: "Run npm run dev to open Studio" },
-                  ]}
-                />
+          <Suspense>
+            <div className="steps">
+              <div className="step">
+                <span className="num">1</span>
+                <div className="term">
+                  <div className="term-h">~/launch-video</div>
+                  <TypeOnView
+                    command="npx create-video@latest"
+                    lines={[
+                      { text: "✓ Blank template", ok: true },
+                      { text: "✓ Installed remotion 4.0.523" },
+                      { text: "Run npm run dev to open Studio" },
+                    ]}
+                  />
+                </div>
+                <h3>Start a Remotion project</h3>
+                <p>Any Remotion project works, new or years old.</p>
               </div>
-              <h3>Start a Remotion project</h3>
-              <p>Any Remotion project works, new or years old.</p>
-            </div>
-            <div className="step">
-              <span className="num">2</span>
-              <div className="term">
-                <div className="term-h">~/launch-video</div>
-                <TypeOnView
-                  command="npx shadcn add product-launch"
-                  lines={[
-                    { text: "✓ src/reelcn/product-launch.tsx", ok: true },
-                    { text: "✓ src/reelcn/storyboard.tsx", ok: true },
-                    { text: "✓ src/reelcn/story-scenes.tsx", ok: true },
-                    { text: "+ 11 files, zod, mediabunny" },
-                  ]}
-                />
+              <div className="step">
+                <span className="num">2</span>
+                <div className="term">
+                  <div className="term-h">~/launch-video</div>
+                  <TypeOnView
+                    command="npx shadcn add product-launch"
+                    lines={[
+                      { text: "✓ src/reelcn/product-launch.tsx", ok: true },
+                      { text: "✓ src/reelcn/storyboard.tsx", ok: true },
+                      { text: "✓ src/reelcn/story-scenes.tsx", ok: true },
+                      { text: "+ 11 files, zod, mediabunny" },
+                    ]}
+                  />
+                </div>
+                <h3>Add a template</h3>
+                <p>Its scenes, theme and dependencies land as source you can read.</p>
               </div>
-              <h3>Add a template</h3>
-              <p>Its scenes, theme and dependencies land as source you can read.</p>
-            </div>
-            <div className="step">
-              <span className="num">3</span>
-              <div className="term">
-                <div className="term-h">~/launch-video</div>
-                <TypeOnView
-                  command="npx remotion render ProductLaunch"
-                  lines={[{ text: "Bundled in 1.2 s" }]}
-                  render={{ frames: 615, output: "out/ProductLaunch.mp4" }}
-                />
+              <div className="step">
+                <span className="num">3</span>
+                <div className="term">
+                  <div className="term-h">~/launch-video</div>
+                  <TypeOnView
+                    command="npx remotion render ProductLaunch"
+                    lines={[{ text: "Bundled in 1.2 s" }]}
+                    render={{ frames: 615, output: "out/ProductLaunch.mp4" }}
+                  />
+                </div>
+                <h3>Render it</h3>
+                <p>615 frames, measured from the content. Same pixels every time.</p>
               </div>
-              <h3>Render it</h3>
-              <p>615 frames, measured from the content. Same pixels every time.</p>
             </div>
-          </div>
+          </Suspense>
           <p className="after">
             Prefer an agent? <a href="#agents">Give it the reelcn skill</a> and describe the video.
           </p>
@@ -363,7 +369,9 @@ export default function Home() {
               Reels and a square post each come from one render command.
             </p>
           </div>
-          <FormatTrio demoId="product-launch" category="templates" />
+          <Suspense>
+            <FormatTrio demoId="product-launch" category="templates" />
+          </Suspense>
         </section>
 
         <section className="block wrap" id="themes" aria-labelledby="themes-title">
@@ -377,7 +385,9 @@ export default function Home() {
               together.
             </p>
           </div>
-          <ThemeCycle themes={themeNames} />
+          <Suspense>
+            <ThemeCycle themes={themeNames} />
+          </Suspense>
         </section>
 
         <section className="block wrap" id="catalog" aria-labelledby="catalog-title">
@@ -388,7 +398,9 @@ export default function Home() {
             </div>
             <p>Hover a frame to watch it move. Every item has a page with a live player, props and install tabs.</p>
           </div>
-          <FrameSheet frames={sheet} />
+          <Suspense>
+            <FrameSheet frames={sheet} />
+          </Suspense>
         </section>
 
         <section className="block wrap" id="agents" aria-labelledby="agents-title">
