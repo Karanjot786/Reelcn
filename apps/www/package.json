@@ -10,6 +10,7 @@
     "typecheck": "next typegen && tsc --noEmit"
   },
   "dependencies": {
+    "@microsoft/clarity": "^1.0.2",
     "@reelcn/registry": "workspace:*",
     "@remotion/player": "catalog:",
     "@vercel/analytics": "2.0.1",

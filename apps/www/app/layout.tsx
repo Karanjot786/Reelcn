@@ -2,6 +2,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { RootProvider } from "fumadocs-ui/provider/next";
 import type { Metadata } from "next";
 import { IBM_Plex_Mono, IBM_Plex_Sans, IBM_Plex_Sans_Condensed } from "next/font/google";
+import { ClarityAnalytics } from "@/components/clarity";
 import { JsonLd } from "@/components/json-ld";
 import { REPO_URL } from "@/lib/layout.shared";
 import { SITE_URL } from "@/lib/registry";
@@ -56,6 +57,7 @@ export default function Layout({ children }: LayoutProps<"/">) {
         </RootProvider>
         {/* Page views and referrers, so search traffic is visible. Collects nothing until Web Analytics is on in Vercel. */}
         <Analytics />
+        <ClarityAnalytics />
       </body>
     </html>
   );
