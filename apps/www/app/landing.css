@@ -100,7 +100,7 @@
       opacity var(--t1) ease-out;
   }
   /* The bin: one panel for every section, sized to the open one so switching slides content instead of reopening. */
-  .bin {
+  .navbin {
     position: absolute;
     top: calc(100% + 12px);
     left: -10px;
@@ -122,7 +122,7 @@
       opacity var(--t1) ease-out,
       translate var(--t2) var(--e-out);
   }
-  .navlinks[data-open] .bin {
+  .navlinks[data-open] .navbin {
     height: var(--h, 0);
     opacity: 1;
     translate: 0 0;

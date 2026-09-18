@@ -126,7 +126,7 @@ export function NavMenu({ items }: { items: NavItem[] }) {
         </Link>
       ))}
       {panels.length > 0 && (
-        <div className="bin" id="nav-bin" ref={panelRef}>
+        <div className="navbin" id="nav-bin" ref={panelRef}>
           <div className="bin-in">
             {panels.map(({ href, panel }) => {
               const active = open === href;
