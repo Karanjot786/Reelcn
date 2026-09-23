@@ -27,8 +27,8 @@ export function quantizeMotion(m: MotionPersonality): { preset: MotionPreset; st
  * 0-1 progress from `frame`/`fps` over `duration` frames starting at `delay`, quantized by `motion`'s
  * step/jitter — the same time-quantization `tween` (in core.tsx) applies, reimplemented here without a
  * curve library since core-math.ts can't import core.tsx's Easing/spring helpers (core.tsx is JSX and
- * can't be loaded by node's native TypeScript loader; this file exists so node --test can). Linear only:
- * a variable-font axis move reads fine as a straight ramp, and it keeps this file dependency-free.
+ * can't be loaded by node's native TypeScript loader; this file exists so node --test can). Returns linear
+ * progress; `useVariableFontAxis` applies its own pure ease-out, which keeps this file dependency-free.
  */
 function axisProgress(
   frame: number,
@@ -36,8 +36,11 @@ function axisProgress(
 ): number {
   if (duration <= 0) return frame >= delay ? 1 : 0;
   const q = quantizeMotion(motion);
+  // wobble in [0, step-1]: holds vary in length, but quantized time never runs backward.
   const wobble =
-    q.jitter > 0 ? Math.round((random(`axis-jitter-${Math.floor(frame / q.step)}`) - 0.5) * 2 * q.jitter * q.step) : 0;
+    q.jitter > 0
+      ? Math.round(random(`axis-jitter-${Math.floor(frame / q.step)}`) * Math.min(q.jitter, 1) * (q.step - 1))
+      : 0;
   const f = q.step > 1 ? Math.floor((frame + wobble) / q.step) * q.step : frame;
   return clamp01((f - delay) / duration);
 }
@@ -61,7 +64,7 @@ export function useVariableFontAxis(
 ): string {
   const span = duration ?? Math.round(fps * 0.6);
   const t = axisProgress(frame, { delay, duration: span, motion });
-  const value = from + (to - from) * t;
+  const value = from + (to - from) * (1 - (1 - t) ** 3); // ease-out cubic, like every other enter
   return `"wdth" ${value.toFixed(2)}`;
 }
 

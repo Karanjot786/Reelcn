@@ -19,8 +19,11 @@
  */
 import type { TransitionPresentation, TransitionPresentationComponentProps } from "@remotion/transitions";
 import type React from "react";
-import { AbsoluteFill, interpolate } from "remotion";
-import { alpha, CLAMP, easings, exitEasing, useTheme, useViewport } from "./core";
+import { AbsoluteFill, Easing, interpolate } from "remotion";
+import { alpha, CLAMP, easings, useTheme, useViewport } from "./core";
+
+/** On-screen morphs and the fly-off: ease-in-out, finite velocity at both ends (no one-frame jump). */
+const inOut = Easing.inOut(Easing.cubic);
 
 export type CardPushProps = {
   /** Where the outgoing card leaves to. The incoming card rises from the opposite side. */
@@ -61,8 +64,8 @@ function CardPushPresentation({
   });
 
   if (presentationDirection === "exiting") {
-    const shrink = at(0, 0.45, easings.gentle);
-    const leave = at(0.3, 0.9, exitEasing);
+    const shrink = at(0, 0.45, inOut);
+    const leave = at(0.3, 0.9, inOut);
     // zIndex lifts the outgoing card above the incoming scene, so the next card waits behind it.
     return (
       <AbsoluteFill style={{ zIndex: 1 }}>
@@ -81,7 +84,7 @@ function CardPushPresentation({
   }
 
   const rise = at(0.2, 0.75, easings.smooth);
-  const grow = at(0.55, 1, easings.gentle);
+  const grow = at(0.55, 1, inOut);
   const backdrop =
     passedProps.backdrop ?? `color-mix(in srgb, ${theme.colors.foreground} 14%, ${theme.colors.background})`;
   return (

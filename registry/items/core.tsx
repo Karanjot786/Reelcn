@@ -436,12 +436,12 @@ export const CLAMP = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as 
 export const easings: Record<Exclude<MotionPreset, "bouncy" | "settle">, (t: number) => number> = {
   smooth: Easing.bezier(0.16, 1, 0.3, 1),
   snappy: Easing.bezier(0.2, 0.9, 0.1, 1),
-  gentle: Easing.bezier(0.45, 0, 0.55, 1),
+  gentle: Easing.bezier(0.25, 0.1, 0.25, 1),
   linear: Easing.linear,
 };
 
-/** Accelerating curve used for exits. */
-export const exitEasing = Easing.bezier(0.55, 0, 1, 0.45);
+/** Exit curve: strong ease-out that ends at zero velocity, so the last frame of an exit never pops. */
+export const exitEasing = Easing.bezier(0.23, 1, 0.32, 1);
 
 /** 0 → 1 over `duration` frames starting at `from`, shaped by a motion preset. `bouncy` overshoots past 1. */
 export function tween(
@@ -457,21 +457,24 @@ export function tween(
   }: { from?: number; duration: number; motion?: MotionPreset; step?: number; jitter?: number; seed?: string },
 ): number {
   if (duration <= 0) return frame >= from ? 1 : 0;
-  const wobble = jitter > 0 ? Math.round((random(`${seed}-${Math.floor(frame / step)}`) - 0.5) * 2 * jitter * step) : 0;
+  // wobble in [0, step-1]: holds vary in length, but quantized time never runs backward.
+  const wobble =
+    jitter > 0 ? Math.round(random(`${seed}-${Math.floor(frame / step)}`) * Math.min(jitter, 1) * (step - 1)) : 0;
   const f = step > 1 ? Math.floor((frame + wobble) / step) * step : frame;
   if (motion === "bouncy") {
     return spring({
       frame: f - from,
       fps,
       durationInFrames: duration,
-      config: { damping: 12, stiffness: 170, mass: 0.9 },
+      config: { damping: 15, stiffness: 170, mass: 0.9 },
     });
   }
   if (motion === "settle") {
     const t = Math.min(Math.max((f - from) / duration, 0), 1);
     if (t <= 0) return 0;
-    if (t < 0.4) return interpolate(t, [0, 0.4], [0, 1.06], { ...CLAMP, easing: easings.smooth });
-    return 1 + 0.06 * Math.exp(-4.6 * ((t - 0.4) / 0.6));
+    // Arrive at the 6% overshoot at rest, then ease back: velocity is continuous and it lands on exactly 1.
+    if (t < 0.6) return interpolate(t, [0, 0.6], [0, 1.06], { ...CLAMP, easing: easings.smooth });
+    return interpolate(t, [0.6, 1], [1.06, 1], { ...CLAMP, easing: Easing.inOut(Easing.cubic) });
   }
   return interpolate(f, [from, from + duration], [0, 1], { ...CLAMP, easing: easings[motion] });
 }
@@ -580,8 +583,9 @@ export function useRoleMotion(
   const exitShape = { ...roleDefaults.exit, ...overrides?.exit };
   const enter = Math.min(m.enter, 1);
   // opacityLeadFrames converted to a share of the exit window, so it stays a frame count regardless of exit length.
-  const exitOpacityLead =
-    m.exit > 0 && m.exit < 1 ? Math.min(1, m.exit + exitShape.opacityLeadFrames / Math.max(m.fps * 0.35, 1)) : m.exit;
+  // Rescaled rather than offset: 0 at exit start, reaches 1 `lead` share early, with no one-frame step.
+  const lead = Math.min(0.9, exitShape.opacityLeadFrames / Math.max(m.fps * 0.35, 1));
+  const exitOpacityLead = Math.min(1, m.exit / (1 - lead));
   return {
     opacity: enter * (1 - Math.min(exitOpacityLead, 1)),
     geometry: enter * (1 - m.exit),
@@ -816,6 +820,19 @@ export function useKeyframePath(keys: PoseKey[], opts?: { motion?: MotionPreset 
   const p3 = at(segment + 2);
   const span = Math.max(p2.frame - p1.frame, 1);
   const localT = tween(clamped, fps, { from: p1.frame, duration: span, motion: opts?.motion ?? "linear" });
+  // With no explicit motion, ease the path's first and last segments so the move starts and stops at rest;
+  // easeInC1 has v(0)=0, v(1)=1, so it joins a linear middle segment without a kink.
+  const lastSeg = sorted.length - 2;
+  const easeInC1 = (t: number) => t * t * (2 - t);
+  const pathT = opts?.motion
+    ? localT
+    : segment === 0 && segment === lastSeg
+      ? Easing.inOut(Easing.cubic)(localT)
+      : segment === 0
+        ? easeInC1(localT)
+        : segment === lastSeg
+          ? 1 - easeInC1(1 - localT)
+          : localT;
 
   type Field = "x" | "y" | "scale" | "rotate" | "width" | "height";
   const field = (key: PoseKey, name: Field, fallback: number) => key[name] ?? fallback;
@@ -825,7 +842,7 @@ export function useKeyframePath(keys: PoseKey[], opts?: { motion?: MotionPreset 
       field(p1, name, fallback),
       field(p2, name, fallback),
       field(p3, name, fallback),
-      localT,
+      pathT,
     );
 
   return {

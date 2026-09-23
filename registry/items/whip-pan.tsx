@@ -50,7 +50,10 @@ function WhipPanPresentation({
   const speed = 4 * shaped * (1 - shaped);
   const shortSide = Math.min(width, height);
   const sigma = speed * strength * u(20);
-  const overscan = 1 + (6 * sigma) / shortSide;
+  // Content keeps moving the same way across the cut: the outgoing scene drifts toward -axis, the incoming
+  // one arrives from +axis. % of frame, exactly 0 at both ends, max 5% × strength at the (blurred) cut.
+  const travel = (exiting ? -shaped : 1 - shaped) * 10 * strength;
+  const overscan = 1 + (6 * sigma) / shortSide + (2 * Math.abs(travel)) / 100;
   // Per-instance, not per-axis/direction: two whip-pan transitions on screen at once (a split-screen, a
   // nested Series) must not collide on the same SVG filter id (`core.tsx:768`, `glitch.tsx:50`, `grain.tsx:53`).
   const filterId = `whip-pan-${useId().replace(/[^a-zA-Z0-9_-]/g, "")}`;
@@ -67,7 +70,12 @@ function WhipPanPresentation({
           </defs>
         </svg>
       )}
-      <AbsoluteFill style={{ transform: `scale(${overscan})`, filter: hasBlur ? `url(#${filterId})` : undefined }}>
+      <AbsoluteFill
+        style={{
+          transform: `translate${axis === "x" ? "X" : "Y"}(${travel}%) scale(${overscan})`,
+          filter: hasBlur ? `url(#${filterId})` : undefined,
+        }}
+      >
         {children}
       </AbsoluteFill>
     </AbsoluteFill>

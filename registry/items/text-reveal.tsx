@@ -14,8 +14,10 @@
 import type React from "react";
 import {
   alpha,
+  clamp01,
   graphemes,
   type MotionProps,
+  quantizeMotion,
   tween,
   useMotion,
   useTheme,
@@ -59,18 +61,19 @@ const normalize = (word: string) => word.toLowerCase().replace(/[^\p{L}\p{N}]/gu
 
 const SPLIT_FLAP_GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 .,!?-".split("");
 
-/** Cycles a character through a small fixed set of intermediate glyphs before settling on `target`,
- * seeded from the unit's own index (deterministic, not `Math.random`) — an airport-departures-board feel. */
-function splitFlapChar(target: string, progress: number, seed: number): string {
-  if (progress >= 1) return target;
+/** Flips a character forward through a small fixed set of intermediate glyphs into `target` at a constant
+ * rate (`t` is a linear 0-1 clock, like a mechanical board), with a per-unit flip count seeded from the
+ * unit's own index (deterministic, not `Math.random`) — an airport-departures-board feel. */
+function splitFlapChar(target: string, t: number, seed: number): string {
+  if (t >= 1) return target;
   const targetIndex = SPLIT_FLAP_GLYPHS.indexOf(target.toUpperCase());
   if (targetIndex < 0) return target;
-  const cycle = Math.floor((1 - progress) * 6) + (seed % 3);
-  const index = (targetIndex + cycle) % SPLIT_FLAP_GLYPHS.length;
-  return SPLIT_FLAP_GLYPHS[index];
+  const n = SPLIT_FLAP_GLYPHS.length;
+  const remaining = Math.ceil((1 - t) * (6 + (seed % 3)));
+  return SPLIT_FLAP_GLYPHS[(targetIndex - remaining + n) % n];
 }
 
-function unitStyle(effect: TextRevealEffect, progress: number, fontPx: number): React.CSSProperties {
+function unitStyle(effect: TextRevealEffect, progress: number, fontPx: number, chars = 0): React.CSSProperties {
   const opacity = Math.min(Math.max(progress, 0), 1);
   const hidden = 1 - progress;
   switch (effect) {
@@ -81,28 +84,31 @@ function unitStyle(effect: TextRevealEffect, progress: number, fontPx: number): 
     case "fade":
       return { opacity };
     case "scale":
-      return { opacity, scale: String(0.5 + 0.5 * progress) };
+      return { opacity, scale: String(0.9 + 0.1 * progress) };
     case "drop":
       return { opacity, translate: `0 ${-hidden * 0.6}em`, rotate: `${-hidden * 8}deg` };
     case "mask":
-      return { translate: `0 ${hidden * 110}%` };
-    case "track":
-      return { opacity, letterSpacing: `${hidden * 0.5}em` };
+      // Overshoot clamped: pushing past 0 inside the clip would crop ascenders.
+      return { translate: `0 ${Math.max(hidden, 0) * 110}%` };
+    case "track": {
+      // Negative inline margins cancel the added spacing, so the unit's layout width stays constant and
+      // neighbors never shove sideways or re-wrap mid-stagger.
+      const spacing = hidden * 0.5;
+      return { opacity, letterSpacing: `${spacing}em`, marginInline: `${(-spacing * chars) / 2}em` };
+    }
     case "outline-fill": {
       // `color: transparent` also zeroed out `currentColor` for the stroke on this same element (it's
       // the same property `currentColor` resolves against), so the stroke was invisible for the entire
       // outline phase and the fill then snapped in at 0.92 with nothing having been visible before it.
       // `-webkit-text-fill-color` controls the glyph fill paint without touching `color`, so `currentColor`
-      // stays the real, opaque color for the stroke throughout. `progress` is the shared eased clock
-      // (the `smooth` motion preset, front-loaded: it clears ~0.9 within the entrance's first third and
-      // spends the rest creeping to 1), so thresholds here are placed to read well against *that* shape,
-      // not against a linear clock: opacity ramps in over the first 15% of progress (a blink in real
-      // time — no blank flash), a stroke-only outline then holds clearly visible while progress crosses
-      // its mid-range, and the fill phases in — stroke shrinking as it does — only over progress's long
-      // final approach to 1, which is most of the entrance's real duration.
+      // stays the real, opaque color for the stroke throughout. `progress` here is a linear clock (the
+      // caller passes it instead of the eased preset, whose shape varies by theme: `settle` left a single
+      // outline frame), so thresholds map straight to time: opacity ramps in over the first 15%, a
+      // stroke-only outline holds through 55%, and the fill phases in — stroke shrinking as it does — over
+      // the remaining 45%.
       const p = Math.min(Math.max(progress, 0), 1);
       const strokeIn = Math.min(1, p / 0.15);
-      const fillProgress = Math.max(0, (p - 0.85) / 0.15);
+      const fillProgress = Math.max(0, (p - 0.55) / 0.45);
       return {
         opacity: strokeIn,
         WebkitTextFillColor: alpha("currentColor", fillProgress),
@@ -149,21 +155,36 @@ export function TextReveal({
     duration: m.enterFrames,
   });
   const fontPx = u(size);
-  const step = stagger ?? (split === "char" ? 1 : Math.round(m.fps * (split === "word" ? 0.07 : 0.16)));
+  const step =
+    stagger ??
+    (split === "char" ? Math.max(1, Math.round(m.fps * 0.035)) : Math.round(m.fps * (split === "word" ? 0.07 : 0.1)));
   const accents = new Set(accentWords.map(normalize));
+  // The theme's on-twos step/jitter, so units stay in cadence with the rest of the scene.
+  const q = quantizeMotion(motion.motion ?? theme.motion);
+  // outline-fill and split-flap read time, not the eased (possibly overshooting) preset.
+  const linearAt = (start: number) => clamp01((m.frame - start) / Math.max(m.enterFrames, 1));
   let unitIndex = 0;
 
   const renderUnit = (content: string, key: number, index: number) => {
+    const start = m.delay + index * step;
     const progress = tween(m.frame, m.fps, {
-      from: m.delay + index * step,
+      from: start,
       duration: m.enterFrames,
       motion: m.preset,
+      step: q.step,
+      jitter: q.jitter,
     });
-    const displayContent = effectiveEffect === "split-flap" ? splitFlapChar(content, progress, index) : content;
+    const linear = linearAt(start);
+    const displayContent = effectiveEffect === "split-flap" ? splitFlapChar(content, linear, index) : content;
+    const shown = effectiveEffect === "outline-fill" ? linear : progress;
     const inner = (
       <span
         key={key}
-        style={{ display: "inline-block", whiteSpace: "pre", ...unitStyle(effectiveEffect, progress, fontPx) }}
+        style={{
+          display: "inline-block",
+          whiteSpace: "pre",
+          ...unitStyle(effectiveEffect, shown, fontPx, graphemes(content).length),
+        }}
       >
         {displayContent}
       </span>
@@ -216,17 +237,21 @@ export function TextReveal({
       );
     });
     if (split !== "line") return <div key={lineNumber}>{parts}</div>;
+    const lineStart = m.delay + lineIndex * step;
     const progress = tween(m.frame, m.fps, {
-      from: m.delay + lineIndex * step,
+      from: lineStart,
       duration: m.enterFrames,
       motion: m.preset,
+      step: q.step,
+      jitter: q.jitter,
     });
+    const shown = effectiveEffect === "outline-fill" ? linearAt(lineStart) : progress;
     return (
       <div
         key={lineNumber}
         style={effect === "mask" ? { overflow: "hidden", paddingBottom: "0.12em", marginBottom: "-0.12em" } : undefined}
       >
-        <span style={{ display: "inline-block", ...unitStyle(effectiveEffect, progress, fontPx) }}>{parts}</span>
+        <span style={{ display: "inline-block", ...unitStyle(effectiveEffect, shown, fontPx) }}>{parts}</span>
       </div>
     );
   });

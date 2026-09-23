@@ -19,7 +19,7 @@
  */
 import type { TransitionPresentation, TransitionPresentationComponentProps } from "@remotion/transitions";
 import { useId } from "react";
-import { AbsoluteFill } from "remotion";
+import { AbsoluteFill, Easing } from "remotion";
 import { coverPhase, useViewport } from "./core";
 
 export type ZoomThroughProps = {
@@ -44,13 +44,14 @@ function ZoomThroughPresentation({
   const exiting = presentationDirection === "exiting";
   const { cover, reveal, showsNext } = coverPhase(presentationProgress);
   const visible = exiting ? !showsNext : showsNext;
-  // `displace` is 0 at the start of this layer's own window and 1 once it's fully covered/revealed.
-  const displace = exiting ? cover : reveal;
-  const speed = 4 * displace * (1 - displace);
-  const sigma = speed * u(blurPeak);
+  // Speed peaks at the cut: accelerate into it, decelerate out of it (both slopes are 3, so they match).
+  const t = exiting ? Easing.in(Easing.cubic)(cover) : Easing.out(Easing.cubic)(reveal);
+  // Blur is max exactly at the swap so the cut hides inside it, and 0 at both ends (displace-zero contract).
+  const sigma = (exiting ? cover : 1 - reveal) * u(blurPeak);
   const pinch = 1 / maxScale;
-  const exitScale = direction === "in" ? 1 + (maxScale - 1) * displace : 1 - (1 - pinch) * displace;
-  const enterScale = direction === "in" ? pinch + (1 - pinch) * displace : maxScale - (maxScale - 1) * displace;
+  // Scale in log space: equal ratios per frame read as constant camera speed.
+  const exitScale = direction === "in" ? maxScale ** t : pinch ** t;
+  const enterScale = direction === "in" ? pinch ** (1 - t) : maxScale ** (1 - t);
   const scale = exiting ? exitScale : enterScale;
   // Per-instance, not per-direction: see whip-pan's identical fix for why a static id collides.
   const filterId = `zoom-through-${useId().replace(/[^a-zA-Z0-9_-]/g, "")}`;
