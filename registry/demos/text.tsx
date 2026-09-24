@@ -97,11 +97,9 @@ export default [
   {
     id: "typewriter-type",
     duration: 130,
-    component: () => (
-      <Center>
-        <Typewriter text="Make a launch video^ for vertical" cps={20} />
-      </Center>
-    ),
+    ...customizable("Typewriter", Typewriter, { text: "Make a launch video^ for vertical", cps: 20 }, (element) => (
+      <Center>{element}</Center>
+    )),
   },
   {
     id: "typewriter-follow",
@@ -115,30 +113,33 @@ export default [
   {
     id: "word-rotator-slide",
     duration: 130,
-    component: () => (
-      <Center>
-        <WordRotator before="Made for" words={["creators", "startups", "agencies"]} effect="slide" />
-      </Center>
+    ...customizable(
+      "WordRotator",
+      WordRotator,
+      { before: "Made for", words: ["creators", "startups", "agencies"], effect: "slide" },
+      (element) => <Center>{element}</Center>,
     ),
   },
   ...highlightVariants.map(
     (variant): Demo => ({
       id: `highlight-${variant}`,
       duration: 75,
-      component: () => (
-        <Center>
-          <Highlight text="Render videos with plain React" highlight="plain React" variant={variant} />
-        </Center>
+      ...customizable(
+        "Highlight",
+        Highlight,
+        { text: "Render videos with plain React", highlight: "plain React", variant },
+        (element) => <Center>{element}</Center>,
       ),
     }),
   ),
   {
     id: "counter-count",
     duration: 90,
-    component: () => (
-      <Center>
-        <Counter to={48200} format={{ style: "currency", currency: "USD" }} suffix="/mo" />
-      </Center>
+    ...customizable(
+      "Counter",
+      Counter,
+      { to: 48200, format: { style: "currency", currency: "USD" }, suffix: "/mo" },
+      (element) => <Center>{element}</Center>,
     ),
   },
   {
@@ -153,92 +154,65 @@ export default [
   {
     id: "scramble-decode",
     duration: 75,
-    component: () => (
-      <Center>
-        <Scramble text="Access granted" font="mono" seed="login" />
-      </Center>
-    ),
+    ...customizable("Scramble", Scramble, { text: "Access granted", font: "mono", seed: "login" }, (element) => (
+      <Center>{element}</Center>
+    )),
   },
   {
     id: "fit-title-fill",
     duration: 75,
-    component: () => (
-      <Center>
-        <FitTitle text="Season finale" effect="mask" />
-      </Center>
-    ),
+    ...customizable("FitTitle", FitTitle, { text: "Season finale", effect: "mask" }, (element) => (
+      <Center>{element}</Center>
+    )),
   },
   {
     id: "blur-in-headline",
     duration: 75,
-    component: () => (
-      <Center>
-        <BlurIn text="Quietly, then all at once" />
-      </Center>
-    ),
+    ...customizable("BlurIn", BlurIn, { text: "Quietly, then all at once" }, (element) => <Center>{element}</Center>),
   },
   {
     id: "rise-up-headline",
     duration: 75,
-    component: () => (
-      <Center>
-        <RiseUp text="Every frame is code" accentWords={["code"]} />
-      </Center>
-    ),
+    ...customizable("RiseUp", RiseUp, { text: "Every frame is code", accentWords: ["code"] }, (element) => (
+      <Center>{element}</Center>
+    )),
   },
   {
     id: "mask-reveal-headline",
     duration: 75,
-    component: () => (
-      <Center>
-        <MaskReveal text="Made for vertical first" />
-      </Center>
-    ),
+    ...customizable("MaskReveal", MaskReveal, { text: "Made for vertical first" }, (element) => (
+      <Center>{element}</Center>
+    )),
   },
   {
     id: "char-rise-word",
     duration: 75,
-    component: () => (
-      <Center>
-        <CharRise text="Launch day" size={150} />
-      </Center>
-    ),
+    ...customizable("CharRise", CharRise, { text: "Launch day", size: 150 }, (element) => <Center>{element}</Center>),
   },
   {
     id: "line-slide-lines",
     duration: 90,
-    component: () => (
-      <Center>
-        <LineSlide text={"Write the script.\nRender the story."} align="left" />
-      </Center>
+    ...customizable(
+      "LineSlide",
+      LineSlide,
+      { text: "Write the script.\nRender the story.", align: "left" },
+      (element) => <Center>{element}</Center>,
     ),
   },
   {
     id: "drop-in-headline",
     duration: 75,
-    component: () => (
-      <Center>
-        <DropIn text="Fresh drops every Friday" />
-      </Center>
-    ),
+    ...customizable("DropIn", DropIn, { text: "Fresh drops every Friday" }, (element) => <Center>{element}</Center>),
   },
   {
     id: "pop-in-label",
     duration: 75,
-    component: () => (
-      <Center>
-        <PopIn text="Now in beta" size={130} />
-      </Center>
-    ),
+    ...customizable("PopIn", PopIn, { text: "Now in beta", size: 130 }, (element) => <Center>{element}</Center>),
   },
   {
     id: "stamp-label",
     duration: 75,
-    component: () => (
-      <Center>
-        <Stamp text="Sold out" size={170} />
-      </Center>
-    ),
+    ...customizable("Stamp", Stamp, { text: "Sold out", size: 170 }, (element) => <Center>{element}</Center>),
   },
   {
     id: "stamp-settle",
@@ -252,20 +226,16 @@ export default [
   {
     id: "word-push-hook",
     duration: 75,
-    component: () => (
-      <Center>
-        <WordPush words={["Ship", "videos,", "not", "keyframes,", "faster"]} />
-      </Center>
-    ),
+    ...customizable("WordPush", WordPush, { words: ["Ship", "videos,", "not", "keyframes,", "faster"] }, (element) => (
+      <Center>{element}</Center>
+    )),
   },
   {
     id: "text-morph-phrase",
     duration: 90,
-    component: () => (
-      <Center>
-        <TextMorph from="Build faster" to="Ship faster" />
-      </Center>
-    ),
+    ...customizable("TextMorph", TextMorph, { from: "Build faster", to: "Ship faster" }, (element) => (
+      <Center>{element}</Center>
+    )),
   },
   {
     id: "text-mask-video-window",
