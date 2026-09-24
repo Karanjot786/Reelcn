@@ -44,6 +44,8 @@ function OrganicDissolvePresentation({
   passedProps,
 }: TransitionPresentationComponentProps<OrganicDissolveProps>) {
   const { u } = useViewport();
+  // Hooks before the early returns below: `presentationProgress` crossing 0 or 1 must not change the hook count.
+  const instanceId = useId();
   const seed = passedProps.seed ?? "organic-dissolve";
   const grain = passedProps.grain ?? 40;
   const exiting = presentationDirection === "exiting";
@@ -63,7 +65,7 @@ function OrganicDissolvePresentation({
   const baseFrequency = 1 / Math.max(u(grain), 1);
   const numericSeed = seedToNumber(seed);
   // Per-instance, not per-direction: see whip-pan's identical fix for why a static id collides.
-  const filterId = `organic-dissolve-${useId().replace(/[^a-zA-Z0-9_-]/g, "")}`;
+  const filterId = `organic-dissolve-${instanceId.replace(/[^a-zA-Z0-9_-]/g, "")}`;
   const displaceStrength = u(24) * 4 * revealAmount * (1 - revealAmount);
   // The threshold sweeps through the turbulence's own alpha channel (which realistically only spans
   // roughly [0, 1], not [-1, 1]), so grains disappear/appear in the same organic pattern the noise
