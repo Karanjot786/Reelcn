@@ -5,7 +5,7 @@ import path from "node:path";
 import ts from "typescript";
 
 /** How the item page's Customize panel edits a prop; unset for types it can't edit (objects, arrays, callbacks, mixes). */
-export type PropControl = "switch" | "slider" | "select" | "color" | "text";
+export type PropControl = "switch" | "slider" | "select" | "color" | "text" | "list";
 
 export type PropRow = {
   name: string;
@@ -19,7 +19,9 @@ export type PropRow = {
 };
 
 /** The control for a prop's type, with `undefined` already stripped: literal unions become selects. */
-function controlFor(name: string, type: ts.Type): Pick<PropRow, "control" | "options"> {
+function controlFor(name: string, type: ts.Type, checker: ts.TypeChecker): Pick<PropRow, "control" | "options"> {
+  // `string[]` (and `readonly string[]`) edit as comma-separated text.
+  if (/^(readonly )?string\[\]$/.test(checker.typeToString(type))) return { control: "list" };
   const parts = type.isUnion() ? type.types : [type];
   if (parts.every((part) => part.flags & ts.TypeFlags.BooleanLike)) return { control: "switch" };
   if (parts.every((part) => part.flags & ts.TypeFlags.NumberLike)) return { control: "slider" };
@@ -104,7 +106,7 @@ export function propsTable(itemPath: string): PropRow[] {
       required: !(symbol.flags & ts.SymbolFlags.Optional),
       default: defaults.get(symbol.getName()),
       description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
-      ...controlFor(symbol.getName(), defined),
+      ...controlFor(symbol.getName(), defined, checker),
     };
   });
 }

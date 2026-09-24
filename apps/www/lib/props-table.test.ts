@@ -45,7 +45,7 @@ test("propsTable picks a Customize control per prop type, resolving aliased lite
   assert.equal(byName.get("effect")?.control, "select");
   assert.ok(byName.get("effect")?.options?.includes("blur"));
   // Arrays, objects and mixed unions have no control.
-  assert.equal(byName.get("accentWords")?.control, undefined);
+  assert.equal(byName.get("accentWords")?.control, "list");
   assert.equal(byName.get("style")?.control, undefined);
   assert.equal(byName.get("exit")?.control, undefined);
 });
