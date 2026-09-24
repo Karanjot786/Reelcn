@@ -1008,3 +1008,8 @@ button.pv-scrub {
     transition: none;
   }
 }
+.install-theme {
+  margin: 8px 16px 12px;
+  font-size: 13px;
+  color: var(--muted);
+}

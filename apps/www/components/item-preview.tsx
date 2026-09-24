@@ -6,6 +6,7 @@ import { type CallbackListener, Player, type PlayerRef } from "@remotion/player"
 import Link from "next/link";
 import { type CSSProperties, type MouseEvent, type ReactNode, useEffect, useRef, useState } from "react";
 import { FORMAT_SIZE, type Format, useDemo, useDemoScene, usePrefersReducedMotion } from "./demo-player";
+import { InstallThemeContext } from "./install-block";
 
 const FORMATS = Object.keys(FORMAT_SIZE) as Format[];
 type Tab = "preview" | "code" | "story";
@@ -205,7 +206,7 @@ export function ItemPreview({
           </div>
         </div>
       </div>
-      {children}
+      <InstallThemeContext value={theme}>{children}</InstallThemeContext>
       {marks.length > 0 ? (
         <section>
           <h2 id="scenes">Scenes</h2>

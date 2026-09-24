@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { createContext, useContext, useState } from "react";
 
 const MANAGERS = [
   ["npx", "npx shadcn add"],
@@ -8,8 +8,18 @@ const MANAGERS = [
   ["bun", "bunx --bun shadcn add"],
 ] as const;
 
+/** The theme picked in the item page's preview (ItemPreview provides it); daylight, the default, elsewhere. */
+export const InstallThemeContext = createContext("daylight");
+
+/** `/r/<name>.json` → `/r/<theme>/<name>.json`: that route installs the item with `<theme>` as the default theme. */
+function themedUrl(url: string, theme: string) {
+  return theme === "daylight" ? url : url.replace("/r/", `/r/${theme}/`);
+}
+
 /** The install command in a code block, with package-manager tabs and a copy button (mockup's Installation block). */
-export function InstallBlock({ url }: { url: string }) {
+export function InstallBlock({ url: baseUrl }: { url: string }) {
+  const theme = useContext(InstallThemeContext);
+  const url = themedUrl(baseUrl, theme);
   const [pm, setPm] = useState(0);
   const [copied, setCopied] = useState(false);
   const [bin, ...rest] = MANAGERS[pm][1].split(" ");
@@ -42,6 +52,7 @@ export function InstallBlock({ url }: { url: string }) {
       <pre>
         <span className="n">{bin}</span> {rest.join(" ")} {url}
       </pre>
+      {theme !== "daylight" && <p className="install-theme">Installs with {theme} as your default theme.</p>}
     </div>
   );
 }
