@@ -68,7 +68,7 @@ export function ItemPreview({
   // biome-ignore lint/correctness/useExhaustiveDependencies: reset on demo change only
   useEffect(() => setOverrides({}), [demoId]);
   const customize = demo?.customize && controls && controls.length > 0 ? demo.customize : undefined;
-  const component = pascal(name);
+  const component = customize?.name ?? pascal(name);
   const customJsx = customize ? toJsx(component, { ...customize.props, ...overrides }) : "";
   const Scene = useDemoScene(demo);
   const reduced = usePrefersReducedMotion();

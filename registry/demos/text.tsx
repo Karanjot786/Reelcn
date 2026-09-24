@@ -14,10 +14,11 @@ import { Scramble } from "../items/scramble";
 import { Stamp } from "../items/stamp";
 import { TextMaskVideo } from "../items/text-mask-video";
 import { TextMorph } from "../items/text-morph";
-import { TextReveal, type TextRevealEffect, type TextRevealProps } from "../items/text-reveal";
+import { TextReveal, type TextRevealEffect } from "../items/text-reveal";
 import { Typewriter } from "../items/typewriter";
 import { WordPush } from "../items/word-push";
 import { WordRotator } from "../items/word-rotator";
+import { customizable } from "./customizable";
 import type { Demo } from "./index";
 
 const effects: TextRevealEffect[] = ["rise", "blur", "fade", "scale", "drop", "mask"];
@@ -29,19 +30,12 @@ export default [
     (effect): Demo => ({
       id: `text-reveal-${effect}`,
       duration: 75,
-      component: () => (
-        <Center>
-          <TextReveal text="Ship videos, not keyframes" effect={effect} accentWords={["videos"]} />
-        </Center>
+      ...customizable(
+        "TextReveal",
+        TextReveal,
+        { text: "Ship videos, not keyframes", effect, accentWords: ["videos"] },
+        (element) => <Center>{element}</Center>,
       ),
-      customize: {
-        props: { text: "Ship videos, not keyframes", effect, accentWords: ["videos"] },
-        render: (props) => (
-          <Center>
-            <TextReveal {...(props as TextRevealProps)} />
-          </Center>
-        ),
-      },
     }),
   ),
   {

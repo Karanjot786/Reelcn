@@ -18,7 +18,8 @@ export type Demo = {
   id: string;
   /** Frames at 30fps. */
   duration: number;
-  component: React.ComponentType;
+  /** Renders the demo. Every demo is a zero-argument function (a plain component or a `customizable()` render). */
+  component: () => React.ReactNode;
   /** Set when the component paints its own full-bleed background, so `<Stage>` is skipped. */
   bare?: boolean;
   /** Frame the thumbnail script stills instead of the midpoint, for demos whose midpoint is a blank/solid frame. */
@@ -32,6 +33,8 @@ export type Demo = {
    * item with the viewer's edits merged on top. `component` stays the plain, uncustomized render.
    */
   customize?: {
+    /** The component's export name, for generated code. */
+    name: string;
     props: Record<string, unknown>;
     render: (props: Record<string, unknown>) => React.ReactNode;
   };
