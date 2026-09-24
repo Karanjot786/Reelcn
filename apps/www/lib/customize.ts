@@ -103,6 +103,12 @@ const MAX_ITEMS = 20;
 // ponytail: a sane magnitude cap, so a hand-edited link can't ask a component for a 1e308-unit title.
 const MAX_NUMBER = 100_000;
 
+export const splitList = (raw: string) =>
+  raw
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+
 export function encodeEdits(edits: CustomProps): [string, string][] {
   return Object.entries(edits).map(([name, value]) => [
     `${PARAM}${name}`,
@@ -135,11 +141,7 @@ export function decodeEdits(rows: EditableRow[], params: URLSearchParams): Custo
         out[row.name] = raw.slice(0, MAX_TEXT);
         break;
       case "list":
-        out[row.name] = raw
-          .split(",")
-          .map((item) => item.trim())
-          .filter(Boolean)
-          .slice(0, MAX_ITEMS);
+        out[row.name] = splitList(raw).slice(0, MAX_ITEMS);
         break;
     }
   }

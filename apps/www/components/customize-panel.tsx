@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { type CustomProps, isHexColor, parseDefault, sliderRange, unitFor } from "@/lib/customize";
+import { type CustomProps, isHexColor, sliderRange, splitList, unitFor } from "@/lib/customize";
 import type { PropRow } from "@/lib/props-table";
 
 export type ControlRow = Pick<PropRow, "name" | "control" | "options" | "default" | "description">;
@@ -148,12 +148,7 @@ function Field({ row, value, onChange }: { row: ControlRow; value: unknown; onCh
             id={id}
             value={Array.isArray(value) ? value.join(", ") : ""}
             placeholder="comma, separated"
-            parse={(d) =>
-              d
-                .split(",")
-                .map((item) => item.trim())
-                .filter(Boolean)
-            }
+            parse={splitList}
             onCommit={onChange}
           />
         </div>
@@ -189,7 +184,7 @@ export function CustomizePanel({
   fileName,
 }: {
   rows: ControlRow[];
-  /** The demo's own props (`demo.customize.props`). */
+  /** Each control's start: the demo's props, then declared defaults (`startValues`). */
   base: CustomProps;
   /** The viewer's edits. */
   values: CustomProps;
@@ -241,9 +236,7 @@ export function CustomizePanel({
           <Field
             key={row.name}
             row={row}
-            value={
-              row.name in values ? values[row.name] : row.name in base ? base[row.name] : parseDefault(row.default)
-            }
+            value={row.name in values ? values[row.name] : base[row.name]}
             onChange={(value) => onChange(row.name, value)}
           />
         ))}

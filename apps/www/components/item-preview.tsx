@@ -269,7 +269,7 @@ export function ItemPreview({
       {customize && controls && (
         <CustomizePanel
           rows={controls}
-          base={customize.props}
+          base={start}
           values={overrides}
           onChange={edit}
           onReset={() => setEdited({ demo: demoId, values: {} })}
