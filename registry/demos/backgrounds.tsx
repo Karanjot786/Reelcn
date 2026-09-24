@@ -12,6 +12,7 @@ import { Grid } from "../items/grid";
 import { Spotlight } from "../items/spotlight";
 import { Starfield } from "../items/starfield";
 import { TextReveal } from "../items/text-reveal";
+import { customizable } from "./customizable";
 import type { Demo } from "./index";
 
 /** A background with a headline on top, to prove the text stays readable over it. */
@@ -40,31 +41,35 @@ export default [
     id: "brand-solid",
     duration: 90,
     bare: true,
-    component: () => <Scene background={<BrandSolid />} text="Made for your brand" />,
+    ...customizable("BrandSolid", BrandSolid, {}, (element) => (
+      <Scene background={element} text="Made for your brand" />
+    )),
   },
   {
     id: "gradient-mesh",
     duration: 120,
     bare: true,
-    component: () => <Scene background={<GradientMesh />} text="Color that moves" />,
+    ...customizable("GradientMesh", GradientMesh, {}, (element) => (
+      <Scene background={element} text="Color that moves" />
+    )),
   },
   {
     id: "aurora",
     duration: 120,
     bare: true,
-    component: () => <Scene background={<Aurora />} text="Quietly luminous" />,
+    ...customizable("Aurora", Aurora, {}, (element) => <Scene background={element} text="Quietly luminous" />),
   },
   {
     id: "spotlight-drift",
     duration: 120,
     bare: true,
-    component: () => <Scene background={<Spotlight />} text="All eyes here" />,
+    ...customizable("Spotlight", Spotlight, {}, (element) => <Scene background={element} text="All eyes here" />),
   },
   {
     id: "beams-corner",
     duration: 120,
     bare: true,
-    component: () => <Scene background={<Beams />} text="Now on stage" />,
+    ...customizable("Beams", Beams, {}, (element) => <Scene background={element} text="Now on stage" />),
   },
   {
     id: "beams-top",
@@ -76,7 +81,7 @@ export default [
     id: "grid-flat",
     duration: 120,
     bare: true,
-    component: () => <Scene background={<Grid />} text="Built on a grid" />,
+    ...customizable("Grid", Grid, {}, (element) => <Scene background={element} text="Built on a grid" />),
   },
   {
     id: "grid-perspective",
@@ -88,7 +93,7 @@ export default [
     id: "dots-sweep",
     duration: 120,
     bare: true,
-    component: () => <Scene background={<Dots />} text="Every detail counts" />,
+    ...customizable("Dots", Dots, {}, (element) => <Scene background={element} text="Every detail counts" />),
   },
   {
     id: "dots-ripple",
@@ -100,7 +105,9 @@ export default [
     id: "grain",
     duration: 90,
     bare: true,
-    component: () => <Scene background={<Stage />} text="Shot on film" overlay={<Grain opacity={0.12} />} />,
+    ...customizable("Grain", Grain, { opacity: 0.12 }, (element) => (
+      <Scene background={<Stage />} text="Shot on film" overlay={element} />
+    )),
   },
   {
     id: "grain-mesh",
@@ -112,7 +119,7 @@ export default [
     id: "starfield-across",
     duration: 120,
     bare: true,
-    component: () => <Scene background={<Starfield />} text="Out of this world" />,
+    ...customizable("Starfield", Starfield, {}, (element) => <Scene background={element} text="Out of this world" />),
   },
   {
     id: "starfield-toward",
@@ -124,6 +131,6 @@ export default [
     id: "bokeh",
     duration: 120,
     bare: true,
-    component: () => <Scene background={<Bokeh />} text="Evenings, in focus" />,
+    ...customizable("Bokeh", Bokeh, {}, (element) => <Scene background={element} text="Evenings, in focus" />),
   },
 ] satisfies Demo[];
