@@ -94,8 +94,8 @@ export function useDemo(category: string, demoId: string): Demo | null {
 export function useDemoScene(demo: Demo | null) {
   return useMemo(() => {
     if (!demo) return null;
-    return function DemoScene({ theme }: { theme: ThemeName }) {
-      return <DemoFrame demo={demo} theme={theme} />;
+    return function DemoScene({ theme, overrides }: { theme: ThemeName; overrides?: Record<string, unknown> }) {
+      return <DemoFrame demo={demo} theme={theme} overrides={overrides} />;
     };
   }, [demo]);
 }

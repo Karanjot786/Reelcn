@@ -33,3 +33,19 @@ test("propsTable reads name, type, required, default and JSDoc from LowerThirdPr
 test("propsTable returns an empty array for a tools file, which has no <Name>Props alias", () => {
   assert.deepEqual(propsTable(TOOL_PATH), []);
 });
+
+test("propsTable picks a Customize control per prop type, resolving aliased literal unions", () => {
+  const rows = propsTable(path.join(repoRoot, "registry/items/text-reveal.tsx"));
+  const byName = new Map(rows.map((row) => [row.name, row]));
+  assert.equal(byName.get("text")?.control, "text");
+  assert.equal(byName.get("size")?.control, "slider");
+  assert.equal(byName.get("color")?.control, "color");
+  assert.equal(byName.get("poster")?.control, "switch");
+  // `effect` is typed `TextRevealEffect`, an alias; the select still gets its literal members.
+  assert.equal(byName.get("effect")?.control, "select");
+  assert.ok(byName.get("effect")?.options?.includes("blur"));
+  // Arrays, objects and mixed unions have no control.
+  assert.equal(byName.get("accentWords")?.control, undefined);
+  assert.equal(byName.get("style")?.control, undefined);
+  assert.equal(byName.get("exit")?.control, undefined);
+});

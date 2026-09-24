@@ -1013,3 +1013,126 @@ button.pv-scrub {
   font-size: 13px;
   color: var(--muted);
 }
+
+/* Item page Customize panel: one tile per editable prop, three to a row. */
+.customize {
+  margin-top: 32px;
+}
+.cz-h {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.cz-h h2 {
+  margin: 0;
+}
+.cz-actions {
+  display: flex;
+  gap: 8px;
+}
+.cz-actions button {
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
+  font-size: 13px;
+  transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.cz-actions button:active {
+  transform: scale(0.97);
+}
+.cz-actions button:disabled {
+  opacity: 0.4;
+}
+.cz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 8px;
+  margin-top: 16px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel2);
+}
+.cz-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 52px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: var(--panel);
+  font-size: 14px;
+}
+.cz-field label {
+  color: var(--muted);
+  white-space: nowrap;
+}
+.cz-field select,
+.cz-field input[type="text"] {
+  min-width: 0;
+  max-width: 60%;
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--panel2);
+  color: var(--text);
+  text-align: right;
+}
+.cz-color {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 60%;
+}
+.cz-color input[type="color"] {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: none;
+}
+.cz-color input[type="text"] {
+  max-width: 100%;
+  font-family: var(--font-mono, monospace);
+}
+.cz-slider input[type="range"] {
+  flex: 1;
+  min-width: 60px;
+  accent-color: var(--grease);
+}
+.cz-slider output {
+  min-width: 36px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.cz-switch {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  border-radius: 11px;
+  background: var(--line);
+  transition: background-color 160ms ease;
+}
+.cz-switch::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--text);
+  transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.cz-switch[aria-checked="true"] {
+  background: var(--grease);
+}
+.cz-switch[aria-checked="true"]::after {
+  transform: translateX(18px);
+}

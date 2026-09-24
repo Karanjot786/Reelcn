@@ -27,6 +27,14 @@ export type Demo = {
   scenes?: SceneMark[];
   /** The story a story-built demo renders; the site shows it in a Story JSON tab. */
   story?: Story;
+  /**
+   * Opts the demo into the site's Customize panel: the item's props as the demo sets them, and how to render the
+   * item with the viewer's edits merged on top. `component` stays the plain, uncustomized render.
+   */
+  customize?: {
+    props: Record<string, unknown>;
+    render: (props: Record<string, unknown>) => React.ReactNode;
+  };
 };
 
 // Each category adds one entry. Tasks 3-5 and later plans extend this map.

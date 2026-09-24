@@ -211,8 +211,9 @@ export default async function Page(props: PageProps<"/docs/components/[name]">) 
     </section>
   );
 
+  // Keyed: React's dev key check flags this server element once ItemPreview re-renders with its Customize panel.
   const builtFrom = builtFromNames.length > 0 && (
-    <div className="deps">
+    <div className="deps" key="built-from">
       {builtFromNames.map((dep) => (
         <Link key={dep} href={componentUrl(dep)}>
           {dep}
@@ -249,6 +250,15 @@ export default async function Page(props: PageProps<"/docs/components/[name]">) 
             themes={themeNames}
             thumbs={thumbs}
             code={usage ? <ServerCodeBlock lang={lang} code={usage} /> : undefined}
+            controls={rows
+              .filter((row) => row.control)
+              .map(({ name, control, options, default: fallback, description }) => ({
+                name,
+                control,
+                options,
+                default: fallback,
+                description,
+              }))}
             codeByTheme={
               usage
                 ? Object.fromEntries(

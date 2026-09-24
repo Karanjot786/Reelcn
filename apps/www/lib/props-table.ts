@@ -4,7 +4,34 @@ import { readdirSync } from "node:fs";
 import path from "node:path";
 import ts from "typescript";
 
-export type PropRow = { name: string; type: string; required: boolean; default?: string; description: string };
+/** How the item page's Customize panel edits a prop; unset for types it can't edit (objects, arrays, callbacks, mixes). */
+export type PropControl = "switch" | "slider" | "select" | "color" | "text";
+
+export type PropRow = {
+  name: string;
+  type: string;
+  required: boolean;
+  default?: string;
+  description: string;
+  control?: PropControl;
+  /** The choices for a `select` control: the union's string literals, aliases resolved. */
+  options?: string[];
+};
+
+/** The control for a prop's type, with `undefined` already stripped: literal unions become selects. */
+function controlFor(name: string, type: ts.Type): Pick<PropRow, "control" | "options"> {
+  const parts = type.isUnion() ? type.types : [type];
+  if (parts.every((part) => part.flags & ts.TypeFlags.BooleanLike)) return { control: "switch" };
+  if (parts.every((part) => part.flags & ts.TypeFlags.NumberLike)) return { control: "slider" };
+  if (parts.every((part) => part.isStringLiteral())) {
+    return { control: "select", options: parts.map((part) => (part as ts.StringLiteralType).value) };
+  }
+  if (parts.length === 1 && type.flags & ts.TypeFlags.String) {
+    if (name === "className") return {};
+    return { control: /color$/i.test(name) ? "color" : "text" };
+  }
+  return {};
+}
 
 const COMPILER_OPTIONS: ts.CompilerOptions = {
   target: ts.ScriptTarget.ES2022,
@@ -66,6 +93,7 @@ export function propsTable(itemPath: string): PropRow[] {
 
   return checker.getPropertiesOfType(aliasType).map((symbol) => {
     const propType = checker.getTypeOfSymbolAtLocation(symbol, alias!.name);
+    const defined = checker.getNonNullableType(propType);
     // `?: T` types as `T | undefined`; the required column already carries that, so the string doesn't need it.
     const typeStr = checker
       .typeToString(propType, undefined, ts.TypeFormatFlags.NoTruncation)
@@ -76,6 +104,7 @@ export function propsTable(itemPath: string): PropRow[] {
       required: !(symbol.flags & ts.SymbolFlags.Optional),
       default: defaults.get(symbol.getName()),
       description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
+      ...controlFor(symbol.getName(), defined),
     };
   });
 }

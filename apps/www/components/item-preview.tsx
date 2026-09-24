@@ -5,6 +5,9 @@ import { type ThemeName, themes } from "@reelcn/registry/items/core";
 import { type CallbackListener, Player, type PlayerRef } from "@remotion/player";
 import Link from "next/link";
 import { type CSSProperties, type MouseEvent, type ReactNode, useEffect, useRef, useState } from "react";
+import { sceneFile, toJsx } from "@/lib/customize";
+import { themedUsage } from "@/lib/themed-usage";
+import { type ControlRow, CustomizePanel } from "./customize-panel";
 import { FORMAT_SIZE, type Format, useDemo, useDemoScene, usePrefersReducedMotion } from "./demo-player";
 import { InstallThemeContext } from "./install-block";
 
@@ -34,6 +37,7 @@ export function ItemPreview({
   thumbs,
   code,
   codeByTheme,
+  controls,
   builtFrom,
   children,
 }: {
@@ -47,6 +51,8 @@ export function ItemPreview({
   code?: ReactNode;
   /** The same usage per theme (wrapped in that theme), so the Code tab matches the theme picked in the preview. */
   codeByTheme?: Record<string, ReactNode>;
+  /** Props the Customize panel can edit (`propsTable` rows with a control); shown when the demo opts in. */
+  controls?: ControlRow[];
   /** Registry items this one builds on, shown under Scenes. */
   builtFrom?: ReactNode;
   children?: ReactNode;
@@ -57,6 +63,13 @@ export function ItemPreview({
   const [frame, setFrame] = useState(0);
   const [tab, setTab] = useState<Tab>("preview");
   const demo = useDemo(category, demoId);
+  const [overrides, setOverrides] = useState<Record<string, unknown>>({});
+  // Edits belong to one demo's props; a new variant starts clean.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: reset on demo change only
+  useEffect(() => setOverrides({}), [demoId]);
+  const customize = demo?.customize && controls && controls.length > 0 ? demo.customize : undefined;
+  const component = pascal(name);
+  const customJsx = customize ? toJsx(component, { ...customize.props, ...overrides }) : "";
   const Scene = useDemoScene(demo);
   const reduced = usePrefersReducedMotion();
   const player = useRef<PlayerRef>(null);
@@ -113,7 +126,18 @@ export function ItemPreview({
               </div>
             )}
           </div>
-          {tab === "code" && <div className="pv-body">{codeByTheme?.[theme] ?? code}</div>}
+          {tab === "code" && (
+            <div className="pv-body">
+              {customize && Object.keys(overrides).length > 0 ? (
+                // Once edited, the snippet is generated here from the live props (plain, not server-highlighted).
+                <div className="code">
+                  <pre>{themedUsage(customJsx, theme)}</pre>
+                </div>
+              ) : (
+                (codeByTheme?.[theme] ?? code)
+              )}
+            </div>
+          )}
           {tab === "story" && demo?.story && (
             <div className="pv-body">
               <div className="code">
@@ -127,7 +151,7 @@ export function ItemPreview({
                 <Player
                   ref={player}
                   component={Scene}
-                  inputProps={{ theme: theme as ThemeName }}
+                  inputProps={{ theme: theme as ThemeName, overrides: customize ? overrides : undefined }}
                   durationInFrames={demo.duration}
                   fps={30}
                   compositionWidth={width}
@@ -206,6 +230,18 @@ export function ItemPreview({
           </div>
         </div>
       </div>
+      {customize && controls && (
+        <CustomizePanel
+          rows={controls}
+          base={customize.props}
+          values={overrides}
+          onChange={(prop, value) => setOverrides((current) => ({ ...current, [prop]: value }))}
+          onReset={() => setOverrides({})}
+          code={themedUsage(customJsx, theme)}
+          file={sceneFile(name, component, customJsx, theme)}
+          fileName={`${component}Scene.tsx`}
+        />
+      )}
       <InstallThemeContext value={theme}>{children}</InstallThemeContext>
       {marks.length > 0 ? (
         <section>

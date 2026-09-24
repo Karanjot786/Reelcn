@@ -14,7 +14,7 @@ import { Scramble } from "../items/scramble";
 import { Stamp } from "../items/stamp";
 import { TextMaskVideo } from "../items/text-mask-video";
 import { TextMorph } from "../items/text-morph";
-import { TextReveal, type TextRevealEffect } from "../items/text-reveal";
+import { TextReveal, type TextRevealEffect, type TextRevealProps } from "../items/text-reveal";
 import { Typewriter } from "../items/typewriter";
 import { WordPush } from "../items/word-push";
 import { WordRotator } from "../items/word-rotator";
@@ -34,6 +34,14 @@ export default [
           <TextReveal text="Ship videos, not keyframes" effect={effect} accentWords={["videos"]} />
         </Center>
       ),
+      customize: {
+        props: { text: "Ship videos, not keyframes", effect, accentWords: ["videos"] },
+        render: (props) => (
+          <Center>
+            <TextReveal {...(props as TextRevealProps)} />
+          </Center>
+        ),
+      },
     }),
   ),
   {
