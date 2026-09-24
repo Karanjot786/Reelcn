@@ -118,6 +118,7 @@ export function CustomizePanel({
   values,
   onChange,
   onReset,
+  shareUrl,
   code,
   file,
   fileName,
@@ -129,17 +130,18 @@ export function CustomizePanel({
   values: CustomProps;
   onChange: (name: string, value: unknown) => void;
   onReset: () => void;
+  shareUrl: () => string;
   /** The customized element, for Copy. */
   code: string;
   /** The scene file, for Download. */
   file: string;
   fileName: string;
 }) {
-  const [copied, setCopied] = useState(false);
-  const copy = () => {
-    navigator.clipboard.writeText(code);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+  const [copied, setCopied] = useState<"code" | "link" | null>(null);
+  const copyText = (text: string, what: "code" | "link") => {
+    navigator.clipboard.writeText(text);
+    setCopied(what);
+    setTimeout(() => setCopied(null), 1500);
   };
   const download = () => {
     const url = URL.createObjectURL(new Blob([file], { type: "text/plain" }));
@@ -158,8 +160,11 @@ export function CustomizePanel({
           <button type="button" onClick={onReset} disabled={!edited}>
             Reset
           </button>
-          <button type="button" onClick={copy}>
-            {copied ? "Copied" : "Copy code"}
+          <button type="button" onClick={() => copyText(shareUrl(), "link")}>
+            {copied === "link" ? "Copied" : "Copy link"}
+          </button>
+          <button type="button" onClick={() => copyText(code, "code")}>
+            {copied === "code" ? "Copied" : "Copy code"}
           </button>
           <button type="button" onClick={download}>
             Download .tsx

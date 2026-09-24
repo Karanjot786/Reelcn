@@ -5,7 +5,7 @@ import { type ThemeName, themes } from "@reelcn/registry/items/core";
 import { type CallbackListener, Player, type PlayerRef } from "@remotion/player";
 import Link from "next/link";
 import { type CSSProperties, type MouseEvent, type ReactNode, useEffect, useRef, useState } from "react";
-import { sceneFile, toJsx } from "@/lib/customize";
+import { buildQuery, decodeEdits, pruneEdits, sceneFile, startValues, toJsx } from "@/lib/customize";
 import { themedUsage } from "@/lib/themed-usage";
 import { type ControlRow, CustomizePanel } from "./customize-panel";
 import { FORMAT_SIZE, type Format, useDemo, useDemoScene, usePrefersReducedMotion } from "./demo-player";
@@ -63,16 +63,50 @@ export function ItemPreview({
   const [frame, setFrame] = useState(0);
   const [tab, setTab] = useState<Tab>("preview");
   const demo = useDemo(category, demoId);
-  const [overrides, setOverrides] = useState<Record<string, unknown>>({});
-  // Edits belong to one demo's props; a new variant starts clean.
-  // biome-ignore lint/correctness/useExhaustiveDependencies: reset on demo change only
-  useEffect(() => setOverrides({}), [demoId]);
+  // Edits belong to one variant: stored with its id, so switching variant shows none and needs no reset effect.
+  const [edited, setEdited] = useState<{ demo: string; values: Record<string, unknown> }>({ demo: "", values: {} });
+  const overrides = edited.demo === demoId ? edited.values : {};
+  // A share link: `?demo=<variant>&theme=<name>&p.<prop>=<value>`. Read once; bad values are dropped.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: runs once, on the first client render
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const linked = params.get("demo");
+    const target = linked ? demoIds.find((id) => id === `${name}-${linked}` || id === linked) : undefined;
+    if (target) setDemoId(target);
+    const linkedTheme = params.get("theme");
+    if (linkedTheme && themeNames.includes(linkedTheme)) setTheme(linkedTheme);
+    if (controls) setEdited({ demo: target ?? demoId, values: decodeEdits(controls, params) });
+  }, []);
   const customize = demo?.customize && controls && controls.length > 0 ? demo.customize : undefined;
+  const start = customize && controls ? startValues(controls, customize.props) : {};
+  const edit = (prop: string, value: unknown) =>
+    setEdited({ demo: demoId, values: pruneEdits(start, { ...overrides, [prop]: value }) });
+  const hasEdits = Object.keys(overrides).length > 0;
   const component = customize?.name ?? pascal(name);
   const customJsx = customize ? toJsx(component, { ...customize.props, ...overrides }) : "";
   const Scene = useDemoScene(demo);
   const reduced = usePrefersReducedMotion();
   const player = useRef<PlayerRef>(null);
+  const variant = (id: string) => (id === name ? "default" : id.slice(name.length + 1));
+  const query = buildQuery(typeof window === "undefined" ? "" : window.location.search, {
+    demo: demoId === demoIds[0] ? undefined : variant(demoId),
+    theme: theme === "daylight" ? undefined : theme,
+    edits: overrides,
+  });
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      if (query !== window.location.search) {
+        // Keep Next's own history.state; replacing it with null breaks back and forward.
+        window.history.replaceState(
+          window.history.state,
+          "",
+          `${window.location.pathname}${query}${window.location.hash}`,
+        );
+      }
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [query]);
+  const shareUrl = () => `${window.location.origin}${window.location.pathname}${query}`;
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: Scene and format remount the Player, so the listener re-attaches
   useEffect(() => {
@@ -92,7 +126,6 @@ export function ItemPreview({
     player.current?.seekTo(Math.round(((event.clientX - box.left) / box.width) * (duration - 1)));
   };
   const thumb = thumbs?.[demoId]?.find((t) => t.format === format);
-  const variant = (id: string) => (id === name ? "default" : id.slice(name.length + 1));
   const label = `${pascal(name)}, ${demoId === name ? "defaults" : variant(demoId)}`;
   const tabs = (
     [["preview", "Preview"], code ? ["code", "Code"] : null, demo?.story ? ["story", "Story JSON"] : null] as (
@@ -128,11 +161,14 @@ export function ItemPreview({
           </div>
           {tab === "code" && (
             <div className="pv-body">
-              {customize && Object.keys(overrides).length > 0 ? (
+              {customize && hasEdits ? (
                 // Once edited, the snippet is generated here from the live props (plain, not server-highlighted).
-                <div className="code">
-                  <pre>{themedUsage(customJsx, theme)}</pre>
-                </div>
+                <>
+                  <p className="cz-note">With your settings</p>
+                  <div className="code">
+                    <pre>{themedUsage(customJsx, theme)}</pre>
+                  </div>
+                </>
               ) : (
                 (codeByTheme?.[theme] ?? code)
               )}
@@ -235,8 +271,9 @@ export function ItemPreview({
           rows={controls}
           base={customize.props}
           values={overrides}
-          onChange={(prop, value) => setOverrides((current) => ({ ...current, [prop]: value }))}
-          onReset={() => setOverrides({})}
+          onChange={edit}
+          onReset={() => setEdited({ demo: demoId, values: {} })}
+          shareUrl={shareUrl}
           code={themedUsage(customJsx, theme)}
           file={sceneFile(name, component, customJsx, theme)}
           fileName={`${component}Scene.tsx`}

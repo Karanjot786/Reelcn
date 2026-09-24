@@ -1136,3 +1136,9 @@ button.pv-scrub {
 .cz-switch[aria-checked="true"]::after {
   transform: translateX(18px);
 }
+
+.cz-note {
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: var(--grease);
+}
