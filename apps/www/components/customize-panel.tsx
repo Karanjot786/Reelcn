@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { type CustomProps, isHexColor, sliderRange, splitList, unitFor } from "@/lib/customize";
+import { type CustomProps, isHexColor, sliderRange, unitFor } from "@/lib/customize";
 import type { PropRow } from "@/lib/props-table";
 
 export type ControlRow = Pick<PropRow, "name" | "control" | "options" | "default" | "description">;
@@ -20,6 +20,7 @@ const TIMING = new Set(["delay", "duration", "exit", "poster", "holdFrames", "mo
  * An empty draft commits `undefined` (the demo's value); `accept` gates partial input such as a half-typed hex.
  */
 function DraftInput({
+  as: Tag = "input",
   id,
   value,
   placeholder,
@@ -27,6 +28,7 @@ function DraftInput({
   accept = () => true,
   onCommit,
 }: {
+  as?: "input" | "textarea";
   id: string;
   value: string;
   placeholder?: string;
@@ -41,9 +43,10 @@ function DraftInput({
     if (!focused) setDraft(value);
   }, [value, focused]);
   return (
-    <input
+    <Tag
       id={id}
-      type="text"
+      type={Tag === "input" ? "text" : undefined}
+      rows={Tag === "textarea" ? 2 : undefined}
       value={draft}
       placeholder={placeholder}
       onFocus={() => setFocused(true)}
@@ -145,10 +148,16 @@ function Field({ row, value, onChange }: { row: ControlRow; value: unknown; onCh
         <div className="cz-field">
           {label}
           <DraftInput
+            as="textarea"
             id={id}
-            value={Array.isArray(value) ? value.join(", ") : ""}
-            placeholder="comma, separated"
-            parse={splitList}
+            value={Array.isArray(value) ? value.join("\n") : ""}
+            placeholder="one per line"
+            parse={(d) =>
+              d
+                .split("\n")
+                .map((item) => item.trim())
+                .filter(Boolean)
+            }
             onCommit={onChange}
           />
         </div>

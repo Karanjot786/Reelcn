@@ -104,17 +104,11 @@ const MAX_ITEMS = 20;
 // ponytail: a sane magnitude cap, so a hand-edited link can't ask a component for a 1e308-unit title.
 const MAX_NUMBER = 100_000;
 
-export const splitList = (raw: string) =>
-  raw
-    .split(",")
-    .map((item) => item.trim())
-    .filter(Boolean);
-
+/** One `p.<prop>` param per value; a list repeats it per item, so items keep their commas. */
 export function encodeEdits(edits: CustomProps): [string, string][] {
-  return Object.entries(edits).map(([name, value]) => [
-    `${PARAM}${name}`,
-    Array.isArray(value) ? value.join(",") : String(value),
-  ]);
+  return Object.entries(edits).flatMap(([name, value]) =>
+    (Array.isArray(value) ? value : [value]).map((item): [string, string] => [`${PARAM}${name}`, String(item)]),
+  );
 }
 
 /** Share-link params back into edits; anything that doesn't fit its prop's control is dropped. */
@@ -142,7 +136,11 @@ export function decodeEdits(rows: EditableRow[], params: URLSearchParams): Custo
         out[row.name] = raw.slice(0, MAX_TEXT);
         break;
       case "list":
-        out[row.name] = splitList(raw).slice(0, MAX_ITEMS);
+        out[row.name] = params
+          .getAll(`${PARAM}${row.name}`)
+          .filter(Boolean)
+          .slice(0, MAX_ITEMS)
+          .map((item) => item.slice(0, MAX_TEXT));
         break;
     }
   }
@@ -157,7 +155,7 @@ export function buildQuery(search: string, state: { demo?: string; theme?: strin
   }
   if (state.demo) params.set("demo", state.demo);
   if (state.theme) params.set("theme", state.theme);
-  for (const [key, value] of encodeEdits(state.edits)) params.set(key, value);
+  for (const [key, value] of encodeEdits(state.edits)) params.append(key, value);
   const query = params.toString();
   return query ? `?${query}` : "";
 }

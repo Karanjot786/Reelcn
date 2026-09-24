@@ -94,7 +94,7 @@ test("encodeEdits writes p.<prop> params; decodeEdits reads them back", () => {
     accentWords: ["a", "b"],
   };
   const params = new URLSearchParams(encodeEdits(edits));
-  assert.equal(params.get("p.accentWords"), "a,b");
+  assert.deepEqual(params.getAll("p.accentWords"), ["a", "b"]);
   // Text keeps its comma; lists split on commas.
   assert.deepEqual(decodeEdits(ROWS, params), edits);
 });
@@ -121,4 +121,18 @@ test("buildQuery replaces our params and keeps everything else", () => {
 test("toJsx keeps newlines and entities intact", () => {
   assert.equal(toJsx("T", { text: "a\nb" }), '<T text={"a\\nb"} />');
   assert.equal(toJsx("T", { text: "A &amp; B" }), '<T text={"A &amp; B"} />');
+});
+
+test("list edits keep commas through a share link", () => {
+  const params = new URLSearchParams(encodeEdits({ accentWords: ["videos,", "b"] }));
+  assert.deepEqual(params.getAll("p.accentWords"), ["videos,", "b"]);
+  assert.deepEqual(decodeEdits(ROWS, params).accentWords, ["videos,", "b"]);
+  assert.equal(buildQuery("", { edits: { accentWords: ["a,1", "b"] } }), "?p.accentWords=a%2C1&p.accentWords=b");
+});
+
+test("decodeEdits caps hostile lists", () => {
+  const many = new URLSearchParams(Array.from({ length: 50 }, (_, i) => ["p.accentWords", `w${i}`]));
+  assert.equal((decodeEdits(ROWS, many).accentWords as string[]).length, 20);
+  const long = decodeEdits(ROWS, new URLSearchParams([["p.accentWords", "x".repeat(500)]])).accentWords as string[];
+  assert.equal(long[0].length, 200);
 });

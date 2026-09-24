@@ -1073,6 +1073,7 @@ button.pv-scrub {
   white-space: nowrap;
 }
 .cz-field select,
+.cz-field textarea,
 .cz-field input[type="text"] {
   min-width: 0;
   max-width: 60%;
@@ -1082,6 +1083,10 @@ button.pv-scrub {
   background: var(--panel2);
   color: var(--text);
   text-align: right;
+}
+.cz-field textarea {
+  resize: vertical;
+  font: inherit;
 }
 .cz-color {
   display: flex;
