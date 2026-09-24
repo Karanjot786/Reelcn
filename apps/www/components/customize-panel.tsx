@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { type CustomProps, parseDefault, sliderRange } from "@/lib/customize";
+import { useEffect, useState } from "react";
+import { type CustomProps, isHexColor, parseDefault, sliderRange, unitFor } from "@/lib/customize";
 import type { PropRow } from "@/lib/props-table";
 
 export type ControlRow = Pick<PropRow, "name" | "control" | "options" | "default" | "description">;
@@ -14,6 +14,49 @@ const humanize = (name: string) => {
 
 // The shared timing props every component takes (MotionProps); they go last, after the component's own.
 const TIMING = new Set(["delay", "duration", "exit", "poster", "holdFrames", "motion"]);
+
+/**
+ * A text box that commits as you type but keeps your draft, so clearing it doesn't snap back to the demo's text.
+ * An empty draft commits `undefined` (the demo's value); `accept` gates partial input such as a half-typed hex.
+ */
+function DraftInput({
+  id,
+  value,
+  placeholder,
+  parse,
+  accept = () => true,
+  onCommit,
+}: {
+  id: string;
+  value: string;
+  placeholder?: string;
+  parse: (draft: string) => unknown;
+  accept?: (draft: string) => boolean;
+  onCommit: (value: unknown) => void;
+}) {
+  const [draft, setDraft] = useState(value);
+  const [focused, setFocused] = useState(false);
+  // Outside changes (Reset, a share link) replace the draft, but never while you are typing.
+  useEffect(() => {
+    if (!focused) setDraft(value);
+  }, [value, focused]);
+  return (
+    <input
+      id={id}
+      type="text"
+      value={draft}
+      placeholder={placeholder}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
+      onChange={(event) => {
+        const next = event.target.value;
+        setDraft(next);
+        if (next.trim() === "") onCommit(undefined);
+        else if (accept(next.trim())) onCommit(parse(next.trim()));
+      }}
+    />
+  );
+}
 
 function Field({ row, value, onChange }: { row: ControlRow; value: unknown; onChange: (value: unknown) => void }) {
   const id = `cz-${row.name}`;
@@ -63,12 +106,13 @@ function Field({ row, value, onChange }: { row: ControlRow; value: unknown; onCh
               value={hex}
               onChange={(e) => onChange(e.target.value)}
             />
-            <input
+            <DraftInput
               id={id}
-              type="text"
-              placeholder="theme"
               value={typeof value === "string" ? value : ""}
-              onChange={(e) => onChange(e.target.value || undefined)}
+              placeholder="theme"
+              parse={(d) => d}
+              accept={isHexColor}
+              onCommit={onChange}
             />
           </span>
         </div>
@@ -77,6 +121,7 @@ function Field({ row, value, onChange }: { row: ControlRow; value: unknown; onCh
     case "slider": {
       const number = typeof value === "number" ? value : undefined;
       const range = sliderRange(row.name, number ?? 0);
+      const unit = unitFor(row.name);
       return (
         <div className="cz-field cz-slider">
           {label}
@@ -87,21 +132,41 @@ function Field({ row, value, onChange }: { row: ControlRow; value: unknown; onCh
             max={range.max}
             step={range.step}
             value={number ?? range.min}
+            data-auto={number === undefined || undefined}
+            aria-valuetext={number === undefined ? "auto" : `${number}${unit ? ` ${unit}` : ""}`}
             onChange={(e) => onChange(Number(e.target.value))}
           />
-          <output htmlFor={id}>{number ?? "auto"}</output>
+          <output htmlFor={id}>{number === undefined ? "auto" : `${number}${unit ? "f" : ""}`}</output>
         </div>
       );
     }
+    case "list":
+      return (
+        <div className="cz-field">
+          {label}
+          <DraftInput
+            id={id}
+            value={Array.isArray(value) ? value.join(", ") : ""}
+            placeholder="comma, separated"
+            parse={(d) =>
+              d
+                .split(",")
+                .map((item) => item.trim())
+                .filter(Boolean)
+            }
+            onCommit={onChange}
+          />
+        </div>
+      );
     default:
       return (
         <div className="cz-field">
           {label}
-          <input
+          <DraftInput
             id={id}
-            type="text"
             value={typeof value === "string" ? value : ""}
-            onChange={(e) => onChange(e.target.value)}
+            parse={(d) => d.slice(0, 200)}
+            onCommit={onChange}
           />
         </div>
       );

@@ -1142,3 +1142,19 @@ button.pv-scrub {
   font-size: 13px;
   color: var(--grease);
 }
+/* A vertical swipe over a slider scrolls the page; a horizontal one moves the thumb. */
+.cz-slider input[type="range"] {
+  touch-action: pan-y;
+}
+.cz-slider input[data-auto] {
+  opacity: 0.45;
+}
+@media (max-width: 600px) {
+  .cz-grid {
+    grid-template-columns: 1fr;
+  }
+  .cz-h {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
