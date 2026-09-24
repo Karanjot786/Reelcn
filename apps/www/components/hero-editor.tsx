@@ -118,7 +118,7 @@ export function HeroEditor({ poster, install }: { poster: string; install: strin
   const rulerEl = useRef<HTMLDivElement>(null);
   const playheadEl = useRef<HTMLDivElement>(null);
   const [format, setFormat] = useState<Format>("16x9");
-  const [theme, setTheme] = useState<ThemeName>("midnight");
+  const [theme, setTheme] = useState<ThemeName>("daylight");
   // Only the scene index is state: a new value re-renders the timeline highlight and scene panel.
   const [, setScene] = useState(0);
   const [playing, setPlaying] = useState(false);

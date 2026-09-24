@@ -49,7 +49,7 @@ export function ItemPreview({
 }) {
   const [demoId, setDemoId] = useState(demoIds[0] ?? name);
   const [format, setFormat] = useState<Format>("16x9");
-  const [theme, setTheme] = useState(themeNames.includes("midnight") ? "midnight" : (themeNames[0] ?? "midnight"));
+  const [theme, setTheme] = useState(themeNames.includes("daylight") ? "daylight" : (themeNames[0] ?? "daylight"));
   const [frame, setFrame] = useState(0);
   const [tab, setTab] = useState<Tab>("preview");
   const demo = useDemo(category, demoId);

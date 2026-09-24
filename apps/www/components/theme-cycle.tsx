@@ -29,7 +29,7 @@ export function ThemeCycle({ themes }: { themes: string[] }) {
     };
   }, [auto, themes.length]);
 
-  const theme = themes[index] ?? "midnight";
+  const theme = themes[index] ?? "daylight";
   return (
     <div ref={ref}>
       <div className="theme-code" aria-live="polite">

@@ -78,7 +78,7 @@ export function FormatTrio({ demoId, category }: { demoId: string; category: str
                       players.current[i] = p;
                     }}
                     component={Scene}
-                    inputProps={{ theme: "midnight" }}
+                    inputProps={{ theme: "daylight" }}
                     durationInFrames={demo.duration}
                     fps={30}
                     compositionWidth={width}

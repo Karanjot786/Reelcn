@@ -33,7 +33,7 @@ export function CatalogTile({
       <span className="catalog-frame">
         {demoId ? (
           active ? (
-            <DemoPlayer demoId={demoId} category={category} format="16x9" theme="midnight" controls={false} />
+            <DemoPlayer demoId={demoId} category={category} format="16x9" theme="daylight" controls={false} />
           ) : (
             // Decorative: the title text right below already names the component.
             <img src={`/thumbs/${demoId}.jpg`} loading="lazy" alt="" width={480} height={270} />

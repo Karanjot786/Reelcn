@@ -36,7 +36,7 @@ export function FrameSheet({ frames }: { frames: Frame[] }) {
                   demoId={frame.id}
                   category={frame.category}
                   format="16x9"
-                  theme="midnight"
+                  theme="daylight"
                   controls={false}
                 />
               </div>
