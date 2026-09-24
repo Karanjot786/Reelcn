@@ -10,6 +10,7 @@ import { ReactionBurst } from "../items/reaction-burst";
 import { SafeZoneGuide } from "../items/safe-zone-guide";
 import { ScribbleCircle } from "../items/scribble-circle";
 import { SparkleBurst } from "../items/sparkle-burst";
+import { customizable } from "./customizable";
 import type { Demo } from "./index";
 
 /**
@@ -120,107 +121,127 @@ export default [
   {
     id: "confetti-launch",
     duration: 100,
-    component: () => (
+    ...customizable("Confetti", Confetti, { origin: { x: 74, y: 74 } }, (element) => (
       <>
         <DemoBackdrop />
-        <Confetti origin={{ x: 74, y: 74 }} />
+        {element}
       </>
-    ),
+    )),
   },
   {
     id: "sparkle-burst-badge",
     duration: 90,
-    component: () => (
+    ...customizable("SparkleBurst", SparkleBurst, { origin: { x: 16.5, y: 70.5 }, delay: 30 }, (element) => (
       <>
         <DemoBackdrop />
-        <SparkleBurst origin={{ x: 16.5, y: 70.5 }} delay={30} />
+        {element}
       </>
-    ),
+    )),
   },
   {
     id: "light-leak-sweep",
     duration: 90,
-    component: () => (
+    ...customizable("LightLeak", LightLeak, { side: "left" }, (element) => (
       <>
         <DemoBackdrop />
-        <LightLeak side="left" />
+        {element}
       </>
-    ),
+    )),
   },
   {
     id: "flash-white",
     duration: 90,
-    component: () => (
+    ...customizable("Flash", Flash, { delay: 40 }, (element) => (
       <>
         <DemoBackdrop />
-        <Flash delay={40} />
+        {element}
       </>
-    ),
+    )),
   },
   {
     id: "callout-card",
     duration: 100,
-    component: () => (
-      <>
-        <DemoBackdrop />
-        <Callout target={{ x: 58, y: 56, width: 32, height: 18 }} label="Best week yet" delay={15} />
-      </>
+    ...customizable(
+      "Callout",
+      Callout,
+      { target: { x: 58, y: 56, width: 32, height: 18 }, label: "Best week yet", delay: 15 },
+      (element) => (
+        <>
+          <DemoBackdrop />
+          {element}
+        </>
+      ),
     ),
   },
   {
     id: "arrow-chart",
     duration: 90,
-    component: () => (
-      <>
-        <DemoBackdrop />
-        <Arrow from={{ x: 30, y: 68 }} to={{ x: 42, y: 45 }} label="Best week yet" delay={20} />
-      </>
+    ...customizable(
+      "Arrow",
+      Arrow,
+      { from: { x: 30, y: 68 }, to: { x: 42, y: 45 }, label: "Best week yet", delay: 20 },
+      (element) => (
+        <>
+          <DemoBackdrop />
+          {element}
+        </>
+      ),
     ),
   },
   {
     id: "scribble-circle-badge",
     duration: 90,
-    component: () => (
-      <>
-        <DemoBackdrop />
-        <ScribbleCircle target={{ x: 10, y: 64, width: 13, height: 13 }} delay={20} />
-      </>
+    ...customizable(
+      "ScribbleCircle",
+      ScribbleCircle,
+      { target: { x: 10, y: 64, width: 13, height: 13 }, delay: 20 },
+      (element) => (
+        <>
+          <DemoBackdrop />
+          {element}
+        </>
+      ),
     ),
   },
   {
     id: "reaction-burst-hearts",
     duration: 110,
-    component: () => (
+    ...customizable("ReactionBurst", ReactionBurst, {}, (element) => (
       <>
         <DemoBackdrop />
-        <ReactionBurst />
+        {element}
       </>
-    ),
+    )),
   },
   {
     id: "progress-bar-chapters",
     duration: 120,
-    component: () => (
-      <>
-        <DemoBackdrop />
-        <ProgressBar
-          chapters={[
-            { at: 0, label: "Intro" },
-            { at: 40, label: "Setup" },
-            { at: 90, label: "Result" },
-          ]}
-        />
-      </>
+    ...customizable(
+      "ProgressBar",
+      ProgressBar,
+      {
+        chapters: [
+          { at: 0, label: "Intro" },
+          { at: 40, label: "Setup" },
+          { at: 90, label: "Result" },
+        ],
+      },
+      (element) => (
+        <>
+          <DemoBackdrop />
+          {element}
+        </>
+      ),
     ),
   },
   {
     id: "safe-zone-guide-tiktok",
     duration: 80,
-    component: () => (
+    ...customizable("SafeZoneGuide", SafeZoneGuide, { platform: "tiktok" }, (element) => (
       <>
         <DemoBackdrop />
-        <SafeZoneGuide platform="tiktok" />
+        {element}
       </>
-    ),
+    )),
   },
 ] satisfies Demo[];
