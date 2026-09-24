@@ -32,6 +32,7 @@ export function ItemPreview({
   themes: themeNames,
   thumbs,
   code,
+  codeByTheme,
   builtFrom,
   children,
 }: {
@@ -43,6 +44,8 @@ export function ItemPreview({
   thumbs?: Record<string, { format: Format; file: string }[]>;
   /** Usage code, rendered on the server; shown in the Code tab. */
   code?: ReactNode;
+  /** The same usage per theme (wrapped in that theme), so the Code tab matches the theme picked in the preview. */
+  codeByTheme?: Record<string, ReactNode>;
   /** Registry items this one builds on, shown under Scenes. */
   builtFrom?: ReactNode;
   children?: ReactNode;
@@ -109,7 +112,7 @@ export function ItemPreview({
               </div>
             )}
           </div>
-          {tab === "code" && <div className="pv-body">{code}</div>}
+          {tab === "code" && <div className="pv-body">{codeByTheme?.[theme] ?? code}</div>}
           {tab === "story" && demo?.story && (
             <div className="pv-body">
               <div className="code">

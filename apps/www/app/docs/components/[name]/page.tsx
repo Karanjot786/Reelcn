@@ -33,6 +33,7 @@ import {
   SITE_URL,
   sentenceCase,
 } from "@/lib/registry";
+import { themedUsage } from "@/lib/themed-usage";
 
 // What people search for, by category ("remotion text animation", "remotion transition"); used in page titles.
 const SEARCH_NOUN: Record<string, string> = {
@@ -248,6 +249,16 @@ export default async function Page(props: PageProps<"/docs/components/[name]">) 
             themes={themeNames}
             thumbs={thumbs}
             code={usage ? <ServerCodeBlock lang={lang} code={usage} /> : undefined}
+            codeByTheme={
+              usage
+                ? Object.fromEntries(
+                    themeNames.map((theme) => [
+                      theme,
+                      <ServerCodeBlock key={theme} lang={lang} code={themedUsage(usage, theme)} />,
+                    ]),
+                  )
+                : undefined
+            }
             builtFrom={builtFrom || undefined}
           >
             {installation}
