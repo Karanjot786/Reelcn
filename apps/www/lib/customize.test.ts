@@ -1,6 +1,18 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { sceneFile, sliderRange, toJsx } from "./customize.ts";
+import {
+  buildQuery,
+  decodeEdits,
+  encodeEdits,
+  isHexColor,
+  parseDefault,
+  pruneEdits,
+  sceneFile,
+  sliderRange,
+  startValues,
+  toJsx,
+  unitFor,
+} from "./customize.ts";
 
 test("toJsx writes each value type the way JSX expects", () => {
   assert.equal(
@@ -28,4 +40,80 @@ test("sceneFile imports from src/reelcn and wraps non-default themes", () => {
   assert.doesNotMatch(daylight, /ThemeProvider/);
   const mono = sceneFile("text-reveal", "TextReveal", '<TextReveal text="Hi" />', "mono");
   assert.match(mono, /<ThemeProvider theme="mono">\n {6}<Stage>\n {8}<Center>\n {10}<TextReveal text="Hi" \/>/);
+});
+
+const ROWS = [
+  { name: "text", control: "text" },
+  { name: "size", control: "slider", default: "96" },
+  { name: "effect", control: "select", options: ["rise", "blur"], default: '"rise"' },
+  { name: "poster", control: "switch" },
+  { name: "color", control: "color" },
+  { name: "accentWords", control: "list", default: "[]" },
+];
+
+test("parseDefault reads JSON literals and ignores expressions", () => {
+  assert.equal(parseDefault('"rise"'), "rise");
+  assert.equal(parseDefault("96"), 96);
+  assert.equal(parseDefault("fps * 0.6"), undefined);
+  assert.equal(parseDefault(undefined), undefined);
+});
+
+test("startValues prefers the demo's props over declared defaults", () => {
+  assert.deepEqual(startValues(ROWS, { text: "Hi", effect: "blur" }), {
+    text: "Hi",
+    effect: "blur",
+    size: 96,
+    accentWords: [],
+  });
+});
+
+test("pruneEdits drops edits equal to the start, and undefined", () => {
+  const start = { text: "Hi", size: 96, accentWords: ["a"] };
+  assert.deepEqual(pruneEdits(start, { text: "Hi", size: 120, accentWords: ["a"], color: undefined }), { size: 120 });
+});
+
+test("isHexColor accepts full hex only", () => {
+  assert.ok(isHexColor("#ff0000"));
+  assert.ok(isHexColor("#F00"));
+  assert.ok(!isHexColor("#ff"));
+  assert.ok(!isHexColor("red"));
+});
+
+test("unitFor labels frame-count props", () => {
+  assert.equal(unitFor("stagger"), "frames");
+  assert.equal(unitFor("size"), undefined);
+});
+
+test("encodeEdits writes p.<prop> params; decodeEdits reads them back", () => {
+  const edits = {
+    text: "Hello, you",
+    size: 120,
+    effect: "blur",
+    poster: true,
+    color: "#ff0000",
+    accentWords: ["a", "b"],
+  };
+  const params = new URLSearchParams(encodeEdits(edits));
+  assert.equal(params.get("p.accentWords"), "a,b");
+  // Text keeps its comma; lists split on commas.
+  assert.deepEqual(decodeEdits(ROWS, params), edits);
+});
+
+test("decodeEdits drops hostile and unknown params", () => {
+  const params = new URLSearchParams(
+    `p.size=abc&p.effect=nope&p.poster=yes&p.color=javascript:alert(1)&p.foo=1&p.text=${"x".repeat(500)}`,
+  );
+  const out = decodeEdits(ROWS, params);
+  assert.deepEqual(Object.keys(out), ["text"]);
+  assert.equal((out.text as string).length, 200);
+  assert.equal(decodeEdits(ROWS, new URLSearchParams("p.size=1e308")).size, undefined);
+  assert.equal(decodeEdits(ROWS, new URLSearchParams("p.size=-40")).size, -40);
+});
+
+test("buildQuery replaces our params and keeps everything else", () => {
+  assert.equal(
+    buildQuery("?utm=x&p.size=1&demo=old", { demo: "blur", theme: "mono", edits: { size: 120 } }),
+    "?utm=x&demo=blur&theme=mono&p.size=120",
+  );
+  assert.equal(buildQuery("?p.size=1&theme=mono", { edits: {} }), "");
 });

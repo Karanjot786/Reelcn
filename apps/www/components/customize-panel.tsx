@@ -1,20 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { type CustomProps, sliderRange } from "@/lib/customize";
+import { type CustomProps, parseDefault, sliderRange } from "@/lib/customize";
 import type { PropRow } from "@/lib/props-table";
 
 export type ControlRow = Pick<PropRow, "name" | "control" | "options" | "default" | "description">;
-
-/** A prop's JSDoc default (`"rise"`, `96`, `true`) as a value, or undefined when it isn't a plain literal. */
-function parseDefault(text: string | undefined): unknown {
-  if (text === undefined) return undefined;
-  try {
-    return JSON.parse(text);
-  } catch {
-    return undefined;
-  }
-}
 
 /** `accentColor` → "Accent color", `holdFrames` → "Hold frames". */
 const humanize = (name: string) => {
