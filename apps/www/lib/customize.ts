@@ -111,38 +111,46 @@ export function encodeEdits(edits: CustomProps): [string, string][] {
   );
 }
 
+/** `value` when it fits `row`'s control (list items and text capped), else undefined. Share links and custom installs. */
+export function fitValue(row: EditableRow, value: unknown): unknown {
+  switch (row.control) {
+    case "switch":
+      return typeof value === "boolean" ? value : undefined;
+    case "slider":
+      return typeof value === "number" && Number.isFinite(value) && Math.abs(value) <= MAX_NUMBER ? value : undefined;
+    case "select":
+      return typeof value === "string" && row.options?.includes(value) ? value : undefined;
+    case "color":
+      return typeof value === "string" && isHexColor(value) ? value : undefined;
+    case "text":
+      return typeof value === "string" ? value.slice(0, MAX_TEXT) : undefined;
+    case "list":
+      return Array.isArray(value)
+        ? value
+            .filter((item): item is string => typeof item === "string" && item !== "")
+            .slice(0, MAX_ITEMS)
+            .map((item) => item.slice(0, MAX_TEXT))
+        : undefined;
+  }
+}
+
 /** Share-link params back into edits; anything that doesn't fit its prop's control is dropped. */
 export function decodeEdits(rows: EditableRow[], params: URLSearchParams): CustomProps {
   const out: CustomProps = {};
   for (const row of rows) {
-    const raw = params.get(`${PARAM}${row.name}`);
+    const key = `${PARAM}${row.name}`;
+    const raw = params.get(key);
     if (raw === null) continue;
-    switch (row.control) {
-      case "switch":
-        if (raw === "true" || raw === "false") out[row.name] = raw === "true";
-        break;
-      case "slider": {
-        const number = Number(raw);
-        if (raw.trim() !== "" && Number.isFinite(number) && Math.abs(number) <= MAX_NUMBER) out[row.name] = number;
-        break;
-      }
-      case "select":
-        if (row.options?.includes(raw)) out[row.name] = raw;
-        break;
-      case "color":
-        if (isHexColor(raw)) out[row.name] = raw;
-        break;
-      case "text":
-        out[row.name] = raw.slice(0, MAX_TEXT);
-        break;
-      case "list":
-        out[row.name] = params
-          .getAll(`${PARAM}${row.name}`)
-          .filter(Boolean)
-          .slice(0, MAX_ITEMS)
-          .map((item) => item.slice(0, MAX_TEXT));
-        break;
-    }
+    const value =
+      row.control === "list"
+        ? params.getAll(key)
+        : row.control === "switch"
+          ? { true: true, false: false }[raw]
+          : row.control === "slider" && raw.trim() !== ""
+            ? Number(raw)
+            : raw;
+    const fit = fitValue(row, value);
+    if (fit !== undefined) out[row.name] = fit;
   }
   return out;
 }

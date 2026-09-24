@@ -8,8 +8,13 @@ const MANAGERS = [
   ["bun", "bunx --bun shadcn add"],
 ] as const;
 
-/** The theme picked in the item page's preview (ItemPreview provides it); daylight, the default, elsewhere. */
-export const InstallThemeContext = createContext("daylight");
+/**
+ * The theme picked in the item page's preview (ItemPreview provides it; daylight elsewhere), and once the viewer has
+ * customized, the payload for `/r/custom/<name>/<payload>.json`.
+ */
+export const InstallThemeContext = createContext<{ theme: string; custom?: { component: string; payload: string } }>({
+  theme: "daylight",
+});
 
 /** `/r/<name>.json` → `/r/<theme>/<name>.json`: that route installs the item with `<theme>` as the default theme. */
 function themedUrl(url: string, theme: string) {
@@ -18,8 +23,11 @@ function themedUrl(url: string, theme: string) {
 
 /** The install command in a code block, with package-manager tabs and a copy button (mockup's Installation block). */
 export function InstallBlock({ url: baseUrl }: { url: string }) {
-  const theme = useContext(InstallThemeContext);
-  const url = themedUrl(baseUrl, theme);
+  const { theme, custom } = useContext(InstallThemeContext);
+  const name = baseUrl.slice(baseUrl.lastIndexOf("/") + 1, -".json".length);
+  const url = custom
+    ? baseUrl.replace(/[^/]+\.json$/, `custom/${name}/${custom.payload}.json`)
+    : themedUrl(baseUrl, theme);
   const [pm, setPm] = useState(0);
   const [copied, setCopied] = useState(false);
   const [bin, ...rest] = MANAGERS[pm][1].split(" ");
@@ -52,7 +60,13 @@ export function InstallBlock({ url: baseUrl }: { url: string }) {
       <pre>
         <span className="n">{bin}</span> {rest.join(" ")} {url}
       </pre>
-      {theme !== "daylight" && <p className="install-theme">Installs with {theme} as your default theme.</p>}
+      {custom ? (
+        <p className="install-theme">
+          Installs {name} plus {custom.component}Custom with your settings.
+        </p>
+      ) : (
+        theme !== "daylight" && <p className="install-theme">Installs with {theme} as your default theme.</p>
+      )}
     </div>
   );
 }

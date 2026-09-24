@@ -8,6 +8,9 @@ const config = {
   agentRules: false,
   // Registry items ship as TypeScript source; the site compiles them like its own files.
   transpilePackages: ["@reelcn/registry"],
+  // /r/custom reads the item's source at request time to validate props (lib/props-table.ts).
+  // ponytail: unverified until a deploy; precompute props per item at build if tracing misses type imports.
+  outputFileTracingIncludes: { "/r/custom/[item]/[payload]": ["../../registry/items/**"] },
   async headers() {
     const noindex = [{ key: "X-Robots-Tag", value: "noindex" }];
     return [

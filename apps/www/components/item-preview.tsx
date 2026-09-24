@@ -5,6 +5,7 @@ import { type ThemeName, themes } from "@reelcn/registry/items/core";
 import { type CallbackListener, Player, type PlayerRef } from "@remotion/player";
 import Link from "next/link";
 import { type CSSProperties, type MouseEvent, type ReactNode, useEffect, useRef, useState } from "react";
+import { encodePayload } from "@/lib/custom-install";
 import { buildQuery, decodeEdits, pruneEdits, sceneFile, startValues, toJsx } from "@/lib/customize";
 import { themedUsage } from "@/lib/themed-usage";
 import { type ControlRow, CustomizePanel } from "./customize-panel";
@@ -288,7 +289,24 @@ export function ItemPreview({
           fileName={`${component}Scene.tsx`}
         />
       )}
-      <InstallThemeContext value={theme}>{children}</InstallThemeContext>
+      <InstallThemeContext
+        value={{
+          theme,
+          custom:
+            customize && hasEdits
+              ? {
+                  component,
+                  payload: encodePayload({
+                    props: { ...customize.props, ...overrides },
+                    theme: theme === "daylight" ? undefined : theme,
+                    component,
+                  }),
+                }
+              : undefined,
+        }}
+      >
+        {children}
+      </InstallThemeContext>
       {marks.length > 0 ? (
         <section>
           <h2 id="scenes">Scenes</h2>
