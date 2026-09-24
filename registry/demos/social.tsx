@@ -11,13 +11,14 @@ import { PostCard } from "../items/post-card";
 import { QuoteCard } from "../items/quote-card";
 import { SubscribeCta } from "../items/subscribe-cta";
 import { captionFixture } from "./captions-fixture";
+import { customizable } from "./customizable";
 import type { Demo } from "./index";
 
 const lowerThirdDemos: Demo[] = (["bar", "card", "minimal"] as const).map(
   (variant): Demo => ({
     id: `lower-third-${variant}`,
     duration: 90,
-    component: () => <LowerThird name="Maya Chen" title="Founder, Northwind" variant={variant} />,
+    ...customizable("LowerThird", LowerThird, { name: "Maya Chen", title: "Founder, Northwind", variant }),
   }),
 );
 
@@ -36,7 +37,7 @@ const captionDemos: Demo[] = [
   {
     id: "captions-emphasis",
     duration: 200,
-    component: () => <Captions captions={captionFixture} emphasize={["three", "seconds."]} />,
+    ...customizable("Captions", Captions, { captions: captionFixture, emphasize: ["three", "seconds."] }),
   },
   ...captionVariants.map(
     (variant): Demo => ({
@@ -51,67 +52,72 @@ const socialDemos: Demo[] = [
   {
     id: "hook-title",
     duration: 90,
-    component: () => <HookTitle text="Nobody tells you this about lighting" kicker="Part 3" />,
+    ...customizable("HookTitle", HookTitle, { text: "Nobody tells you this about lighting", kicker: "Part 3" }),
   },
-  { id: "subscribe-cta", duration: 90, component: () => <SubscribeCta /> },
+  { id: "subscribe-cta", duration: 90, ...customizable("SubscribeCta", SubscribeCta, {}) },
   {
     id: "end-screen",
     duration: 120,
-    component: () => <EndScreen title="Watch this next" nextTitle="How we cut render times in half" seconds={8} />,
+    ...customizable("EndScreen", EndScreen, {
+      title: "Watch this next",
+      nextTitle: "How we cut render times in half",
+      seconds: 8,
+    }),
   },
-  { id: "chapter-title", duration: 90, component: () => <ChapterTitle number={2} title="Setting the key light" /> },
+  {
+    id: "chapter-title",
+    duration: 90,
+    ...customizable("ChapterTitle", ChapterTitle, { number: 2, title: "Setting the key light" }),
+  },
   {
     id: "post-card",
     duration: 110,
-    component: () => (
-      <Center>
-        <PostCard
-          name="Maya Chen"
-          handle="@mayachen"
-          time="2h"
-          text="Shipped the first render pipeline today. One timeline, three formats, no re-cuts."
-          metrics={{ likes: 1248, comments: 86, shares: 210 }}
-        />
-      </Center>
+    ...customizable(
+      "PostCard",
+      PostCard,
+      {
+        name: "Maya Chen",
+        handle: "@mayachen",
+        time: "2h",
+        text: "Shipped the first render pipeline today. One timeline, three formats, no re-cuts.",
+        metrics: { likes: 1248, comments: 86, shares: 210 },
+      },
+      (element) => <Center>{element}</Center>,
     ),
   },
   {
     id: "quote-card",
     duration: 110,
-    component: () => (
-      <Center>
-        {/* biome-ignore lint/a11y/useValidAriaRole: role is QuoteCard's job-title prop, not an ARIA role */}
-        <QuoteCard
-          quote="We cut a week of editing down to an afternoon."
-          name="Grace Hopper"
-          role="Head of Video, Northwind"
-        />
-      </Center>
+    ...customizable(
+      "QuoteCard",
+      QuoteCard,
+      {
+        quote: "We cut a week of editing down to an afternoon.",
+        name: "Grace Hopper",
+        role: "Head of Video, Northwind",
+      },
+      (element) => <Center>{element}</Center>,
     ),
   },
-  { id: "countdown", duration: 180, component: () => <Countdown seconds={5} label="Starting in" /> },
+  { id: "countdown", duration: 180, ...customizable("Countdown", Countdown, { seconds: 5, label: "Starting in" }) },
   {
     id: "comment-bubble",
     duration: 110,
-    component: () => (
-      <Center>
-        <CommentBubble
-          name="Katherine"
-          handle="@kj"
-          text="Which mic is that? It sounds unreal."
-          replyTo="Ada"
-          likes={42}
-        />
-      </Center>
+    ...customizable(
+      "CommentBubble",
+      CommentBubble,
+      { name: "Katherine", handle: "@kj", text: "Which mic is that? It sounds unreal.", replyTo: "Ada", likes: 42 },
+      (element) => <Center>{element}</Center>,
     ),
   },
   {
     id: "follow-card",
     duration: 110,
-    component: () => (
-      <Center>
-        <FollowCard name="Maya Chen" handle="@mayachen" followers="24.8k" />
-      </Center>
+    ...customizable(
+      "FollowCard",
+      FollowCard,
+      { name: "Maya Chen", handle: "@mayachen", followers: "24.8k" },
+      (element) => <Center>{element}</Center>,
     ),
   },
 ];

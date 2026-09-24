@@ -9,6 +9,7 @@ import { Space } from "../items/space";
 import { SplitScreen } from "../items/split-screen";
 import { Stage } from "../items/stage";
 import { Stagger } from "../items/stagger";
+import { customizable } from "./customizable";
 import type { Demo } from "./index";
 
 const effects: AnimateEffect[] = ["fade", "up", "down", "left", "right", "scale", "pop", "blur", "zoom"];
@@ -310,23 +311,6 @@ function SplitQuad() {
 
 /* ────────────────────────────── bento-grid ────────────────────────────── */
 
-function BentoFeatures() {
-  return (
-    <Center>
-      <BentoGrid
-        tiles={[
-          { title: "Six themes", body: "Swap the whole look with one prop.", span: 2, accent: true },
-          { title: "Responsive", body: "16:9, 9:16 and 1:1." },
-          { title: "Seeded", body: "Same frame, same pixels." },
-          { title: "Copy-paste", body: "You own every line." },
-          { title: "Agent-ready", body: "An llms.txt entry for every item.", span: 2 },
-          { title: "MIT", body: "Free forever." },
-        ]}
-      />
-    </Center>
-  );
-}
-
 /* ──────────────────────────────── marquee ──────────────────────────────── */
 
 function MarqueeBands() {
@@ -449,7 +433,25 @@ export default [
   { id: "camera-layers", duration: 100, component: CameraLayers },
   { id: "split-screen-duo", duration: 90, component: SplitDuo },
   { id: "split-screen-quad", duration: 90, component: SplitQuad },
-  { id: "bento-grid-features", duration: 105, component: BentoFeatures },
+  {
+    id: "bento-grid-features",
+    duration: 105,
+    ...customizable(
+      "BentoGrid",
+      BentoGrid,
+      {
+        tiles: [
+          { title: "Six themes", body: "Swap the whole look with one prop.", span: 2, accent: true },
+          { title: "Responsive", body: "16:9, 9:16 and 1:1." },
+          { title: "Seeded", body: "Same frame, same pixels." },
+          { title: "Copy-paste", body: "You own every line." },
+          { title: "Agent-ready", body: "An llms.txt entry for every item.", span: 2 },
+          { title: "MIT", body: "Free forever." },
+        ],
+      },
+      (element) => <Center>{element}</Center>,
+    ),
+  },
   { id: "marquee-bands", duration: 120, component: MarqueeBands },
   { id: "stage-tour", duration: 120, component: StageTour },
   { id: "space-gallery", duration: 100, component: SpaceGallery },

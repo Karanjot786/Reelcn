@@ -39,6 +39,7 @@ import { Tabs } from "../items/tabs";
 import { Terminal } from "../items/terminal";
 import { Toast } from "../items/toast";
 import { ToastStack } from "../items/toast-stack";
+import { customizable } from "./customizable";
 import type { Demo } from "./index";
 
 /* ─────────────────────────── shared fake UI screens ─────────────────────────── */
@@ -147,20 +148,6 @@ function FakePlainList() {
 
 /* ────────────────────────────── code-block ────────────────────────────── */
 
-function CodeBlockTyping() {
-  return (
-    <Center>
-      <CodeBlock
-        title="render.ts"
-        language="ts"
-        code={'const video = await render({\n  fps: 30,\n  codec: "h264",\n});'}
-        typing={40}
-        highlightLines={[3]}
-      />
-    </Center>
-  );
-}
-
 function CodeBlockFollow() {
   return (
     <Center>
@@ -190,21 +177,6 @@ function CodeBlockDiff() {
 }
 
 /* ─────────────────────────────── terminal ─────────────────────────────── */
-
-function TerminalInstall() {
-  return (
-    <Center>
-      <Terminal
-        lines={[
-          { type: "command", text: "npx shadcn@latest add ./r/terminal.json" },
-          { type: "output", text: "Created 3 files" },
-          { type: "command", text: "pnpm build" },
-          { type: "output", text: "Build complete in 1.2s" },
-        ]}
-      />
-    </Center>
-  );
-}
 
 function TerminalFollow() {
   return (
@@ -526,24 +498,6 @@ function ChatThreadDemo() {
 
 /* ─────────────────────────── command-palette ─────────────────────────── */
 
-function CommandPaletteDemo() {
-  return (
-    <Center>
-      <CommandPalette
-        items={[
-          { label: "New project" },
-          { label: "New template" },
-          { label: "Open settings", hint: "⌘," },
-          { label: "Invite teammate" },
-        ]}
-        query="new t"
-        select="New template"
-        selectAt={90}
-      />
-    </Center>
-  );
-}
-
 function CommandPaletteFollow() {
   return (
     <Center>
@@ -603,23 +557,6 @@ function BeforeAfterDemo() {
 
 /* ──────────────────────────────── button ──────────────────────────────── */
 
-function ButtonDemo() {
-  return (
-    <Center>
-      <Button
-        id="pay-button"
-        label="Pay $48.20"
-        steps={[
-          { at: 0, state: "idle" },
-          { at: 1, state: "press" },
-          { at: 1.4, state: "loading" },
-          { at: 2.4, state: "success" },
-        ]}
-      />
-    </Center>
-  );
-}
-
 function ButtonAnchorProofResolverDemo() {
   const buttonProps = { id: "pay-button", label: "Pay $48.20", place: { x: 50, y: 62 } };
   return (
@@ -666,104 +603,13 @@ function ButtonAnchorProofLiteralDemo() {
 
 /* ──────────────────────────────── svg-draw ──────────────────────────────── */
 
-function SvgDrawDemo() {
-  return (
-    <Center>
-      <SvgDraw
-        viewBox="0 0 24 24"
-        paths={["M20 6 9 17l-5-5", "M4 12h1", "M19 12h1"]}
-        size={220}
-        strokeWidth={2}
-        fill="none"
-      />
-    </Center>
-  );
-}
-
 /* ──────────────────────────────── logo-sting ──────────────────────────────── */
-
-function LogoStingDemo() {
-  return (
-    <Center>
-      <LogoSting
-        viewBox="0 0 48 48"
-        paths={["M8 24 L24 8 L40 24 L24 40 Z", "M18 24 L24 18 L30 24 L24 30 Z"]}
-        size={160}
-        sfx="chime"
-      />
-    </Center>
-  );
-}
-
-function SwitchDemo() {
-  return (
-    <Center>
-      <Switch
-        id="notifications"
-        label="Push notifications"
-        steps={[
-          { at: 0, state: "off" },
-          { at: 1, state: "on" },
-        ]}
-      />
-    </Center>
-  );
-}
 
 /* ──────────────────────────────── input ──────────────────────────────── */
 
-function InputDemo() {
-  return (
-    <Center>
-      <Input
-        id="email"
-        label="Work email"
-        placeholder="you@company.com"
-        steps={[
-          { at: 0, state: "idle" },
-          { at: 0.6, state: "active" },
-          { at: 0.8, state: "typing", type: "ada@hexhaus.dev" },
-        ]}
-      />
-    </Center>
-  );
-}
-
 /* ──────────────────────────────── select ──────────────────────────────── */
 
-function SelectDemo() {
-  return (
-    <Center>
-      <Select
-        id="plan"
-        options={["Starter", "Growth", "Scale"]}
-        steps={[
-          { at: 0, state: "closed" },
-          { at: 0.5, state: "open" },
-          { at: 1.2, state: { highlight: 1 } },
-          { at: 1.8, state: { highlight: 2 } },
-        ]}
-      />
-    </Center>
-  );
-}
-
 /* ──────────────────────────────── tabs ──────────────────────────────── */
-
-function TabsDemo() {
-  return (
-    <Center>
-      <Tabs
-        id="view"
-        labels={["Overview", "Usage", "Billing"]}
-        steps={[
-          { at: 0, state: { active: 0 } },
-          { at: 1, state: { active: 2 } },
-        ]}
-      />
-    </Center>
-  );
-}
 
 /* ──────────────────────────────── dialog ──────────────────────────────── */
 
@@ -810,14 +656,6 @@ const CHECKLIST_ITEMS = [
   { text: "Invite your team" },
 ];
 
-function ChecklistDemo() {
-  return (
-    <Center>
-      <Checklist items={CHECKLIST_ITEMS} />
-    </Center>
-  );
-}
-
 /* ──────────────────────────────── layout morph ──────────────────────────────── */
 
 const LAYOUT_MORPH_ITEMS = [
@@ -825,19 +663,6 @@ const LAYOUT_MORPH_ITEMS = [
   { src: staticFile("reelcn-demo/screenshots/fictional-mobile-feed.webp") },
   { src: staticFile("reelcn-demo/screenshots/reelcn-docs.webp") },
 ];
-
-function LayoutMorphDemo() {
-  return (
-    <LayoutMorph
-      items={LAYOUT_MORPH_ITEMS}
-      layouts={[
-        { at: 0, layout: "grid" },
-        { at: 1.5, layout: "mosaic" },
-        { at: 3, layout: "strip" },
-      ]}
-    />
-  );
-}
 
 /* ──────────────────────────────── ui scene ──────────────────────────────── */
 
@@ -899,10 +724,41 @@ function UiSceneTabsDemo() {
 }
 
 export default [
-  { id: "code-block-typing", duration: 90, component: CodeBlockTyping },
+  {
+    id: "code-block-typing",
+    duration: 90,
+    ...customizable(
+      "CodeBlock",
+      CodeBlock,
+      {
+        title: "render.ts",
+        language: "ts",
+        code: 'const video = await render({\n  fps: 30,\n  codec: "h264",\n});',
+        typing: 40,
+        highlightLines: [3],
+      },
+      (element) => <Center>{element}</Center>,
+    ),
+  },
   { id: "code-block-follow", duration: 90, component: CodeBlockFollow },
   { id: "code-block-diff", duration: 75, component: CodeBlockDiff },
-  { id: "terminal-install", duration: 120, component: TerminalInstall },
+  {
+    id: "terminal-install",
+    duration: 120,
+    ...customizable(
+      "Terminal",
+      Terminal,
+      {
+        lines: [
+          { type: "command", text: "npx shadcn@latest add ./r/terminal.json" },
+          { type: "output", text: "Created 3 files" },
+          { type: "command", text: "pnpm build" },
+          { type: "output", text: "Build complete in 1.2s" },
+        ],
+      },
+      (element) => <Center>{element}</Center>,
+    ),
+  },
   { id: "terminal-follow", duration: 120, component: TerminalFollow },
   { id: "browser-window-dashboard", duration: 75, component: BrowserWindowDemo },
   // poster:true (useMotion) renders fully entered with no exit for a still thumbnail — every frame is
@@ -924,15 +780,63 @@ export default [
   { id: "toast-settle", duration: 90, bare: true, component: ToastSettle },
   { id: "toast-stack", duration: 150, bare: true, component: ToastStackDemo },
   { id: "chat-thread-reply", duration: 110, component: ChatThreadDemo },
-  { id: "command-palette-filter", duration: 100, component: CommandPaletteDemo },
+  {
+    id: "command-palette-filter",
+    duration: 100,
+    ...customizable(
+      "CommandPalette",
+      CommandPalette,
+      {
+        items: [
+          { label: "New project" },
+          { label: "New template" },
+          { label: "Open settings", hint: "⌘," },
+          { label: "Invite teammate" },
+        ],
+        query: "new t",
+        select: "New template",
+        selectAt: 90,
+      },
+      (element) => <Center>{element}</Center>,
+    ),
+  },
   { id: "command-palette-follow", duration: 100, component: CommandPaletteFollow },
   { id: "feature-card-rise", duration: 75, component: FeatureCardDemo },
   { id: "before-after-wipe", duration: 75, component: BeforeAfterDemo },
-  { id: "svg-draw-check", duration: 75, component: SvgDrawDemo },
+  {
+    id: "svg-draw-check",
+    duration: 75,
+    ...customizable(
+      "SvgDraw",
+      SvgDraw,
+      {
+        viewBox: "0 0 24 24",
+        paths: ["M20 6 9 17l-5-5", "M4 12h1", "M19 12h1"],
+        size: 220,
+        strokeWidth: 2,
+        fill: "none",
+      },
+      (element) => <Center>{element}</Center>,
+    ),
+  },
   {
     id: "button",
     duration: stepsDuration([{ at: 0 }, { at: 1 }, { at: 1.4 }, { at: 2.4 }], 30, STORY_FPS),
-    component: ButtonDemo,
+    ...customizable(
+      "Button",
+      Button,
+      {
+        id: "pay-button",
+        label: "Pay $48.20",
+        steps: [
+          { at: 0, state: "idle" },
+          { at: 1, state: "press" },
+          { at: 1.4, state: "loading" },
+          { at: 2.4, state: "success" },
+        ],
+      },
+      (element) => <Center>{element}</Center>,
+    ),
   },
   { id: "button-anchor-proof-resolver", duration: 25, component: ButtonAnchorProofResolverDemo },
   { id: "button-anchor-proof-literal", duration: 25, component: ButtonAnchorProofLiteralDemo },
@@ -940,22 +844,74 @@ export default [
   {
     id: "switch",
     duration: stepsDuration([{ at: 0 }, { at: 1 }], 30, STORY_FPS),
-    component: SwitchDemo,
+    ...customizable(
+      "Switch",
+      Switch,
+      {
+        id: "notifications",
+        label: "Push notifications",
+        steps: [
+          { at: 0, state: "off" },
+          { at: 1, state: "on" },
+        ],
+      },
+      (element) => <Center>{element}</Center>,
+    ),
   },
   {
     id: "input",
     duration: stepsDuration([{ at: 0 }, { at: 0.6 }, { at: 0.8 }], 45, STORY_FPS),
-    component: InputDemo,
+    ...customizable(
+      "Input",
+      Input,
+      {
+        id: "email",
+        label: "Work email",
+        placeholder: "you@company.com",
+        steps: [
+          { at: 0, state: "idle" },
+          { at: 0.6, state: "active" },
+          { at: 0.8, state: "typing", type: "ada@hexhaus.dev" },
+        ],
+      },
+      (element) => <Center>{element}</Center>,
+    ),
   },
   {
     id: "select",
     duration: stepsDuration([{ at: 0 }, { at: 0.5 }, { at: 1.2 }, { at: 1.8 }], 30, STORY_FPS),
-    component: SelectDemo,
+    ...customizable(
+      "Select",
+      Select,
+      {
+        id: "plan",
+        options: ["Starter", "Growth", "Scale"],
+        steps: [
+          { at: 0, state: "closed" },
+          { at: 0.5, state: "open" },
+          { at: 1.2, state: { highlight: 1 } },
+          { at: 1.8, state: { highlight: 2 } },
+        ],
+      },
+      (element) => <Center>{element}</Center>,
+    ),
   },
   {
     id: "tabs",
     duration: stepsDuration([{ at: 0 }, { at: 1 }], 30, STORY_FPS),
-    component: TabsDemo,
+    ...customizable(
+      "Tabs",
+      Tabs,
+      {
+        id: "view",
+        labels: ["Overview", "Usage", "Billing"],
+        steps: [
+          { at: 0, state: { active: 0 } },
+          { at: 1, state: { active: 2 } },
+        ],
+      },
+      (element) => <Center>{element}</Center>,
+    ),
   },
   {
     id: "dialog",
@@ -963,9 +919,39 @@ export default [
     component: DialogDemo,
   },
   { id: "dialog-anchor-proof", duration: 30, component: DialogAnchorProofDemo },
-  { id: "checklist", duration: checklistDuration(CHECKLIST_ITEMS) + 30, component: ChecklistDemo },
-  { id: "layout-morph", duration: 150, bare: true, component: LayoutMorphDemo },
-  { id: "logo-sting", duration: 150, component: LogoStingDemo },
+  {
+    id: "checklist",
+    duration: checklistDuration(CHECKLIST_ITEMS) + 30,
+    ...customizable("Checklist", Checklist, { items: CHECKLIST_ITEMS }, (element) => <Center>{element}</Center>),
+  },
+  {
+    id: "layout-morph",
+    duration: 150,
+    bare: true,
+    ...customizable("LayoutMorph", LayoutMorph, {
+      items: LAYOUT_MORPH_ITEMS,
+      layouts: [
+        { at: 0, layout: "grid" },
+        { at: 1.5, layout: "mosaic" },
+        { at: 3, layout: "strip" },
+      ],
+    }),
+  },
+  {
+    id: "logo-sting",
+    duration: 150,
+    ...customizable(
+      "LogoSting",
+      LogoSting,
+      {
+        viewBox: "0 0 48 48",
+        paths: ["M8 24 L24 8 L40 24 L24 40 Z", "M18 24 L24 18 L30 24 L24 30 Z"],
+        size: 160,
+        sfx: "chime",
+      },
+      (element) => <Center>{element}</Center>,
+    ),
+  },
   {
     id: "ui-scene-signup",
     duration: stepsDuration(
