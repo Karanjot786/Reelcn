@@ -63,9 +63,8 @@ export function ItemPreview({
   const [frame, setFrame] = useState(0);
   const [tab, setTab] = useState<Tab>("preview");
   const demo = useDemo(category, demoId);
-  // Edits belong to one variant: stored with its id, so switching variant shows none and needs no reset effect.
+  // Edits belong to one variant: stored with its id, so switching variant shows none; the chips also clear them.
   const [edited, setEdited] = useState<{ demo: string; values: Record<string, unknown> }>({ demo: "", values: {} });
-  const overrides = edited.demo === demoId ? edited.values : {};
   // A share link: `?demo=<variant>&theme=<name>&p.<prop>=<value>`. Read once; bad values are dropped.
   // biome-ignore lint/correctness/useExhaustiveDependencies: runs once, on the first client render
   useEffect(() => {
@@ -79,6 +78,8 @@ export function ItemPreview({
   }, []);
   const customize = demo?.customize && controls && controls.length > 0 ? demo.customize : undefined;
   const start = customize && controls ? startValues(controls, customize.props) : {};
+  // Pruned here, not on write, so a share link's no-op params (`p.effect=rise` on rise) count as no edits too.
+  const overrides = edited.demo === demoId ? pruneEdits(start, edited.values) : {};
   const edit = (prop: string, value: unknown) =>
     setEdited({ demo: demoId, values: pruneEdits(start, { ...overrides, [prop]: value }) });
   const hasEdits = Object.keys(overrides).length > 0;
@@ -256,7 +257,15 @@ export function ItemPreview({
                 // biome-ignore lint/a11y/useSemanticElements: a chip row; fieldset brings a border and min-width
                 <div className="chips" role="group" aria-label="Variant">
                   {demoIds.map((id) => (
-                    <button key={id} type="button" aria-pressed={demoId === id} onClick={() => setDemoId(id)}>
+                    <button
+                      key={id}
+                      type="button"
+                      aria-pressed={demoId === id}
+                      onClick={() => {
+                        setDemoId(id);
+                        setEdited({ demo: id, values: {} });
+                      }}
+                    >
                       {variant(id)}
                     </button>
                   ))}

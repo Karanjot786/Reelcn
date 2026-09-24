@@ -19,7 +19,8 @@ function attr(name: string, value: unknown): string | null {
   if (value === undefined) return null;
   if (value === true) return name;
   if (typeof value === "string")
-    return value.includes('"') ? `${name}={${JSON.stringify(value)}}` : `${name}="${value}"`;
+    // A JSX attribute string can't hold `"`, keeps raw newlines (which indenting would corrupt) and decodes `&`.
+    return /["\n&]/.test(value) ? `${name}={${JSON.stringify(value)}}` : `${name}="${value}"`;
   return `${name}={${JSON.stringify(value)}}`;
 }
 

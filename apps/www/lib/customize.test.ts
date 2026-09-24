@@ -117,3 +117,8 @@ test("buildQuery replaces our params and keeps everything else", () => {
   );
   assert.equal(buildQuery("?p.size=1&theme=mono", { edits: {} }), "");
 });
+
+test("toJsx keeps newlines and entities intact", () => {
+  assert.equal(toJsx("T", { text: "a\nb" }), '<T text={"a\\nb"} />');
+  assert.equal(toJsx("T", { text: "A &amp; B" }), '<T text={"A &amp; B"} />');
+});
