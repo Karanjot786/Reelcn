@@ -19,6 +19,7 @@
     "check:determinism": "node registry/tools/check-determinism.ts registry/items registry/demos",
     "stills": "node scripts/stills.ts",
     "thumbs": "node scripts/thumbs.ts",
+    "previews": "node scripts/previews.ts",
     "demo-audio": "node scripts/demo-audio.ts",
     "sfx:build": "node scripts/sfx-build.ts",
     "sfx:check": "node scripts/check-sfx-licenses.ts",

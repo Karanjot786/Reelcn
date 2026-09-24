@@ -1,6 +1,6 @@
 import { DocsLayout } from "fumadocs-ui/layouts/docs";
 import Link from "next/link";
-import { DocsSidebarItem } from "@/components/docs-sidebar-item";
+import { DocsSidebarItem, SidebarPreviewHost } from "@/components/docs-sidebar-item";
 import { SearchButton } from "@/components/search-button";
 import { baseOptions, REPO_URL } from "@/lib/layout.shared";
 import { items } from "@/lib/registry";
@@ -36,6 +36,7 @@ export default function Layout({ children }: LayoutProps<"/docs">) {
           <>
             <VersionCard />
             <SearchButton className="dsearch" label="Search" />
+            <SidebarPreviewHost />
           </>
         ),
         components: { Item: DocsSidebarItem },

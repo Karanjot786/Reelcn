@@ -954,3 +954,57 @@ button.pv-scrub {
 #nd-toc a[data-active="true"]::before {
   box-shadow: none;
 }
+
+/* Docs sidebar hover preview: one shared live demo card that follows the hovered component link. */
+.sidebar-preview {
+  position: fixed;
+  top: 0;
+  z-index: 60;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel);
+  box-shadow: 0 24px 60px rgb(0 0 0 / 0.45);
+  pointer-events: none;
+  transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+  animation: sidebar-preview-in 150ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.sidebar-preview-frame {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--film);
+}
+.sidebar-preview-caption {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 12px 8px 4px;
+  font-size: 14px;
+}
+.sidebar-preview-caption span {
+  color: var(--muted);
+  text-transform: capitalize;
+}
+.sidebar-preview-frame video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 120ms ease-out;
+}
+.sidebar-preview-frame video[data-ready] {
+  opacity: 1;
+}
+/* Opacity only: `transform` carries the card's position, so the entrance must not touch it. */
+@keyframes sidebar-preview-in {
+  from {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sidebar-preview {
+    transition: none;
+  }
+}

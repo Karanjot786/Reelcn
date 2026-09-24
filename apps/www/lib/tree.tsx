@@ -91,6 +91,9 @@ const label = (title: string, tag: string | number | undefined) => (
   </Fragment>
 );
 
+/** A component page plus the demo the sidebar plays on hover (read by components/docs-sidebar-item.tsx). */
+export type PreviewItem = PageTree.Item & { preview?: { demoId: string; category: string; title: string } };
+
 const templates = categories.find((category) => category.id === "templates")?.items ?? [];
 
 /** Guides (from `content/docs`) plus a generated "Components" section: one folder per category, items as pages. */
@@ -126,13 +129,15 @@ export const docsTree: PageTree.Root = {
               <span className="nd-count">{category.items.length}</span>
             </>
           ),
-          children: category.items.map(
-            (item): PageTree.Item => ({
+          children: category.items.map((item): PreviewItem => {
+            const demoId = category.id === "lib" ? undefined : firstDemo(item.name);
+            return {
               type: "page",
               name: sentenceCase(item.title),
               url: componentUrl(item.name),
-            }),
-          ),
+              preview: demoId ? { demoId, category: category.id, title: sentenceCase(item.title) } : undefined,
+            };
+          }),
         }),
       ),
   ],
