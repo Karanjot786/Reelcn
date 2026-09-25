@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { customRegistryItem, decodePayload, validatePayload } from "@/lib/custom-install";
 import { buildQuery, type EditableRow } from "@/lib/customize";
-import { themeNames } from "@/lib/demos";
 import { getItem, SITE_URL } from "@/lib/registry";
 
 // `/r/custom/<item>/<payload>.json`: the item plus `<item>-custom.tsx` with the viewer's Customize settings baked in.
@@ -13,8 +12,10 @@ export async function GET(req: Request, { params }: RouteContext<"/r/custom/[ite
   const item = getItem(name);
   if (!item) notFound();
   const decoded = decodePayload(raw.replace(/\.json$/, ""));
-  const rows: EditableRow[] = await (await fetch(new URL(`/r/props/${name}.json`, req.url))).json();
-  const payload = decoded && validatePayload(decoded, rows, themeNames);
+  const { rows, themes }: { rows: EditableRow[]; themes: string[] } = await (
+    await fetch(new URL(`/r/props/${name}.json`, req.url))
+  ).json();
+  const payload = decoded && validatePayload(decoded, rows, themes);
   if (!payload) return new Response("Bad customize payload", { status: 400 });
   const theme = payload.theme === "daylight" ? undefined : payload.theme;
   // The share link is rebuilt here from validated props, never taken from the request.
