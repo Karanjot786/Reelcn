@@ -48,11 +48,11 @@ type AuroraLook = "curtains" | "grid-sweep" | "grain-field" | "flat-blocks" | "f
 
 const LOOK_BY_THEME: Record<string, AuroraLook> = {
   daylight: "curtains",
-  sunset: "curtains",
   midnight: "grid-sweep",
-  paper: "grain-field",
-  neon: "flat-blocks",
   mono: "flat-accent",
+  ledger: "grain-field",
+  afterglow: "curtains",
+  chromewave: "flat-blocks",
 };
 
 export function Aurora({

@@ -261,13 +261,13 @@ function CaptionPage({
     // bold-pop and word-stack: the spoken word grows, substantially, on an asymmetric ramp (P2-6a).
     const activeSinceFrames = active ? Math.round(((nowMs - token.fromMs) / 1000) * fps) : -1;
     const scale = emphasisScale(activeSinceFrames);
-    const neonPill = theme.name === "neon" && active;
+    const pill = theme.name === "chromewave" && active;
     const wordSpan = (
       <span
         style={{
           display: "inline-block",
           whiteSpace: "pre",
-          color: neonPill ? theme.colors.accentForeground : tone,
+          color: pill ? theme.colors.accentForeground : tone,
           scale: String(scale),
           translate: stack && active ? `0 ${-u(4)}px` : undefined,
         }}
@@ -275,7 +275,7 @@ function CaptionPage({
         {token.text}
       </span>
     );
-    if (!neonPill) {
+    if (!pill) {
       // The scale transform above doesn't reserve layout space, so at peak scale the word can
       // touch its neighbors. Reserve a matching horizontal gap sized off the same `scale` and the
       // word's own character count (in `ch`, so it tracks glyph width without measuring the DOM) —
@@ -288,7 +288,7 @@ function CaptionPage({
         </span>
       );
     }
-    // neon/Pop: a real filled pill behind the active word, sized with padding and font-size — not a
+    // chromewave: a real filled pill behind the active word, sized with padding and font-size — not a
     // CSS transform:scale() on a fixed box, which doesn't reserve layout space and clips neighboring
     // text (the exact bug the approved theme mockups fixed; see out/theme-proposals/README.md's
     // "rendering fixes" note).

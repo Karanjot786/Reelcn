@@ -47,11 +47,11 @@ type BeamsLook = "shafts" | "grid-sweep" | "grain-field" | "flat-blocks" | "flat
 
 const LOOK_BY_THEME: Record<string, BeamsLook> = {
   daylight: "shafts",
-  sunset: "shafts",
   midnight: "grid-sweep",
-  paper: "grain-field",
-  neon: "flat-blocks",
   mono: "flat-accent",
+  ledger: "grain-field",
+  afterglow: "shafts",
+  chromewave: "flat-blocks",
 };
 
 export function Beams({

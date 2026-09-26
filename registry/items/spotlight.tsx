@@ -41,11 +41,11 @@ type SpotlightLook = "pool" | "grid-sweep" | "grain-field" | "flat-blocks" | "fl
 
 const LOOK_BY_THEME: Record<string, SpotlightLook> = {
   daylight: "pool",
-  sunset: "pool",
   midnight: "grid-sweep",
-  paper: "grain-field",
-  neon: "flat-blocks",
   mono: "flat-accent",
+  ledger: "grain-field",
+  afterglow: "pool",
+  chromewave: "flat-blocks",
 };
 
 const clamp01 = (value: number) => Math.min(Math.max(value, 0), 1);

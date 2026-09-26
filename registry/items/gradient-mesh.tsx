@@ -49,11 +49,11 @@ type GradientMeshLook = "blobs" | "grid-sweep" | "grain-field" | "flat-blocks" |
 
 const LOOK_BY_THEME: Record<string, GradientMeshLook> = {
   daylight: "blobs",
-  sunset: "blobs",
   midnight: "grid-sweep",
-  paper: "grain-field",
-  neon: "flat-blocks",
   mono: "flat-accent",
+  ledger: "grain-field",
+  afterglow: "blobs",
+  chromewave: "flat-blocks",
 };
 
 export function GradientMesh({
