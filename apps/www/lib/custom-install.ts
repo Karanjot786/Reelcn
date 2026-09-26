@@ -29,20 +29,25 @@ export function decodePayload(text: string): Payload | null {
   }
 }
 
+// ponytail: copy of registry/items/core-math.ts's themeAliases, since core-math imports remotion and that breaks this
+// server route. custom-install.test.ts pins the two equal.
+export const themeAliases: Record<string, string> = { neon: "chromewave", paper: "ledger", sunset: "midnight" };
+
 /**
  * Keeps only props the item declares. Controllable props must pass the share-link checks; the rest (chart data and
  * the like) pass as they are, since they came out of JSON.parse. Null when the theme or component name is bad.
  */
 export function validatePayload(payload: Payload, rows: EditableRow[], themeNames: string[]): Payload | null {
   if (!/^[A-Z]\w*$/.test(payload.component)) return null;
-  if (payload.theme !== undefined && !themeNames.includes(payload.theme)) return null;
+  const theme = payload.theme === undefined ? undefined : (themeAliases[payload.theme] ?? payload.theme);
+  if (theme !== undefined && !themeNames.includes(theme)) return null;
   const props: CustomProps = {};
   for (const row of rows) {
     if (!Object.hasOwn(payload.props, row.name)) continue;
     const value = row.control ? fitValue(row, payload.props[row.name]) : payload.props[row.name];
     if (value !== undefined) props[row.name] = value;
   }
-  return { props, component: payload.component, theme: payload.theme };
+  return { props, component: payload.component, theme };
 }
 
 /**

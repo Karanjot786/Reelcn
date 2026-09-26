@@ -1,7 +1,15 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import ts from "typescript";
-import { customFile, customRegistryItem, decodePayload, encodePayload, validatePayload } from "./custom-install.ts";
+import { themeAliases as registryAliases } from "../../../registry/items/core-math.ts";
+import {
+  customFile,
+  customRegistryItem,
+  decodePayload,
+  encodePayload,
+  themeAliases,
+  validatePayload,
+} from "./custom-install.ts";
 
 const ROWS = [
   { name: "text", control: "text" },
@@ -38,6 +46,9 @@ test("validatePayload keeps known props, drops bad values, rejects bad theme and
   assert.deepEqual(out, { props: { text: '"/><script>', data: [1] }, component: "TextReveal", theme: undefined });
   assert.equal(validatePayload({ ...OK, component: "x; alert(1)" }, ROWS, THEMES), null);
   assert.equal(validatePayload({ ...OK, theme: "evil" }, ROWS, THEMES), null);
+  // Links built before the 2026-09 theme redesign still install, on the replacement theme.
+  assert.equal(validatePayload({ ...OK, theme: "neon" }, ROWS, [...THEMES, "chromewave"])?.theme, "chromewave");
+  assert.deepEqual(themeAliases, registryAliases);
 });
 
 test("customFile writes every value as a JSON expression, so hostile strings stay valid TSX", () => {
