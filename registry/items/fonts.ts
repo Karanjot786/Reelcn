@@ -5,24 +5,19 @@
  * @example
  * import { fonts } from "./fonts";
  *
- * const heading = `${fonts.instrumentSerif}, ui-serif, Georgia, serif`;
+ * const heading = `${fonts.fraunces}, ui-serif, Georgia, serif`;
  */
 
-import { loadFont as loadAnton } from "@remotion/google-fonts/Anton";
 import { loadFont as loadArchivo } from "@remotion/google-fonts/Archivo";
-import { loadFont as loadAtkinsonHyperlegible } from "@remotion/google-fonts/AtkinsonHyperlegible";
-import { loadFont as loadBricolage } from "@remotion/google-fonts/BricolageGrotesque";
-import { loadFont as loadCormorantGaramond } from "@remotion/google-fonts/CormorantGaramond";
-import { loadFont as loadIBMPlexMono } from "@remotion/google-fonts/IBMPlexMono";
-import { loadFont as loadIBMPlexSans } from "@remotion/google-fonts/IBMPlexSans";
-import { loadFont as loadIBMPlexSansCondensed } from "@remotion/google-fonts/IBMPlexSansCondensed";
-import { loadFont as loadInstrumentSerif } from "@remotion/google-fonts/InstrumentSerif";
+import { loadFont as loadFraunces } from "@remotion/google-fonts/Fraunces";
 import { loadFont as loadInter } from "@remotion/google-fonts/Inter";
 import { loadFont as loadJetBrainsMono } from "@remotion/google-fonts/JetBrainsMono";
 import { loadFont as loadManrope } from "@remotion/google-fonts/Manrope";
-import { loadFont as loadRubik } from "@remotion/google-fonts/Rubik";
+import { loadFont as loadPlusJakartaSans } from "@remotion/google-fonts/PlusJakartaSans";
 import { loadFont as loadSchibstedGrotesk } from "@remotion/google-fonts/SchibstedGrotesk";
+import { loadFont as loadSora } from "@remotion/google-fonts/Sora";
 import { loadFont as loadSpaceGrotesk } from "@remotion/google-fonts/SpaceGrotesk";
+import { loadFont as loadUnbounded } from "@remotion/google-fonts/Unbounded";
 import { continueRender, delayRender } from "remotion";
 
 const latin = { subsets: ["latin" as const] };
@@ -77,25 +72,16 @@ function loadArchivoVariable(): string {
 
 const loaders = {
   inter: lazy(() => loadInter("normal", { weights: ["400", "500", "600", "700", "800"], ...latin })),
-  instrumentSerif: lazy(() => {
-    // Instrument Serif's italic face is only ever paired with its normal face, never used alone.
-    loadInstrumentSerif("italic", { weights: ["400"], ...latin });
-    return loadInstrumentSerif("normal", { weights: ["400"], ...latin });
-  }),
   spaceGrotesk: lazy(() => loadSpaceGrotesk("normal", { weights: ["400", "500", "700"], ...latin })),
   jetbrainsMono: lazy(() => loadJetBrainsMono("normal", { weights: ["400", "500", "700"], ...latin })),
-  bricolage: lazy(() => loadBricolage("normal", { weights: ["400", "600", "800"], ...latin })),
   schibstedGrotesk: lazy(() => loadSchibstedGrotesk("normal", { weights: ["400", "700"], ...latin })),
-  ibmPlexSans: lazy(() => loadIBMPlexSans("normal", { weights: ["400", "500"], ...latin })),
-  ibmPlexSansCondensed: lazy(() => loadIBMPlexSansCondensed("normal", { weights: ["600"], ...latin })),
-  ibmPlexMono: lazy(() => loadIBMPlexMono("normal", { weights: ["400", "500"], ...latin })),
-  atkinsonHyperlegible: lazy(() => loadAtkinsonHyperlegible("normal", { weights: ["400", "700"], ...latin })),
-  cormorantGaramond: lazy(() => loadCormorantGaramond("normal", { weights: ["500"], ...latin })),
   manrope: lazy(() => loadManrope("normal", { weights: ["400", "600"], ...latin })),
-  anton: lazy(() => loadAnton("normal", { weights: ["400"], ...latin })),
-  rubik: lazy(() => loadRubik("normal", { weights: ["500", "800"], ...latin })),
   archivo: lazy(() => loadArchivo("normal", { weights: ["400", "600", "800"], ...latin })),
   archivoVariable: lazy(() => ({ fontFamily: loadArchivoVariable() })),
+  fraunces: lazy(() => loadFraunces("normal", { weights: ["400", "600"], ...latin })),
+  plusJakartaSans: lazy(() => loadPlusJakartaSans("normal", { weights: ["400", "600"], ...latin })),
+  sora: lazy(() => loadSora("normal", { weights: ["400", "600"], ...latin })),
+  unbounded: lazy(() => loadUnbounded("normal", { weights: ["500", "700"], ...latin })),
 };
 
 /** Each family's `fontFamily` string, loaded the first time it's read (`fonts.inter`, not `fonts.inter()`). */
@@ -103,49 +89,34 @@ export const fonts: Record<keyof typeof loaders, string> = {
   get inter() {
     return loaders.inter();
   },
-  get instrumentSerif() {
-    return loaders.instrumentSerif();
-  },
   get spaceGrotesk() {
     return loaders.spaceGrotesk();
   },
   get jetbrainsMono() {
     return loaders.jetbrainsMono();
   },
-  get bricolage() {
-    return loaders.bricolage();
-  },
   get schibstedGrotesk() {
     return loaders.schibstedGrotesk();
   },
-  get ibmPlexSans() {
-    return loaders.ibmPlexSans();
-  },
-  get ibmPlexSansCondensed() {
-    return loaders.ibmPlexSansCondensed();
-  },
-  get ibmPlexMono() {
-    return loaders.ibmPlexMono();
-  },
-  get atkinsonHyperlegible() {
-    return loaders.atkinsonHyperlegible();
-  },
-  get cormorantGaramond() {
-    return loaders.cormorantGaramond();
-  },
   get manrope() {
     return loaders.manrope();
-  },
-  get anton() {
-    return loaders.anton();
-  },
-  get rubik() {
-    return loaders.rubik();
   },
   get archivo() {
     return loaders.archivo();
   },
   get archivoVariable() {
     return loaders.archivoVariable();
+  },
+  get fraunces() {
+    return loaders.fraunces();
+  },
+  get plusJakartaSans() {
+    return loaders.plusJakartaSans();
+  },
+  get sora() {
+    return loaders.sora();
+  },
+  get unbounded() {
+    return loaders.unbounded();
   },
 };
