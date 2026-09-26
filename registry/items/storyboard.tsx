@@ -39,6 +39,7 @@ import {
   type AnchorRect,
   anchorId,
   createTheme,
+  type DeprecatedThemeName,
   measurePx,
   Stage,
   stackLayout,
@@ -46,6 +47,7 @@ import {
   type Theme,
   type ThemeName,
   ThemeProvider,
+  themeAliases,
   themeNames,
   useTextMetrics,
   useTheme,
@@ -109,7 +111,7 @@ const DEFAULT_SFX: SfxName = "whoosh-soft";
 
 /** Validates story JSON. Errors name the scene and field: `scenes.2.title`. */
 export const storySchema = makeStorySchema({
-  themes: themeNames,
+  themes: [...themeNames, ...Object.keys(themeAliases)],
   transitions: Object.keys(TRANSITIONS),
   backgrounds: Object.keys(BACKGROUNDS),
   sfx: SFX_NAMES,
@@ -131,7 +133,7 @@ export function defineScene<T extends z.ZodObject>(definition: SceneDefinition<T
 }
 
 /** A theme preset with a brand's accent and heading font laid over it. */
-export function brandTheme(base: ThemeName | Theme, brand: Story["brand"] = {}): Theme {
+export function brandTheme(base: ThemeName | DeprecatedThemeName | Theme, brand: Story["brand"] = {}): Theme {
   return createTheme(base, {
     colors: brand.accent ? { accent: brand.accent } : {},
     fonts: brand.font ? { heading: brand.font } : {},
@@ -198,7 +200,9 @@ export function Storyboard({ story, scenes: custom = [], style, className }: Sto
     };
   });
   return (
-    <ThemeProvider theme={brandTheme((story.theme as ThemeName | undefined) ?? outer, story.brand)}>
+    <ThemeProvider
+      theme={brandTheme((story.theme as ThemeName | DeprecatedThemeName | undefined) ?? outer, story.brand)}
+    >
       <Scenes items={items} style={style} className={className} />
       <StoryAudio audio={story.audio} />
     </ThemeProvider>
@@ -226,7 +230,12 @@ export const storyMetadata: CalculateMetadataFunction<StoryJson> = async ({ prop
 /** Fields every template shares (spec §9). Templates extend it: `templateSchema.extend({ … })`. */
 export const templateSchema = z.object({
   /** Theme preset. Inherits the surrounding `ThemeProvider` when omitted. */
-  theme: z.enum(themeNames as [ThemeName, ...ThemeName[]]).optional(),
+  theme: z
+    .enum([...themeNames, ...Object.keys(themeAliases)] as [
+      ThemeName | DeprecatedThemeName,
+      ...(ThemeName | DeprecatedThemeName)[],
+    ])
+    .optional(),
   brand: brandSchema.optional(),
   /** Plays a soft whoosh as each scene starts. */
   sfx: z.boolean().optional(),

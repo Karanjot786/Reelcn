@@ -672,3 +672,17 @@ export function matchGraphemes(from: string[], to: string[]): { fromIndex: numbe
   }
   return pairs;
 }
+
+/* ─────────────────────────────── Themes ────────────────────────────── */
+
+/**
+ * @deprecated Themes removed in the 2026-09 redesign, kept so existing projects still render.
+ * Each name resolves to the closest current theme.
+ */
+export const themeAliases = { neon: "chromewave", paper: "ledger", sunset: "midnight" } as const;
+export type DeprecatedThemeName = keyof typeof themeAliases;
+
+/** A theme name with any deprecated alias swapped for its replacement. */
+export function resolveThemeName<T extends string>(name: T | DeprecatedThemeName): T {
+  return (Object.keys(themeAliases).indexOf(name) !== -1 ? themeAliases[name as DeprecatedThemeName] : name) as T;
+}

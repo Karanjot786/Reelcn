@@ -32,6 +32,7 @@ import {
   clamp01,
   codeLivePreviewSchedule,
   coverPhase,
+  type DeprecatedThemeName,
   flipInterpolate,
   geometricCadence,
   graphemeInitial,
@@ -58,6 +59,7 @@ import {
   rankSlots,
   redactRectBudget,
   requireAnchor,
+  resolveThemeName,
   type StaggerOrder,
   type StaggerShape,
   type Step,
@@ -66,6 +68,7 @@ import {
   staggerDelay,
   stepsDuration,
   type TypingModel,
+  themeAliases,
   useTypedText,
   useVariableFontAxis,
   type Vec3,
@@ -85,6 +88,7 @@ export {
   clamp01,
   codeLivePreviewSchedule,
   coverPhase,
+  type DeprecatedThemeName,
   flipInterpolate,
   geometricCadence,
   graphemeInitial,
@@ -111,6 +115,7 @@ export {
   rankSlots,
   redactRectBudget,
   requireAnchor,
+  resolveThemeName,
   type StaggerOrder,
   type StaggerShape,
   type Step,
@@ -119,6 +124,7 @@ export {
   staggerDelay,
   stepsDuration,
   type TypingModel,
+  themeAliases,
   useTypedText,
   useVariableFontAxis,
   type Vec3,
@@ -345,8 +351,8 @@ export type ThemeOverrides = Partial<Omit<Theme, "colors" | "fonts">> & {
 };
 
 /** Build a brand kit on top of a preset: `createTheme("midnight", { colors: { accent: "#ff5a1f" } })`. */
-export function createTheme(base: ThemeName | Theme, overrides: ThemeOverrides = {}): Theme {
-  const b: Theme = typeof base === "string" ? themes[base] : base;
+export function createTheme(base: ThemeName | DeprecatedThemeName | Theme, overrides: ThemeOverrides = {}): Theme {
+  const b: Theme = typeof base === "string" ? themes[resolveThemeName<ThemeName>(base)] : base;
   return {
     ...b,
     ...overrides,
@@ -361,10 +367,10 @@ export function ThemeProvider({
   theme = "daylight",
   children,
 }: {
-  theme?: ThemeName | Theme;
+  theme?: ThemeName | DeprecatedThemeName | Theme;
   children: React.ReactNode;
 }) {
-  const value = typeof theme === "string" ? themes[theme] : theme;
+  const value = typeof theme === "string" ? themes[resolveThemeName<ThemeName>(theme)] : theme;
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }
 
