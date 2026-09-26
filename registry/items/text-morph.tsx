@@ -31,7 +31,11 @@ export type TextMorphProps = MotionProps & {
   from: string;
   to: string;
   size?: number;
+  weight?: number;
+  font?: "heading" | "body" | "mono";
   color?: string;
+  /** How high moving letters arc, in em: rightward ones rise, leftward ones dip, so crossing letters pass. 0 slides straight. */
+  arc?: number;
   accentColor?: string;
   /** Faint trailing copies of matched letters as they move. Off by default. */
   trail?: boolean;
@@ -53,6 +57,9 @@ export function TextMorph({
   from,
   to,
   size = 96,
+  weight,
+  font = "heading",
+  arc = 0.25,
   color,
   accentColor,
   trail = false,
@@ -64,11 +71,12 @@ export function TextMorph({
   const { u } = useViewport();
   const m = useMotion(motion);
   const fontPx = u(size);
-  const fontString = `${theme.headingWeight} ${fontPx}px ${theme.fonts.heading}`;
+  const fontWeight = weight ?? (font === "heading" ? theme.headingWeight : 500);
+  const fontString = `${fontWeight} ${fontPx}px ${theme.fonts[font]}`;
   const gate = useTextMetrics(`${from}${to}`, {
-    fontFamily: theme.fonts.heading,
+    fontFamily: theme.fonts[font],
     fontSize: fontPx,
-    fontWeight: theme.headingWeight,
+    fontWeight,
   });
   const fromChars = graphemes(from);
   const toChars = graphemes(to);
@@ -98,9 +106,9 @@ export function TextMorph({
         // Glyphs are absolute, so the box needs an explicit width to be centered by its parent.
         width: fromWidth + (toWidth - fromWidth) * progress,
         height: fontPx * 1.2,
-        fontFamily: theme.fonts.heading,
+        fontFamily: theme.fonts[font],
         fontSize: fontPx,
-        fontWeight: theme.headingWeight,
+        fontWeight,
         color: color ?? theme.colors.foreground,
         opacity: gate.ready ? 1 - m.exit : 0,
         ...style,
@@ -111,6 +119,7 @@ export function TextMorph({
           const fromPos = fromX[pair.fromIndex];
           const toPos = toX[pair.toIndex];
           const x = fromPos + (toPos - fromPos) * progress;
+          const lift = Math.sign(fromPos - toPos) * Math.sin(clamp01(progress) * Math.PI) * arc * fontPx;
           return (
             <Fragment key={key}>
               {trailCopies.map((k) => {
@@ -132,7 +141,7 @@ export function TextMorph({
                   </span>
                 );
               })}
-              <span style={{ position: "absolute", left: x, top: 0, display: "inline-block", whiteSpace: "pre" }}>
+              <span style={{ position: "absolute", left: x, top: lift, display: "inline-block", whiteSpace: "pre" }}>
                 {toChars[pair.toIndex]}
               </span>
             </Fragment>
