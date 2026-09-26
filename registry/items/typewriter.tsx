@@ -14,6 +14,7 @@
  * </Center>
  */
 import type React from "react";
+import { random } from "remotion";
 import {
   type CaretFollow,
   FollowCaret,
@@ -34,6 +35,14 @@ export type TypewriterProps = MotionProps & {
   typingFrames?: number;
   /** Frames a bare `^` waits. Defaults to 0.5s. */
   pause?: number;
+  /** Phrases typed after `text`: each one holds, backspaces, then the next types in its place. */
+  then?: string[];
+  /** Frames each phrase holds before it is backspaced. Defaults to 1s. */
+  holdPhrase?: number;
+  /** 0-1. Seeded speed changes per key and a short rest after punctuation, like a person typing. 0 types evenly. */
+  humanize?: number;
+  /** How the caret blinks once typing stops. */
+  blink?: "hard" | "smooth";
   caret?: "bar" | "block" | "none";
   /** Font size in design units. */
   size?: number;
@@ -74,6 +83,10 @@ export function Typewriter({
   cps = 18,
   typingFrames,
   pause,
+  then = [],
+  holdPhrase,
+  humanize = 0,
+  blink = "hard",
   caret = "bar",
   size = 72,
   weight,
@@ -90,31 +103,65 @@ export function Typewriter({
   const { u, width, safe } = useViewport();
   const m = useMotion(motion);
   const fontPx = u(size);
-  const { chars, waits } = parse(text, pause ?? Math.round(m.fps * 0.5));
+  const pauseFrames = pause ?? Math.round(m.fps * 0.5);
+  const phrases = [text, ...then].map((phrase) => parse(phrase, pauseFrames));
+  const totalChars = phrases.reduce((n, phrase) => n + phrase.chars.length, 0);
   const totalFrames = typingFrames ?? motion.duration;
-  const perChar = totalFrames ? totalFrames / Math.max(chars.length, 1) : m.fps / cps;
+  const perChar = totalFrames ? totalFrames / Math.max(totalChars, 1) : m.fps / cps;
+  const hold = holdPhrase ?? m.fps;
+  const keyFrames = (phrase: number, i: number, char: string) =>
+    humanize > 0
+      ? perChar * (1 + humanize * (random(`typewriter-${phrase}-${i}`) - 0.5)) +
+        (/[.,!?;:]/.test(char) ? humanize * m.fps * 0.15 : 0)
+      : perChar;
 
-  let typed = 0;
-  let end = m.delay;
-  for (let i = 0; i < chars.length; i++) {
-    end += waits[i] + perChar;
-    if (m.frame >= end) typed = i + 1;
-  }
-  // Solid while typing, then a hard on/off blink once a second, like a real text cursor.
-  const typing = m.frame >= m.delay && m.frame < end;
-  const caretOn = typing || Math.floor(Math.abs(m.frame - end) / Math.max(1, Math.round(m.fps / 2))) % 2 === 0;
+  /** Which phrase shows at `frame`, how many of its characters, and when the caret last moved. */
+  const stateAt = (frame: number) => {
+    let t = m.delay;
+    // Characters the previous phrase left on screen: a phrase only erases back to what the next one shares.
+    let kept = 0;
+    for (let p = 0; p < phrases.length; p++) {
+      const { chars, waits } = phrases[p];
+      let typed = kept;
+      for (let i = kept; i < chars.length; i++) {
+        t += waits[i] + keyFrames(p, i, chars[i]);
+        if (frame >= t) typed = i + 1;
+      }
+      const last = p === phrases.length - 1;
+      if (last || frame < t + hold) return { phrase: p, typed, typing: frame >= m.delay && frame < t, end: t };
+      // Backspacing runs twice as fast as typing.
+      const erase = Math.max(perChar / 2, 0.5);
+      const next = phrases[p + 1].chars;
+      let shared = 0;
+      while (shared < chars.length && chars[shared] === next[shared]) shared++;
+      const erased = Math.floor((frame - t - hold) / erase);
+      if (erased < chars.length - shared) return { phrase: p, typed: chars.length - erased, typing: true, end: t };
+      t += hold + (chars.length - shared) * erase;
+      kept = shared;
+    }
+    return { phrase: 0, typed: 0, typing: false, end: t };
+  };
+
+  const now = stateAt(m.frame);
+  const { chars } = phrases[now.phrase];
+  const typed = now.typed;
+  const sinceStop = m.frame - now.end;
+  const half = Math.max(1, Math.round(m.fps / 2));
+  // Solid while typing, then a blink once a second: an on/off cut like a real cursor, or a soft fade.
+  const caretOpacity = now.typing
+    ? 1
+    : blink === "smooth"
+      ? 0.5 + 0.5 * Math.cos((Math.max(sinceStop, 0) / half) * Math.PI)
+      : Math.floor(Math.abs(sinceStop) / half) % 2 === 0
+        ? 1
+        : 0;
   const block = caret === "block";
 
   // Follow: the caret position `lag` frames ago, from the same reveal logic above evaluated at an
   // earlier frame — always computed (cheap, pure), only measured/used when `follow` is set.
   const laggedFrame = Math.max(m.frame - (follow?.lag ?? 6), m.delay);
-  let laggedTyped = 0;
-  let laggedEnd = m.delay;
-  for (let i = 0; i < chars.length; i++) {
-    laggedEnd += waits[i] + perChar;
-    if (laggedFrame >= laggedEnd) laggedTyped = i + 1;
-  }
-  const laggedText = chars.slice(0, laggedTyped).join("");
+  const lagged = stateAt(laggedFrame);
+  const laggedText = phrases[lagged.phrase].chars.slice(0, lagged.typed).join("");
   const caretMetrics = useTextMetrics(
     laggedText,
     {
@@ -185,7 +232,7 @@ export function Typewriter({
                 bottom: "0.08em",
                 width: block ? "0.56em" : "0.07em",
                 background: caretColor ?? theme.colors.accent,
-                opacity: caretOn ? (block ? 0.75 : 1) : 0,
+                opacity: caretOpacity * (block ? 0.75 : 1),
               }}
             />
           </span>
