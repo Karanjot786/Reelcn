@@ -25,12 +25,12 @@ import {
   useViewport,
 } from "./core";
 
-export type HighlightVariant = "marker" | "underline" | "box" | "circle";
+export type HighlightVariant = "marker" | "underline" | "strike" | "box" | "circle";
 
 export type HighlightProps = MotionProps & {
   /** Required unless `target` is given. */
   text?: string;
-  /** Phrase inside `text` to emphasize (first match, case-sensitive). It never wraps, so keep it short. Required unless `target` is given. */
+  /** Phrase inside `text` to emphasize (first match, any case). It never wraps, so keep it short. Required unless `target` is given. */
   highlight?: string;
   /** A kit anchor's rect to highlight instead of a text phrase — only with `variant: "box"` or `"circle"` (no text to flow `marker`/`underline` around). */
   target?: { anchors: Record<string, AnchorRect>; id: string };
@@ -46,12 +46,15 @@ export type HighlightProps = MotionProps & {
   /** Phrase color on top of the marker. Defaults to the theme foreground or background, whichever reads better. */
   highlightTextColor?: string;
   align?: "left" | "center" | "right";
+  /** Fade the rest of the sentence as the mark draws, so the phrase is the only thing left in focus. */
+  dimRest?: boolean;
   style?: React.CSSProperties;
   className?: string;
 };
 
 /** Hand-drawn strokes, stretched over the phrase. Underline box is 100×20, circle box 100×40. */
 const UNDERLINE = "M2 13 C 24 7, 58 6, 98 9";
+const STRIKE = "M2 11 C 30 8, 66 12, 98 8";
 const CIRCLE = "M78 5 C 55 0, 16 2, 5 14 C -3 26, 20 38, 52 37 C 84 36, 100 27, 96 15 C 92 5, 64 1, 36 6";
 
 /** WCAG relative luminance of a #rgb or #rrggbb color; null for any other CSS color. */
@@ -88,6 +91,7 @@ export function Highlight({
   highlightColor,
   highlightTextColor,
   align = "center",
+  dimRest = false,
   style,
   className,
   ...motion
@@ -163,6 +167,7 @@ export function Highlight({
   // Matched case-insensitively; the mark shows the phrase as written in `text`.
   const phrase = at < 0 ? "" : text.slice(at, at + highlight.length);
 
+  const rest: React.CSSProperties | undefined = dimRest ? { opacity: 1 - 0.55 * drawn } : undefined;
   const overlay: React.CSSProperties = { position: "absolute", overflow: "visible", pointerEvents: "none" };
 
   const markFor = (phrase: string) => {
@@ -213,6 +218,25 @@ export function Highlight({
               seed="highlight-underline"
               color={mark}
               strokeWidth={fontPx * 0.06}
+              drawn={drawn}
+              extraProps={{ vectorEffect: "non-scaling-stroke", strokeLinecap: "round" }}
+            />
+          </svg>
+        );
+      case "strike":
+        return (
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 100 20"
+            preserveAspectRatio="none"
+            style={{ ...overlay, left: "-0.08em", top: "0.42em", width: "calc(100% + 0.16em)", height: "0.3em" }}
+          >
+            <StrokeOverlay
+              d={STRIKE}
+              kind={theme.stroke}
+              seed="highlight-strike"
+              color={mark}
+              strokeWidth={fontPx * 0.1}
               drawn={drawn}
               extraProps={{ vectorEffect: "non-scaling-stroke", strokeLinecap: "round" }}
             />
@@ -271,13 +295,22 @@ export function Highlight({
         text
       ) : (
         <>
-          {text.slice(0, at)}
-          <span style={{ position: "relative", display: "inline-block", whiteSpace: "nowrap" }}>
-            {variant === "marker" ? null : markFor(phrase)}
+          <span style={rest}>{text.slice(0, at)}</span>
+          <span
+            style={{
+              position: "relative",
+              display: "inline-block",
+              whiteSpace: "nowrap",
+              // A small pop while the mark draws.
+              scale: String(1 + 0.04 * Math.sin(drawn * Math.PI)),
+            }}
+          >
+            {/* The marker band and the strike line sit over the phrase; the other marks go behind it. */}
+            {variant === "marker" || variant === "strike" ? null : markFor(phrase)}
             <span style={{ position: "relative" }}>{phrase}</span>
-            {variant === "marker" ? markFor(phrase) : null}
+            {variant === "marker" || variant === "strike" ? markFor(phrase) : null}
           </span>
-          {text.slice(at + highlight.length)}
+          <span style={rest}>{text.slice(at + highlight.length)}</span>
         </>
       )}
     </div>
