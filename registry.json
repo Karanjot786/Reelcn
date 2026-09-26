@@ -5519,7 +5519,9 @@
       "categories": [
         "text"
       ],
-      "dependencies": [],
+      "dependencies": [
+        "remotion"
+      ],
       "registryDependencies": [
         "https://www.reelcn.dev/r/core.json"
       ],

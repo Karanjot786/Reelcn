@@ -14,7 +14,7 @@
  */
 import type React from "react";
 import { random } from "remotion";
-import { graphemes, type MotionProps, useMotion, useTheme, useViewport } from "./core";
+import { graphemes, type MotionProps, type StaggerOrder, staggerDelay, useMotion, useTheme, useViewport } from "./core";
 
 export type ScrambleProps = MotionProps & {
   text: string;
@@ -26,6 +26,12 @@ export type ScrambleProps = MotionProps & {
   stagger?: number;
   /** Frames each character scrambles before resolving. Wins over `duration`. Defaults to 0.6s. */
   perCharFrames?: number;
+  /** Frames each random glyph stays before the next. Defaults to 1/15s, so it reads as decoding, not flicker. */
+  glyphHold?: number;
+  /** Before its turn a character is hidden (the line types on), or already scrambled (the whole line decodes). */
+  start?: "hidden" | "scrambled";
+  /** Which character resolves first. */
+  order?: StaggerOrder;
   /** Font size in design units. */
   size?: number;
   weight?: number;
@@ -44,6 +50,9 @@ export function Scramble({
   charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%&*+=?",
   stagger,
   perCharFrames,
+  glyphHold,
+  start: before = "hidden",
+  order = "forward",
   size = 96,
   weight,
   font = "heading",
@@ -60,17 +69,23 @@ export function Scramble({
   const fontPx = u(size);
   const glyphs = graphemes(charset);
   const step = stagger ?? Math.max(1, Math.round(m.fps / 30));
+  const hold = glyphHold ?? Math.max(1, Math.round(m.fps / 15));
+  const count = graphemes(text.replace(/\s+/g, "")).length;
   let index = 0;
 
   const renderChar = (char: string, key: number) => {
     const i = index++;
     const scrambleFrames = perCharFrames ?? m.enterFrames;
-    const start = m.delay + i * step;
+    const start = m.delay + staggerDelay(i, count, { step, order, seed: String(seed) });
     const resolved = m.frame >= start + scrambleFrames;
-    const glyph =
-      m.frame >= start && !resolved
-        ? glyphs[Math.floor(random(`scramble-${seed}-${i}-${m.frame}`) * glyphs.length)]
-        : null;
+    const scrambling = !resolved && m.frame >= (before === "scrambled" ? m.delay : start);
+    let glyph: string | null = null;
+    if (scrambling) {
+      const pick = Math.floor(random(`scramble-${seed}-${i}-${Math.floor(m.frame / hold)}`) * glyphs.length);
+      // Never the real character (it would look resolved), and in its case: lowercase text gets lowercase glyphs.
+      const candidate = glyphs[pick] === char ? glyphs[(pick + 1) % glyphs.length] : glyphs[pick];
+      glyph = char !== char.toUpperCase() ? candidate.toLowerCase() : candidate;
+    }
     // The real character always holds the layout; the glyph is drawn over it, so the line never jitters.
     return (
       <span key={key} style={{ position: "relative", display: "inline-block" }}>
