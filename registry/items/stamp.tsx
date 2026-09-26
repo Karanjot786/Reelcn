@@ -20,13 +20,23 @@ export type StampProps = Omit<TextRevealProps, "effect">;
 
 export function Stamp({ style, motion, ...props }: StampProps) {
   const m = useMotion({ delay: props.delay, duration: props.duration, motion: motion ?? "bouncy" });
+  // A short thud as it lands: three frames of shrinking jitter.
+  const landed = m.frame - m.delay - Math.round(m.enterFrames * 0.35);
+  const shake = landed >= 0 && landed < 3 ? [0.03, -0.02, 0.01][landed] : 0;
   return (
     <TextReveal
       split="line"
+      scaleFrom={1.6}
       {...props}
       effect="scale"
       motion={motion ?? "bouncy"}
-      style={{ rotate: `${(1 - m.enter) * -8}deg`, ...style }}
+      style={{
+        rotate: `${(1 - m.enter) * -8}deg`,
+        // transform, not translate: TextReveal's exit lift owns `translate`.
+        transform: `translate(${shake}em, ${-shake}em)`,
+        filter: "drop-shadow(0 0.05em 0.02em rgba(0, 0, 0, 0.22))",
+        ...style,
+      }}
     />
   );
 }

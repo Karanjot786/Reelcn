@@ -18,6 +18,8 @@ import {
   graphemes,
   type MotionProps,
   quantizeMotion,
+  type StaggerOrder,
+  staggerDelay,
   tween,
   useMotion,
   useTheme,
@@ -53,8 +55,12 @@ export type TextRevealProps = MotionProps & {
   /** Words painted in the accent color. Case and punctuation are ignored. */
   accentWords?: string[];
   align?: "left" | "center" | "right";
-  /** Where `rise` and `blur` units travel in from. */
-  from?: "below" | "above";
+  /** Where `rise`, `blur` and `mask` units travel in from. */
+  from?: "below" | "above" | "left" | "right";
+  /** Which unit enters first. */
+  order?: StaggerOrder;
+  /** Starting scale for the `scale` effect: below 1 grows in, above 1 slams down. */
+  scaleFrom?: number;
   style?: React.CSSProperties;
   className?: string;
 };
@@ -75,38 +81,50 @@ function splitFlapChar(target: string, t: number, seed: number): string {
   return SPLIT_FLAP_GLYPHS[(targetIndex - remaining + n) % n];
 }
 
+const DIRECTIONS = { below: [0, 1], above: [0, -1], left: [-1, 0], right: [1, 0] } as const;
+
+type UnitOptions = { from: keyof typeof DIRECTIONS; scaleFrom: number; chars?: number };
+
 function unitStyle(
   effect: TextRevealEffect,
   progress: number,
   fontPx: number,
-  chars = 0,
-  dir = 1,
+  { from, scaleFrom, chars = 0 }: UnitOptions,
 ): React.CSSProperties {
   const opacity = Math.min(Math.max(progress, 0), 1);
   const hidden = 1 - progress;
+  const toward = (amount: number, unit: string) =>
+    `${DIRECTIONS[from][0] * amount}${unit} ${DIRECTIONS[from][1] * amount}${unit}`;
+  const blur = (strength: number) => `blur(${Math.max(hidden, 0) * fontPx * strength}px)`;
   switch (effect) {
     case "rise":
-      return { opacity, translate: `0 ${hidden * 0.45 * dir}em` };
-    case "blur":
       return {
         opacity,
-        filter: `blur(${Math.max(hidden, 0) * fontPx * 0.12}px)`,
-        translate: `0 ${hidden * 0.15 * dir}em`,
+        translate: toward(hidden * 0.45, "em"),
+        scale: String(0.96 + 0.04 * progress),
+        filter: blur(0.04),
       };
+    case "blur":
+      return { opacity, filter: blur(0.12), translate: toward(hidden * 0.15, "em") };
     case "fade":
       return { opacity };
     case "scale":
-      return { opacity, scale: String(0.9 + 0.1 * progress) };
+      return { opacity, scale: String(scaleFrom + (1 - scaleFrom) * progress) };
     case "drop":
       return { opacity, translate: `0 ${-hidden * 0.6}em`, rotate: `${-hidden * 8}deg` };
     case "mask":
       // Overshoot clamped: pushing past 0 inside the clip would crop ascenders.
-      return { translate: `0 ${Math.max(hidden, 0) * 110}%` };
+      return { translate: toward(Math.max(hidden, 0) * 110, "%"), filter: blur(0.05) };
     case "track": {
       // Negative inline margins cancel the added spacing, so the unit's layout width stays constant and
       // neighbors never shove sideways or re-wrap mid-stagger.
       const spacing = hidden * 0.5;
-      return { opacity, letterSpacing: `${spacing}em`, marginInline: `${(-spacing * chars) / 2}em` };
+      return {
+        opacity,
+        letterSpacing: `${spacing}em`,
+        marginInline: `${(-spacing * chars) / 2}em`,
+        filter: blur(0.08),
+      };
     }
     case "outline-fill": {
       // `color: transparent` also zeroed out `currentColor` for the stroke on this same element (it's
@@ -134,6 +152,17 @@ function unitStyle(
   }
 }
 
+// Scripts written without spaces between words split into words here; scripts whose letters join stay whole
+// under `split="char"`, since a letter on its own inline-block loses its joined form.
+const NO_SPACES = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Thai}]/u;
+const JOINED = /[\p{Script=Arabic}\p{Script=Syriac}\p{Script=Nko}\p{Script=Mongolian}]/u;
+
+function unitsOf(word: string, split: "word" | "char" | "line"): string[] {
+  if (split === "char" && !JOINED.test(word)) return graphemes(word);
+  if (!NO_SPACES.test(word)) return [word];
+  return [...new Intl.Segmenter("en", { granularity: "word" }).segment(word)].map((part) => part.segment);
+}
+
 export function TextReveal({
   text,
   effect = "rise",
@@ -147,6 +176,8 @@ export function TextReveal({
   accentWords = [],
   align = "center",
   from = "below",
+  order = "forward",
+  scaleFrom = 0.9,
   style,
   className,
   ...motion
@@ -176,10 +207,19 @@ export function TextReveal({
   const q = quantizeMotion(motion.motion ?? theme.motion);
   // outline-fill and split-flap read time, not the eased (possibly overshooting) preset.
   const linearAt = (start: number) => clamp01((m.frame - start) / Math.max(m.enterFrames, 1));
+  const count =
+    split === "line"
+      ? text.split("\n").length
+      : text
+          .split(/\s+/)
+          .filter(Boolean)
+          .reduce((n, word) => n + unitsOf(word, split).length, 0);
+  const startOf = (index: number) => m.delay + staggerDelay(index, count, { step, order, seed: text });
+  const unitOptions = { from, scaleFrom };
   let unitIndex = 0;
 
   const renderUnit = (content: string, key: number, index: number) => {
-    const start = m.delay + index * step;
+    const start = startOf(index);
     const progress = tween(m.frame, m.fps, {
       from: start,
       duration: m.enterFrames,
@@ -196,7 +236,7 @@ export function TextReveal({
         style={{
           display: "inline-block",
           whiteSpace: "pre",
-          ...unitStyle(effectiveEffect, shown, fontPx, graphemes(content).length, from === "above" ? -1 : 1),
+          ...unitStyle(effectiveEffect, shown, fontPx, { ...unitOptions, chars: graphemes(content).length }),
         }}
       >
         {displayContent}
@@ -230,7 +270,7 @@ export function TextReveal({
       if (split === "char") {
         return (
           <span key={wordNumber} style={{ display: "inline-block", whiteSpace: "nowrap", ...accent }}>
-            {graphemes(word).map((char, charNumber) => renderUnit(char, charNumber, unitIndex++))}
+            {unitsOf(word, "char").map((char, charNumber) => renderUnit(char, charNumber, unitIndex++))}
           </span>
         );
       }
@@ -245,12 +285,12 @@ export function TextReveal({
         );
       return (
         <span key={wordNumber} style={accent}>
-          {renderUnit(word, wordNumber, unitIndex++)}
+          {unitsOf(word, "word").map((unit, unitNumber) => renderUnit(unit, unitNumber, unitIndex++))}
         </span>
       );
     });
     if (split !== "line") return <div key={lineNumber}>{parts}</div>;
-    const lineStart = m.delay + lineIndex * step;
+    const lineStart = startOf(lineIndex);
     const progress = tween(m.frame, m.fps, {
       from: lineStart,
       duration: m.enterFrames,
@@ -267,7 +307,7 @@ export function TextReveal({
         <span
           style={{
             display: "inline-block",
-            ...unitStyle(effectiveEffect, shown, fontPx, 0, from === "above" ? -1 : 1),
+            ...unitStyle(effectiveEffect, shown, fontPx, unitOptions),
           }}
         >
           {parts}

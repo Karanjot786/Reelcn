@@ -18,5 +18,5 @@ import { TextReveal, type TextRevealProps } from "./text-reveal";
 export type PopInProps = Omit<TextRevealProps, "effect" | "motion">;
 
 export function PopIn(props: PopInProps) {
-  return <TextReveal {...props} effect="scale" motion="bouncy" />;
+  return <TextReveal scaleFrom={0.7} {...props} effect="scale" motion="bouncy" />;
 }
