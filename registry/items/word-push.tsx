@@ -12,7 +12,17 @@
  * </Center>
  */
 import type React from "react";
-import { geometricCadence, type MotionProps, tween, useMotion, useTheme, useViewport } from "./core";
+import {
+  clamp01,
+  geometricCadence,
+  type MotionProps,
+  measurePx,
+  tween,
+  useMotion,
+  useTextMetrics,
+  useTheme,
+  useViewport,
+} from "./core";
 
 export type WordPushOptions = { gap?: number; accel?: number };
 
@@ -36,9 +46,14 @@ export type WordPushProps = MotionProps & {
   gap?: number;
   accel?: number;
   size?: number;
+  weight?: number;
   font?: "heading" | "body" | "mono";
   color?: string;
   accentColor?: string;
+  /** Words painted in the accent color. Case and punctuation are ignored. Omitted: every other word. */
+  accentWords?: string[];
+  /** Keep the line centered as it builds, pushing earlier words left. Skipped when the phrase wraps. */
+  recenter?: boolean;
   style?: React.CSSProperties;
   className?: string;
 };
@@ -48,9 +63,12 @@ export function WordPush({
   gap,
   accel,
   size = 96,
+  weight,
   font = "heading",
   color,
   accentColor,
+  accentWords,
+  recenter = true,
   style,
   className,
   ...motion
@@ -60,6 +78,26 @@ export function WordPush({
   const m = useMotion(motion);
   const fontPx = u(size);
   const cadence = useWordPush(words, { gap, accel });
+  const fontWeight = weight ?? (font === "heading" ? theme.headingWeight : 500);
+  const fontString = `${fontWeight} ${fontPx}px ${theme.fonts[font]}`;
+  const gate = useTextMetrics(
+    words.join(" "),
+    { fontFamily: theme.fonts[font], fontSize: fontPx, fontWeight },
+    {
+      skip: !recenter,
+    },
+  );
+  const gapOf = (i: number) =>
+    i < words.length - 1 ? Math.max(0.3, cadence[i].zoomBoost * words[i].length * 0.6 + 0.2) : 0;
+  // Each slot holds the word at its final zoom (scaled from its left edge) plus a fixed visible gap.
+  const slots = words.map(
+    (word, i) => measurePx(word, fontString) * (1 + cadence[i].zoomBoost) + (i < words.length - 1 ? 0.28 * fontPx : 0),
+  );
+  // Growing widths would re-wrap a multi-line phrase mid-build, so recentering only runs on one line. That line
+  // may use half of each side's safe margin, since a single build line reads fine slightly wider.
+  const building = recenter && gate.ready && slots.reduce((a, b) => a + b, 0) <= width - safe.x;
+  const normalize = (word: string) => word.toLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
+  const accents = accentWords && new Set(accentWords.map(normalize));
 
   return (
     <div
@@ -67,12 +105,13 @@ export function WordPush({
       style={{
         fontFamily: theme.fonts[font],
         fontSize: fontPx,
-        fontWeight: font === "heading" ? theme.headingWeight : 500,
+        fontWeight,
         color: color ?? theme.colors.foreground,
         lineHeight: 1.1,
         textAlign: "center",
         textWrap: "balance",
-        maxWidth: width - safe.x * 2,
+        maxWidth: building ? undefined : width - safe.x * 2,
+        whiteSpace: building ? "nowrap" : undefined,
         opacity: 1 - m.exit,
         ...style,
       }}
@@ -96,8 +135,9 @@ export function WordPush({
         // growth reaches) — plus a fixed safety pad. Later words push harder and bleed further, so the
         // reserved gap actually grows even as the *visible* gap (what's left after bleed eats into it)
         // keeps shrinking, which is what should read as the accelerando never fully closing the gap.
-        const gapEm = i < words.length - 1 ? Math.max(0.3, entry.zoomBoost * word.length * 0.6 + 0.2) : 0;
-        return (
+        const gapEm = gapOf(i);
+        const accent = accents ? accents.has(normalize(word)) : i % 2 === 1;
+        const wordSpan = (
           <span
             key={i}
             style={{
@@ -106,11 +146,28 @@ export function WordPush({
               opacity,
               scale: String(zoom),
               transformOrigin: "0% 50%",
-              marginRight: gapEm ? `${gapEm}em` : undefined,
-              color: i % 2 === 1 ? (accentColor ?? theme.colors.accent) : undefined,
+              marginRight: gapEm && !building ? `${gapEm}em` : undefined,
+              // While building, each word slides in from the right as its slot opens.
+              translate: building ? `${(1 - progress) * 0.5}em 0` : undefined,
+              color: accent ? (accentColor ?? theme.colors.accent) : undefined,
             }}
           >
             {word}
+          </span>
+        );
+        if (!building) return wordSpan;
+        // The slot opens from 0 to the word's width as it lands, so the centered line grows and earlier words move left.
+        return (
+          <span
+            key={i}
+            style={{
+              display: "inline-block",
+              width: slots[i] * clamp01(progress),
+              whiteSpace: "nowrap",
+              textAlign: "left",
+            }}
+          >
+            {wordSpan}
           </span>
         );
       })}
