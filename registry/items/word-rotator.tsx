@@ -13,20 +13,32 @@
  * </Center>
  */
 import type React from "react";
-import { type MotionProps, tween, useMotion, useTheme, useViewport } from "./core";
+import {
+  clamp01,
+  graphemes,
+  type MotionProps,
+  measurePx,
+  tween,
+  useMotion,
+  useTextMetrics,
+  useTheme,
+  useViewport,
+} from "./core";
 
 export type WordRotatorEffect = "slide" | "flip" | "blur";
 
 export type WordRotatorProps = MotionProps & {
   /** Text before the slot. */
   before?: string;
-  /** Words cycled through the slot. The slot is as wide as the widest word, so the sentence never reflows. */
+  /** Words cycled through the slot. */
   words: string[];
   /** Text after the slot. */
   after?: string;
   /** Frames each word rests before the next one arrives. Defaults to 1s. `duration` sets the swap length. */
   holdFrames?: number;
   effect?: WordRotatorEffect;
+  /** `widest`: the slot always fits the widest word, so the sentence never moves. `word`: it eases to each word's width. */
+  fit?: "widest" | "word";
   /** Start over after the last word. `false` stops on it. */
   loop?: boolean;
   /** Font size in design units. */
@@ -65,6 +77,7 @@ export function WordRotator({
   after,
   holdFrames,
   effect = "slide",
+  fit = "widest",
   loop = true,
   size = 96,
   weight,
@@ -85,13 +98,36 @@ export function WordRotator({
   const step = loop ? elapsed : Math.min(elapsed, words.length - 1);
   const current = step % words.length;
   const previous = step > 0 ? (step - 1) % words.length : -1;
-  const p = tween(m.frame, m.fps, { from: m.delay + step * cycle, duration: m.enterFrames, motion: m.preset });
+  const swapStart = m.delay + step * cycle;
+  // The leaving word goes first on an ease-in; the arriving one follows on the theme's motion, a beat later,
+  // so the two are never both half-legible. The very first word has nothing to wait for.
+  const lead = step > 0 ? Math.round(m.enterFrames * 0.3) : 0;
+  const pIn = tween(m.frame, m.fps, { from: swapStart + lead, duration: m.enterFrames - lead, motion: m.preset });
+  const pOut = clamp01((m.frame - swapStart) / Math.max(m.enterFrames * 0.55, 1)) ** 2;
 
   const styleFor = (index: number): React.CSSProperties => {
-    if (index === current) return wordStyle(effect, p, true, fontPx);
-    if (index === previous && previous !== current) return wordStyle(effect, p, false, fontPx);
+    if (index === current) return wordStyle(effect, pIn, true, fontPx);
+    if (index === previous && previous !== current) return wordStyle(effect, pOut, false, fontPx);
     return { visibility: "hidden" };
   };
+
+  const fontWeight = weight ?? (font === "heading" ? theme.headingWeight : 500);
+  const fontString = `${fontWeight} ${fontPx}px ${theme.fonts[font]}`;
+  const gate = useTextMetrics(
+    words.join(" "),
+    { fontFamily: theme.fonts[font], fontSize: fontPx, fontWeight },
+    {
+      skip: fit !== "word",
+    },
+  );
+  const tracking = font === "mono" ? 0 : -0.025 * fontPx;
+  const widthOf = (index: number) =>
+    index < 0 ? 0 : measurePx(words[index], fontString) + tracking * graphemes(words[index]).length;
+  const slotWidth =
+    fit === "word" && gate.ready
+      ? widthOf(previous < 0 ? current : previous) +
+        (widthOf(current) - widthOf(previous < 0 ? current : previous)) * clamp01(pIn)
+      : undefined;
 
   return (
     <div
@@ -99,7 +135,7 @@ export function WordRotator({
       style={{
         fontFamily: theme.fonts[font],
         fontSize: fontPx,
-        fontWeight: weight ?? (font === "heading" ? theme.headingWeight : 500),
+        fontWeight,
         color: color ?? theme.colors.foreground,
         lineHeight: 1.1,
         letterSpacing: font === "mono" ? 0 : "-0.025em",
@@ -117,6 +153,7 @@ export function WordRotator({
         style={{
           display: "inline-grid",
           justifyItems: "start",
+          width: slotWidth,
           color: accentColor ?? theme.colors.accent,
           // Sliding words are clipped to the line; the padding keeps descenders and overhangs from being cut.
           ...(effect === "slide" && {
