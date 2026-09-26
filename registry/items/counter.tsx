@@ -77,23 +77,38 @@ function Wheel({ position }: { position: number }) {
   );
 }
 
-/** Lays the final value out once and turns each of its digits from the matching digit of the start value. */
-function wheels(target: string, start: string, progress: number, up: boolean) {
-  const startDigits = start.split("").filter(isDigit);
+/**
+ * Lays the final value out once and turns each digit wheel from the live value, like an odometer: the ones wheel
+ * rolls freely, and each higher wheel holds its digit and only flips over in the last tenth of the wheel below it.
+ * A place the value hasn't reached yet fades and rises in instead of showing a leading zero.
+ */
+function wheels(target: string, scaled: number) {
   const cells: React.ReactNode[] = [];
   let place = 0;
+  let placeShown = 1;
   for (let i = target.length - 1; i >= 0; i--) {
     const char = target[i];
     if (!isDigit(char)) {
-      cells.unshift(<span key={i}>{char}</span>);
+      // A group separator shows once the digit to its left does; a currency sign or other affix always shows.
+      const separator = [...target.slice(0, i)].some(isDigit);
+      cells.unshift(
+        <span key={i} style={{ opacity: separator ? placeShown : 1 }}>
+          {char}
+        </span>,
+      );
       continue;
     }
-    const to = Number(char);
-    const from = Number(startDigits[startDigits.length - 1 - place] || "0");
-    // The lowest places spin extra full turns, so the number reads as rolling rather than blinking.
-    const turns = 10 * Math.max(0, 2 - place);
-    const travel = up ? ((to - from + 10) % 10) + turns : -(((from - to + 10) % 10) + turns);
-    cells.unshift(<Wheel key={i} position={from + travel * progress} />);
+    const units = scaled / 10 ** place;
+    const whole = Math.floor(units);
+    const flip = place === 0 ? units - whole : Math.max(0, (units - whole - 0.9) / 0.1);
+    // Leading places only: the ones digit (and anything below a decimal point) always shows.
+    const shown = place === 0 ? 1 : Math.min(1, Math.max(0, (units - 0.9) / 0.1));
+    placeShown = shown;
+    cells.unshift(
+      <span key={i} style={{ display: "inline-flex", opacity: shown, translate: `0 ${(1 - shown) * 0.3}em` }}>
+        <Wheel position={whole + flip} />
+      </span>,
+    );
     place++;
   }
   return cells;
@@ -122,9 +137,17 @@ export function Counter({
   const m = useMotion({ ...motion, duration: motion.duration ?? Math.round(fps * 1.5) });
   const fontPx = u(size);
   const formatter = new Intl.NumberFormat(locale, withDigits(format, from, to));
-  // Clamped: settle/bouncy overshoot past 1, which would count past `to` and back.
-  const p = Math.min(Math.max(m.enter, 0), 1);
+  // Counts on time with an ease-out, not the theme's motion preset: settle and bouncy reach 1 in the first
+  // fifth of the window and overshoot past it, which counted past `to` and finished almost at once.
+  const t = Math.min(Math.max((m.frame - m.delay) / Math.max(m.enterFrames, 1), 0), 1);
+  const p = motion.poster ? 1 : 1 - (1 - t) ** 3;
   const value = from + (to - from) * p;
+  // A small pulse as the count lands.
+  const landed = Math.min(Math.max((m.frame - m.delay - m.enterFrames) / 8, 0), 1);
+  const pulse = 1 + Math.sin(landed * Math.PI) * 0.05;
+  const options = formatter.resolvedOptions();
+  // The value as an integer in the units of the last shown digit (cents for 2 fraction digits, and so on).
+  const scaled = Math.abs(value) * (options.style === "percent" ? 100 : 1) * 10 ** (options.maximumFractionDigits ?? 0);
 
   return (
     <div
@@ -141,13 +164,14 @@ export function Counter({
         textAlign: align,
         opacity: 1 - m.exit,
         translate: `0 ${-m.exit * fontPx * 0.2}px`,
+        scale: String(pulse),
         ...style,
       }}
     >
       {rolling ? (
         <span style={{ display: "inline-flex", alignItems: "flex-start" }}>
           {prefix}
-          {wheels(formatter.format(to), formatter.format(from), p, to >= from)}
+          {wheels(formatter.format(Math.abs(to) >= Math.abs(from) ? to : from), scaled)}
           {suffix}
         </span>
       ) : (
