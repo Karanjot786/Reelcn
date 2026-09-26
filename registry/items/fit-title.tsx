@@ -20,10 +20,21 @@ export type FitTitleProps = Omit<TextRevealProps, "size" | "split"> & {
   maxSize?: number;
   /** Width to fill, in design units. Defaults to the safe-zone width. */
   maxWidth?: number;
+  /** Smallest font size in design units. A title that would shrink below it wraps onto more lines instead. */
+  minSize?: number;
   split?: "word" | "char";
 };
 
-export function FitTitle({ text, maxSize = 240, maxWidth, font = "heading", weight, style, ...props }: FitTitleProps) {
+export function FitTitle({
+  text,
+  maxSize = 240,
+  maxWidth,
+  minSize,
+  font = "heading",
+  weight,
+  style,
+  ...props
+}: FitTitleProps) {
   const theme = useTheme();
   const { u, scale, width, safe } = useViewport();
   const stack = theme.fonts[font];
@@ -36,7 +47,9 @@ export function FitTitle({ text, maxSize = 240, maxWidth, font = "heading", weig
   const tracking = font === "mono" ? 0 : -0.025;
   const perPx = ready ? metrics.width / 100 + graphemes(text).length * tracking : 0;
   // 2% headroom: each word or character is its own box, so kerning across boxes is lost and the line runs a bit wider.
-  const px = perPx > 0 ? Math.min((available * 0.98) / perPx, u(maxSize)) : u(maxSize);
+  const fitted = perPx > 0 ? Math.min((available * 0.98) / perPx, u(maxSize)) : u(maxSize);
+  const wraps = minSize !== undefined && fitted < u(minSize);
+  const px = wraps ? u(minSize) : fitted;
 
   return (
     <TextReveal
@@ -45,7 +58,12 @@ export function FitTitle({ text, maxSize = 240, maxWidth, font = "heading", weig
       font={font}
       weight={fontWeight}
       size={px / scale}
-      style={{ whiteSpace: "nowrap", maxWidth: "none", visibility: ready ? undefined : "hidden", ...style }}
+      style={{
+        whiteSpace: wraps ? undefined : "nowrap",
+        maxWidth: wraps ? available : "none",
+        visibility: ready ? undefined : "hidden",
+        ...style,
+      }}
     />
   );
 }

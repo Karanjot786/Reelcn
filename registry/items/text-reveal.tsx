@@ -206,7 +206,8 @@ export function TextReveal({
   // The theme's on-twos step/jitter, so units stay in cadence with the rest of the scene.
   const q = quantizeMotion(motion.motion ?? theme.motion);
   // outline-fill and split-flap read time, not the eased (possibly overshooting) preset.
-  const linearAt = (start: number) => clamp01((m.frame - start) / Math.max(m.enterFrames, 1));
+  // `poster` renders the finished state: every unit fully in, whatever the frame.
+  const linearAt = (start: number) => (motion.poster ? 1 : clamp01((m.frame - start) / Math.max(m.enterFrames, 1)));
   const count =
     split === "line"
       ? text.split("\n").length
@@ -220,13 +221,15 @@ export function TextReveal({
 
   const renderUnit = (content: string, key: number, index: number) => {
     const start = startOf(index);
-    const progress = tween(m.frame, m.fps, {
-      from: start,
-      duration: m.enterFrames,
-      motion: m.preset,
-      step: q.step,
-      jitter: q.jitter,
-    });
+    const progress = motion.poster
+      ? 1
+      : tween(m.frame, m.fps, {
+          from: start,
+          duration: m.enterFrames,
+          motion: m.preset,
+          step: q.step,
+          jitter: q.jitter,
+        });
     const linear = linearAt(start);
     const displayContent = effectiveEffect === "split-flap" ? splitFlapChar(content, linear, index) : content;
     const shown = effectiveEffect === "outline-fill" ? linear : progress;
@@ -291,13 +294,15 @@ export function TextReveal({
     });
     if (split !== "line") return <div key={lineNumber}>{parts}</div>;
     const lineStart = startOf(lineIndex);
-    const progress = tween(m.frame, m.fps, {
-      from: lineStart,
-      duration: m.enterFrames,
-      motion: m.preset,
-      step: q.step,
-      jitter: q.jitter,
-    });
+    const progress = motion.poster
+      ? 1
+      : tween(m.frame, m.fps, {
+          from: lineStart,
+          duration: m.enterFrames,
+          motion: m.preset,
+          step: q.step,
+          jitter: q.jitter,
+        });
     const shown = effectiveEffect === "outline-fill" ? linearAt(lineStart) : progress;
     return (
       <div
