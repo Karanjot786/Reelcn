@@ -214,10 +214,10 @@ export const themes = {
     name: "midnight",
     colors: {
       background: "#0B0E14",
-      surface: "#12161F",
+      surface: "#171C28",
       foreground: "#E7EAF0",
       muted: "#8A93A6",
-      border: "#232838",
+      border: "#2C3346",
       accent: "#5F5BFF",
       accentForeground: "#FFFFFF",
       highlight: "#4FD1FF",
