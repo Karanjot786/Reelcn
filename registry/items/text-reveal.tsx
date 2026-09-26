@@ -53,6 +53,8 @@ export type TextRevealProps = MotionProps & {
   /** Words painted in the accent color. Case and punctuation are ignored. */
   accentWords?: string[];
   align?: "left" | "center" | "right";
+  /** Where `rise` and `blur` units travel in from. */
+  from?: "below" | "above";
   style?: React.CSSProperties;
   className?: string;
 };
@@ -73,14 +75,24 @@ function splitFlapChar(target: string, t: number, seed: number): string {
   return SPLIT_FLAP_GLYPHS[(targetIndex - remaining + n) % n];
 }
 
-function unitStyle(effect: TextRevealEffect, progress: number, fontPx: number, chars = 0): React.CSSProperties {
+function unitStyle(
+  effect: TextRevealEffect,
+  progress: number,
+  fontPx: number,
+  chars = 0,
+  dir = 1,
+): React.CSSProperties {
   const opacity = Math.min(Math.max(progress, 0), 1);
   const hidden = 1 - progress;
   switch (effect) {
     case "rise":
-      return { opacity, translate: `0 ${hidden * 0.45}em` };
+      return { opacity, translate: `0 ${hidden * 0.45 * dir}em` };
     case "blur":
-      return { opacity, filter: `blur(${Math.max(hidden, 0) * fontPx * 0.12}px)`, translate: `0 ${hidden * 0.15}em` };
+      return {
+        opacity,
+        filter: `blur(${Math.max(hidden, 0) * fontPx * 0.12}px)`,
+        translate: `0 ${hidden * 0.15 * dir}em`,
+      };
     case "fade":
       return { opacity };
     case "scale":
@@ -134,6 +146,7 @@ export function TextReveal({
   accentColor,
   accentWords = [],
   align = "center",
+  from = "below",
   style,
   className,
   ...motion
@@ -183,7 +196,7 @@ export function TextReveal({
         style={{
           display: "inline-block",
           whiteSpace: "pre",
-          ...unitStyle(effectiveEffect, shown, fontPx, graphemes(content).length),
+          ...unitStyle(effectiveEffect, shown, fontPx, graphemes(content).length, from === "above" ? -1 : 1),
         }}
       >
         {displayContent}
@@ -251,7 +264,14 @@ export function TextReveal({
         key={lineNumber}
         style={effect === "mask" ? { overflow: "hidden", paddingBottom: "0.12em", marginBottom: "-0.12em" } : undefined}
       >
-        <span style={{ display: "inline-block", ...unitStyle(effectiveEffect, shown, fontPx) }}>{parts}</span>
+        <span
+          style={{
+            display: "inline-block",
+            ...unitStyle(effectiveEffect, shown, fontPx, 0, from === "above" ? -1 : 1),
+          }}
+        >
+          {parts}
+        </span>
       </div>
     );
   });

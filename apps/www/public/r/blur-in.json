@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "registry/items/blur-in.tsx",
-      "content": "/**\n * @title Blur In\n * @category text\n * @description Headline whose words fade up out of a soft blur, one after another.\n * @duration 30\n * @use Calm, premium intros and brand statements\n * @use Titles laid over footage or gradients\n * @avoid Punchy, high-energy hooks — use `pop-in`\n * @tags blur, focus, soft, headline\n * @preset text-reveal\n * @example\n * <Center>\n *   <BlurIn text=\"Quietly, then all at once\" />\n * </Center>\n */\nimport { TextReveal, type TextRevealProps } from \"./text-reveal\";\n\nexport type BlurInProps = Omit<TextRevealProps, \"effect\">;\n\nexport function BlurIn(props: BlurInProps) {\n  return <TextReveal {...props} effect=\"blur\" />;\n}\n",
+      "content": "/**\n * @title Blur In\n * @category text\n * @description Headline whose words fade up out of a soft blur, one after another.\n * @duration 30\n * @use Calm, premium intros and brand statements\n * @use Titles laid over footage or gradients\n * @avoid Punchy, high-energy hooks — use `pop-in`\n * @tags blur, focus, soft, headline\n * @preset text-reveal\n * @example\n * <Center>\n *   <BlurIn text=\"Quietly, then all at once\" />\n * </Center>\n * @example\n * <BlurIn text=\"Settle in\" split=\"char\" from=\"above\" />\n */\nimport { TextReveal, type TextRevealProps } from \"./text-reveal\";\n\nexport type BlurInProps = Omit<TextRevealProps, \"effect\">;\n\nexport function BlurIn(props: BlurInProps) {\n  return <TextReveal {...props} effect=\"blur\" />;\n}\n",
       "type": "registry:file",
       "target": "~/src/reelcn/blur-in.tsx"
     }

@@ -12,6 +12,8 @@
  * <Center>
  *   <BlurIn text="Quietly, then all at once" />
  * </Center>
+ * @example
+ * <BlurIn text="Settle in" split="char" from="above" />
  */
 import { TextReveal, type TextRevealProps } from "./text-reveal";
 
