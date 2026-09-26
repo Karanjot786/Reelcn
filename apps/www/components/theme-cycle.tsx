@@ -6,7 +6,7 @@ import { DemoPlayer, prefersReducedMotion, useNearViewport } from "./demo-player
 
 /** The ThemeProvider line cycling through every theme, a Player that follows it, and stills that stop the cycle. */
 export function ThemeCycle({ themes }: { themes: string[] }) {
-  const [index, setIndex] = useState(Math.max(0, themes.indexOf("sunset")));
+  const [index, setIndex] = useState(Math.max(0, themes.indexOf("chromewave")));
   const [auto, setAuto] = useState(true);
   const ref = useRef<HTMLDivElement>(null);
   // The Player autoplays, so it mounts only while the section is near the viewport and never renders off-screen.

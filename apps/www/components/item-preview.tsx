@@ -1,7 +1,7 @@
 "use client";
 
 import { sceneIndexAt } from "@reelcn/registry/demos/scene-marks";
-import { type ThemeName, themes } from "@reelcn/registry/items/core";
+import { resolveThemeName, type ThemeName, themes } from "@reelcn/registry/items/core";
 import { type CallbackListener, Player, type PlayerRef } from "@remotion/player";
 import Link from "next/link";
 import { type CSSProperties, type MouseEvent, type ReactNode, useEffect, useRef, useState } from "react";
@@ -74,7 +74,8 @@ export function ItemPreview({
     const target = linked ? demoIds.find((id) => id === `${name}-${linked}` || id === linked) : undefined;
     if (target) setDemoId(target);
     const linkedTheme = params.get("theme");
-    if (linkedTheme && themeNames.includes(linkedTheme)) setTheme(linkedTheme);
+    const resolved = linkedTheme ? resolveThemeName(linkedTheme) : null;
+    if (resolved && themeNames.includes(resolved)) setTheme(resolved);
     if (controls) setEdited({ demo: target ?? demoId, values: decodeEdits(controls, params) });
   }, []);
   const customize = demo?.customize && controls && controls.length > 0 ? demo.customize : undefined;

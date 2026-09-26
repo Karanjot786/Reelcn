@@ -9,7 +9,7 @@ Every reelcn component reads its colors, fonts, corner radius and default motion
 import { Center, Stage, ThemeProvider } from "./reelcn/core";
 import { TextReveal } from "./reelcn/text-reveal";
 
-<ThemeProvider theme="paper">
+<ThemeProvider theme="ledger">
   <Stage>
     <Center>
       <TextReveal text="Hello" />
@@ -24,12 +24,14 @@ import { TextReveal } from "./reelcn/text-reveal";
 
 | Preset | Background | Accent | Highlight | Heading font | Weight | Radius | Motion |
 |---|---|---|---|---|---|---|---|
-| `daylight` (default) | `#fafafa` | `#2563eb` | `#fde047` | Inter | 700 | 20 | smooth |
-| `midnight` | `#0b0d12` | `#6d7cff` | `#ffd84d` | Inter | 700 | 20 | smooth |
-| `paper` | `#f4efe6` | `#d9480f` | `#ffd166` | Instrument Serif | 400 | 8 | gentle |
-| `neon` | `#07060d` | `#b4ff39` | `#ff2fb9` | Space Grotesk | 700 | 14 | snappy |
-| `mono` | `#000000` | `#ffffff` | `#ffffff` | Inter | 700 | 6 | snappy |
-| `sunset` | `#1a0f1f` | `#ff7a45` | `#ffc857` | Bricolage Grotesque | 800 | 28 | bouncy |
+| `daylight` | `#EEF0F2` | `#2F5BFF` | `#FFD23F` | Schibsted Grotesk | 700 | 14 | settle |
+| `midnight` | `#0B0E14` | `#5F5BFF` | `#4FD1FF` | Space Grotesk | 600 | 10 | snappy |
+| `mono` | `#F5F3EE` | `#C0470A` | `#FFD166` | Archivo | 800 | 4 | snappy |
+| `ledger` | `#F7F1E8` | `#B5502E` | `#7C8A5E` | Fraunces | 600 | 14 | gentle |
+| `afterglow` | `#F1EEFB` | `#7555FA` | `#FF8FB1` | Sora | 600 | 20 | smooth |
+| `chromewave` | `#E9EAF0` | `#C4147A` | `#35E0FF` | Unbounded | 700 | 18 | bouncy |
+
+`neon`, `paper` and `sunset` still work. They render as `chromewave`, `ledger` and `midnight`.
 
 Every color a component uses — including ones not in this table, like `surface`, `foreground`, `muted` and `border` — comes from the same `Theme.colors` object. Read the whole shape with `useTheme()`:
 

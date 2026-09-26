@@ -25,6 +25,14 @@ const config = {
       { source: "/api/:path*", headers: noindex },
     ];
   },
+  async redirects() {
+    // Themes removed in the 2026-09 redesign: old themed install links land on the replacement theme.
+    return [
+      { source: "/r/neon/:file", destination: "/r/chromewave/:file", permanent: true },
+      { source: "/r/paper/:file", destination: "/r/ledger/:file", permanent: true },
+      { source: "/r/sunset/:file", destination: "/r/midnight/:file", permanent: true },
+    ];
+  },
 };
 
 export default withMDX(config);

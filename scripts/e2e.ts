@@ -63,7 +63,7 @@ import { LowerThird } from "./reelcn/lower-third";
 import { TextReveal } from "./reelcn/text-reveal";
 
 const Probe = () => (
-  <ThemeProvider theme="paper">
+  <ThemeProvider theme="ledger">
     <Stage>
       <Center>
         <TextReveal text="reelcn installs clean" accentWords={["clean"]} />

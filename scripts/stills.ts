@@ -1,6 +1,6 @@
 // Usage:
 //   node scripts/stills.ts smoke [filter]                 render 3 frames of every demo composition
-//   node scripts/stills.ts sheets [filter] [--theme=neon]  render the 9-frame contact sheets
+//   node scripts/stills.ts sheets [filter] [--theme=chromewave]  render the 9-frame contact sheets
 //   node scripts/stills.ts determinism [filter]           render 10 sampled demos twice at full size; hashes must match
 import { createHash } from "node:crypto";
 import { appendFileSync, mkdirSync, readFileSync } from "node:fs";
