@@ -5,7 +5,7 @@
 Install any item: `npx shadcn@latest add https://www.reelcn.dev/r/<name>.json`. Files land in `src/reelcn/`; no components.json and no path aliases are needed.
 
 How they work:
-- Wrap scenes in `<ThemeProvider theme="midnight">` (themes: midnight, daylight, paper, neon, mono, sunset); `createTheme` makes a brand kit.
+- Wrap scenes in `<ThemeProvider theme="midnight">` (themes: daylight, midnight, mono, ledger, afterglow, chromewave); `createTheme` makes a brand kit.
 - Sizes are design units: `u(n)` is n px when the canvas short side is 1080px, so one component fits 16:9, 9:16 and 1:1.
 - Motion props are frames: `delay`, `duration`, `exit`, `motion` (smooth, snappy, bouncy, gentle, linear).
 - Components exit automatically at the end of their `<Sequence>`; pass `exit={false}` to hold.
@@ -53,7 +53,7 @@ const delay = staggerDelay(2, 5, { step: 4 }); // 8
 const initial = graphemeInitial("👩‍🚀 Ada"); // "👩‍🚀"
 ```
 
-- [Core Physical Light](https://www.reelcn.dev/r/core-physical-light.json): Shared "physical light" background looks for midnight/paper/neon/mono, reused by aurora, gradient-mesh, beams and spotlight. Not a catalog item on its own — each background item still owns its per-theme LOOK_BY_THEME mapping and its own default (curtains/blobs/shafts/pool) look for daylight/sunset.
+- [Core Physical Light](https://www.reelcn.dev/r/core-physical-light.json): Shared "physical light" background looks for midnight, mono, ledger and chromewave, reused by aurora, gradient-mesh, beams and spotlight. Not a catalog item on its own — each background item still owns its per-theme LOOK_BY_THEME mapping and its own default (curtains/blobs/shafts/pool) look for daylight and afterglow.
 
 ```tsx
 <GridSweepLook theme={theme} seconds={seconds} strength={0.6} background={theme.colors.background} />
@@ -80,7 +80,7 @@ const width = baseWidth * strokeWidthProfile(0.5, "arrow"); // thickest mid-stro
 ```tsx
 import { fonts } from "./fonts";
 
-const heading = `${fonts.instrumentSerif}, ui-serif, Georgia, serif`;
+const heading = `${fonts.fraunces}, ui-serif, Georgia, serif`;
 ```
 
 - [SFX](https://www.reelcn.dev/r/sfx.json): Thirty CC0 sound effects, played from one component. Streams from www.reelcn.dev, or from your own public folder after `reelcn-sfx-pull`.

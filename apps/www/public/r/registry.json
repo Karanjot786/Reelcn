@@ -1826,7 +1826,7 @@
       "name": "core-physical-light",
       "type": "registry:item",
       "title": "Core Physical Light",
-      "description": "Shared \"physical light\" background looks for midnight/paper/neon/mono, reused by aurora, gradient-mesh, beams and spotlight. Not a catalog item on its own — each background item still owns its per-theme LOOK_BY_THEME mapping and its own default (curtains/blobs/shafts/pool) look for daylight/sunset.",
+      "description": "Shared \"physical light\" background looks for midnight, mono, ledger and chromewave, reused by aurora, gradient-mesh, beams and spotlight. Not a catalog item on its own — each background item still owns its per-theme LOOK_BY_THEME mapping and its own default (curtains/blobs/shafts/pool) look for daylight and afterglow.",
       "categories": [
         "lib"
       ],
@@ -2491,7 +2491,7 @@
           "target": "~/src/reelcn/fonts.ts"
         }
       ],
-      "docs": "Usage:\n\nimport { fonts } from \"./fonts\";\n\nconst heading = `${fonts.instrumentSerif}, ui-serif, Georgia, serif`;",
+      "docs": "Usage:\n\nimport { fonts } from \"./fonts\";\n\nconst heading = `${fonts.fraunces}, ui-serif, Georgia, serif`;",
       "meta": {
         "use": [],
         "avoid": [],
