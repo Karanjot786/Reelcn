@@ -74,6 +74,7 @@ export function WordPush({
         textWrap: "balance",
         maxWidth: width - safe.x * 2,
         opacity: 1 - m.exit,
+        ...style,
       }}
     >
       {words.map((word, i) => {

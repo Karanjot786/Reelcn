@@ -924,7 +924,13 @@ export function StrokeOverlay({
   /** Passed to every underlying `<path>` (e.g. `strokeLinecap`, `fill`). */
   extraProps?: React.SVGProps<SVGPathElement>;
 }) {
-  const dashProps = { pathLength: 1, strokeDasharray: 1, strokeDashoffset: 1 - drawn } as const;
+  // Hidden until drawing starts: a round cap on a fully offset dash still paints a dot at the path start.
+  const dashProps = {
+    pathLength: 1,
+    strokeDasharray: 1,
+    strokeDashoffset: 1 - drawn,
+    strokeOpacity: drawn > 0 ? 1 : 0,
+  } as const;
   // Mixed into every filter id below so 2+ StrokeOverlay instances sharing a `seed` (e.g. highlight.tsx's
   // hardcoded seeds, or Arrow/ScribbleCircle defaults) don't collide on the same <filter id> and end up
   // resolving `url(#id)` to each other's filter. `seed` alone still drives noise/random seeding so pixels

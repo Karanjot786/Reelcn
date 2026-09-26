@@ -1,7 +1,7 @@
 /**
  * @title Text Mask Video
  * @category text
- * @description Type acts as a window onto footage: the glyphs are the only place the video or image beneath shows through.
+ * @description Type acts as a window onto footage: the glyphs are the only place the video beneath shows through.
  * @duration data-driven
  * @use A headline that IS the footage, not a caption on top of it
  * @use Brand reveals where the type and the shot are the same idea
@@ -56,7 +56,7 @@ export function TextMaskVideo({ text, src, size = 220, font = "heading", weight,
         </defs>
       </svg>
       <AbsoluteFill style={{ mask: `url(#${maskId})`, WebkitMask: `url(#${maskId})` }}>
-        <Video src={src} objectFit="cover" style={{ width: "100%", height: "100%" }} />
+        <Video src={src} muted objectFit="cover" style={{ width: "100%", height: "100%" }} />
       </AbsoluteFill>
     </AbsoluteFill>
   );

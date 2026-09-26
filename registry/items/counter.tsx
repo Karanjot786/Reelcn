@@ -122,7 +122,9 @@ export function Counter({
   const m = useMotion({ ...motion, duration: motion.duration ?? Math.round(fps * 1.5) });
   const fontPx = u(size);
   const formatter = new Intl.NumberFormat(locale, withDigits(format, from, to));
-  const value = from + (to - from) * m.enter;
+  // Clamped: settle/bouncy overshoot past 1, which would count past `to` and back.
+  const p = Math.min(Math.max(m.enter, 0), 1);
+  const value = from + (to - from) * p;
 
   return (
     <div
@@ -145,7 +147,7 @@ export function Counter({
       {rolling ? (
         <span style={{ display: "inline-flex", alignItems: "flex-start" }}>
           {prefix}
-          {wheels(formatter.format(to), formatter.format(from), m.enter, to >= from)}
+          {wheels(formatter.format(to), formatter.format(from), p, to >= from)}
           {suffix}
         </span>
       ) : (

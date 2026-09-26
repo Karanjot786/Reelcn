@@ -5209,7 +5209,7 @@
       "name": "text-mask-video",
       "type": "registry:item",
       "title": "Text Mask Video",
-      "description": "Type acts as a window onto footage: the glyphs are the only place the video or image beneath shows through.",
+      "description": "Type acts as a window onto footage: the glyphs are the only place the video beneath shows through.",
       "categories": [
         "text"
       ],

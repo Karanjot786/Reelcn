@@ -209,7 +209,7 @@ storyFrames({
 </Center>
 ```
 
-- [Text Mask Video](https://www.reelcn.dev/r/text-mask-video.json): Type acts as a window onto footage: the glyphs are the only place the video or image beneath shows through. (length data-driven · use for A headline that IS the footage, not a caption on top of it; Brand reveals where the type and the shot are the same idea)
+- [Text Mask Video](https://www.reelcn.dev/r/text-mask-video.json): Type acts as a window onto footage: the glyphs are the only place the video beneath shows through. (length data-driven · use for A headline that IS the footage, not a caption on top of it; Brand reveals where the type and the shot are the same idea)
 
 ```tsx
 <TextMaskVideo text="MOTION" src={staticFile("b-roll.mp4")} />

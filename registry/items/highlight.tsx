@@ -117,6 +117,8 @@ export function Highlight({
     pathLength: 1,
     strokeDasharray: 1,
     strokeDashoffset: 1 - drawn,
+    // A round cap on a fully offset dash still paints a dot; hide the stroke until it starts drawing.
+    strokeOpacity: drawn > 0 ? 1 : 0,
   };
 
   if (target) {
@@ -157,7 +159,9 @@ export function Highlight({
     );
   }
 
-  const at = highlight ? text.indexOf(highlight) : -1;
+  const at = highlight ? text.toLowerCase().indexOf(highlight.toLowerCase()) : -1;
+  // Matched case-insensitively; the mark shows the phrase as written in `text`.
+  const phrase = at < 0 ? "" : text.slice(at, at + highlight.length);
 
   const overlay: React.CSSProperties = { position: "absolute", overflow: "visible", pointerEvents: "none" };
 
@@ -269,9 +273,9 @@ export function Highlight({
         <>
           {text.slice(0, at)}
           <span style={{ position: "relative", display: "inline-block", whiteSpace: "nowrap" }}>
-            {variant === "marker" ? null : markFor(highlight)}
-            <span style={{ position: "relative" }}>{highlight}</span>
-            {variant === "marker" ? markFor(highlight) : null}
+            {variant === "marker" ? null : markFor(phrase)}
+            <span style={{ position: "relative" }}>{phrase}</span>
+            {variant === "marker" ? markFor(phrase) : null}
           </span>
           {text.slice(at + highlight.length)}
         </>

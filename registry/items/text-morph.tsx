@@ -30,7 +30,6 @@ import {
 export type TextMorphProps = MotionProps & {
   from: string;
   to: string;
-  holdFrames?: number;
   size?: number;
   color?: string;
   accentColor?: string;
@@ -53,7 +52,6 @@ function graphemeXPositions(chars: string[], font: string): number[] {
 export function TextMorph({
   from,
   to,
-  holdFrames = 18,
   size = 96,
   color,
   accentColor,
@@ -77,6 +75,10 @@ export function TextMorph({
   const fromX = gate.ready ? graphemeXPositions(fromChars, fontString) : fromChars.map(() => 0);
   const toX = gate.ready ? graphemeXPositions(toChars, fontString) : toChars.map(() => 0);
   const pairs = matchGraphemes(fromChars, toChars);
+  const widthOf = (chars: string[], xs: number[]) =>
+    chars.length && gate.ready ? xs[xs.length - 1] + measurePx(chars[chars.length - 1], fontString) : 0;
+  const fromWidth = widthOf(fromChars, fromX);
+  const toWidth = widthOf(toChars, toX);
   // `progress` keeps the theme's own motion shape (including settle/bouncy overshoot) for the letter
   // position lerp below, where an overshoot-then-settle read is the intended personality. `t` is a plain
   // linear time fraction across the full `enterFrames` window, independent of motion shape — the blur-in/
@@ -93,6 +95,8 @@ export function TextMorph({
       className={className}
       style={{
         position: "relative",
+        // Glyphs are absolute, so the box needs an explicit width to be centered by its parent.
+        width: fromWidth + (toWidth - fromWidth) * progress,
         height: fontPx * 1.2,
         fontFamily: theme.fonts.heading,
         fontSize: fontPx,
