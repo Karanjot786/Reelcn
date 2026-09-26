@@ -73,9 +73,8 @@ export function ItemPreview({
     const linked = params.get("demo");
     const target = linked ? demoIds.find((id) => id === `${name}-${linked}` || id === linked) : undefined;
     if (target) setDemoId(target);
-    const linkedTheme = params.get("theme");
-    const resolved = linkedTheme ? resolveThemeName(linkedTheme) : null;
-    if (resolved && themeNames.includes(resolved)) setTheme(resolved);
+    const linkedTheme = resolveThemeName(params.get("theme") ?? "");
+    if (themeNames.includes(linkedTheme)) setTheme(linkedTheme);
     if (controls) setEdited({ demo: target ?? demoId, values: decodeEdits(controls, params) });
   }, []);
   const customize = demo?.customize && controls && controls.length > 0 ? demo.customize : undefined;
