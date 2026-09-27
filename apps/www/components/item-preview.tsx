@@ -208,6 +208,11 @@ export function ItemPreview({
                   clickToPlay={false}
                   spaceKeyToPlayOrPause={false}
                   acknowledgeRemotionLicense
+                  errorFallback={({ error }) => (
+                    <div className="pv-error">
+                      This edit broke the preview: {error.message}. Undo it, or press Reset.
+                    </div>
+                  )}
                   style={{ width: "100%", height: "100%" }}
                 />
               )}

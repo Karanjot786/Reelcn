@@ -1163,3 +1163,63 @@ button.pv-scrub {
     align-items: flex-start;
   }
 }
+.cz-section {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+.cz-section .cz-grid {
+  margin-top: 0;
+}
+.cz-group {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+}
+summary.cz-group {
+  cursor: pointer;
+}
+summary.cz-group:focus-visible {
+  outline: 2px solid var(--sel);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+.cz-field.cz-wide {
+  grid-column: 1 / -1;
+  flex-direction: column;
+  align-items: stretch;
+}
+.cz-field .cz-json {
+  font:
+    13px / 1.5 ui-monospace,
+    SFMono-Regular,
+    monospace;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--panel2);
+  color: var(--text);
+  resize: vertical;
+  min-height: 4.5em;
+  max-width: none;
+  text-align: left;
+}
+.cz-json[aria-invalid="true"] {
+  border-color: var(--keeper);
+}
+.cz-error {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--keeper);
+}
+.pv-error {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  padding: 24px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--panel2);
+}

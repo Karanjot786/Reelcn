@@ -61,6 +61,54 @@ function DraftInput({
   );
 }
 
+/** A JSON text box: commits only a value that parses and keeps the start value's kind, and says why otherwise. */
+function JsonField({ id, value, onCommit }: { id: string; value: unknown; onCommit: (value: unknown) => void }) {
+  const text = JSON.stringify(value, null, 2) ?? "";
+  const [draft, setDraft] = useState(text);
+  const [error, setError] = useState<string | null>(null);
+  const [focused, setFocused] = useState(false);
+  // Outside changes (Reset, a share link) replace the draft, but never while you are typing.
+  useEffect(() => {
+    if (focused) return;
+    setDraft(text);
+    setError(null);
+  }, [text, focused]);
+  return (
+    <>
+      <textarea
+        id={id}
+        className="cz-json"
+        spellCheck={false}
+        rows={Math.min(12, text.split("\n").length)}
+        value={draft}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={error ? `${id}-error` : undefined}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        onChange={(event) => {
+          const next = event.target.value;
+          setDraft(next);
+          try {
+            const parsed: unknown = JSON.parse(next);
+            if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed) !== Array.isArray(value)) {
+              throw new Error(Array.isArray(value) ? "expected a list in [ ]" : "expected an object in { }");
+            }
+            setError(null);
+            onCommit(parsed);
+          } catch (err) {
+            setError((err as Error).message);
+          }
+        }}
+      />
+      {error && (
+        <p id={`${id}-error`} className="cz-error" role="status">
+          Not valid JSON: {error}. Fix it, or press Reset.
+        </p>
+      )}
+    </>
+  );
+}
+
 function Field({ row, value, onChange }: { row: ControlRow; value: unknown; onChange: (value: unknown) => void }) {
   const id = `cz-${row.name}`;
   const label = (
@@ -143,6 +191,13 @@ function Field({ row, value, onChange }: { row: ControlRow; value: unknown; onCh
         </div>
       );
     }
+    case "json":
+      return (
+        <div className="cz-field cz-wide">
+          {label}
+          <JsonField id={id} value={value} onCommit={onChange} />
+        </div>
+      );
     case "list":
       return (
         <div className="cz-field">
@@ -221,6 +276,20 @@ export function CustomizePanel({
     URL.revokeObjectURL(url);
   };
   const edited = Object.keys(values).length > 0;
+  const CONTENT = ["text", "list", "json"];
+  const groups = [
+    { title: "Content", rows: rows.filter((r) => !TIMING.has(r.name) && CONTENT.includes(r.control ?? "")) },
+    { title: "Style", rows: rows.filter((r) => !TIMING.has(r.name) && !CONTENT.includes(r.control ?? "")) },
+  ];
+  const timing = rows.filter((r) => TIMING.has(r.name));
+  const field = (row: ControlRow) => (
+    <Field
+      key={row.name}
+      row={row}
+      value={row.name in values ? values[row.name] : base[row.name]}
+      onChange={(value) => onChange(row.name, value)}
+    />
+  );
   return (
     <section className="customize">
       <div className="cz-h">
@@ -240,16 +309,20 @@ export function CustomizePanel({
           </button>
         </div>
       </div>
-      <div className="cz-grid">
-        {[...rows.filter((row) => !TIMING.has(row.name)), ...rows.filter((row) => TIMING.has(row.name))].map((row) => (
-          <Field
-            key={row.name}
-            row={row}
-            value={row.name in values ? values[row.name] : base[row.name]}
-            onChange={(value) => onChange(row.name, value)}
-          />
+      {groups
+        .filter((group) => group.rows.length > 0)
+        .map((group) => (
+          <div key={group.title} className="cz-section">
+            <h3 className="cz-group">{group.title}</h3>
+            <div className="cz-grid">{group.rows.map(field)}</div>
+          </div>
         ))}
-      </div>
+      {timing.length > 0 && (
+        <details className="cz-section">
+          <summary className="cz-group">Timing</summary>
+          <div className="cz-grid">{timing.map(field)}</div>
+        </details>
+      )}
     </section>
   );
 }
