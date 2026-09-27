@@ -92,6 +92,12 @@ test("code props are left for the user to set, named only if they are real props
   assert.deepEqual(out?.unset, ["text", "children"]);
   const file = customFile("browser-window", "BrowserWindow", { url: "a" }, "u", ["src", "children"]);
   assert.ok(file.includes("// Set these yourself: src, children"));
+  // A required code prop stays required, so the wrapper type-checks and tsc asks for it.
+  assert.ok(
+    file.includes(
+      'props: Partial<ComponentProps<typeof BrowserWindow>> & Pick<ComponentProps<typeof BrowserWindow>, "src" | "children">',
+    ),
+  );
 });
 
 test("transition installs export a preset factory, and lowercase factory names are allowed", () => {

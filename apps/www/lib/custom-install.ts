@@ -64,6 +64,10 @@ export function customFile(
   shareUrl: string,
   unset: string[] = [],
 ): string {
+  // Props left for the user keep their own optionality, so a required one (captions) must still be passed.
+  const required = unset.length
+    ? ` & Pick<ComponentProps<typeof ${component}>, ${unset.map((name) => JSON.stringify(name)).join(" | ")}>`
+    : "";
   const attrs = Object.entries(props).map(([name, value]) =>
     value === true ? name : `${name}={${JSON.stringify(value)}}`,
   );
@@ -71,7 +75,7 @@ export function customFile(
 import { ${component} } from "./${item}";
 
 // Customized on reelcn.dev: ${shareUrl.replace(/[\r\n\u2028\u2029]/g, "")}
-${unset.length ? `// Set these yourself: ${unset.join(", ")}\n` : ""}export function ${component}Custom(props: Partial<ComponentProps<typeof ${component}>>) {
+${unset.length ? `// Set these yourself: ${unset.join(", ")}\n` : ""}export function ${component}Custom(props: Partial<ComponentProps<typeof ${component}>>${required}) {
   return <${component} ${[...attrs, "{...props}"].join(" ")} />;
 }
 `;
