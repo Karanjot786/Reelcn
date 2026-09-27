@@ -185,10 +185,10 @@ export function TextReveal({
   const theme = useTheme();
   const { u, width, safe } = useViewport();
   const m = useMotion(motion);
-  // variable-axis falls back to fade on any theme with no variable font loaded, so it never throws on
-  // daylight/midnight/paper/sunset/neon — only mono has the Archivo variable cut this effect animates.
+  // variable-axis falls back to fade on every theme but mono, the only one that loads the Archivo variable cut
+  // this effect animates.
   const effectiveEffect = effect === "variable-axis" && theme.name !== "mono" ? "fade" : effect;
-  // mono/Signal's signature move: Archivo's wdth axis snaps from expanded to condensed as the
+  // mono's signature move: Archivo's wdth axis snaps from expanded to condensed as the
   // headline enters. Always computed (cheap, pure math) so this hook is never called conditionally;
   // only applied to the style below when the theme and font slot actually use the variable cut.
   const axisSettings = useVariableFontAxis(125, 62, {
