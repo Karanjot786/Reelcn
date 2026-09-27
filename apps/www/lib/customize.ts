@@ -24,21 +24,24 @@ function attr(name: string, value: unknown): string | null {
   return `${name}={${JSON.stringify(value)}}`;
 }
 
-/** `<Name a="x" b={2} />`, one line when short, one prop per line when long. */
-export function toJsx(component: string, props: CustomProps): string {
-  const attrs = Object.entries(props)
-    .map(([name, value]) => attr(name, value))
-    .filter((a): a is string => a !== null);
-  const oneLine = `<${component}${attrs.map((a) => ` ${a}`).join("")} />`;
-  if (oneLine.length <= 100) return oneLine;
-  return `<${component}\n${attrs.map((a) => `  ${a}`).join("\n")}\n/>`;
-}
-
 const indent = (text: string, spaces: number) =>
   text
     .split("\n")
     .map((line) => " ".repeat(spaces) + line)
     .join("\n");
+
+/** `<Name a="x" b={2} />`, one line when short. `code` supplies source text for code props and `children`. */
+export function toJsx(component: string, props: CustomProps, code: Record<string, string> = {}): string {
+  const names = [...new Set([...Object.keys(props), ...Object.keys(code)])].filter((name) => name !== "children");
+  const attrs = names
+    .map((name) => (name in code ? `${name}={${code[name]}}` : attr(name, props[name])))
+    .filter((a): a is string => a !== null);
+  const inline = `<${component}${attrs.map((a) => ` ${a}`).join("")}`;
+  const short = inline.length <= 100;
+  const open = short ? inline : `<${component}\n${attrs.map((a) => `  ${a}`).join("\n")}\n`;
+  if (code.children === undefined) return `${open}${short ? " " : ""}/>`;
+  return `${open}>\n${indent(code.children, 2)}\n</${component}>`;
+}
 
 /** The downloadable `<Name>Scene.tsx`: imports from where `shadcn add` puts the files, the theme, the element. */
 export function sceneFile(item: string, component: string, jsx: string, theme: string): string {

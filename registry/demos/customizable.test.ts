@@ -22,6 +22,8 @@ test("customizable renders the demo props, and edits merged on top", () => {
   const edited = customize.render({ ...customize.props, size: 40 }) as Wrapped;
   assert.deepEqual(edited.props.children.props, { text: "Hi", size: 40 });
   assert.equal(customize.name, "Title");
+  const withCode = customizable("Title", Title, { text: "Hi" }, undefined, { text: '"from code"' });
+  assert.deepEqual(withCode.customize?.code, { text: '"from code"' });
 });
 
 test('every customizable("X", X, ...) names a component exported from registry/items', () => {

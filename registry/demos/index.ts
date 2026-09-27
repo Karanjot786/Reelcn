@@ -37,6 +37,10 @@ export type Demo = {
     name: string;
     props: Record<string, unknown>;
     render: (props: Record<string, unknown>) => React.ReactNode;
+    /** Source text for props (or `children`) whose value is code, like `staticFile("…")`. No control; used in generated code. */
+    code?: Record<string, string>;
+    /** `transition`: the item exports a presentation factory, not a component. */
+    kind?: "transition";
   };
 };
 

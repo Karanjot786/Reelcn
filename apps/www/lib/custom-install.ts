@@ -1,7 +1,7 @@
 import { type CustomProps, type EditableRow, fitValue } from "./customize.ts";
 
 /** What a custom install URL carries: the full props, the picked theme and the component's export name. */
-export type Payload = { props: CustomProps; theme?: string; component: string };
+export type Payload = { props: CustomProps; theme?: string; component: string; unset?: string[] };
 
 /** JSON, then base64url without padding, so it fits one URL path segment. Runs in the browser and on the server. */
 export function encodePayload(payload: Payload): string {
@@ -22,7 +22,9 @@ export function decodePayload(text: string): Payload | null {
       typeof value?.props === "object" &&
       !Array.isArray(value.props) &&
       typeof value.component === "string" &&
-      (value.theme === undefined || typeof value.theme === "string");
+      (value.theme === undefined || typeof value.theme === "string") &&
+      (value.unset === undefined ||
+        (Array.isArray(value.unset) && value.unset.every((n: unknown) => typeof n === "string")));
     return ok ? value : null;
   } catch {
     return null;
@@ -47,14 +49,21 @@ export function validatePayload(payload: Payload, rows: EditableRow[], themeName
     const value = row.control ? fitValue(row, payload.props[row.name]) : payload.props[row.name];
     if (value !== undefined) props[row.name] = value;
   }
-  return { props, component: payload.component, theme };
+  const unset = payload.unset?.filter((name) => name === "children" || rows.some((row) => row.name === name));
+  return { props, component: payload.component, theme, unset };
 }
 
 /**
  * The installed `<item>-custom.tsx`: the item's component with these props as defaults, still overridable.
  * Server-generated from user input, so every value goes in as a JSON expression, never as raw JSX text.
  */
-export function customFile(item: string, component: string, props: CustomProps, shareUrl: string): string {
+export function customFile(
+  item: string,
+  component: string,
+  props: CustomProps,
+  shareUrl: string,
+  unset: string[] = [],
+): string {
   const attrs = Object.entries(props).map(([name, value]) =>
     value === true ? name : `${name}={${JSON.stringify(value)}}`,
   );
@@ -62,7 +71,7 @@ export function customFile(item: string, component: string, props: CustomProps, 
 import { ${component} } from "./${item}";
 
 // Customized on reelcn.dev: ${shareUrl.replace(/[\r\n\u2028\u2029]/g, "")}
-export function ${component}Custom(props: Partial<ComponentProps<typeof ${component}>>) {
+${unset.length ? `// Set these yourself: ${unset.join(", ")}\n` : ""}export function ${component}Custom(props: Partial<ComponentProps<typeof ${component}>>) {
   return <${component} ${[...attrs, "{...props}"].join(" ")} />;
 }
 `;
@@ -76,6 +85,7 @@ export function customRegistryItem(p: {
   theme?: string;
   shareUrl: string;
   siteUrl: string;
+  unset?: string[];
 }): string {
   return JSON.stringify(
     {
@@ -88,7 +98,7 @@ export function customRegistryItem(p: {
           path: `registry/items/${p.item}-custom.tsx`,
           type: "registry:file",
           target: `~/src/reelcn/${p.item}-custom.tsx`,
-          content: customFile(p.item, p.component, p.props, p.shareUrl),
+          content: customFile(p.item, p.component, p.props, p.shareUrl, p.unset),
         },
       ],
     },

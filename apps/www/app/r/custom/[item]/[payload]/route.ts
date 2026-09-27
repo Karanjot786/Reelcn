@@ -31,6 +31,7 @@ export async function GET(req: Request, { params }: RouteContext<"/r/custom/[ite
       theme,
       shareUrl,
       siteUrl: SITE_URL,
+      unset: payload.unset,
     }),
     {
       headers: { "Content-Type": "application/json; charset=utf-8" },

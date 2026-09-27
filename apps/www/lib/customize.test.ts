@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import ts from "typescript";
 import {
   buildQuery,
   decodeEdits,
@@ -148,4 +149,22 @@ test("json edits round trip; bad, wrong-kind and oversized ones drop", () => {
     assert.equal(decodeEdits(ROWS, new URLSearchParams([["p.data", raw]])).data, undefined, raw.slice(0, 20));
   }
   assert.deepEqual(fitValue({ name: "data", control: "json" }, { a: 1 }), { a: 1 });
+});
+
+test("toJsx writes code props as source and children between the tags", () => {
+  const jsx = toJsx(
+    "BrowserWindow",
+    { url: "reelcn.dev", src: "/static/x.png", children: "ignored at runtime" },
+    { src: 'staticFile("x.png")', children: '<Img src={staticFile("app.png")} />' },
+  );
+  assert.equal(
+    jsx,
+    '<BrowserWindow url="reelcn.dev" src={staticFile("x.png")}>\n  <Img src={staticFile("app.png")} />\n</BrowserWindow>',
+  );
+  const { diagnostics } = ts.transpileModule(`const a = ${jsx};`, {
+    reportDiagnostics: true,
+    compilerOptions: { jsx: ts.JsxEmit.Preserve },
+    fileName: "x.tsx",
+  });
+  assert.deepEqual(diagnostics, []);
 });

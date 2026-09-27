@@ -11,10 +11,16 @@ export function customizable<P extends object>(
   Component: ComponentType<P>,
   props: P,
   wrap: (element: ReactElement) => ReactNode = (element) => element,
+  code?: Partial<Record<Extract<keyof P, string> | "children", string>>,
 ): Pick<Demo, "component" | "customize"> {
   const render = (edited: Record<string, unknown>) => wrap(createElement(Component, edited as P));
   return {
     component: () => render(props as Record<string, unknown>),
-    customize: { name, props: props as Record<string, unknown>, render },
+    customize: {
+      name,
+      props: props as Record<string, unknown>,
+      render,
+      code: code as Record<string, string> | undefined,
+    },
   };
 }

@@ -78,14 +78,20 @@ export function ItemPreview({
     if (controls) setEdited({ demo: target ?? demoId, values: decodeEdits(controls, params) });
   }, []);
   const customize = demo?.customize && controls && controls.length > 0 ? demo.customize : undefined;
-  const start = customize && controls ? startValues(controls, customize.props) : {};
+  // Code props (`src={staticFile(…)}`, children) get no control, and no share-link value reaches them.
+  const codeProps = customize?.code ?? {};
+  const editable = controls?.filter((row) => !(row.name in codeProps));
+  const start = customize && editable ? startValues(editable, customize.props) : {};
   // Pruned here, not on write, so a share link's no-op params (`p.effect=rise` on rise) count as no edits too.
-  const overrides = edited.demo === demoId ? pruneEdits(start, edited.values) : {};
+  const overrides =
+    edited.demo === demoId
+      ? pruneEdits(start, Object.fromEntries(Object.entries(edited.values).filter(([prop]) => !(prop in codeProps))))
+      : {};
   const edit = (prop: string, value: unknown) =>
     setEdited({ demo: demoId, values: pruneEdits(start, { ...overrides, [prop]: value }) });
   const hasEdits = Object.keys(overrides).length > 0;
   const component = customize?.name ?? pascal(name);
-  const customJsx = customize ? toJsx(component, { ...customize.props, ...overrides }) : "";
+  const customJsx = customize ? toJsx(component, { ...customize.props, ...overrides }, codeProps) : "";
   const Scene = useDemoScene(demo);
   const reduced = usePrefersReducedMotion();
   const player = useRef<PlayerRef>(null);
@@ -276,9 +282,9 @@ export function ItemPreview({
           </div>
         </div>
       </div>
-      {customize && controls && (
+      {customize && editable && (
         <CustomizePanel
-          rows={controls}
+          rows={editable}
           base={start}
           values={overrides}
           onChange={edit}
@@ -297,9 +303,15 @@ export function ItemPreview({
               ? {
                   component,
                   payload: encodePayload({
-                    props: { ...customize.props, ...overrides },
+                    // Code props and children stay out; the install names them in a "Set these yourself" comment.
+                    props: Object.fromEntries(
+                      Object.entries({ ...customize.props, ...overrides }).filter(
+                        ([prop]) => !(prop in codeProps) && prop !== "children",
+                      ),
+                    ),
                     theme: theme === "daylight" ? undefined : theme,
                     component,
+                    unset: Object.keys(codeProps),
                   }),
                 }
               : undefined,

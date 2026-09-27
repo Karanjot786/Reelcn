@@ -43,7 +43,12 @@ test("validatePayload keeps known props, drops bad values, rejects bad theme and
     ROWS,
     THEMES,
   );
-  assert.deepEqual(out, { props: { text: '"/><script>', data: [1] }, component: "TextReveal", theme: undefined });
+  assert.deepEqual(out, {
+    props: { text: '"/><script>', data: [1] },
+    component: "TextReveal",
+    theme: undefined,
+    unset: undefined,
+  });
   assert.equal(validatePayload({ ...OK, component: "x; alert(1)" }, ROWS, THEMES), null);
   assert.equal(validatePayload({ ...OK, theme: "evil" }, ROWS, THEMES), null);
   // Links built before the 2026-09 theme redesign still install, on the replacement theme.
@@ -79,4 +84,11 @@ test("customRegistryItem depends on the item, themed when a theme is picked", ()
   assert.deepEqual(JSON.parse(customRegistryItem({ ...base, theme: "mono" })).registryDependencies, [
     "https://s.dev/r/mono/text-reveal.json",
   ]);
+});
+
+test("code props are left for the user to set, named only if they are real props", () => {
+  const out = validatePayload({ ...OK, unset: ["text", "children", "x; alert(1)"] }, ROWS, THEMES);
+  assert.deepEqual(out?.unset, ["text", "children"]);
+  const file = customFile("browser-window", "BrowserWindow", { url: "a" }, "u", ["src", "children"]);
+  assert.ok(file.includes("// Set these yourself: src, children"));
 });
