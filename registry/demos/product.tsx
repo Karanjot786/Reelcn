@@ -1,3 +1,4 @@
+import { cloneElement, type ReactElement, type ReactNode } from "react";
 import { AbsoluteFill, Img, staticFile } from "remotion";
 import { AppWindow } from "../items/app-window";
 import { BeforeAfter } from "../items/before-after";
@@ -196,19 +197,6 @@ function TerminalFollow() {
 
 /* ────────────────────────────── browser-window ────────────────────────────── */
 
-function BrowserWindowDemo() {
-  return (
-    <Center>
-      <BrowserWindow url="reelcn.dev/pricing">
-        <Img
-          src={staticFile("reelcn-demo/screenshots/fictional-analytics.webp")}
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-        />
-      </BrowserWindow>
-    </Center>
-  );
-}
-
 function BrowserWindowPosterDemo() {
   return (
     <Center>
@@ -221,45 +209,9 @@ function BrowserWindowPosterDemo() {
 
 /* ──────────────────────────────── phone-frame ──────────────────────────────── */
 
-function PhoneFrameDemo() {
-  return (
-    <Center>
-      <PhoneFrame>
-        <Img
-          src={staticFile("reelcn-demo/screenshots/fictional-mobile-feed.webp")}
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-        />
-      </PhoneFrame>
-    </Center>
-  );
-}
-
 /* ─────────────────────────────── laptop-frame ─────────────────────────────── */
 
-function LaptopFrameDemo() {
-  return (
-    <Center>
-      <LaptopFrame>
-        <Img
-          src={staticFile("reelcn-demo/screenshots/reelcn-docs.webp")}
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-        />
-      </LaptopFrame>
-    </Center>
-  );
-}
-
 /* ──────────────────────────────── app-window ──────────────────────────────── */
-
-function AppWindowDemo() {
-  return (
-    <Center>
-      <AppWindow title="Overview">
-        <FakeDashboard />
-      </AppWindow>
-    </Center>
-  );
-}
 
 function AppWindowPosterDemo() {
   return (
@@ -273,7 +225,8 @@ function AppWindowPosterDemo() {
 
 /* ────────────────────────────────── cursor ────────────────────────────────── */
 
-function CursorDemo() {
+/** The cursor demo's backdrop: a browser window of the fake dashboard, the cursor on top. */
+function CursorStage({ children }: { children: ReactNode }) {
   const theme = useTheme();
   return (
     <AbsoluteFill style={{ background: theme.colors.background }}>
@@ -282,36 +235,12 @@ function CursorDemo() {
           <FakeDashboard />
         </BrowserWindow>
       </Center>
-      <Cursor
-        waypoints={[
-          { x: 22, y: 28, frame: 0 },
-          { x: 58, y: 45, frame: 30, click: true },
-          { x: 58, y: 68, frame: 55, click: true },
-        ]}
-      />
+      {children}
     </AbsoluteFill>
   );
 }
 
 /* ─────────────────────────────── screen-zoom ─────────────────────────────── */
-
-function ScreenZoomDemo() {
-  return (
-    <Center>
-      <BrowserWindow url="app.dev" exit={false}>
-        <ScreenZoom
-          focus={[
-            { frame: 0, x: 0, y: 0, width: 100, height: 100 },
-            { frame: 45, x: 36, y: 6, width: 58, height: 32 },
-            { frame: 90, x: 0, y: 0, width: 100, height: 100 },
-          ]}
-        >
-          <FakeDashboard />
-        </ScreenZoom>
-      </BrowserWindow>
-    </Center>
-  );
-}
 
 /**
  * Task 1 Step 9b (ponytail-review blocker 1): an end-to-end proof that `anchorToContentPercent` converts
@@ -375,15 +304,6 @@ const REDACT_RECTS = [
   { x: 66, y: 0, width: 33, height: 11 },
 ];
 
-function RedactBlurDemo() {
-  return (
-    <AbsoluteFill>
-      <FakeDashboard />
-      <Redact rects={REDACT_RECTS} mode="blur" />
-    </AbsoluteFill>
-  );
-}
-
 function RedactPixelateDemo() {
   return (
     <AbsoluteFill>
@@ -410,17 +330,16 @@ function RedactForcedFailureDemo() {
 
 /* ───────────────────────────────── toast ───────────────────────────────── */
 
-function ToastSuccess() {
+/** Toasts over the fake dashboard, at the top in portrait and bottom-right otherwise, unless Customize sets `edge`. */
+function ToastContext({ children }: { children: ReactElement }) {
   const { isPortrait } = useViewport();
+  const { edge } = children.props as { edge?: string };
   return (
     <AbsoluteFill>
       <FakeDashboard />
-      <Toast
-        variant="success"
-        title="Deployed"
-        description="Live in 12 regions"
-        edge={isPortrait ? "top" : "bottom-right"}
-      />
+      {cloneElement(children as ReactElement<{ edge?: string }>, {
+        edge: edge ?? (isPortrait ? "top" : "bottom-right"),
+      })}
     </AbsoluteFill>
   );
 }
@@ -448,26 +367,9 @@ function ToastSettle() {
   );
 }
 
-function ToastStackDemo() {
-  const { isPortrait } = useViewport();
-  return (
-    <AbsoluteFill>
-      <FakeDashboard />
-      <ToastStack
-        edge={isPortrait ? "top" : "bottom-right"}
-        toasts={[
-          { at: 0, toast: { variant: "success", title: "Deployed", description: "Live in 12 regions" } },
-          { at: 1.2, toast: { variant: "info", title: "Cache warmed" } },
-          { at: 2.4, toast: { variant: "success", title: "Health check passed" } },
-        ]}
-      />
-    </AbsoluteFill>
-  );
-}
-
 /* ─────────────────────────────── chat-thread ─────────────────────────────── */
 
-function ChatThreadDemo() {
+function ChatContext({ children }: { children: ReactElement }) {
   // PhoneFrame's screen shrinks a lot in landscape/square formats (the frame height
   // is capped by canvas height, not width) — mirror its sizing so the thread never
   // overflows the phone's screen edges. Keep in sync with phone-frame.tsx defaults.
@@ -482,15 +384,10 @@ function ChatThreadDemo() {
   return (
     <Center>
       <PhoneFrame>
-        <ChatThread
-          width={screenW}
-          height={screenH}
-          messages={[
-            { from: "me", text: "Can it render 9:16?", at: 0 },
-            { from: "them", text: "Yes — same component, three formats.", at: 34 },
-            { from: "me", text: "Nice, shipping it today", at: 66 },
-          ]}
-        />
+        {cloneElement(children as ReactElement<{ width?: number; height?: number }>, {
+          width: (children.props as { width?: number }).width ?? screenW,
+          height: (children.props as { height?: number }).height ?? screenH,
+        })}
       </PhoneFrame>
     </Center>
   );
@@ -536,24 +433,7 @@ const boltIcon = () => (
   </svg>
 );
 
-function FeatureCardDemo() {
-  return (
-    <Center>
-      <FeatureCard
-        icon={boltIcon()}
-        title="Zero config"
-        body="Install with shadcn, no path aliases to set up."
-        badge="New"
-      />
-    </Center>
-  );
-}
-
 /* ─────────────────────────────── before-after ─────────────────────────────── */
-
-function BeforeAfterDemo() {
-  return <BeforeAfter labels={["Before", "After"]} before={<FakePlainList />} after={<FakeDashboard />} />;
-}
 
 /* ──────────────────────────────── button ──────────────────────────────── */
 
@@ -612,22 +492,6 @@ function ButtonAnchorProofLiteralDemo() {
 /* ──────────────────────────────── tabs ──────────────────────────────── */
 
 /* ──────────────────────────────── dialog ──────────────────────────────── */
-
-function DialogDemo() {
-  const dialogProps = { id: "confirm", title: "Delete staging-db-7?", place: { x: 50, y: 50 } };
-  const submitProps = { id: "submit", label: "Delete database", place: { x: 50, y: 60 } };
-  return (
-    <Dialog
-      {...dialogProps}
-      steps={[
-        { at: 0, state: "closed" },
-        { at: 0.5, state: "open" },
-      ]}
-    >
-      <Button {...submitProps} variant="primary" />
-    </Dialog>
-  );
-}
 
 function DialogAnchorProofDemo() {
   const dialogProps = { id: "confirm", title: "Delete staging-db-7?", place: { x: 50, y: 50 } };
@@ -760,26 +624,187 @@ export default [
     ),
   },
   { id: "terminal-follow", duration: 120, component: TerminalFollow },
-  { id: "browser-window-dashboard", duration: 75, component: BrowserWindowDemo },
+  {
+    id: "browser-window-dashboard",
+    duration: 75,
+    ...customizable(
+      "BrowserWindow",
+      BrowserWindow,
+      {
+        url: "reelcn.dev/pricing",
+        children: (
+          <Img
+            src={staticFile("reelcn-demo/screenshots/fictional-analytics.webp")}
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        ),
+      },
+      (el) => <Center>{el}</Center>,
+      {
+        children:
+          '<Img src={staticFile("reelcn-demo/screenshots/fictional-analytics.webp")} style={{ width: "100%", height: "100%", objectFit: "cover" }} />',
+      },
+    ),
+  },
   // poster:true (useMotion) renders fully entered with no exit for a still thumbnail — every frame is
   // identical by design, so this stays a 1-frame composition rather than tripping stills.ts's
   // pixel-identical/"blank or static demo" smoke check meant for demos that should actually move.
   { id: "browser-window-poster", duration: 1, component: BrowserWindowPosterDemo },
-  { id: "phone-frame-feed", duration: 75, component: PhoneFrameDemo },
-  { id: "laptop-frame-dashboard", duration: 75, component: LaptopFrameDemo },
-  { id: "app-window-overview", duration: 75, component: AppWindowDemo },
+  {
+    id: "phone-frame-feed",
+    duration: 75,
+    ...customizable(
+      "PhoneFrame",
+      PhoneFrame,
+      {
+        children: (
+          <Img
+            src={staticFile("reelcn-demo/screenshots/fictional-mobile-feed.webp")}
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        ),
+      },
+      (el) => <Center>{el}</Center>,
+      {
+        children:
+          '<Img src={staticFile("reelcn-demo/screenshots/fictional-mobile-feed.webp")} style={{ width: "100%", height: "100%", objectFit: "cover" }} />',
+      },
+    ),
+  },
+  {
+    id: "laptop-frame-dashboard",
+    duration: 75,
+    ...customizable(
+      "LaptopFrame",
+      LaptopFrame,
+      {
+        children: (
+          <Img
+            src={staticFile("reelcn-demo/screenshots/reelcn-docs.webp")}
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        ),
+      },
+      (el) => <Center>{el}</Center>,
+      {
+        children:
+          '<Img src={staticFile("reelcn-demo/screenshots/reelcn-docs.webp")} style={{ width: "100%", height: "100%", objectFit: "cover" }} />',
+      },
+    ),
+  },
+  {
+    id: "app-window-overview",
+    duration: 75,
+    ...customizable(
+      "AppWindow",
+      AppWindow,
+      { title: "Overview", children: <FakeDashboard /> },
+      (el) => <Center>{el}</Center>,
+      { children: "<FakeDashboard />" },
+    ),
+  },
   // Same reasoning as browser-window-poster above: poster:true is a frozen, fully-entered render.
   { id: "app-window-poster", duration: 1, component: AppWindowPosterDemo },
-  { id: "cursor-click-path", duration: 90, bare: true, component: CursorDemo },
-  { id: "screen-zoom-detail", duration: 100, component: ScreenZoomDemo },
-  { id: "redact", duration: 60, bare: true, component: RedactBlurDemo },
+  {
+    id: "cursor-click-path",
+    duration: 90,
+    bare: true,
+    ...customizable(
+      "Cursor",
+      Cursor,
+      {
+        waypoints: [
+          { x: 22, y: 28, frame: 0 },
+          { x: 58, y: 45, frame: 30, click: true },
+          { x: 58, y: 68, frame: 55, click: true },
+        ],
+      },
+      (el) => <CursorStage>{el}</CursorStage>,
+    ),
+  },
+  {
+    id: "screen-zoom-detail",
+    duration: 100,
+    ...customizable(
+      "ScreenZoom",
+      ScreenZoom,
+      {
+        focus: [
+          { frame: 0, x: 0, y: 0, width: 100, height: 100 },
+          { frame: 45, x: 36, y: 6, width: 58, height: 32 },
+          { frame: 90, x: 0, y: 0, width: 100, height: 100 },
+        ],
+        children: <FakeDashboard />,
+      },
+      (el) => (
+        <Center>
+          <BrowserWindow url="app.dev" exit={false}>
+            {el}
+          </BrowserWindow>
+        </Center>
+      ),
+      { children: "<FakeDashboard />" },
+    ),
+  },
+  {
+    id: "redact",
+    duration: 60,
+    bare: true,
+    ...customizable("Redact", Redact, { rects: REDACT_RECTS, mode: "blur" }, (el) => (
+      <AbsoluteFill>
+        <FakeDashboard />
+        {el}
+      </AbsoluteFill>
+    )),
+  },
   { id: "redact-pixelate", duration: 60, bare: true, component: RedactPixelateDemo },
   { id: "redact-forced-failure", duration: 60, bare: true, component: RedactForcedFailureDemo },
-  { id: "toast-success", duration: 90, bare: true, component: ToastSuccess },
+  {
+    id: "toast-success",
+    duration: 90,
+    bare: true,
+    ...customizable(
+      "Toast",
+      Toast,
+      { variant: "success", title: "Deployed", description: "Live in 12 regions" },
+      (el) => <ToastContext>{el}</ToastContext>,
+    ),
+  },
   { id: "toast-error", duration: 90, bare: true, component: ToastError },
   { id: "toast-settle", duration: 90, bare: true, component: ToastSettle },
-  { id: "toast-stack", duration: 150, bare: true, component: ToastStackDemo },
-  { id: "chat-thread-reply", duration: 110, component: ChatThreadDemo },
+  {
+    id: "toast-stack",
+    duration: 150,
+    bare: true,
+    ...customizable(
+      "ToastStack",
+      ToastStack,
+      {
+        toasts: [
+          { at: 0, toast: { variant: "success", title: "Deployed", description: "Live in 12 regions" } },
+          { at: 1.2, toast: { variant: "info", title: "Cache warmed" } },
+          { at: 2.4, toast: { variant: "success", title: "Health check passed" } },
+        ],
+      },
+      (el) => <ToastContext>{el}</ToastContext>,
+    ),
+  },
+  {
+    id: "chat-thread-reply",
+    duration: 110,
+    ...customizable(
+      "ChatThread",
+      ChatThread,
+      {
+        messages: [
+          { from: "me", text: "Can it render 9:16?", at: 0 },
+          { from: "them", text: "Yes — same component, three formats.", at: 34 },
+          { from: "me", text: "Nice, shipping it today", at: 66 },
+        ],
+      },
+      (el) => <ChatContext>{el}</ChatContext>,
+    ),
+  },
   {
     id: "command-palette-filter",
     duration: 100,
@@ -801,8 +826,28 @@ export default [
     ),
   },
   { id: "command-palette-follow", duration: 100, component: CommandPaletteFollow },
-  { id: "feature-card-rise", duration: 75, component: FeatureCardDemo },
-  { id: "before-after-wipe", duration: 75, component: BeforeAfterDemo },
+  {
+    id: "feature-card-rise",
+    duration: 75,
+    ...customizable(
+      "FeatureCard",
+      FeatureCard,
+      { icon: boltIcon(), title: "Zero config", body: "Install with shadcn, no path aliases to set up.", badge: "New" },
+      (el) => <Center>{el}</Center>,
+      { icon: "boltIcon()" },
+    ),
+  },
+  {
+    id: "before-after-wipe",
+    duration: 75,
+    ...customizable(
+      "BeforeAfter",
+      BeforeAfter,
+      { labels: ["Before", "After"], before: <FakePlainList />, after: <FakeDashboard /> },
+      undefined,
+      { before: "<FakePlainList />", after: "<FakeDashboard />" },
+    ),
+  },
   {
     id: "svg-draw-check",
     duration: 75,
@@ -916,7 +961,22 @@ export default [
   {
     id: "dialog",
     duration: stepsDuration([{ at: 0 }, { at: 0.5 }], 45, STORY_FPS),
-    component: DialogDemo,
+    ...customizable(
+      "Dialog",
+      Dialog,
+      {
+        id: "confirm",
+        title: "Delete staging-db-7?",
+        place: { x: 50, y: 50 },
+        steps: [
+          { at: 0, state: "closed" },
+          { at: 0.5, state: "open" },
+        ],
+        children: <Button id="submit" label="Delete database" place={{ x: 50, y: 60 }} variant="primary" />,
+      },
+      undefined,
+      { children: '<Button id="submit" label="Delete database" place={{ x: 50, y: 60 }} variant="primary" />' },
+    ),
   },
   { id: "dialog-anchor-proof", duration: 30, component: DialogAnchorProofDemo },
   {
