@@ -48,7 +48,9 @@ export function sceneFile(item: string, component: string, jsx: string, theme: s
   let tree = `<Stage>\n  <Center>\n${indent(jsx, 4)}\n  </Center>\n</Stage>`;
   if (theme !== "daylight") tree = `<ThemeProvider theme="${theme}">\n${indent(tree, 2)}\n</ThemeProvider>`;
   const core = theme === "daylight" ? "Center, Stage" : "Center, Stage, ThemeProvider";
-  return `import { ${core} } from "./reelcn/core";
+  // Code props like `src={staticFile("…")}` and `<Img />` children need their Remotion imports.
+  const remotion = ["Img", "staticFile"].filter((name) => new RegExp(`\\b${name}\\b`).test(jsx));
+  return `${remotion.length ? `import { ${remotion.join(", ")} } from "remotion";\n` : ""}import { ${core} } from "./reelcn/core";
 import { ${component} } from "./reelcn/${item}";
 
 export function ${component}Scene() {
@@ -83,11 +85,17 @@ export function startValues(rows: EditableRow[], base: CustomProps): CustomProps
   return out;
 }
 
+const isObject = (value: unknown) => value !== null && typeof value === "object";
+
 /** Drops edits equal to their start (and undefined), so Reset, the URL and the code note agree on "no edits". */
 export function pruneEdits(start: CustomProps, edits: CustomProps): CustomProps {
   return Object.fromEntries(
     Object.entries(edits).filter(
-      ([name, value]) => value !== undefined && JSON.stringify(value) !== JSON.stringify(start[name]),
+      ([name, value]) =>
+        value !== undefined &&
+        JSON.stringify(value) !== JSON.stringify(start[name]) &&
+        // A list stays a list and an object an object; the other kind would crash the component.
+        !(isObject(value) && isObject(start[name]) && Array.isArray(value) !== Array.isArray(start[name])),
     ),
   );
 }
@@ -141,7 +149,11 @@ export function fitValue(row: EditableRow, value: unknown): unknown {
             .map((item) => item.slice(0, MAX_TEXT))
         : undefined;
     case "json":
-      return value !== null && typeof value === "object" && JSON.stringify(value).length <= MAX_JSON
+      // No remote or inline files: a share link must not make the preview fetch someone else's URL.
+      return value !== null &&
+        typeof value === "object" &&
+        JSON.stringify(value).length <= MAX_JSON &&
+        !/"(?:https?:|data:|javascript:|blob:|\/\/)/i.test(JSON.stringify(value))
         ? value
         : undefined;
   }
@@ -166,7 +178,8 @@ export function decodeEdits(rows: EditableRow[], params: URLSearchParams): Custo
       row.control === "list"
         ? params.getAll(key)
         : row.control === "json"
-          ? parseJson(raw)
+          ? // A string tuple travels as repeated params, like a list.
+            (parseJson(raw) ?? (params.getAll(key).length > 1 ? params.getAll(key) : undefined))
           : row.control === "switch"
             ? { true: true, false: false }[raw]
             : row.control === "slider" && raw.trim() !== ""

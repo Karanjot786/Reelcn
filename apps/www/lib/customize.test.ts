@@ -181,3 +181,28 @@ test("transition code builds the presentation from the edited options", () => {
   assert.ok(file.includes('import { splitDoors } from "./reelcn/split-doors";'));
   assert.ok(file.includes('import { linearTiming, TransitionSeries } from "@remotion/transitions";'));
 });
+
+test("final review: a json string tuple survives a share link", () => {
+  const params = new URLSearchParams(encodeEdits({ data: ["Old", "New"] }));
+  assert.deepEqual(decodeEdits(ROWS, params).data, ["Old", "New"]);
+});
+
+test("final review: an edit of the other kind (object for a list) is dropped", () => {
+  assert.deepEqual(pruneEdits({ data: [{ a: 1 }] }, { data: { a: 1 } }), {});
+  assert.deepEqual(pruneEdits({ data: [{ a: 1 }] }, { data: [{ a: 2 }] }), { data: [{ a: 2 }] });
+});
+
+test("final review: share links can't point a json value at a remote file", () => {
+  for (const src of ["https://evil.example/x.png", "//evil.example/x.png", "data:image/png;base64,AA"]) {
+    assert.equal(fitValue({ name: "data", control: "json" }, [{ src }]), undefined, src);
+  }
+  assert.deepEqual(fitValue({ name: "data", control: "json" }, [{ label: "Q1: see site" }]), [
+    { label: "Q1: see site" },
+  ]);
+});
+
+test("final review: Download imports staticFile and Img when the code uses them", () => {
+  const file = sceneFile("waveform", "Waveform", '<Waveform src={staticFile("beat.mp3")} />', "daylight");
+  assert.ok(file.includes('import { staticFile } from "remotion";'));
+  assert.ok(!sceneFile("x", "X", "<X />", "daylight").includes('from "remotion"'));
+});
