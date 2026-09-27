@@ -32,6 +32,7 @@ export async function GET(req: Request, { params }: RouteContext<"/r/custom/[ite
       shareUrl,
       siteUrl: SITE_URL,
       unset: payload.unset,
+      transition: item.categories?.[0] === "transitions",
     }),
     {
       headers: { "Content-Type": "application/json; charset=utf-8" },

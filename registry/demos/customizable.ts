@@ -24,3 +24,17 @@ export function customizable<P extends object>(
     },
   };
 }
+
+/** `customizable()` for a transition: the item exports a presentation factory, and `stage` plays it between two scenes. */
+export function customizableTransition<P extends object>(
+  name: string,
+  factory: (options: P) => unknown,
+  options: P,
+  stage: (presentation: unknown) => ReactNode,
+): Pick<Demo, "component" | "customize"> {
+  const render = (edited: Record<string, unknown>) => stage(factory(edited as P));
+  return {
+    component: () => render(options as Record<string, unknown>),
+    customize: { name, props: options as Record<string, unknown>, render, kind: "transition" },
+  };
+}

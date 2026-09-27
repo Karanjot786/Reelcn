@@ -190,3 +190,28 @@ export function buildQuery(search: string, state: { demo?: string; theme?: strin
   const query = params.toString();
   return query ? `?${query}` : "";
 }
+
+/** The transition line a user pastes into a `TransitionSeries`. */
+export function transitionJsx(factory: string, options: CustomProps): string {
+  const args = Object.keys(options).length ? JSON.stringify(options) : "";
+  return `<TransitionSeries.Transition\n  presentation={${factory}(${args})}\n  timing={linearTiming({ durationInFrames: 20 })}\n/>`;
+}
+
+/** The downloadable scene for a transition: two placeholder scenes and the customized transition between them. */
+export function transitionSceneFile(item: string, factory: string, jsx: string, theme: string): string {
+  const scene = "  <TransitionSeries.Sequence durationInFrames={60}>\n    <Stage />\n  </TransitionSeries.Sequence>";
+  let tree = `<TransitionSeries>\n${scene}\n${indent(jsx, 2)}\n${scene}\n</TransitionSeries>`;
+  if (theme !== "daylight") tree = `<ThemeProvider theme="${theme}">\n${indent(tree, 2)}\n</ThemeProvider>`;
+  const core = theme === "daylight" ? "Stage" : "Stage, ThemeProvider";
+  const name = factory.charAt(0).toUpperCase() + factory.slice(1);
+  return `import { linearTiming, TransitionSeries } from "@remotion/transitions";
+import { ${core} } from "./reelcn/core";
+import { ${factory} } from "./reelcn/${item}";
+
+export function ${name}Scene() {
+  return (
+${indent(tree, 4)}
+  );
+}
+`;
+}

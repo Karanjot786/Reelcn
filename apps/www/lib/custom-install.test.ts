@@ -5,6 +5,7 @@ import { themeAliases as registryAliases } from "../../../registry/items/core-ma
 import {
   customFile,
   customRegistryItem,
+  customTransitionFile,
   decodePayload,
   encodePayload,
   themeAliases,
@@ -91,4 +92,18 @@ test("code props are left for the user to set, named only if they are real props
   assert.deepEqual(out?.unset, ["text", "children"]);
   const file = customFile("browser-window", "BrowserWindow", { url: "a" }, "u", ["src", "children"]);
   assert.ok(file.includes("// Set these yourself: src, children"));
+});
+
+test("transition installs export a preset factory, and lowercase factory names are allowed", () => {
+  assert.equal(validatePayload({ props: {}, component: "splitDoors" }, [], THEMES)?.component, "splitDoors");
+  assert.equal(validatePayload({ props: {}, component: "1bad" }, [], THEMES), null);
+  const file = customTransitionFile("split-doors", "splitDoors", { direction: "vertical" }, "u");
+  assert.ok(file.includes('import { splitDoors } from "./split-doors";'));
+  assert.ok(
+    file.includes(
+      'export const splitDoorsCustom = (options: Parameters<typeof splitDoors>[0] = {}) =>\n  splitDoors({ ...{"direction":"vertical"}, ...options });',
+    ),
+  );
+  const { diagnostics } = ts.transpileModule(file, { reportDiagnostics: true, fileName: "x.ts" });
+  assert.deepEqual(diagnostics, []);
 });

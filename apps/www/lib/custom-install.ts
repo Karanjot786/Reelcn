@@ -40,7 +40,7 @@ export const themeAliases: Record<string, string> = { neon: "chromewave", paper:
  * the like) pass as they are, since they came out of JSON.parse. Null when the theme or component name is bad.
  */
 export function validatePayload(payload: Payload, rows: EditableRow[], themeNames: string[]): Payload | null {
-  if (!/^[A-Z]\w*$/.test(payload.component)) return null;
+  if (!/^[A-Za-z]\w*$/.test(payload.component)) return null;
   const theme = payload.theme === undefined ? undefined : (themeAliases[payload.theme] ?? payload.theme);
   if (theme !== undefined && !themeNames.includes(theme)) return null;
   const props: CustomProps = {};
@@ -77,6 +77,16 @@ ${unset.length ? `// Set these yourself: ${unset.join(", ")}\n` : ""}export func
 `;
 }
 
+/** The installed `<item>-custom.ts` for a transition: the factory with these options as defaults. */
+export function customTransitionFile(item: string, factory: string, options: CustomProps, shareUrl: string): string {
+  return `import { ${factory} } from "./${item}";
+
+// Customized on reelcn.dev: ${shareUrl.replace(/[\r\n\u2028\u2029]/g, "")}
+export const ${factory}Custom = (options: Parameters<typeof ${factory}>[0] = {}) =>
+  ${factory}({ ...${JSON.stringify(options)}, ...options });
+`;
+}
+
 /** The shadcn registry item for a custom install: the file above, depending on the (themed) item. */
 export function customRegistryItem(p: {
   item: string;
@@ -86,7 +96,9 @@ export function customRegistryItem(p: {
   shareUrl: string;
   siteUrl: string;
   unset?: string[];
+  transition?: boolean;
 }): string {
+  const ext = p.transition ? "ts" : "tsx";
   return JSON.stringify(
     {
       $schema: "https://ui.shadcn.com/schema/registry-item.json",
@@ -95,10 +107,12 @@ export function customRegistryItem(p: {
       registryDependencies: [p.theme ? `${p.siteUrl}/r/${p.theme}/${p.item}.json` : `${p.siteUrl}/r/${p.item}.json`],
       files: [
         {
-          path: `registry/items/${p.item}-custom.tsx`,
+          path: `registry/items/${p.item}-custom.${ext}`,
           type: "registry:file",
-          target: `~/src/reelcn/${p.item}-custom.tsx`,
-          content: customFile(p.item, p.component, p.props, p.shareUrl, p.unset),
+          target: `~/src/reelcn/${p.item}-custom.${ext}`,
+          content: p.transition
+            ? customTransitionFile(p.item, p.component, p.props, p.shareUrl)
+            : customFile(p.item, p.component, p.props, p.shareUrl, p.unset),
         },
       ],
     },

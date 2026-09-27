@@ -6,7 +6,16 @@ import { type CallbackListener, Player, type PlayerRef } from "@remotion/player"
 import Link from "next/link";
 import { type CSSProperties, type MouseEvent, type ReactNode, useEffect, useRef, useState } from "react";
 import { encodePayload } from "@/lib/custom-install";
-import { buildQuery, decodeEdits, pruneEdits, sceneFile, startValues, toJsx } from "@/lib/customize";
+import {
+  buildQuery,
+  decodeEdits,
+  pruneEdits,
+  sceneFile,
+  startValues,
+  toJsx,
+  transitionJsx,
+  transitionSceneFile,
+} from "@/lib/customize";
 import { themedUsage } from "@/lib/themed-usage";
 import { type ControlRow, CustomizePanel } from "./customize-panel";
 import { FORMAT_SIZE, type Format, useDemo, useDemoScene, usePrefersReducedMotion } from "./demo-player";
@@ -91,7 +100,13 @@ export function ItemPreview({
     setEdited({ demo: demoId, values: pruneEdits(start, { ...overrides, [prop]: value }) });
   const hasEdits = Object.keys(overrides).length > 0;
   const component = customize?.name ?? pascal(name);
-  const customJsx = customize ? toJsx(component, { ...customize.props, ...overrides }, codeProps) : "";
+  const transition = customize?.kind === "transition";
+  const customJsx = !customize
+    ? ""
+    : transition
+      ? transitionJsx(component, { ...customize.props, ...overrides })
+      : toJsx(component, { ...customize.props, ...overrides }, codeProps);
+  const sceneName = `${component.charAt(0).toUpperCase()}${component.slice(1)}Scene.tsx`;
   const Scene = useDemoScene(demo);
   const reduced = usePrefersReducedMotion();
   const player = useRef<PlayerRef>(null);
@@ -296,8 +311,8 @@ export function ItemPreview({
           onReset={() => setEdited({ demo: demoId, values: {} })}
           shareUrl={shareUrl}
           code={themedUsage(customJsx, theme)}
-          file={sceneFile(name, component, customJsx, theme)}
-          fileName={`${component}Scene.tsx`}
+          file={(transition ? transitionSceneFile : sceneFile)(name, component, customJsx, theme)}
+          fileName={sceneName}
         />
       )}
       <InstallThemeContext

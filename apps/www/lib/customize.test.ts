@@ -13,6 +13,8 @@ import {
   sliderRange,
   startValues,
   toJsx,
+  transitionJsx,
+  transitionSceneFile,
   unitFor,
 } from "./customize.ts";
 
@@ -167,4 +169,15 @@ test("toJsx writes code props as source and children between the tags", () => {
     fileName: "x.tsx",
   });
   assert.deepEqual(diagnostics, []);
+});
+
+test("transition code builds the presentation from the edited options", () => {
+  assert.equal(
+    transitionJsx("splitDoors", { direction: "vertical" }),
+    '<TransitionSeries.Transition\n  presentation={splitDoors({"direction":"vertical"})}\n  timing={linearTiming({ durationInFrames: 20 })}\n/>',
+  );
+  assert.ok(transitionJsx("glitch", {}).includes("presentation={glitch()}"));
+  const file = transitionSceneFile("split-doors", "splitDoors", transitionJsx("splitDoors", {}), "daylight");
+  assert.ok(file.includes('import { splitDoors } from "./reelcn/split-doors";'));
+  assert.ok(file.includes('import { linearTiming, TransitionSeries } from "@remotion/transitions";'));
 });

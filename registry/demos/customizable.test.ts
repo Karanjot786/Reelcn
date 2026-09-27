@@ -37,7 +37,7 @@ test('every customizable("X", X, ...) names a component exported from registry/i
     .filter((file) => file.endsWith(".tsx"))
     .map((file) => readFileSync(path.join(here, file), "utf8"))
     .join("\n");
-  const calls = [...demos.matchAll(/customizable\(\s*"(\w+)",\s*(\w+)\s*,/g)];
+  const calls = [...demos.matchAll(/customizable(?:Transition)?\(\s*"(\w+)",\s*(\w+)\s*,/g)];
   assert.ok(calls.length > 0, "no customizable() calls found");
   for (const [, name, component] of calls) {
     assert.equal(name, component, `customizable("${name}", ${component}): the name string must match the component`);
