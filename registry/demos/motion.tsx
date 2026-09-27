@@ -1,10 +1,12 @@
 import type { ReactNode } from "react";
-import { AbsoluteFill } from "remotion";
+import { AbsoluteFill, staticFile } from "remotion";
 import { Animate, type AnimateEffect } from "../items/animate";
 import { BentoGrid } from "../items/bento-grid";
 import { Camera } from "../items/camera";
 import { alpha, Center, useTheme, useViewport } from "../items/core";
 import { LaptopFrame } from "../items/laptop-frame";
+import { LayoutMorph } from "../items/layout-morph";
+import { LogoSting } from "../items/logo-sting";
 import { Marquee } from "../items/marquee";
 import { Space } from "../items/space";
 import { SplitScreen } from "../items/split-screen";
@@ -360,6 +362,12 @@ function GalleryCard({ label }: { label: string }) {
 // World units are on the same order as shortSide/2 (Space's scale is shortSide/2/depth), so beats and
 // child offsets sit in the hundreds, matching the cards' own design-unit sizing.
 
+const LAYOUT_MORPH_ITEMS = [
+  { src: staticFile("reelcn-demo/screenshots/fictional-analytics.webp") },
+  { src: staticFile("reelcn-demo/screenshots/fictional-mobile-feed.webp") },
+  { src: staticFile("reelcn-demo/screenshots/reelcn-docs.webp") },
+];
+
 export default [
   {
     id: "animate",
@@ -528,6 +536,34 @@ export default [
         children:
           '{[\n  { x: -20, y: -10, z: 0, children: <GalleryCard label="Wide" /> },\n  { x: 40, y: 20, z: -220, children: <GalleryCard label="Close" /> },\n  { x: 260, y: -30, z: -320, children: <GalleryCard label="Screen" /> },\n]}',
       },
+    ),
+  },
+  {
+    id: "layout-morph",
+    duration: 150,
+    bare: true,
+    ...customizable("LayoutMorph", LayoutMorph, {
+      items: LAYOUT_MORPH_ITEMS,
+      layouts: [
+        { at: 0, layout: "grid" },
+        { at: 1.5, layout: "mosaic" },
+        { at: 3, layout: "strip" },
+      ],
+    }),
+  },
+  {
+    id: "logo-sting",
+    duration: 150,
+    ...customizable(
+      "LogoSting",
+      LogoSting,
+      {
+        viewBox: "0 0 48 48",
+        paths: ["M8 24 L24 8 L40 24 L24 40 Z", "M18 24 L24 18 L30 24 L24 30 Z"],
+        size: 160,
+        sfx: "chime",
+      },
+      (element) => <Center>{element}</Center>,
     ),
   },
 ] satisfies Demo[];

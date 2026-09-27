@@ -26,8 +26,6 @@ import { Dialog, useDialogAnchors } from "../items/dialog";
 import { FeatureCard } from "../items/feature-card";
 import { Input } from "../items/input";
 import { LaptopFrame } from "../items/laptop-frame";
-import { LayoutMorph } from "../items/layout-morph";
-import { LogoSting } from "../items/logo-sting";
 import { PhoneFrame } from "../items/phone-frame";
 import { Redact } from "../items/redact";
 import { ScreenZoom } from "../items/screen-zoom";
@@ -522,12 +520,6 @@ const CHECKLIST_ITEMS = [
 
 /* ──────────────────────────────── layout morph ──────────────────────────────── */
 
-const LAYOUT_MORPH_ITEMS = [
-  { src: staticFile("reelcn-demo/screenshots/fictional-analytics.webp") },
-  { src: staticFile("reelcn-demo/screenshots/fictional-mobile-feed.webp") },
-  { src: staticFile("reelcn-demo/screenshots/reelcn-docs.webp") },
-];
-
 /* ──────────────────────────────── ui scene ──────────────────────────────── */
 
 const UI_SCENE_SIGNUP_STEPS = [
@@ -1013,34 +1005,6 @@ export default [
     id: "checklist",
     duration: checklistDuration(CHECKLIST_ITEMS) + 30,
     ...customizable("Checklist", Checklist, { items: CHECKLIST_ITEMS }, (element) => <Center>{element}</Center>),
-  },
-  {
-    id: "layout-morph",
-    duration: 150,
-    bare: true,
-    ...customizable("LayoutMorph", LayoutMorph, {
-      items: LAYOUT_MORPH_ITEMS,
-      layouts: [
-        { at: 0, layout: "grid" },
-        { at: 1.5, layout: "mosaic" },
-        { at: 3, layout: "strip" },
-      ],
-    }),
-  },
-  {
-    id: "logo-sting",
-    duration: 150,
-    ...customizable(
-      "LogoSting",
-      LogoSting,
-      {
-        viewBox: "0 0 48 48",
-        paths: ["M8 24 L24 8 L40 24 L24 40 Z", "M18 24 L24 18 L30 24 L24 30 Z"],
-        size: 160,
-        sfx: "chime",
-      },
-      (element) => <Center>{element}</Center>,
-    ),
   },
   {
     id: "ui-scene-signup",

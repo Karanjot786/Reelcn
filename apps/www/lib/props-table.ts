@@ -38,7 +38,7 @@ function controlFor(name: string, type: ts.Type, checker: ts.TypeChecker): Pick<
     (part) =>
       checker.isArrayType(part) ||
       checker.isTupleType(part) ||
-      (part.flags & ts.TypeFlags.Object && part.getCallSignatures().length === 0),
+      (part.flags & (ts.TypeFlags.Object | ts.TypeFlags.Intersection) && part.getCallSignatures().length === 0),
   );
   if (jsonLike && !["children", "style", "className"].includes(name) && !/React|Element|CSSProperties/.test(text)) {
     return { control: "json" };

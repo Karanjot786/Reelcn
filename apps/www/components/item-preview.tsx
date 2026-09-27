@@ -72,6 +72,8 @@ export function ItemPreview({
   const [theme, setTheme] = useState(themeNames.includes("daylight") ? "daylight" : (themeNames[0] ?? "daylight"));
   const [frame, setFrame] = useState(0);
   const [tab, setTab] = useState<Tab>("preview");
+  // Bumped by Reset: remounts the Player, so a preview an edit broke comes back.
+  const [resetCount, setResetCount] = useState(0);
   const demo = useDemo(category, demoId);
   // Edits belong to one variant: stored with its id, so switching variant shows none; the chips also clear them.
   const [edited, setEdited] = useState<{ demo: string; values: Record<string, unknown> }>({ demo: "", values: {} });
@@ -207,6 +209,7 @@ export function ItemPreview({
             <div className="pv-stage" data-format={format} style={{ aspectRatio: `${width} / ${height}` }}>
               {Scene && demo && (
                 <Player
+                  key={resetCount}
                   ref={player}
                   component={Scene}
                   inputProps={{ theme: theme as ThemeName, overrides: customize ? overrides : undefined }}
@@ -307,7 +310,10 @@ export function ItemPreview({
           base={start}
           values={overrides}
           onChange={edit}
-          onReset={() => setEdited({ demo: demoId, values: {} })}
+          onReset={() => {
+            setEdited({ demo: demoId, values: {} });
+            setResetCount((count) => count + 1);
+          }}
           shareUrl={shareUrl}
           code={themedUsage(customJsx, theme)}
           file={(transition ? transitionSceneFile : sceneFile)(name, component, customJsx, theme)}

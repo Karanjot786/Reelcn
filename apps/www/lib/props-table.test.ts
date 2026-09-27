@@ -57,3 +57,8 @@ test("array and object props get a json control; style, className and JSX don't"
   assert.equal(byName.get("style")?.control, undefined);
   assert.equal(byName.get("className")?.control, undefined);
 });
+
+test("an intersection object type (a zod-inferred story) gets a json control too", () => {
+  const rows = propsTable(path.join(repoRoot, "registry/items/storyboard.tsx"));
+  assert.equal(rows.find((row) => row.name === "story")?.control, "json");
+});
