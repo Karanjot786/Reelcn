@@ -103,12 +103,18 @@ const MAX_TEXT = 200;
 const MAX_ITEMS = 20;
 // ponytail: a sane magnitude cap, so a hand-edited link can't ask a component for a 1e308-unit title.
 const MAX_NUMBER = 100_000;
+const MAX_JSON = 4000;
 
 /** One `p.<prop>` param per value; a list repeats it per item, so items keep their commas. */
 export function encodeEdits(edits: CustomProps): [string, string][] {
-  return Object.entries(edits).flatMap(([name, value]) =>
-    (Array.isArray(value) ? value : [value]).map((item): [string, string] => [`${PARAM}${name}`, String(item)]),
-  );
+  return Object.entries(edits).flatMap(([name, value]): [string, string][] => {
+    const key = `${PARAM}${name}`;
+    // A string list repeats its param per item; any other array or object travels as one JSON param.
+    if (Array.isArray(value) && value.every((item) => typeof item === "string"))
+      return value.map((item) => [key, item]);
+    if (value !== null && typeof value === "object") return [[key, JSON.stringify(value)]];
+    return [[key, String(value)]];
+  });
 }
 
 /** `value` when it fits `row`'s control (list items and text capped), else undefined. Share links and custom installs. */
@@ -131,8 +137,20 @@ export function fitValue(row: EditableRow, value: unknown): unknown {
             .slice(0, MAX_ITEMS)
             .map((item) => item.slice(0, MAX_TEXT))
         : undefined;
+    case "json":
+      return value !== null && typeof value === "object" && JSON.stringify(value).length <= MAX_JSON
+        ? value
+        : undefined;
   }
 }
+
+const parseJson = (raw: string): unknown => {
+  try {
+    return raw.length <= MAX_JSON ? JSON.parse(raw) : undefined;
+  } catch {
+    return undefined;
+  }
+};
 
 /** Share-link params back into edits; anything that doesn't fit its prop's control is dropped. */
 export function decodeEdits(rows: EditableRow[], params: URLSearchParams): CustomProps {
@@ -144,11 +162,13 @@ export function decodeEdits(rows: EditableRow[], params: URLSearchParams): Custo
     const value =
       row.control === "list"
         ? params.getAll(key)
-        : row.control === "switch"
-          ? { true: true, false: false }[raw]
-          : row.control === "slider" && raw.trim() !== ""
-            ? Number(raw)
-            : raw;
+        : row.control === "json"
+          ? parseJson(raw)
+          : row.control === "switch"
+            ? { true: true, false: false }[raw]
+            : row.control === "slider" && raw.trim() !== ""
+              ? Number(raw)
+              : raw;
     const fit = fitValue(row, value);
     if (fit !== undefined) out[row.name] = fit;
   }

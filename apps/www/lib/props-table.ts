@@ -5,7 +5,7 @@ import path from "node:path";
 import ts from "typescript";
 
 /** How the item page's Customize panel edits a prop; unset for types it can't edit (objects, arrays, callbacks, mixes). */
-export type PropControl = "switch" | "slider" | "select" | "color" | "text" | "list";
+export type PropControl = "switch" | "slider" | "select" | "color" | "text" | "list" | "json";
 
 export type PropRow = {
   name: string;
@@ -31,6 +31,17 @@ function controlFor(name: string, type: ts.Type, checker: ts.TypeChecker): Pick<
   if (parts.length === 1 && type.flags & ts.TypeFlags.String) {
     if (name === "className") return {};
     return { control: /color$/i.test(name) ? "color" : "text" };
+  }
+  // Arrays and plain objects (chart data, keyframes, rows) edit as JSON. JSX, functions and styles stay fixed.
+  const text = checker.typeToString(type);
+  const jsonLike = parts.every(
+    (part) =>
+      checker.isArrayType(part) ||
+      checker.isTupleType(part) ||
+      (part.flags & ts.TypeFlags.Object && part.getCallSignatures().length === 0),
+  );
+  if (jsonLike && !["children", "style", "className"].includes(name) && !/React|Element|CSSProperties/.test(text)) {
+    return { control: "json" };
   }
   return {};
 }

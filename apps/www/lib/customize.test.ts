@@ -4,6 +4,7 @@ import {
   buildQuery,
   decodeEdits,
   encodeEdits,
+  fitValue,
   isHexColor,
   parseDefault,
   pruneEdits,
@@ -49,6 +50,7 @@ const ROWS = [
   { name: "poster", control: "switch" },
   { name: "color", control: "color" },
   { name: "accentWords", control: "list", default: "[]" },
+  { name: "data", control: "json" },
 ];
 
 test("parseDefault reads JSON literals and ignores expressions", () => {
@@ -135,4 +137,15 @@ test("decodeEdits caps hostile lists", () => {
   assert.equal((decodeEdits(ROWS, many).accentWords as string[]).length, 20);
   const long = decodeEdits(ROWS, new URLSearchParams([["p.accentWords", "x".repeat(500)]])).accentWords as string[];
   assert.equal(long[0].length, 200);
+});
+
+test("json edits round trip; bad, wrong-kind and oversized ones drop", () => {
+  const data = [{ label: "Q1", value: 1 }];
+  const params = new URLSearchParams(encodeEdits({ data }));
+  assert.equal(params.getAll("p.data").length, 1);
+  assert.deepEqual(decodeEdits(ROWS, params).data, data);
+  for (const raw of ["not json", '"a string"', "42", JSON.stringify([{ x: "y".repeat(5000) }])]) {
+    assert.equal(decodeEdits(ROWS, new URLSearchParams([["p.data", raw]])).data, undefined, raw.slice(0, 20));
+  }
+  assert.deepEqual(fitValue({ name: "data", control: "json" }, { a: 1 }), { a: 1 });
 });

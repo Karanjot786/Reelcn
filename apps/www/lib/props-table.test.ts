@@ -49,3 +49,11 @@ test("propsTable picks a Customize control per prop type, resolving aliased lite
   assert.equal(byName.get("style")?.control, undefined);
   assert.equal(byName.get("exit")?.control, undefined);
 });
+
+test("array and object props get a json control; style, className and JSX don't", () => {
+  const rows = propsTable(path.join(repoRoot, "registry/items/bar-chart.tsx"));
+  const byName = new Map(rows.map((row) => [row.name, row]));
+  assert.equal(byName.get("data")?.control, "json");
+  assert.equal(byName.get("style")?.control, undefined);
+  assert.equal(byName.get("className")?.control, undefined);
+});
