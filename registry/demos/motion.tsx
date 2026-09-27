@@ -367,7 +367,13 @@ export default [
     ...customizable(
       "Animate",
       Animate,
-      { effect: "fade", delay: 0, children: <Tile label="fade" /> },
+      {
+        effect: "fade",
+        delay: 0,
+        get children() {
+          return <Tile label="fade" />;
+        },
+      },
       (el) => <AnimateGrid>{el}</AnimateGrid>,
       { children: '<Tile label="fade" />' },
     ),
@@ -380,9 +386,11 @@ export default [
       Stagger,
       {
         motion: { preset: "smooth", step: 3 },
-        children: ["Write", "Preview", "Render", "Ship"].map((label, index) => (
-          <StepCard key={label} index={index + 1} label={label} />
-        )),
+        get children() {
+          return ["Write", "Preview", "Render", "Ship"].map((label, index) => (
+            <StepCard key={label} index={index + 1} label={label} />
+          ));
+        },
       },
       (el) => <Center>{el}</Center>,
       {
@@ -407,7 +415,9 @@ export default [
           { frame: 100, x: 0, y: 0, zoom: 1, rotate: 0 },
         ],
         shake: 2,
-        children: <Dashboard />,
+        get children() {
+          return <Dashboard />;
+        },
       },
       undefined,
       { children: "<Dashboard />" },
@@ -423,7 +433,9 @@ export default [
       SplitScreen,
       {
         labels: ["Before", "After"],
-        children: [<PaneArt key="a" word="Keyframes" />, <PaneArt key="b" word="Components" accent />],
+        get children() {
+          return [<PaneArt key="a" word="Keyframes" />, <PaneArt key="b" word="Components" accent />];
+        },
       },
       undefined,
       { children: '<PaneArt word="Keyframes" />\n<PaneArt word="Components" accent />' },
@@ -471,15 +483,17 @@ export default [
           { frame: 60, targetX: 0.7, targetY: 0.3, zoom: 1.6 },
           { frame: 110, targetX: 0.5, targetY: 0.5, zoom: 1 },
         ],
-        children: [
-          <Stage.Floor key="floor" shadow="soft" />,
-          <Stage.KeyLight key="light" angle={35} />,
-          <Center key="laptop">
-            <LaptopFrame>
-              <StudioScreen />
-            </LaptopFrame>
-          </Center>,
-        ],
+        get children() {
+          return [
+            <Stage.Floor key="floor" shadow="soft" />,
+            <Stage.KeyLight key="light" angle={35} />,
+            <Center key="laptop">
+              <LaptopFrame>
+                <StudioScreen />
+              </LaptopFrame>
+            </Center>,
+          ];
+        },
       },
       undefined,
       {
@@ -499,13 +513,15 @@ export default [
           { frame: 0, lookAt: [0, 0, 0], distance: 700 },
           { frame: 90, lookAt: [200, 0, -100], distance: 480 },
         ],
-        children: [
-          // Wide and Close sit near the same x/y (small on-screen separation) but far apart in z, so Wide's
-          // nearer card visibly occludes Close's farther one where they overlap.
-          { x: -20, y: -10, z: 0, children: <GalleryCard label="Wide" /> },
-          { x: 40, y: 20, z: -220, children: <GalleryCard label="Close" /> },
-          { x: 260, y: -30, z: -320, children: <GalleryCard label="Screen" /> },
-        ],
+        get children() {
+          return [
+            // Wide and Close sit near the same x/y (small on-screen separation) but far apart in z, so Wide's
+            // nearer card visibly occludes Close's farther one where they overlap.
+            { x: -20, y: -10, z: 0, children: <GalleryCard label="Wide" /> },
+            { x: 40, y: 20, z: -220, children: <GalleryCard label="Close" /> },
+            { x: 260, y: -30, z: -320, children: <GalleryCard label="Screen" /> },
+          ];
+        },
       },
       undefined,
       {

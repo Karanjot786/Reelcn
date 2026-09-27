@@ -5,6 +5,7 @@ import type { Demo } from "./index";
  * Opts a demo into the site's Customize panel. One source for the plain demo and the editable one, so they can't
  * drift: `component` renders `props`, and `customize.render` renders `props` with the viewer's edits merged on top.
  * `name` is the component's export name as a string (minified bundles lose `Function.name`); a test checks it.
+ * JSX-valued props go in getters (`get children() { return <X />; }`): the studio bundle can't run JSX at module load.
  */
 export function customizable<P extends object>(
   name: string,

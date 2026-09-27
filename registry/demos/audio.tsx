@@ -74,7 +74,9 @@ export default [
       AudioReactive,
       {
         src: beat,
-        children: <div style={{ fontSize: 96, fontWeight: 800, letterSpacing: "-0.03em" }}>On the beat</div>,
+        get children() {
+          return <div style={{ fontSize: 96, fontWeight: 800, letterSpacing: "-0.03em" }}>On the beat</div>;
+        },
       },
       (el) => <Center>{el}</Center>,
       {

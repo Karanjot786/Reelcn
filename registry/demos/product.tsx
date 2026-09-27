@@ -632,12 +632,14 @@ export default [
       BrowserWindow,
       {
         url: "reelcn.dev/pricing",
-        children: (
-          <Img
-            src={staticFile("reelcn-demo/screenshots/fictional-analytics.webp")}
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          />
-        ),
+        get children() {
+          return (
+            <Img
+              src={staticFile("reelcn-demo/screenshots/fictional-analytics.webp")}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          );
+        },
       },
       (el) => <Center>{el}</Center>,
       {
@@ -657,12 +659,14 @@ export default [
       "PhoneFrame",
       PhoneFrame,
       {
-        children: (
-          <Img
-            src={staticFile("reelcn-demo/screenshots/fictional-mobile-feed.webp")}
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          />
-        ),
+        get children() {
+          return (
+            <Img
+              src={staticFile("reelcn-demo/screenshots/fictional-mobile-feed.webp")}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          );
+        },
       },
       (el) => <Center>{el}</Center>,
       {
@@ -678,12 +682,14 @@ export default [
       "LaptopFrame",
       LaptopFrame,
       {
-        children: (
-          <Img
-            src={staticFile("reelcn-demo/screenshots/reelcn-docs.webp")}
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          />
-        ),
+        get children() {
+          return (
+            <Img
+              src={staticFile("reelcn-demo/screenshots/reelcn-docs.webp")}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          );
+        },
       },
       (el) => <Center>{el}</Center>,
       {
@@ -698,7 +704,12 @@ export default [
     ...customizable(
       "AppWindow",
       AppWindow,
-      { title: "Overview", children: <FakeDashboard /> },
+      {
+        title: "Overview",
+        get children() {
+          return <FakeDashboard />;
+        },
+      },
       (el) => <Center>{el}</Center>,
       { children: "<FakeDashboard />" },
     ),
@@ -734,7 +745,9 @@ export default [
           { frame: 45, x: 36, y: 6, width: 58, height: 32 },
           { frame: 90, x: 0, y: 0, width: 100, height: 100 },
         ],
-        children: <FakeDashboard />,
+        get children() {
+          return <FakeDashboard />;
+        },
       },
       (el) => (
         <Center>
@@ -832,7 +845,14 @@ export default [
     ...customizable(
       "FeatureCard",
       FeatureCard,
-      { icon: boltIcon(), title: "Zero config", body: "Install with shadcn, no path aliases to set up.", badge: "New" },
+      {
+        get icon() {
+          return boltIcon();
+        },
+        title: "Zero config",
+        body: "Install with shadcn, no path aliases to set up.",
+        badge: "New",
+      },
       (el) => <Center>{el}</Center>,
       { icon: "boltIcon()" },
     ),
@@ -843,7 +863,15 @@ export default [
     ...customizable(
       "BeforeAfter",
       BeforeAfter,
-      { labels: ["Before", "After"], before: <FakePlainList />, after: <FakeDashboard /> },
+      {
+        labels: ["Before", "After"],
+        get before() {
+          return <FakePlainList />;
+        },
+        get after() {
+          return <FakeDashboard />;
+        },
+      },
       undefined,
       { before: "<FakePlainList />", after: "<FakeDashboard />" },
     ),
@@ -972,7 +1000,9 @@ export default [
           { at: 0, state: "closed" },
           { at: 0.5, state: "open" },
         ],
-        children: <Button id="submit" label="Delete database" place={{ x: 50, y: 60 }} variant="primary" />,
+        get children() {
+          return <Button id="submit" label="Delete database" place={{ x: 50, y: 60 }} variant="primary" />;
+        },
       },
       undefined,
       { children: '<Button id="submit" label="Delete database" place={{ x: 50, y: 60 }} variant="primary" />' },
