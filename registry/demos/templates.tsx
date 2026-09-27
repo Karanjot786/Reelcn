@@ -22,6 +22,7 @@ import { Tutorial, tutorialDefaults, tutorialStory } from "../items/tutorial";
 import { YoutubeIntro, youtubeIntroDefaults, youtubeIntroStory } from "../items/youtube-intro";
 import { YOUTUBE_OUTRO_FRAMES, YoutubeOutro, youtubeOutroDefaults } from "../items/youtube-outro";
 import { captionFixture } from "./captions-fixture";
+import { customizable } from "./customizable";
 import type { Demo } from "./index";
 import { sceneMarks } from "./scene-marks";
 import { sampleStory, sceneTour } from "./story-samples";
@@ -33,7 +34,7 @@ const storyboardDemos: Demo[] = [
     bare: true,
     scenes: sceneMarks(sampleStory),
     story: sampleStory,
-    component: () => <Storyboard story={sampleStory} />,
+    ...customizable("Storyboard", Storyboard, { story: sampleStory }),
   },
   ...sceneTour.map(
     (story, index): Demo => ({
@@ -53,6 +54,7 @@ const storyboardDemos: Demo[] = [
  */
 function storyDemo<P extends object>(
   id: string,
+  name: string,
   Template: React.ComponentType<P>,
   toStory: (props: P) => Story,
   props: P,
@@ -65,7 +67,8 @@ function storyDemo<P extends object>(
     bare: true,
     scenes: sceneMarks(story, custom),
     story,
-    component: () => <Template {...props} />,
+    // ponytail: duration is the demo's; editing the scene list in Customize doesn't retime the preview.
+    ...customizable(name, Template, props),
   };
 }
 
@@ -73,56 +76,82 @@ function storyDemo<P extends object>(
 // "brand-collage"), which `storyDemo`'s `storyFrames`/`sceneMarks` calls don't know about
 // (they take no custom-scene rules) — so, like `product.tsx`'s own `ui`-scene demo, this is a
 // plain literal-duration entry instead of `storyDemo`, with its own named component function.
-function BrandReelDemo() {
-  return (
-    <BrandReel
-      {...brandReelDefaults}
-      collage={[
-        staticFile("reelcn-demo/screenshots/fictional-analytics.webp"),
-        staticFile("reelcn-demo/screenshots/fictional-mobile-feed.webp"),
-        staticFile("reelcn-demo/screenshots/reelcn-docs.webp"),
-      ]}
-    />
-  );
-}
+const BRAND_COLLAGE = [
+  staticFile("reelcn-demo/screenshots/fictional-analytics.webp"),
+  staticFile("reelcn-demo/screenshots/fictional-mobile-feed.webp"),
+  staticFile("reelcn-demo/screenshots/reelcn-docs.webp"),
+];
 
 const productDemos: Demo[] = [
-  storyDemo("product-launch", ProductLaunch, productLaunchStory, productLaunchDefaults, productLaunchScenes),
-  storyDemo("feature-short", FeatureShort, featureShortStory, featureShortDefaults),
-  storyDemo("changelog", Changelog, changelogStory, changelogDefaults),
-  storyDemo("app-promo", AppPromo, appPromoStory, appPromoDefaults),
-  { id: "brand-reel", duration: 285, bare: true, component: BrandReelDemo },
-  { id: "ai-generation", duration: 180, bare: true, component: () => <AiGeneration {...aiGenerationDefaults} /> },
+  storyDemo(
+    "product-launch",
+    "ProductLaunch",
+    ProductLaunch,
+    productLaunchStory,
+    productLaunchDefaults,
+    productLaunchScenes,
+  ),
+  storyDemo("feature-short", "FeatureShort", FeatureShort, featureShortStory, featureShortDefaults),
+  storyDemo("changelog", "Changelog", Changelog, changelogStory, changelogDefaults),
+  storyDemo("app-promo", "AppPromo", AppPromo, appPromoStory, appPromoDefaults),
+  {
+    id: "brand-reel",
+    duration: 285,
+    bare: true,
+    ...customizable("BrandReel", BrandReel, { ...brandReelDefaults, collage: BRAND_COLLAGE }, undefined, {
+      collage:
+        '[\n  staticFile("reelcn-demo/screenshots/fictional-analytics.webp"),\n  staticFile("reelcn-demo/screenshots/fictional-mobile-feed.webp"),\n  staticFile("reelcn-demo/screenshots/reelcn-docs.webp"),\n]',
+    }),
+  },
+  {
+    id: "ai-generation",
+    duration: 180,
+    bare: true,
+    ...customizable("AiGeneration", AiGeneration, { ...aiGenerationDefaults }),
+  },
   {
     id: "code-live",
     duration: 180,
     bare: true,
-    component: () => (
-      <CodeLive
-        {...codeLiveDefaults}
-        previews={[
+    ...customizable(
+      "CodeLive",
+      CodeLive,
+      {
+        ...codeLiveDefaults,
+        previews: [
           { atLine: 2, src: staticFile("reelcn-demo/screenshots/fictional-analytics.webp") },
           { atLine: 6, src: staticFile("reelcn-demo/screenshots/reelcn-docs.webp") },
-        ]}
-      />
+        ],
+      },
+      undefined,
+      {
+        previews:
+          '[\n  { atLine: 2, src: staticFile("reelcn-demo/screenshots/fictional-analytics.webp") },\n  { atLine: 6, src: staticFile("reelcn-demo/screenshots/reelcn-docs.webp") },\n]',
+      },
     ),
   },
-  { id: "standings", duration: 138, bare: true, component: () => <Standings {...standingsDefaults} /> },
+  { id: "standings", duration: 138, bare: true, ...customizable("Standings", Standings, { ...standingsDefaults }) },
 ];
 
 const creatorDemos: Demo[] = [
-  storyDemo("youtube-intro", YoutubeIntro, youtubeIntroStory, youtubeIntroDefaults),
+  storyDemo("youtube-intro", "YoutubeIntro", YoutubeIntro, youtubeIntroStory, youtubeIntroDefaults),
   {
     id: "youtube-outro",
     duration: YOUTUBE_OUTRO_FRAMES,
     bare: true,
-    component: () => <YoutubeOutro {...youtubeOutroDefaults} />,
+    ...customizable("YoutubeOutro", YoutubeOutro, { ...youtubeOutroDefaults }),
   },
   {
     id: "talking-head-short",
     duration: Math.ceil(30 * captionsSeconds(captionFixture, 6)),
     bare: true,
-    component: () => <TalkingHeadShort {...talkingHeadShortDefaults} captions={captionFixture} emphasize={["three"]} />,
+    ...customizable(
+      "TalkingHeadShort",
+      TalkingHeadShort,
+      { ...talkingHeadShortDefaults, captions: captionFixture, emphasize: ["three"] },
+      undefined,
+      { captions: "captionFixture" },
+    ),
   },
   {
     // clip.mp4 is 4 s long.
@@ -131,8 +160,8 @@ const creatorDemos: Demo[] = [
     bare: true,
     component: () => <TalkingHeadShort {...talkingHeadShortDefaults} video={staticFile("reelcn-demo/clip.mp4")} />,
   },
-  storyDemo("post-to-video", PostToVideo, postToVideoStory, postToVideoDefaults),
-  storyDemo("listicle-short", ListicleShort, listicleShortStory, listicleShortDefaults),
+  storyDemo("post-to-video", "PostToVideo", PostToVideo, postToVideoStory, postToVideoDefaults),
+  storyDemo("listicle-short", "ListicleShort", ListicleShort, listicleShortStory, listicleShortDefaults),
 ];
 
 const podcastDataDemos: Demo[] = [
@@ -141,8 +170,12 @@ const podcastDataDemos: Demo[] = [
     id: "audiogram",
     duration: 180,
     bare: true,
-    component: () => (
-      <Audiogram {...audiogramDefaults} audio={staticFile("reelcn-demo/voice.mp3")} captions={captionFixture} />
+    ...customizable(
+      "Audiogram",
+      Audiogram,
+      { ...audiogramDefaults, audio: staticFile("reelcn-demo/voice.mp3"), captions: captionFixture },
+      undefined,
+      { audio: 'staticFile("reelcn-demo/voice.mp3")', captions: "captionFixture" },
     ),
   },
   { id: "audiogram-silent", duration: 240, bare: true, component: () => <Audiogram {...audiogramDefaults} /> },
@@ -150,13 +183,17 @@ const podcastDataDemos: Demo[] = [
     id: "podcast-teaser",
     duration: 120,
     bare: true,
-    component: () => (
-      <PodcastTeaser {...podcastTeaserDefaults} audio={staticFile("reelcn-demo/voice.mp3")} clipStart={1} clipEnd={5} />
+    ...customizable(
+      "PodcastTeaser",
+      PodcastTeaser,
+      { ...podcastTeaserDefaults, audio: staticFile("reelcn-demo/voice.mp3"), clipStart: 1, clipEnd: 5 },
+      undefined,
+      { audio: 'staticFile("reelcn-demo/voice.mp3")' },
     ),
   },
-  storyDemo("data-story", DataStory, dataStoryStory, dataStoryDefaults),
-  storyDemo("testimonial-reel", TestimonialReel, testimonialReelStory, testimonialReelDefaults),
-  storyDemo("tutorial", Tutorial, tutorialStory, tutorialDefaults),
+  storyDemo("data-story", "DataStory", DataStory, dataStoryStory, dataStoryDefaults),
+  storyDemo("testimonial-reel", "TestimonialReel", TestimonialReel, testimonialReelStory, testimonialReelDefaults),
+  storyDemo("tutorial", "Tutorial", Tutorial, tutorialStory, tutorialDefaults),
 ];
 
 // Tasks 3–5 add one array per template group and list it here.

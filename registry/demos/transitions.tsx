@@ -17,6 +17,7 @@ import { stripeWipe } from "../items/stripe-wipe";
 import { tileReveal } from "../items/tile-reveal";
 import { whipPan } from "../items/whip-pan";
 import { zoomThrough } from "../items/zoom-through";
+import { customizable, customizableTransition } from "./customizable";
 import type { Demo } from "./index";
 
 const DURATION = 75;
@@ -87,6 +88,23 @@ function Pair<P extends Record<string, unknown>>({ presentation }: { presentatio
 // midpoint of a `cover`-style transition is a solid fill, which makes for a blank catalog thumbnail.
 const THUMB_FRAME = HOLD_A - TRANSITION + Math.round(TRANSITION / 4);
 
+function customPair<P extends object>(
+  id: string,
+  name: string,
+  factory: (options: P) => unknown,
+  options: NoInfer<P>,
+): Demo {
+  return {
+    id,
+    duration: DURATION,
+    bare: true,
+    thumbFrame: THUMB_FRAME,
+    ...customizableTransition(name, factory, options, (presentation) => (
+      <Pair presentation={presentation as TransitionPresentation<Record<string, unknown>>} />
+    )),
+  };
+}
+
 function pair<P extends Record<string, unknown>>(id: string, presentation: TransitionPresentation<P>): Demo {
   return {
     id,
@@ -117,28 +135,28 @@ const sceneItems = (scene: (label: string, tone: 0 | 1 | 2) => SceneItem["node"]
 ];
 
 export default [
-  pair("split-doors-default", splitDoors()),
+  customPair("split-doors-default", "splitDoors", splitDoors, {}),
   pair("split-doors-vertical", splitDoors({ direction: "vertical" })),
-  pair("slice-slide-default", sliceSlide()),
-  pair("card-push-default", cardPush()),
+  customPair("slice-slide-default", "sliceSlide", sliceSlide, {}),
+  customPair("card-push-default", "cardPush", cardPush, {}),
   pair("card-push-left", cardPush({ direction: "left" })),
-  pair("glitch-default", glitch()),
-  pair("light-flash-default", lightFlash()),
-  pair("brand-sweep-default", brandSweep()),
+  customPair("glitch-default", "glitch", glitch, {}),
+  customPair("light-flash-default", "lightFlash", lightFlash, {}),
+  customPair("brand-sweep-default", "brandSweep", brandSweep, {}),
   pair("brand-sweep-left", brandSweep({ direction: "left" })),
-  pair("stripe-wipe-default", stripeWipe()),
-  pair("circle-burst-default", circleBurst()),
+  customPair("stripe-wipe-default", "stripeWipe", stripeWipe, {}),
+  customPair("circle-burst-default", "circleBurst", circleBurst, {}),
   pair("circle-burst-corner", circleBurst({ origin: { x: 85, y: 80 } })),
-  pair("shutter-default", shutter()),
+  customPair("shutter-default", "shutter", shutter, {}),
   pair("shutter-vertical", shutter({ direction: "vertical" })),
-  pair("tile-reveal-default", tileReveal()),
+  customPair("tile-reveal-default", "tileReveal", tileReveal, {}),
   pair("tile-reveal-random", tileReveal({ pattern: "random" })),
-  pair("whip-pan-x", whipPan({ axis: "x" })),
+  customPair("whip-pan-x", "whipPan", whipPan, { axis: "x" }),
   pair("whip-pan-y", whipPan({ axis: "y" })),
-  pair("zoom-through-in", zoomThrough()),
+  customPair("zoom-through-in", "zoomThrough", zoomThrough, {}),
   pair("zoom-through-out", zoomThrough({ direction: "out" })),
-  pair("rack-focus-default", rackFocus()),
-  pair("organic-dissolve-default", organicDissolve({ seed: "demo" })),
+  customPair("rack-focus-default", "rackFocus", rackFocus, {}),
+  customPair("organic-dissolve-default", "organicDissolve", organicDissolve, { seed: "demo" }),
   {
     id: "scenes-default",
     duration: getScenesDuration(
@@ -146,6 +164,16 @@ export default [
       30,
     ),
     bare: true,
-    component: () => <Scenes items={sceneItems((label, tone) => <DemoScene label={label} tone={tone} />)} />,
+    ...customizable(
+      "Scenes",
+      Scenes,
+      {
+        get items() {
+          return sceneItems((label, tone) => <DemoScene label={label} tone={tone} />);
+        },
+      },
+      undefined,
+      { items: "items" },
+    ),
   },
 ] satisfies Demo[];
