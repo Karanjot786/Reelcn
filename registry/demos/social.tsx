@@ -1,4 +1,12 @@
-import { Captions, type CaptionsVariant } from "../items/captions";
+import { Captions } from "../items/captions";
+import { CaptionsBoldPop } from "../items/captions-bold-pop";
+import { CaptionsBoxed } from "../items/captions-boxed";
+import { CaptionsHighlightBox } from "../items/captions-highlight-box";
+import { CaptionsKaraoke } from "../items/captions-karaoke";
+import { CaptionsMinimal } from "../items/captions-minimal";
+import { CaptionsNeon } from "../items/captions-neon";
+import { CaptionsSubtitleBar } from "../items/captions-subtitle-bar";
+import { CaptionsWordStack } from "../items/captions-word-stack";
 import { ChapterTitle } from "../items/chapter-title";
 import { CommentBubble } from "../items/comment-bubble";
 import { Center } from "../items/core";
@@ -22,16 +30,17 @@ const lowerThirdDemos: Demo[] = (["bar", "card", "minimal"] as const).map(
   }),
 );
 
-const captionVariants: CaptionsVariant[] = [
-  "bold-pop",
-  "karaoke",
-  "boxed",
-  "minimal",
-  "neon",
-  "word-stack",
-  "subtitle-bar",
-  "highlight-box",
-];
+// Each caption style is its own item: the demo renders that item's component, so its page customizes it.
+const captionVariants = {
+  "bold-pop": ["CaptionsBoldPop", CaptionsBoldPop],
+  karaoke: ["CaptionsKaraoke", CaptionsKaraoke],
+  boxed: ["CaptionsBoxed", CaptionsBoxed],
+  minimal: ["CaptionsMinimal", CaptionsMinimal],
+  neon: ["CaptionsNeon", CaptionsNeon],
+  "word-stack": ["CaptionsWordStack", CaptionsWordStack],
+  "subtitle-bar": ["CaptionsSubtitleBar", CaptionsSubtitleBar],
+  "highlight-box": ["CaptionsHighlightBox", CaptionsHighlightBox],
+} as const;
 
 const captionDemos: Demo[] = [
   {
@@ -39,11 +48,13 @@ const captionDemos: Demo[] = [
     duration: 200,
     ...customizable("Captions", Captions, { captions: captionFixture, emphasize: ["three", "seconds."] }),
   },
-  ...captionVariants.map(
-    (variant): Demo => ({
+  ...Object.entries(captionVariants).map(
+    ([variant, [name, Component]]): Demo => ({
       id: `captions-${variant}`,
       duration: 200,
-      component: () => <Captions captions={captionFixture} variant={variant} emphasize={["three"]} />,
+      ...customizable(name, Component, { captions: captionFixture, emphasize: ["three"] }, undefined, {
+        captions: "captionFixture",
+      }),
     }),
   ),
 ];

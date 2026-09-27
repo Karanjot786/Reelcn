@@ -240,10 +240,12 @@ export default [
   {
     id: "text-mask-video-window",
     duration: 90,
-    component: () => (
-      <Center>
-        <TextMaskVideo text="MOTION" src={staticFile("reelcn-demo/clip.mp4")} />
-      </Center>
+    ...customizable(
+      "TextMaskVideo",
+      TextMaskVideo,
+      { text: "MOTION", src: staticFile("reelcn-demo/clip.mp4") },
+      (el) => <Center>{el}</Center>,
+      { src: 'staticFile("reelcn-demo/clip.mp4")' },
     ),
   },
 ] satisfies Demo[];

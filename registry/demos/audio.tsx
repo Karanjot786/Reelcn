@@ -6,6 +6,7 @@ import { SpeakerCard } from "../items/speaker-card";
 import { Spectrum } from "../items/spectrum";
 import { useBeat } from "../items/use-beat";
 import { Waveform } from "../items/waveform";
+import { customizable } from "./customizable";
 import type { Demo } from "./index";
 
 const beat = staticFile("reelcn-demo/beat.mp3");
@@ -36,29 +37,50 @@ function BeatDot() {
 
 export default [
   { id: "use-beat", duration: 120, component: BeatDot },
-  { id: "waveform-bars", duration: 150, component: () => <Waveform src={beat} /> },
+  {
+    id: "waveform-bars",
+    duration: 150,
+    ...customizable("Waveform", Waveform, { src: beat }, undefined, { src: 'staticFile("reelcn-demo/beat.mp3")' }),
+  },
   { id: "waveform-mirror", duration: 150, component: () => <Waveform src={beat} variant="mirror" bars={64} /> },
-  { id: "spectrum", duration: 150, component: () => <Spectrum src={beat} /> },
-  { id: "radial-visualizer", duration: 150, component: () => <RadialVisualizer src={beat} /> },
+  {
+    id: "spectrum",
+    duration: 150,
+    ...customizable("Spectrum", Spectrum, { src: beat }, undefined, { src: 'staticFile("reelcn-demo/beat.mp3")' }),
+  },
+  {
+    id: "radial-visualizer",
+    duration: 150,
+    ...customizable("RadialVisualizer", RadialVisualizer, { src: beat }, undefined, {
+      src: 'staticFile("reelcn-demo/beat.mp3")',
+    }),
+  },
   {
     id: "speaker-card",
     duration: 150,
-    component: () => (
-      <Center>
-        {/* biome-ignore lint/a11y/useValidAriaRole: SpeakerCardProps.role is a job title, not an ARIA role */}
-        <SpeakerCard src={voice} name="Maya Chen" role="Founder, Northwind" />
-      </Center>
+    ...customizable(
+      "SpeakerCard",
+      SpeakerCard,
+      { src: voice, name: "Maya Chen", role: "Founder, Northwind" },
+      (el) => <Center>{el}</Center>,
+      { src: 'staticFile("reelcn-demo/voice.mp3")' },
     ),
   },
   {
     id: "audio-reactive",
     duration: 150,
-    component: () => (
-      <Center>
-        <AudioReactive src={beat}>
-          <div style={{ fontSize: 96, fontWeight: 800, letterSpacing: "-0.03em" }}>On the beat</div>
-        </AudioReactive>
-      </Center>
+    ...customizable(
+      "AudioReactive",
+      AudioReactive,
+      {
+        src: beat,
+        children: <div style={{ fontSize: 96, fontWeight: 800, letterSpacing: "-0.03em" }}>On the beat</div>,
+      },
+      (el) => <Center>{el}</Center>,
+      {
+        src: 'staticFile("reelcn-demo/beat.mp3")',
+        children: '<div style={{ fontSize: 96, fontWeight: 800, letterSpacing: "-0.03em" }}>On the beat</div>',
+      },
     ),
   },
 ] satisfies Demo[];
