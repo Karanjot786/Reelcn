@@ -106,7 +106,6 @@ export function ItemPreview({
     : transition
       ? transitionJsx(component, { ...customize.props, ...overrides })
       : toJsx(component, { ...customize.props, ...overrides }, codeProps);
-  const sceneName = `${component.charAt(0).toUpperCase()}${component.slice(1)}Scene.tsx`;
   const Scene = useDemoScene(demo);
   const reduced = usePrefersReducedMotion();
   const player = useRef<PlayerRef>(null);
@@ -312,7 +311,7 @@ export function ItemPreview({
           shareUrl={shareUrl}
           code={themedUsage(customJsx, theme)}
           file={(transition ? transitionSceneFile : sceneFile)(name, component, customJsx, theme)}
-          fileName={sceneName}
+          fileName={`${component.charAt(0).toUpperCase()}${component.slice(1)}Scene.tsx`}
         />
       )}
       <InstallThemeContext
