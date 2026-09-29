@@ -200,7 +200,7 @@ function Field({ row, value, onChange }: { row: ControlRow; value: unknown; onCh
       );
     case "list":
       return (
-        <div className="cz-field">
+        <div className="cz-field cz-wide">
           {label}
           <DraftInput
             as="textarea"

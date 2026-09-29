@@ -1086,7 +1086,7 @@ import captions from "../../public/captions/talk.json";
 </Sequence>
 ```
 
-- [Follow Card](https://www.reelcn.dev/r/follow-card.json): A profile card whose follow button presses itself and flips to "Following", with the count ticking up. (length 50f@30fps · use for Asking for a follow at the end of a short; Introducing a guest or a collaborator · avoid A subscribe ask for long-form video — use `subscribe-cta`)
+- [Follow Card](https://www.reelcn.dev/r/follow-card.json): A profile card whose follow button presses itself and flips to "Following". (length 50f@30fps · use for Asking for a follow at the end of a short; Introducing a guest or a collaborator · avoid A subscribe ask for long-form video — use `subscribe-cta`)
 
 ```tsx
 <Center>

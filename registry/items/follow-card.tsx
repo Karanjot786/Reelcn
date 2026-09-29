@@ -1,7 +1,7 @@
 /**
  * @title Follow Card
  * @category social
- * @description A profile card whose follow button presses itself and flips to "Following", with the count ticking up.
+ * @description A profile card whose follow button presses itself and flips to "Following".
  * @duration 50
  * @use Asking for a follow at the end of a short
  * @use Introducing a guest or a collaborator
@@ -93,7 +93,15 @@ export function FollowCard({
       </div>
       <div style={{ flexGrow: 1, minWidth: 0 }}>
         <div style={{ fontSize: u(30), fontWeight: 700 }}>{name}</div>
-        <div style={{ fontSize: u(22), color: theme.colors.muted }}>
+        <div
+          style={{
+            fontSize: u(22),
+            color: theme.colors.muted,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
           {handle}
           {handle && followers ? " · " : ""}
           {followers ? `${followers} followers` : ""}

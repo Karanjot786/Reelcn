@@ -2438,7 +2438,7 @@
       "name": "follow-card",
       "type": "registry:item",
       "title": "Follow Card",
-      "description": "A profile card whose follow button presses itself and flips to \"Following\", with the count ticking up.",
+      "description": "A profile card whose follow button presses itself and flips to \"Following\".",
       "categories": [
         "social"
       ],

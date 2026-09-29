@@ -131,15 +131,17 @@ export function ItemPreview({
     return () => clearTimeout(timer);
   }, [query]);
   const shareUrl = () => `${window.location.origin}${window.location.pathname}${query}`;
+  // Remotion's useWindowedAudioData throws when windowInSeconds changes, so the audio items remount instead.
+  const playerKey = `${resetCount}:${String(overrides.windowInSeconds ?? "")}`;
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: Scene and format remount the Player, so the listener re-attaches
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Scene, format and playerKey remount the Player, so the listener re-attaches
   useEffect(() => {
     const p = player.current;
     if (!p) return;
     const onFrame: CallbackListener<"frameupdate"> = (event) => setFrame(event.detail.frame);
     p.addEventListener("frameupdate", onFrame);
     return () => p.removeEventListener("frameupdate", onFrame);
-  }, [Scene, format]);
+  }, [Scene, format, playerKey]);
 
   const { width, height } = FORMAT_SIZE[format];
   const duration = demo?.duration ?? 1;
@@ -209,7 +211,7 @@ export function ItemPreview({
             <div className="pv-stage" data-format={format} style={{ aspectRatio: `${width} / ${height}` }}>
               {Scene && demo && (
                 <Player
-                  key={resetCount}
+                  key={playerKey}
                   ref={player}
                   component={Scene}
                   inputProps={{ theme: theme as ThemeName, overrides: customize ? overrides : undefined }}
