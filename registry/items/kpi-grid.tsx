@@ -5,7 +5,7 @@
  * @duration 75
  * @use A dashboard summary slide: revenue, users, churn and NPS side by side
  * @use End-of-video recap of the numbers that mattered
- * @avoid A single metric — use `stat-counter`
+ * @avoid A single metric. Use `stat-counter`
  * @tags kpi, dashboard, metrics, grid, cards, data
  * @example
  * <Center>

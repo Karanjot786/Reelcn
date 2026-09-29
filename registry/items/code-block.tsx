@@ -5,7 +5,7 @@
  * @duration data-driven
  * @use Showing an API, config file or snippet in a launch, docs or tutorial video
  * @use Typing code on screen, then focusing the lines that matter
- * @avoid Shell sessions with commands and output — use `terminal`
+ * @avoid Shell sessions with commands and output. Use `terminal`
  * @tags code, editor, syntax, snippet, diff, typing
  * @example
  * <Center>
@@ -159,7 +159,7 @@ export function CodeBlock({
   const showCaret = typed && (shown < code.length || (m.frame < focusFrom && blinkOn));
 
   // Follow: the caret position `lag` frames ago, from the same shown-character formula above evaluated
-  // at an earlier frame — always computed (cheap, pure), only measured/used when `follow` is set.
+  // at an earlier frame. Always computed (cheap, pure), only measured/used when `follow` is set.
   const laggedShown = typed
     ? Math.max(0, Math.floor(((m.frame - (follow?.lag ?? 6) - start) * (typing as number)) / m.fps))
     : code.length;

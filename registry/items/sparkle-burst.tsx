@@ -5,7 +5,7 @@
  * @duration 27
  * @use Drawing the eye to a button, price or word the moment it appears
  * @use A small "done" or "new" accent on a card
- * @avoid Full-screen celebrations — use `confetti`
+ * @avoid Full-screen celebrations. Use `confetti`
  * @tags sparkle, star, twinkle, emphasis, accent
  * @example
  * <Sequence from={20} durationInFrames={40}>

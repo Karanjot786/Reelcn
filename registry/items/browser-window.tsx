@@ -5,7 +5,7 @@
  * @duration data-driven
  * @use Framing a website, landing page or web app screenshot in a launch or demo video
  * @use Two pages side by side inside `split-screen` for a before/after
- * @avoid A native desktop app with a title bar and no address bar — use `app-window`
+ * @avoid A native desktop app with a title bar and no address bar. Use `app-window`
  * @tags browser, chrome, url, website, mockup, frame
  * @example
  * <Center>

@@ -5,7 +5,7 @@
  * @duration 90
  * @use Confirming an action, a deploy, an upload or a saved state in a product demo
  * @use A short system message that appears over a UI mockup
- * @avoid A message pointing at part of the screen — use `callout`
+ * @avoid A message pointing at part of the screen. Use `callout`
  * @tags toast, notification, alert, snackbar, status
  * @example
  * <Toast variant="success" title="Deployed" description="Live in 12 regions" />

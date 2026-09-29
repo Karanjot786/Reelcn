@@ -5,7 +5,7 @@
  * @duration data-driven
  * @use Rankings over time: adoption by year, votes by round, leaderboard changes
  * @use Five to twelve series with a value at every step
- * @avoid A single snapshot — use `bar-chart`
+ * @avoid A single snapshot. Use `bar-chart`
  * @tags chart, bar race, ranking, leaderboard, data
  * @example
  * <Sequence durationInFrames={150}>

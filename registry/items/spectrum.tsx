@@ -5,7 +5,7 @@
  * @duration sustained
  * @use Music clips and visualisers
  * @use Any scene that should feel driven by the track
- * @avoid Speech, where a waveform reads better — use `waveform`
+ * @avoid Speech, where a waveform reads better. Use `waveform`
  * @tags spectrum, frequency, music, visualizer
  * @example
  * <Spectrum src={staticFile("track.mp3")} bars={48} />

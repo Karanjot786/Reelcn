@@ -5,8 +5,8 @@
  * @duration 60
  * @use A headline KPI on its own slide: revenue, active users, churn
  * @use A metric that should show change since last period
- * @avoid Several metrics together — use `kpi-grid`
- * @avoid A bare number with no label — use `counter`
+ * @avoid Several metrics together. Use `kpi-grid`
+ * @avoid A bare number with no label. Use `counter`
  * @tags stat, kpi, metric, delta, counter, data
  * @example
  * <Center>

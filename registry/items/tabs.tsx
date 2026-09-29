@@ -1,11 +1,11 @@
 /**
  * @title Tabs
  * @category product
- * @description Tab row where one continuous fractional index positions the sliding pill, the lit label color and a small per-row parallax — nothing animates independently of that one number.
+ * @description Tab row where one continuous fractional index positions the sliding pill, the lit label color and a small per-row parallax. Nothing animates independently of that one number.
  * @duration data-driven
  * @use Switching between views inside a UI-sim walkthrough
  * @use A `ui` scene's `component: "tabs"`
- * @avoid Two or fewer static labels with no switch — use plain text
+ * @avoid Two or fewer static labels with no switch. Use plain text
  * @tags tabs, segmented, ui, kit
  * @example
  * <Center>
@@ -50,7 +50,7 @@ function lerpAt(values: number[], index: number): number {
 }
 
 /** Pure: given each label's already-measured raw width, every tab's padded width, its running offset
- * and the row's total width — shared by `useTabsAnchors`, `Tabs` and the `ui` scene (Task 9), so a
+ * and the row's total width, shared by `useTabsAnchors`, `Tabs` and the `ui` scene (Task 9), so a
  * caller's `labels` are always the one thing sizing everything (ponytail-review blocker 2). */
 export function tabsBoxSize(u: (n: number) => number, measuredLabelWidths: number[]) {
   const widths = measuredLabelWidths.map((w) => w + u(PAD_X) * 2);
@@ -102,7 +102,7 @@ export function Tabs({ id: _id, labels, steps, place, style, className, ...motio
   const m = useMotion(motion);
   const layout = useTabLayout(labels, FONT_SIZE, u, false);
   const { from, state, progress } = useKeyframeState<{ active: number }>(steps, { active: 0 });
-  // The one continuous number everything below reads off — the pill's x/width, every label's color, and
+  // The one continuous number everything below reads off: the pill's x/width, every label's color, and
   // the per-row parallax are all a function of this same `index`, nothing animated independently (M1).
   const index = from.active + (state.active - from.active) * progress;
   const pillX = lerpAt(layout.offsets, index);

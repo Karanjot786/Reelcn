@@ -5,7 +5,7 @@
  * @duration sustained
  * @use Atmospheric openers, reveals and calm title scenes
  * @use Night-sky, wellness or premium product moods
- * @avoid Flat, evenly lit color — use `gradient-mesh`
+ * @avoid Flat, evenly lit color. Use `gradient-mesh`
  * @tags aurora, northern lights, curtains, glow, ambient
  * @example
  * <AbsoluteFill>

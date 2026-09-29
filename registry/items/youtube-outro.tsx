@@ -4,7 +4,7 @@
  * @description Ten-second end card with a next-video slot and a subscribe slot, sized for YouTube's end-screen elements.
  * @duration data-driven
  * @use The last seconds of a YouTube video
- * @avoid Openers — use `youtube-intro`
+ * @avoid Openers. Use `youtube-intro`
  * @tags youtube, outro, end screen, subscribe, template
  * @example
  * <Composition

@@ -89,7 +89,7 @@ export function TextMorph({
   const toWidth = widthOf(toChars, toX);
   // `progress` keeps the theme's own motion shape (including settle/bouncy overshoot) for the letter
   // position lerp below, where an overshoot-then-settle read is the intended personality. `t` is a plain
-  // linear time fraction across the full `enterFrames` window, independent of motion shape — the blur-in/
+  // linear time fraction across the full `enterFrames` window, independent of motion shape, the blur-in/
   // blur-out timing below needs a value that only reaches 1 at the end of the window, not at 40% of it
   // (which is what settle's own overshoot curve does, and is what produced the "morph finishes in 2-3
   // frames under daylight" bug: settle crosses these formulas' own 0.5/0.7 thresholds within the first

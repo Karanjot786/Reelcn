@@ -30,7 +30,7 @@ function lazy(load: () => { fontFamily: string }): () => string {
 
 // The mono/Signal theme's signature move is animating Archivo's `wdth` axis between 62 and 125
 // (registry/items/core-math.ts's useVariableFontAxis). @remotion/google-fonts' Archivo module ships
-// only static weight instances at the font's default width — no variable-font file — so this theme's
+// only static weight instances at the font's default width, no variable-font file, so this theme's
 // heading font is loaded directly with the browser FontFace API instead, the same mechanism
 // @remotion/google-fonts uses internally, gated by delayRender/continueRender like every other font
 // here. URL pinned from https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900's
@@ -41,7 +41,7 @@ const ARCHIVO_VARIABLE_FAMILY = "Archivo Variable";
 function loadArchivoVariable(): string {
   if (typeof document === "undefined" || typeof FontFace === "undefined") return ARCHIVO_VARIABLE_FAMILY;
   // Loaded eagerly (not just in the .catch below) so its fontFamily can be listed as a CSS fallback
-  // in the string this function returns synchronously — by the time FontFace.load() might reject,
+  // in the string this function returns synchronously, by the time FontFace.load() might reject,
   // that string has already been handed out as `theme.fonts.heading`, so there's no way to swap it
   // for the static family after the fact. loaders.archivo() is defined below; hoisting is fine since
   // this function only runs once lazily invoked, by which point the module has finished evaluating.

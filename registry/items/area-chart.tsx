@@ -6,7 +6,7 @@
  * @preset line-chart
  * @use Volume over time: traffic, storage used, cumulative revenue
  * @use One or two series where the filled shape carries the story
- * @avoid Three or more overlapping series — use `line-chart`
+ * @avoid Three or more overlapping series. Use `line-chart`
  * @tags chart, area, trend, time series, data
  * @example
  * <Center>

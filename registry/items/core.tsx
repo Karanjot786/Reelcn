@@ -77,7 +77,7 @@ import { strokeWidthProfile } from "./core-stroke";
 import { fonts } from "./fonts";
 
 // Pure math (motion quantization, stagger ordering, keyframe interpolation, the typing model, grapheme
-// helpers) lives in ./core-math so node --test can import it directly — core.tsx is JSX and can't be
+// helpers) lives in ./core-math so node --test can import it directly, core.tsx is JSX and can't be
 // loaded by node's native TypeScript loader. Re-exported here so no item's import site changes.
 export {
   type AnchorRect,
@@ -484,13 +484,13 @@ export function tween(
 export type MotionProps = {
   /** Frames to wait before entering. */
   delay?: number;
-  /** Enter duration in frames. Defaults to 0.6s. Some items reuse `duration` for an unrelated local timing — see that item's own prop docs. */
+  /** Enter duration in frames. Defaults to 0.6s. Some items reuse `duration` for an unrelated local timing. See that item's own prop docs. */
   duration?: number;
   /** Exit at the end of the parent `<Sequence>`. `false` keeps it on screen, a number sets the exit length in frames. */
   exit?: boolean | number;
   /** Override the theme's motion personality. */
   motion?: MotionPersonality;
-  /** Renders fully entered, with no exit — for a still frame or thumbnail. Defaults to `false`. */
+  /** Renders fully entered, with no exit: for a still frame or thumbnail. Defaults to `false`. */
   poster?: boolean;
   /** Delays the start of the exit window by this many frames, for a minimum on-screen hold. Defaults to `0`. */
   holdFrames?: number;
@@ -550,7 +550,7 @@ export function useMotion({
   };
 }
 
-/** A locally looped frame number: counts up to `durationInFrames - 1`, holds there for `holdFrames`, then wraps to 0 — seamless for a `<Loop>`-wrapped composition. */
+/** A locally looped frame number: counts up to `durationInFrames - 1`, holds there for `holdFrames`, then wraps to 0, seamless for a `<Loop>`-wrapped composition. */
 export function useLoop({
   durationInFrames,
   holdFrames = 0,
@@ -711,7 +711,7 @@ function fontFaceReady(stack: string, weight: number): boolean {
 const FONT_READY_TIMEOUT_MS = 2000;
 
 /**
- * Real width of `text` set in `style`, measured against the loaded font — gated on the browser's own font-ready
+ * Real width of `text` set in `style`, measured against the loaded font, gated on the browser's own font-ready
  * signal (`document.fonts.ready` plus a face check, since a font can resolve `ready` before its face is queryable)
  * through `delayRender`/`continueRender`, not a fixed-attempt timer.
  */
@@ -719,7 +719,7 @@ export function useTextMetrics(
   text: string,
   style: { fontFamily: string; fontSize: number; fontWeight?: number; letterSpacing?: number },
   opts?: {
-    /** Skips the delayRender/font-ready gate and the measurement itself — for a value that's computed but not always used, like a follow-caret position when `follow` is unset. Always call the hook; vary this flag, never the call itself. */ skip?: boolean;
+    /** Skips the delayRender/font-ready gate and the measurement itself: for a value that's computed but not always used, like a follow-caret position when `follow` is unset. Always call the hook; vary this flag, never the call itself. */ skip?: boolean;
   },
 ): { width: number; ready: boolean } {
   const skip = opts?.skip ?? false;
@@ -759,7 +759,7 @@ export type CaretFollow = { zoom?: number; lag?: number };
 
 /**
  * Zooms toward `caret` (design-unit coordinates the caller already measured) when `follow` is set;
- * otherwise a no-op passthrough — the opt-in, backward-compatible default every typing item's `follow`
+ * otherwise a no-op passthrough, the opt-in, backward-compatible default every typing item's `follow`
  * prop relies on. Clamped inside `useViewport().safe` so the zoomed caret never leaves the frame's safe
  * zone.
  */
@@ -862,7 +862,7 @@ export function useKeyframePath(keys: PoseKey[], opts?: { motion?: MotionPreset 
  * Folds `steps` (timestamps in seconds) over the current frame: the previous step in array order is
  * `from`, the entered step is `state` (the "to"), `progress` is `tween`'s eased 0-1 between them, shaped
  * by the theme's own motion personality unless `opts.motion` overrides it. Before the first step's frame,
- * or once the last step has fully arrived, `from === state` and `progress` is 1 — nothing left to tween.
+ * or once the last step has fully arrived, `from === state` and `progress` is 1, nothing left to tween.
  * A component with no `steps` at all renders its `initial` state, statically (`progress: 1`).
  */
 export function useKeyframeState<S>(
@@ -878,7 +878,7 @@ export function useKeyframeState<S>(
   const atFrame = (step: Step<S>) => Math.round(step.at * fps);
 
   // The previous step in array order: the last step whose frame has arrived, or the first step if none
-  // have (spec §3's fold rule — ties resolve by array order, not by numeric proximity).
+  // have (spec §3's fold rule: ties resolve by array order, not by numeric proximity).
   let prevIndex = 0;
   for (let i = 0; i < list.length; i++) {
     if (atFrame(list[i]) <= frame) prevIndex = i;

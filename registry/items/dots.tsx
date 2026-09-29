@@ -5,7 +5,7 @@
  * @duration sustained
  * @use Clean tech, SaaS and data scenes that want texture without lines
  * @use Behind charts, code blocks and UI mockups
- * @avoid A structured line pattern or a perspective floor — use `grid`
+ * @avoid A structured line pattern or a perspective floor. Use `grid`
  * @tags dots, dot matrix, halftone, pattern, wave
  * @example
  * <AbsoluteFill>

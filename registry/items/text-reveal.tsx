@@ -71,7 +71,7 @@ const SPLIT_FLAP_GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 .,!?-".split("")
 
 /** Flips a character forward through a small fixed set of intermediate glyphs into `target` at a constant
  * rate (`t` is a linear 0-1 clock, like a mechanical board), with a per-unit flip count seeded from the
- * unit's own index (deterministic, not `Math.random`) — an airport-departures-board feel. */
+ * unit's own index (deterministic, not `Math.random`), an airport-departures-board feel. */
 function splitFlapChar(target: string, t: number, seed: number): string {
   if (t >= 1) return target;
   const targetIndex = SPLIT_FLAP_GLYPHS.indexOf(target.toUpperCase());
@@ -134,7 +134,7 @@ function unitStyle(
       // stays the real, opaque color for the stroke throughout. `progress` here is a linear clock (the
       // caller passes it instead of the eased preset, whose shape varies by theme: `settle` left a single
       // outline frame), so thresholds map straight to time: opacity ramps in over the first 15%, a
-      // stroke-only outline holds through 55%, and the fill phases in — stroke shrinking as it does — over
+      // stroke-only outline holds through 55%, and the fill phases in, stroke shrinking as it does, over
       // the remaining 45%.
       const p = Math.min(Math.max(progress, 0), 1);
       const strokeIn = Math.min(1, p / 0.15);

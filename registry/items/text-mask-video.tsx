@@ -60,7 +60,7 @@ export function TextMaskVideo({
             <text
               // Pixel coordinates, not "50%"/"50%": percentages inside a <mask> resolve against the
               // referencing <svg>'s own width/height, which is 0×0 here (spike confirmed a near-black
-              // render with percentages — text collapsed to the top-left corner).
+              // render with percentages, text collapsed to the top-left corner).
               x={width / 2}
               y={height / 2}
               dominantBaseline="middle"

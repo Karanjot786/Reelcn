@@ -5,7 +5,7 @@
  * @duration data-driven
  * @use Framing a desktop app, dashboard or website screenshot in a launch video
  * @use Two builds side by side inside `split-screen` for a before/after
- * @avoid A phone or tablet screen — use `phone-frame`
+ * @avoid A phone or tablet screen. Use `phone-frame`
  * @tags laptop, desktop, computer, device, mockup, frame
  * @example
  * <Center>
@@ -65,7 +65,7 @@ export function LaptopFrame({
         opacity: Math.min(1, Math.max(0, m.enter)) * (1 - m.exit),
         translate: `0 ${(1 - m.enter) * u(40) - m.exit * u(24)}px`,
         // A small fixed 3D tilt reads as a real product shot instead of a flat cutout (P2-6b). Not
-        // user-adjustable — a real camera control is Phase 3's `stage`.
+        // user-adjustable, a real camera control is Phase 3's `stage`.
         transform: "perspective(1400px) rotateX(4deg)",
         transformStyle: "preserve-3d",
         scale: String(0.96 + 0.04 * m.enter),

@@ -1,11 +1,11 @@
 /**
  * @title Button
  * @category product
- * @description Primary or secondary button that steps through idle, hover, press, loading and success — the loading spinner and success check crossfade in place, so the button never resizes.
+ * @description Primary or secondary button that steps through idle, hover, press, loading and success. The loading spinner and success check crossfade in place, so the button never resizes.
  * @duration data-driven
  * @use A UI-sim walkthrough where a cursor clicks a real, named button
  * @use A `ui` scene's `component: "button"`
- * @avoid A static call-to-action with no interaction — use plain text instead
+ * @avoid A static call-to-action with no interaction. Use plain text instead
  * @tags button, ui, kit, click, loading, success
  * @example
  * <Center>
@@ -75,14 +75,14 @@ const contentOf = (state: ButtonState): Content =>
 
 /**
  * Pure: given an already-measured label width, the button's own box. `Button`, `useButtonAnchors` and the
- * `ui` scene (Task 9) all call this one function — a caller's `size` prop can never diverge between the
+ * `ui` scene (Task 9) all call this one function: a caller's `size` prop can never diverge between the
  * rendered component and its anchor geometry (ponytail-review blocker 2).
  */
 export function buttonBoxSize(size: number | undefined, u: (n: number) => number, measuredLabelWidth: number) {
   return { width: measuredLabelWidth + u(PAD_X) * 2, height: u(HEIGHT), fontPx: u(size ?? FONT_SIZE) };
 }
 
-/** Button's own placed size in design-unit pixels — measures once, then hands off to the pure formula
+/** Button's own placed size in design-unit pixels: measures once, then hands off to the pure formula
  * above (§2: computed twice, published never). */
 function useButtonBox(label: string, size: number | undefined, skip: boolean) {
   const theme = useTheme();

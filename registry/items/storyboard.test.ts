@@ -18,10 +18,10 @@ function extractBracedBlock(source: string, openBraceIndex: number): string {
 }
 
 // storyboard.tsx has JSX in it, so it can't be imported by node --test's native TS type-stripping (JSX
-// needs a real transform, not erasure) without adding a build-tool dependency — the same constraint
+// needs a real transform, not erasure) without adding a build-tool dependency, the same constraint
 // core-theme-fonts.test.ts already documents for core.tsx. `isValidTabsState`, the review should-fix
 // fix for uiSceneSchema's `tabs` step validation, is kept as its own pure, JSX-free function precisely
-// so its *body* (plain JS — the TS-only bits are all in the signature) can be extracted from the real
+// so its *body* (plain JS, the TS-only bits are all in the signature) can be extracted from the real
 // shipped source text and actually executed here, rather than hand-copied into this test where it
 // could silently drift from the code that ships.
 function loadIsValidTabsState(): (state: string, labelsLength: number) => boolean {
@@ -44,7 +44,7 @@ test("isValidTabsState rejects a non-numeric state", () => {
 
 test("isValidTabsState rejects an out-of-range index", () => {
   const isValidTabsState = loadIsValidTabsState();
-  // A 3-tab component only has valid indices 0, 1, 2 — index 9 is out of range, and so is the boundary
+  // A 3-tab component only has valid indices 0, 1, 2, index 9 is out of range, and so is the boundary
   // value equal to labelsLength itself.
   assert.equal(isValidTabsState("9", 3), false);
   assert.equal(isValidTabsState("3", 3), false);

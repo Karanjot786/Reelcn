@@ -5,7 +5,7 @@
  * @duration data-driven
  * @preset captions
  * @use Night-time and club footage, music clips
- * @avoid Corporate or documentary footage — use `captions-minimal`
+ * @avoid Corporate or documentary footage. Use `captions-minimal`
  * @tags captions, neon, glow, music
  * @example
  * <CaptionsNeon captions={captions} />

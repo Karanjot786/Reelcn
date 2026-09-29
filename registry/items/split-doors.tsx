@@ -5,7 +5,7 @@
  * @duration 24
  * @use Revealing a product shot, logo or new chapter behind the current scene
  * @use Moving from a title card into the main content
- * @avoid An outgoing scene that plays audio or video, since it renders once per door — use `circle-burst`
+ * @avoid An outgoing scene that plays audio or video, since it renders once per door. Use `circle-burst`
  * @tags doors, split, open, reveal
  * @example
  * <TransitionSeries>

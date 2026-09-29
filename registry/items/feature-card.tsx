@@ -5,7 +5,7 @@
  * @duration 24
  * @use One feature at a time in a launch video, or several staggered inside `stagger` or `bento-grid`
  * @use A pricing tier or plan card with a "New" or "Popular" badge
- * @avoid Several feature tiles on one canvas at once — use `bento-grid`
+ * @avoid Several feature tiles on one canvas at once. Use `bento-grid`
  * @tags feature, card, icon, badge, pricing, plan
  * @example
  * <Center>

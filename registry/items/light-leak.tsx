@@ -5,7 +5,7 @@
  * @duration 63
  * @use Organic warmth between shots, over B-roll, photos or a title card
  * @use Softening a cut with a filmic glow
- * @avoid A hard, fast accent on a beat — use `flash`
+ * @avoid A hard, fast accent on a beat. Use `flash`
  * @tags film, glow, leak, warm, vintage, analog
  * @example
  * <Sequence from={60} durationInFrames={70}>

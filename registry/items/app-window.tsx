@@ -5,7 +5,7 @@
  * @duration data-driven
  * @use Framing a desktop app, editor or settings panel in a launch video
  * @use Two app windows side by side inside `split-screen`
- * @avoid A website with an address bar — use `browser-window`
+ * @avoid A website with an address bar. Use `browser-window`
  * @tags window, app, desktop, chrome, mockup, frame
  * @example
  * <Center>

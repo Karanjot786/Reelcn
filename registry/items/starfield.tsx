@@ -5,7 +5,7 @@
  * @duration sustained
  * @use Space, AI and "big idea" openers, countdowns and launch intros
  * @use A dark, quiet backdrop with a sense of depth
- * @avoid Large soft out-of-focus discs — use `bokeh`
+ * @avoid Large soft out-of-focus discs. Use `bokeh`
  * @tags stars, space, night, parallax, particles
  * @example
  * <AbsoluteFill>

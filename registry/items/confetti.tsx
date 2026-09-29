@@ -5,7 +5,7 @@
  * @duration 90
  * @use Launches, milestones and end cards
  * @use Celebrating the moment a number or result lands
- * @avoid Emphasis on a single word or button — use `sparkle-burst`
+ * @avoid Emphasis on a single word or button. Use `sparkle-burst`
  * @tags celebration, particles, party, burst, physics
  * @example
  * <Sequence from={45} durationInFrames={90}>

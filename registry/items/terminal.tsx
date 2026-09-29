@@ -5,7 +5,7 @@
  * @duration data-driven
  * @use Install steps, CLI demos and deploy logs in product and tutorial videos
  * @use Any sequence of shell commands with their output
- * @avoid Source files or snippets without a prompt — use `code-block`
+ * @avoid Source files or snippets without a prompt. Use `code-block`
  * @tags terminal, shell, cli, command, console, install
  * @example
  * <Center>
@@ -147,7 +147,7 @@ export function Terminal({
 
   // Follow: the active row's caret position `lag` frames ago. `useTypedText` is pure, so calling it a
   // second time here (conditionally, since there may be no active row yet) isn't a Rules-of-Hooks
-  // issue — only `useTextMetrics` below is a real hook, and it's called unconditionally, once.
+  // issue, only `useTextMetrics` below is a real hook, and it's called unconditionally, once.
   const laggedFrame = m.frame - (follow?.lag ?? 6);
   const activeHasCaret = active !== undefined && active.kind !== "output";
   const laggedTyped = activeHasCaret ? useTypedText(active.text, laggedFrame - active.typeFrom, m.fps, { cps }) : null;

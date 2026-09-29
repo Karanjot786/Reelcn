@@ -1,11 +1,11 @@
 /**
  * @title Rise Up
  * @category text
- * @description Headline whose words rise into place from just below the line — an alias of `text-reveal` with `effect="rise"` and no other prop changes.
+ * @description Headline whose words rise into place from just below the line. It is an alias of `text-reveal` with `effect="rise"` and no other prop changes.
  * @duration 30
  * @use The default choice for clean, confident headlines
  * @use Section titles and short-form hooks
- * @avoid Letter-by-letter reveals of a single word — use `char-rise`
+ * @avoid Letter-by-letter reveals of a single word. Use `char-rise`
  * @tags rise, slide up, headline, clean
  * @preset text-reveal
  * @example

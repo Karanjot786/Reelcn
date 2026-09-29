@@ -5,14 +5,14 @@
  * @duration data-driven
  * @use A DM, support chat or group thread inside a `phone-frame` or app mockup
  * @use Showing a bot or assistant "typing" before it answers
- * @avoid A single command-and-output log — use `terminal`
+ * @avoid A single command-and-output log. Use `terminal`
  * @tags chat, messages, dm, bubbles, typing, conversation
  * @example
  * <PhoneFrame>
  *   <ChatThread
  *     messages={[
  *       { from: "me", text: "Can it render 9:16?", at: 0 },
- *       { from: "them", text: "Yes — same component, three formats.", at: 30 },
+ *       { from: "them", text: "Yes. Same component, three formats.", at: 30 },
  *     ]}
  *   />
  * </PhoneFrame>
@@ -49,7 +49,7 @@ export type ChatThreadProps = MotionProps & {
   className?: string;
 };
 
-/** Rough wrapped line count at `perLine` characters per line — good enough to reserve bubble height without measuring the DOM. */
+/** Rough wrapped line count at `perLine` characters per line. Good enough to reserve bubble height without measuring the DOM. */
 function wrappedLines(text: string, perLine: number): number {
   const words = text.split(" ");
   let lines = 1;

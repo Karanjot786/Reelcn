@@ -5,7 +5,7 @@
  * @duration sustained
  * @use Square and vertical music posts built around cover art
  * @use A centred visual when a full-width band would not fit
- * @avoid Wide landscape banners — use `spectrum`
+ * @avoid Wide landscape banners. Use `spectrum`
  * @tags radial, circular, music, visualizer, cover
  * @example
  * <RadialVisualizer src={staticFile("track.mp3")}>

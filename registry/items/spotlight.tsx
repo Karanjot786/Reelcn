@@ -5,7 +5,7 @@
  * @duration sustained
  * @use Product hero shots, single-idea statements and dramatic reveals
  * @use Drawing the eye to one area of the frame without a hard shape
- * @avoid Several directional light shafts — use `beams`
+ * @avoid Several directional light shafts. Use `beams`
  * @tags spotlight, light, vignette, stage, focus
  * @example
  * <AbsoluteFill>

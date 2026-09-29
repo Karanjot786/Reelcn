@@ -41,9 +41,9 @@ function RackFocusPresentation({
   const blur = exiting ? at(0, blurPeak) : at(blurPeak, 0);
   const brightness = exiting ? at(1, 1.3) : at(1.25, 1);
   // The exiting layer stays fully opaque and blurs/brightens away; the entering layer fades in on top
-  // over the same window while it unblurs, so both are genuinely visible mid-transition — a real
+  // over the same window while it unblurs, so both are genuinely visible mid-transition, a real
   // cross-blur, not the entering layer's opaque `<AbsoluteFill>` fully occluding the exiting one from
-  // frame 1 (TransitionSeries paints the entering side on top by default — confirmed by `card-push.tsx`'s
+  // frame 1 (TransitionSeries paints the entering side on top by default, confirmed by `card-push.tsx`'s
   // exiting branch explicitly setting `zIndex: 1` to override that same default). `zIndex` is set here
   // too, explicitly, rather than relying on the unstated default.
   const opacity = exiting ? 1 : at(0, 1);

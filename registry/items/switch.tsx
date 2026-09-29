@@ -5,7 +5,7 @@
  * @duration data-driven
  * @use A settings row in a UI-sim walkthrough
  * @use A `ui` scene's `component: "switch"`
- * @avoid A single static state with no flip — use plain text or an icon
+ * @avoid A single static state with no flip. Use plain text or an icon
  * @tags switch, toggle, ui, kit
  * @example
  * <Center>
@@ -40,7 +40,7 @@ export const TRACK_H = 32;
 const THUMB_D = 26;
 const THUMB_INSET = 3;
 
-/** Pure: fixed proportions, no text — shared by `useSwitchAnchors` and the `ui` scene (Task 9), same
+/** Pure: fixed proportions, no text, shared by `useSwitchAnchors` and the `ui` scene (Task 9), same
  * "one formula" contract every kit box-size function in this phase follows (ponytail-review blocker 2). */
 export function switchBoxSize(u: (n: number) => number) {
   return { width: u(TRACK_W), height: u(TRACK_H) };
@@ -59,7 +59,7 @@ export function Switch({ id: _id, steps, label, place, style, className, ...moti
   const theme = useTheme();
   const { u } = useViewport();
   const m = useMotion(motion);
-  // "bouncy" always, regardless of the theme's own default motion — a switch reads as a physical flip in
+  // "bouncy" always, regardless of the theme's own default motion, a switch reads as a physical flip in
   // every theme, and spring()'s natural overshoot is the "small overshoot" the spec asks for; no hand-rolled
   // easing needed on top of it.
   const { state, from, progress } = useKeyframeState<SwitchState>(steps, "off", { motion: "bouncy" });

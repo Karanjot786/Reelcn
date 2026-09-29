@@ -7,7 +7,7 @@
       "name": "ai-generation",
       "type": "registry:item",
       "title": "Ai Generation",
-      "description": "A prompt types into a neutral input, then morphs into a skeleton loader and flips into result cards — one continuous rect drives the box, a 3D flip drives the cards.",
+      "description": "A prompt types into a neutral input, then morphs into a skeleton loader and flips into result cards. One continuous rect drives the box, a 3D flip drives the cards.",
       "categories": [
         "templates"
       ],
@@ -36,7 +36,7 @@
           "Any \"type a prompt, get structured results\" launch demo"
         ],
         "avoid": [
-          "A branded chat-bubble look — this stays neutral (no ChatGPT-style chrome)"
+          "A branded chat-bubble look. This stays neutral (no ChatGPT-style chrome)"
         ],
         "tags": [
           "ai",
@@ -75,7 +75,7 @@
           "Quick prototypes before reaching for a dedicated component"
         ],
         "avoid": [
-          "Headlines — use `text-reveal`"
+          "Headlines. Use `text-reveal`"
         ],
         "tags": [
           "wrapper",
@@ -116,7 +116,7 @@
           "Showing a mobile or desktop app screen by screen"
         ],
         "avoid": [
-          "A web product in a browser window — use `product-launch`"
+          "A web product in a browser window. Use `product-launch`"
         ],
         "tags": [
           "app",
@@ -154,7 +154,7 @@
           "Two app windows side by side inside `split-screen`"
         ],
         "avoid": [
-          "A website with an address bar — use `browser-window`"
+          "A website with an address bar. Use `browser-window`"
         ],
         "tags": [
           "window",
@@ -193,7 +193,7 @@
           "One or two series where the filled shape carries the story"
         ],
         "avoid": [
-          "Three or more overlapping series — use `line-chart`"
+          "Three or more overlapping series. Use `line-chart`"
         ],
         "tags": [
           "chart",
@@ -234,7 +234,7 @@
           "Annotating a feature with a short handwritten-style label"
         ],
         "avoid": [
-          "Circling a whole card or number — use `scribble-circle`"
+          "Circling a whole card or number. Use `scribble-circle`"
         ],
         "tags": [
           "annotation",
@@ -274,7 +274,7 @@
           "Reacting to a voice whose tempo you do not know"
         ],
         "avoid": [
-          "A known BPM, where pure math is steadier — use `use-beat`"
+          "A known BPM, where pure math is steadier. Use `use-beat`"
         ],
         "tags": [
           "audio",
@@ -322,7 +322,7 @@
           "Turning any voice recording into a video"
         ],
         "avoid": [
-          "A short vertical teaser built on one quote — use `podcast-teaser`"
+          "A short vertical teaser built on one quote. Use `podcast-teaser`"
         ],
         "tags": [
           "podcast",
@@ -363,7 +363,7 @@
           "Night-sky, wellness or premium product moods"
         ],
         "avoid": [
-          "Flat, evenly lit color — use `gradient-mesh`"
+          "Flat, evenly lit color. Use `gradient-mesh`"
         ],
         "tags": [
           "aurora",
@@ -402,8 +402,8 @@
           "Calling out one bar in the accent while the rest stay muted"
         ],
         "avoid": [
-          "Rankings that change over time — use `bar-race`",
-          "Trends across many points — use `line-chart`"
+          "Rankings that change over time. Use `bar-race`",
+          "Trends across many points. Use `line-chart`"
         ],
         "tags": [
           "chart",
@@ -442,7 +442,7 @@
           "Five to twelve series with a value at every step"
         ],
         "avoid": [
-          "A single snapshot — use `bar-chart`"
+          "A single snapshot. Use `bar-chart`"
         ],
         "tags": [
           "chart",
@@ -483,7 +483,7 @@
           "Adding energy behind a logo or headline without busy shapes"
         ],
         "avoid": [
-          "A single soft pool of light — use `spotlight`"
+          "A single soft pool of light. Use `spotlight`"
         ],
         "tags": [
           "beams",
@@ -519,11 +519,11 @@
       "meta": {
         "duration": "45",
         "use": [
-          "Redesigns, edits and upgrades — anything with a clear before and after state",
+          "Redesigns, edits and upgrades: anything with a clear before and after state",
           "A single screenshot that changes at one point, rather than two panes shown at once"
         ],
         "avoid": [
-          "Two panes shown side by side the whole time — use `split-screen`"
+          "Two panes shown side by side the whole time. Use `split-screen`"
         ],
         "tags": [
           "before after",
@@ -600,7 +600,7 @@
           "Titles laid over footage or gradients"
         ],
         "avoid": [
-          "Punchy, high-energy hooks — use `pop-in`"
+          "Punchy, high-energy hooks. Use `pop-in`"
         ],
         "tags": [
           "blur",
@@ -640,7 +640,7 @@
           "A soft, cinematic backdrop behind quotes and names"
         ],
         "avoid": [
-          "Tiny pin-sharp points of light — use `starfield`"
+          "Tiny pin-sharp points of light. Use `starfield`"
         ],
         "tags": [
           "bokeh",
@@ -684,7 +684,7 @@
           "Introducing a visual identity before a product launch"
         ],
         "avoid": [
-          "A product feature tour — use `product-launch`"
+          "A product feature tour. Use `product-launch`"
         ],
         "tags": [
           "brand",
@@ -724,7 +724,7 @@
           "Text-heavy scenes where a busier background would compete with the words"
         ],
         "avoid": [
-          "Scenes that need visible movement behind them — use `gradient-mesh`"
+          "Scenes that need visible movement behind them. Use `gradient-mesh`"
         ],
         "tags": [
           "solid",
@@ -801,7 +801,7 @@
           "Two pages side by side inside `split-screen` for a before/after"
         ],
         "avoid": [
-          "A native desktop app with a title bar and no address bar — use `app-window`"
+          "A native desktop app with a title bar and no address bar. Use `app-window`"
         ],
         "tags": [
           "browser",
@@ -817,7 +817,7 @@
       "name": "button",
       "type": "registry:item",
       "title": "Button",
-      "description": "Primary or secondary button that steps through idle, hover, press, loading and success — the loading spinner and success check crossfade in place, so the button never resizes.",
+      "description": "Primary or secondary button that steps through idle, hover, press, loading and success. The loading spinner and success check crossfade in place, so the button never resizes.",
       "categories": [
         "product"
       ],
@@ -840,7 +840,7 @@
           "A `ui` scene's `component: \"button\"`"
         ],
         "avoid": [
-          "A static call-to-action with no interaction — use plain text instead"
+          "A static call-to-action with no interaction. Use plain text instead"
         ],
         "tags": [
           "button",
@@ -881,7 +881,7 @@
           "Explaining one region of a screenshot or screen recording"
         ],
         "avoid": [
-          "A quick pointer that leaves the rest of the frame undimmed — use `arrow`"
+          "A quick pointer that leaves the rest of the frame undimmed. Use `arrow`"
         ],
         "tags": [
           "spotlight",
@@ -1133,7 +1133,7 @@
           "Night-time and club footage, music clips"
         ],
         "avoid": [
-          "Corporate or documentary footage — use `captions-minimal`"
+          "Corporate or documentary footage. Use `captions-minimal`"
         ],
         "tags": [
           "captions",
@@ -1244,7 +1244,7 @@
           "Podcast and tutorial clips watched without sound"
         ],
         "avoid": [
-          "A single static line of text — use `text-reveal`"
+          "A single static line of text. Use `text-reveal`"
         ],
         "tags": [
           "captions",
@@ -1323,7 +1323,7 @@
           "Turning a changelog page into something people watch"
         ],
         "avoid": [
-          "A whole product story — use `product-launch`"
+          "A whole product story. Use `product-launch`"
         ],
         "tags": [
           "changelog",
@@ -1363,7 +1363,7 @@
           "Naming the step a viewer is about to watch"
         ],
         "avoid": [
-          "A speaker's name — use `lower-third`"
+          "A speaker's name. Use `lower-third`"
         ],
         "tags": [
           "chapter",
@@ -1400,7 +1400,7 @@
           "Big title cards with only a few letters"
         ],
         "avoid": [
-          "Sentences longer than a few words — use `rise-up`"
+          "Sentences longer than a few words. Use `rise-up`"
         ],
         "tags": [
           "characters",
@@ -1462,7 +1462,7 @@
           "target": "~/src/reelcn/chat-thread.tsx"
         }
       ],
-      "docs": "Usage:\n\n<PhoneFrame>\n  <ChatThread\n    messages={[\n      { from: \"me\", text: \"Can it render 9:16?\", at: 0 },\n      { from: \"them\", text: \"Yes — same component, three formats.\", at: 30 },\n    ]}\n  />\n</PhoneFrame>",
+      "docs": "Usage:\n\n<PhoneFrame>\n  <ChatThread\n    messages={[\n      { from: \"me\", text: \"Can it render 9:16?\", at: 0 },\n      { from: \"them\", text: \"Yes. Same component, three formats.\", at: 30 },\n    ]}\n  />\n</PhoneFrame>",
       "meta": {
         "duration": "data-driven",
         "use": [
@@ -1470,7 +1470,7 @@
           "Showing a bot or assistant \"typing\" before it answers"
         ],
         "avoid": [
-          "A single command-and-output log — use `terminal`"
+          "A single command-and-output log. Use `terminal`"
         ],
         "tags": [
           "chat",
@@ -1509,7 +1509,7 @@
           "Any \"here's everything done\" beat that shouldn't feel mechanically linear"
         ],
         "avoid": [
-          "A single item — use plain text with `svg-draw`'s check path directly"
+          "A single item. Use plain text with `svg-draw`'s check path directly"
         ],
         "tags": [
           "checklist",
@@ -1587,7 +1587,7 @@
           "Typing code on screen, then focusing the lines that matter"
         ],
         "avoid": [
-          "Shell sessions with commands and output — use `terminal`"
+          "Shell sessions with commands and output. Use `terminal`"
         ],
         "tags": [
           "code",
@@ -1603,7 +1603,7 @@
       "name": "code-live",
       "type": "registry:item",
       "title": "Code Live",
-      "description": "Code types beside a live preview pane that swaps images the moment typing crosses each preview's line — a content-derived schedule, not a hand-timed cut.",
+      "description": "Code types beside a live preview pane that swaps images the moment typing crosses each preview's line. A content-derived schedule, not a hand-timed cut.",
       "categories": [
         "templates"
       ],
@@ -1633,7 +1633,7 @@
           "A tutorial beat where the reader sees code and output update together"
         ],
         "avoid": [
-          "A single static code block with no preview — use `code-block` directly"
+          "A single static code block with no preview. Use `code-block` directly"
         ],
         "tags": [
           "code",
@@ -1700,7 +1700,7 @@
           "Showing how fast a search or command feature narrows results"
         ],
         "avoid": [
-          "A shell session with commands and output — use `terminal`"
+          "A shell session with commands and output. Use `terminal`"
         ],
         "tags": [
           "command palette",
@@ -1739,7 +1739,7 @@
           "Showing the question a video is about to answer"
         ],
         "avoid": [
-          "A full post with author metrics — use `post-card`"
+          "A full post with author metrics. Use `post-card`"
         ],
         "tags": [
           "comment",
@@ -1778,7 +1778,7 @@
           "Celebrating the moment a number or result lands"
         ],
         "avoid": [
-          "Emphasis on a single word or button — use `sparkle-burst`"
+          "Emphasis on a single word or button. Use `sparkle-burst`"
         ],
         "tags": [
           "celebration",
@@ -1793,7 +1793,7 @@
       "name": "core-math",
       "type": "registry:item",
       "title": "Core Math",
-      "description": "Pure, dependency-free math behind Core's motion and text helpers: motion quantization, stagger ordering, Catmull-Rom keyframe interpolation, the typing-reveal model, grapheme splitting and 0-1 clamping. No React, no DOM — safe to unit-test directly.",
+      "description": "Pure, dependency-free math behind Core's motion and text helpers: motion quantization, stagger ordering, Catmull-Rom keyframe interpolation, the typing-reveal model, grapheme splitting and 0-1 clamping. No React, no DOM. Safe to unit-test directly.",
       "categories": [
         "lib"
       ],
@@ -1826,7 +1826,7 @@
       "name": "core-physical-light",
       "type": "registry:item",
       "title": "Core Physical Light",
-      "description": "Shared \"physical light\" background looks for midnight, mono, ledger and chromewave, reused by aurora, gradient-mesh, beams and spotlight. Not a catalog item on its own — each background item still owns its per-theme LOOK_BY_THEME mapping and its own default (curtains/blobs/shafts/pool) look for daylight and afterglow.",
+      "description": "Shared \"physical light\" background looks for midnight, mono, ledger and chromewave, reused by aurora, gradient-mesh, beams and spotlight. Not a catalog item on its own. Each background item still owns its per-theme LOOK_BY_THEME mapping and its own default (curtains/blobs/shafts/pool) look for daylight and afterglow.",
       "categories": [
         "lib"
       ],
@@ -1983,8 +1983,8 @@
           "Prices and percentages that should tick up on screen"
         ],
         "avoid": [
-          "A metric with a label and a change indicator — use `stat-counter`",
-          "Several metrics at once — use `kpi-grid`"
+          "A metric with a label and a change indicator. Use `stat-counter`",
+          "Several metrics at once. Use `kpi-grid`"
         ],
         "tags": [
           "number",
@@ -2024,7 +2024,7 @@
           "Drawing the eye to a button just before a `toast` or `callout` appears"
         ],
         "avoid": [
-          "A static pointer aimed at one target — use `arrow`"
+          "A static pointer aimed at one target. Use `arrow`"
         ],
         "tags": [
           "cursor",
@@ -2066,7 +2066,7 @@
           "Turning a dashboard into a narrated walkthrough"
         ],
         "avoid": [
-          "A single number — use `stat-counter`"
+          "A single number. Use `stat-counter`"
         ],
         "tags": [
           "data",
@@ -2107,7 +2107,7 @@
           "A `ui` scene's `component: \"dialog\"`"
         ],
         "avoid": [
-          "A modal with no real content — use `callout`"
+          "A modal with no real content. Use `callout`"
         ],
         "tags": [
           "dialog",
@@ -2146,8 +2146,8 @@
           "Two to six segments"
         ],
         "avoid": [
-          "A single percentage — use `progress-ring`",
-          "Many small categories — use `bar-chart`"
+          "A single percentage. Use `progress-ring`",
+          "Many small categories. Use `bar-chart`"
         ],
         "tags": [
           "chart",
@@ -2188,7 +2188,7 @@
           "Behind charts, code blocks and UI mockups"
         ],
         "avoid": [
-          "A structured line pattern or a perspective floor — use `grid`"
+          "A structured line pattern or a perspective floor. Use `grid`"
         ],
         "tags": [
           "dots",
@@ -2226,7 +2226,7 @@
           "Friendly, casual brands"
         ],
         "avoid": [
-          "Serious or premium tone — use `blur-in`"
+          "Serious or premium tone. Use `blur-in`"
         ],
         "tags": [
           "drop",
@@ -2302,7 +2302,7 @@
           "A pricing tier or plan card with a \"New\" or \"Popular\" badge"
         ],
         "avoid": [
-          "Several feature tiles on one canvas at once — use `bento-grid`"
+          "Several feature tiles on one canvas at once. Use `bento-grid`"
         ],
         "tags": [
           "feature",
@@ -2344,7 +2344,7 @@
           "Weekly \"did you know\" clips for a product"
         ],
         "avoid": [
-          "A full product story — use `product-launch`"
+          "A full product story. Use `product-launch`"
         ],
         "tags": [
           "short",
@@ -2383,7 +2383,7 @@
           "Titles of unknown length, such as data-driven names or chapter titles"
         ],
         "avoid": [
-          "Headlines that should wrap onto several lines — use `text-reveal`"
+          "Headlines that should wrap onto several lines. Use `text-reveal`"
         ],
         "tags": [
           "fit",
@@ -2423,7 +2423,7 @@
           "Camera-flash moments and reveals"
         ],
         "avoid": [
-          "A slow, warm glow over footage — use `light-leak`"
+          "A slow, warm glow over footage. Use `light-leak`"
         ],
         "tags": [
           "flash",
@@ -2461,7 +2461,7 @@
           "Introducing a guest or a collaborator"
         ],
         "avoid": [
-          "A subscribe ask for long-form video — use `subscribe-cta`"
+          "A subscribe ask for long-form video. Use `subscribe-cta`"
         ],
         "tags": [
           "follow",
@@ -2528,7 +2528,7 @@
           "Hard cuts that need a jolt of energy"
         ],
         "avoid": [
-          "Calm, premium or corporate pieces — use `card-push`"
+          "Calm, premium or corporate pieces. Use `card-push`"
         ],
         "tags": [
           "glitch",
@@ -2569,7 +2569,7 @@
           "Behind glass cards, device frames and stat callouts"
         ],
         "avoid": [
-          "A still, single-color brand canvas — use `brand-solid`"
+          "A still, single-color brand canvas. Use `brand-solid`"
         ],
         "tags": [
           "gradient",
@@ -2647,7 +2647,7 @@
           "Retro or futuristic openers with the perspective floor"
         ],
         "avoid": [
-          "A soft dotted texture — use `dots`"
+          "A soft dotted texture. Use `dots`"
         ],
         "tags": [
           "grid",
@@ -2688,7 +2688,7 @@
           "Tutorial titles that point at a single term"
         ],
         "avoid": [
-          "Cycling through several words in one slot — use `word-rotator`"
+          "Cycling through several words in one slot. Use `word-rotator`"
         ],
         "tags": [
           "marker",
@@ -2729,7 +2729,7 @@
           "Restating the promise over b-roll halfway through"
         ],
         "avoid": [
-          "Full headlines in landscape video — use `text-reveal`"
+          "Full headlines in landscape video. Use `text-reveal`"
         ],
         "tags": [
           "hook",
@@ -2768,7 +2768,7 @@
           "A `ui` scene's `component: \"input\"`"
         ],
         "avoid": [
-          "A field that never receives focus — use plain text"
+          "A field that never receives focus. Use plain text"
         ],
         "tags": [
           "input",
@@ -2808,7 +2808,7 @@
           "End-of-video recap of the numbers that mattered"
         ],
         "avoid": [
-          "A single metric — use `stat-counter`"
+          "A single metric. Use `stat-counter`"
         ],
         "tags": [
           "kpi",
@@ -2847,7 +2847,7 @@
           "Two builds side by side inside `split-screen` for a before/after"
         ],
         "avoid": [
-          "A phone or tablet screen — use `phone-frame`"
+          "A phone or tablet screen. Use `phone-frame`"
         ],
         "tags": [
           "laptop",
@@ -2863,7 +2863,7 @@
       "name": "layout-morph",
       "type": "registry:item",
       "title": "Layout Morph",
-      "description": "Images rearrange between named layouts (grid, mosaic, strip) with a closed-form tile morph — each image is always rendered full-canvas and only its clip-path window moves, so nothing ever reflows or distorts mid-morph.",
+      "description": "Images rearrange between named layouts (grid, mosaic, strip) with a closed-form tile morph: each image is always rendered full-canvas and only its clip-path window moves, so nothing ever reflows or distorts mid-morph.",
       "categories": [
         "motion"
       ],
@@ -2888,7 +2888,7 @@
           "Any beat that needs several images to feel like one continuous composition, not a cut"
         ],
         "avoid": [
-          "Two images — use `split-screen` or a plain crossfade"
+          "Two images. Use `split-screen` or a plain crossfade"
         ],
         "tags": [
           "layout",
@@ -2968,7 +2968,7 @@
           "Softening a cut with a filmic glow"
         ],
         "avoid": [
-          "A hard, fast accent on a beat — use `flash`"
+          "A hard, fast accent on a beat. Use `flash`"
         ],
         "tags": [
           "film",
@@ -3008,8 +3008,8 @@
           "Comparing two to four series on one axis"
         ],
         "avoid": [
-          "Comparing separate categories — use `bar-chart`",
-          "Volume or cumulative totals — use `area-chart`"
+          "Comparing separate categories. Use `bar-chart`",
+          "Volume or cumulative totals. Use `area-chart`"
         ],
         "tags": [
           "chart",
@@ -3047,7 +3047,7 @@
           "Manifesto-style sequences and closing statements"
         ],
         "avoid": [
-          "A single word or name — use `char-rise`"
+          "A single word or name. Use `char-rise`"
         ],
         "tags": [
           "lines",
@@ -3089,7 +3089,7 @@
           "Splitting a blog post into a quick video"
         ],
         "avoid": [
-          "Mixed scene types — use `storyboard`"
+          "Mixed scene types. Use `storyboard`"
         ],
         "tags": [
           "listicle",
@@ -3130,7 +3130,7 @@
           "The opening or closing beat of `brand-reel`"
         ],
         "avoid": [
-          "A logo that needs to keep moving after it lands — pair with `svg-draw` directly instead"
+          "A logo that needs to keep moving after it lands. Pair with `svg-draw` directly instead"
         ],
         "tags": [
           "logo",
@@ -3245,7 +3245,7 @@
           "Crisp reveals where fading would feel soft"
         ],
         "avoid": [
-          "Multi-line statements that should arrive line by line — use `line-slide`"
+          "Multi-line statements that should arrive line by line. Use `line-slide`"
         ],
         "tags": [
           "mask",
@@ -3323,7 +3323,7 @@
           "Two phones side by side inside `split-screen` for a before/after"
         ],
         "avoid": [
-          "A laptop or desktop screen — use `laptop-frame`"
+          "A laptop or desktop screen. Use `laptop-frame`"
         ],
         "tags": [
           "phone",
@@ -3366,7 +3366,7 @@
           "Promoting an episode with its best thirty seconds"
         ],
         "avoid": [
-          "Whole episodes or segments with captions — use `audiogram`"
+          "Whole episodes or segments with captions. Use `audiogram`"
         ],
         "tags": [
           "podcast",
@@ -3404,7 +3404,7 @@
           "Short labels that should feel lively"
         ],
         "avoid": [
-          "Calm or premium tone — use `blur-in`"
+          "Calm or premium tone. Use `blur-in`"
         ],
         "tags": [
           "pop",
@@ -3443,7 +3443,7 @@
           "Showing praise or a quote in a shareable form"
         ],
         "avoid": [
-          "Attributed praise from a customer — use `quote-card`"
+          "Attributed praise from a customer. Use `quote-card`"
         ],
         "tags": [
           "post",
@@ -3483,7 +3483,7 @@
           "Quoting a customer's public post in a video"
         ],
         "avoid": [
-          "Several posts in a row — use `storyboard` with post scenes"
+          "Several posts in a row. Use `storyboard` with post scenes"
         ],
         "tags": [
           "social",
@@ -3530,7 +3530,7 @@
           "A hero video for a landing page"
         ],
         "avoid": [
-          "One feature in a vertical short — use `feature-short`"
+          "One feature in a vertical short. Use `feature-short`"
         ],
         "tags": [
           "launch",
@@ -3607,8 +3607,8 @@
           "One number with a short label such as \"of teams onboarded\""
         ],
         "avoid": [
-          "Splitting a whole into parts — use `donut`",
-          "Several numbers side by side — use `kpi-grid`"
+          "Splitting a whole into parts. Use `donut`",
+          "Several numbers side by side. Use `kpi-grid`"
         ],
         "tags": [
           "progress",
@@ -3647,7 +3647,7 @@
           "Lifting one line out of an interview"
         ],
         "avoid": [
-          "A social post with engagement counts — use `post-card`"
+          "A social post with engagement counts. Use `post-card`"
         ],
         "tags": [
           "quote",
@@ -3726,7 +3726,7 @@
           "A centred visual when a full-width band would not fit"
         ],
         "avoid": [
-          "Wide landscape banners — use `spectrum`"
+          "Wide landscape banners. Use `spectrum`"
         ],
         "tags": [
           "radial",
@@ -3766,7 +3766,7 @@
           "Social proof in short-form and live-stream style edits"
         ],
         "avoid": [
-          "A single celebratory moment — use `confetti`"
+          "A single celebratory moment. Use `confetti`"
         ],
         "tags": [
           "reactions",
@@ -3782,7 +3782,7 @@
       "name": "redact",
       "type": "registry:item",
       "title": "Redact",
-      "description": "Covers one or more rectangles with an opaque fill and a blur or pixelate effect on top — the opaque fill always renders, so the region is covered even if the effect layer doesn't.",
+      "description": "Covers one or more rectangles with an opaque fill and a blur or pixelate effect on top. The opaque fill always renders, so the region is covered even if the effect layer doesn't.",
       "categories": [
         "product"
       ],
@@ -3808,7 +3808,7 @@
           "Covering a sensitive panel in a dashboard demo without cropping it out"
         ],
         "avoid": [
-          "A region that should stay fully visible — this always covers, never partially"
+          "A region that should stay fully visible. This always covers, never partially"
         ],
         "tags": [
           "redact",
@@ -3823,7 +3823,7 @@
       "name": "rise-up",
       "type": "registry:item",
       "title": "Rise Up",
-      "description": "Headline whose words rise into place from just below the line — an alias of `text-reveal` with `effect=\"rise\"` and no other prop changes.",
+      "description": "Headline whose words rise into place from just below the line. It is an alias of `text-reveal` with `effect=\"rise\"` and no other prop changes.",
       "categories": [
         "text"
       ],
@@ -3846,7 +3846,7 @@
           "Section titles and short-form hooks"
         ],
         "avoid": [
-          "Letter-by-letter reveals of a single word — use `char-rise`"
+          "Letter-by-letter reveals of a single word. Use `char-rise`"
         ],
         "tags": [
           "rise",
@@ -3886,7 +3886,7 @@
           "Auditing a layout across 16:9, 9:16 and 1:1 while building a component"
         ],
         "avoid": [
-          "Shipping in the final render — this is a development-time guide, not a look"
+          "Shipping in the final render. This is a development-time guide, not a look"
         ],
         "tags": [
           "safe-zone",
@@ -3964,7 +3964,7 @@
           "Names, codes or numbers that should feel computed"
         ],
         "avoid": [
-          "Long sentences — use `text-reveal`"
+          "Long sentences. Use `text-reveal`"
         ],
         "tags": [
           "decode",
@@ -3979,7 +3979,7 @@
       "name": "screen-zoom",
       "type": "registry:item",
       "title": "Screen Zoom",
-      "description": "Zooms and pans across whatever you wrap so a rectangle of the content — a button, a chart, a card — fills the frame, eased between keyframes.",
+      "description": "Zooms and pans across whatever you wrap so a rectangle of the content (a button, a chart, a card) fills the frame, eased between keyframes.",
       "categories": [
         "product"
       ],
@@ -4004,7 +4004,7 @@
           "A guided tour that visits several parts of the same screen in turn"
         ],
         "avoid": [
-          "Panning and zooming over a photo or footage with pixel offsets — use `camera`"
+          "Panning and zooming over a photo or footage with pixel offsets. Use `camera`"
         ],
         "tags": [
           "zoom",
@@ -4045,7 +4045,7 @@
           "Marking the one thing viewers should look at in a busy frame"
         ],
         "avoid": [
-          "Pointing at something from a distance — use `arrow`"
+          "Pointing at something from a distance. Use `arrow`"
         ],
         "tags": [
           "annotation",
@@ -4083,7 +4083,7 @@
           "A `ui` scene's `component: \"select\"`"
         ],
         "avoid": [
-          "A single fixed choice with no menu — use plain text"
+          "A single fixed choice with no menu. Use plain text"
         ],
         "tags": [
           "select",
@@ -4189,7 +4189,7 @@
           "Swapping between two layouts with a strong horizontal rhythm"
         ],
         "avoid": [
-          "Scenes that play audio or video, since both render once per slice — use `brand-sweep`"
+          "Scenes that play audio or video, since both render once per slice. Use `brand-sweep`"
         ],
         "tags": [
           "slices",
@@ -4228,7 +4228,7 @@
           "A 3D \"gallery\" of cards or screenshots without CSS 3D's sibling depth-sorting problem"
         ],
         "avoid": [
-          "Scenes with many overlapping opaque volumes — this only depth-sorts flat children, painter's-algorithm style"
+          "Scenes with many overlapping opaque volumes. This only depth-sorts flat children, painter's-algorithm style"
         ],
         "tags": [
           "3d",
@@ -4269,7 +4269,7 @@
           "A small \"done\" or \"new\" accent on a card"
         ],
         "avoid": [
-          "Full-screen celebrations — use `confetti`"
+          "Full-screen celebrations. Use `confetti`"
         ],
         "tags": [
           "sparkle",
@@ -4348,7 +4348,7 @@
           "Any scene that should feel driven by the track"
         ],
         "avoid": [
-          "Speech, where a waveform reads better — use `waveform`"
+          "Speech, where a waveform reads better. Use `waveform`"
         ],
         "tags": [
           "spectrum",
@@ -4388,7 +4388,7 @@
           "Moving from a title card into the main content"
         ],
         "avoid": [
-          "An outgoing scene that plays audio or video, since it renders once per door — use `circle-burst`"
+          "An outgoing scene that plays audio or video, since it renders once per door. Use `circle-burst`"
         ],
         "tags": [
           "doors",
@@ -4468,7 +4468,7 @@
           "Drawing the eye to one area of the frame without a hard shape"
         ],
         "avoid": [
-          "Several directional light shafts — use `beams`"
+          "Several directional light shafts. Use `beams`"
         ],
         "tags": [
           "spotlight",
@@ -4587,7 +4587,7 @@
           "One- or two-word punchlines"
         ],
         "avoid": [
-          "Headlines longer than a few words — use `pop-in`"
+          "Headlines longer than a few words. Use `pop-in`"
         ],
         "tags": [
           "stamp",
@@ -4629,10 +4629,10 @@
         "duration": "data-driven",
         "use": [
           "A leaderboard, ranking or standings reveal across several time periods",
-          "Any \"who's on top now\" beat with real, specific rows — not a generic bar chart"
+          "Any \"who's on top now\" beat with real, specific rows, not a generic bar chart"
         ],
         "avoid": [
-          "A single static ranking with no re-sort — use `bar-race` or `bar-chart` instead"
+          "A single static ranking with no re-sort. Use `bar-race` or `bar-chart` instead"
         ],
         "tags": [
           "standings",
@@ -4672,7 +4672,7 @@
           "A dark, quiet backdrop with a sense of depth"
         ],
         "avoid": [
-          "Large soft out-of-focus discs — use `bokeh`"
+          "Large soft out-of-focus discs. Use `bokeh`"
         ],
         "tags": [
           "stars",
@@ -4712,8 +4712,8 @@
           "A metric that should show change since last period"
         ],
         "avoid": [
-          "Several metrics together — use `kpi-grid`",
-          "A bare number with no label — use `counter`"
+          "Several metrics together. Use `kpi-grid`",
+          "A bare number with no label. Use `counter`"
         ],
         "tags": [
           "stat",
@@ -4869,7 +4869,7 @@
           "target": "~/src/reelcn/storyboard.tsx"
         }
       ],
-      "docs": "Usage:\n\n// src/Root.tsx — then: npx remotion render Storyboard out.mp4 --props=story.json\n<Composition\n  id=\"Storyboard\"\n  component={StoryVideo}\n  schema={storySchema}\n  calculateMetadata={storyMetadata}\n  defaultProps={{ scenes: [{ type: \"title\", title: \"Hello from a story\" }] }}\n  width={1920}\n  height={1080}\n  fps={30}\n  durationInFrames={1}\n/>",
+      "docs": "Usage:\n\n// src/Root.tsx, then: npx remotion render Storyboard out.mp4 --props=story.json\n<Composition\n  id=\"Storyboard\"\n  component={StoryVideo}\n  schema={storySchema}\n  calculateMetadata={storyMetadata}\n  defaultProps={{ scenes: [{ type: \"title\", title: \"Hello from a story\" }] }}\n  width={1920}\n  height={1080}\n  fps={30}\n  durationInFrames={1}\n/>",
       "meta": {
         "duration": "data-driven",
         "use": [
@@ -4877,7 +4877,7 @@
           "Rendering one story at 16:9, 9:16 and 1:1"
         ],
         "avoid": [
-          "Scenes you lay out by hand in JSX — use `scenes`"
+          "Scenes you lay out by hand in JSX. Use `scenes`"
         ],
         "tags": [
           "storyboard",
@@ -4955,7 +4955,7 @@
           "Any moment that asks for one specific action"
         ],
         "avoid": [
-          "Several competing asks at once — show one call to action"
+          "Several competing asks at once, show one call to action"
         ],
         "tags": [
           "cta",
@@ -4992,7 +4992,7 @@
           "Sketching a diagram or shape that a `callout` or label then points at"
         ],
         "avoid": [
-          "A single hand-drawn circle or arrow — use `scribble-circle` or `arrow`"
+          "A single hand-drawn circle or arrow. Use `scribble-circle` or `arrow`"
         ],
         "tags": [
           "svg",
@@ -5031,7 +5031,7 @@
           "A `ui` scene's `component: \"switch\"`"
         ],
         "avoid": [
-          "A single static state with no flip — use plain text or an icon"
+          "A single static state with no flip. Use plain text or an icon"
         ],
         "tags": [
           "switch",
@@ -5045,7 +5045,7 @@
       "name": "tabs",
       "type": "registry:item",
       "title": "Tabs",
-      "description": "Tab row where one continuous fractional index positions the sliding pill, the lit label color and a small per-row parallax — nothing animates independently of that one number.",
+      "description": "Tab row where one continuous fractional index positions the sliding pill, the lit label color and a small per-row parallax. Nothing animates independently of that one number.",
       "categories": [
         "product"
       ],
@@ -5068,7 +5068,7 @@
           "A `ui` scene's `component: \"tabs\"`"
         ],
         "avoid": [
-          "Two or fewer static labels with no switch — use plain text"
+          "Two or fewer static labels with no switch. Use plain text"
         ],
         "tags": [
           "tabs",
@@ -5114,7 +5114,7 @@
           "Captioned clips for feeds that autoplay muted"
         ],
         "avoid": [
-          "Captions over a layout you build yourself — use `captions`"
+          "Captions over a layout you build yourself. Use `captions`"
         ],
         "tags": [
           "short",
@@ -5153,7 +5153,7 @@
           "Any sequence of shell commands with their output"
         ],
         "avoid": [
-          "Source files or snippets without a prompt — use `code-block`"
+          "Source files or snippets without a prompt. Use `code-block`"
         ],
         "tags": [
           "terminal",
@@ -5195,7 +5195,7 @@
           "Collecting launch-day reactions into one clip"
         ],
         "avoid": [
-          "One quote on its own — use `quote-card`"
+          "One quote on its own. Use `quote-card`"
         ],
         "tags": [
           "testimonials",
@@ -5380,7 +5380,7 @@
           "Company milestones or a project's key dates"
         ],
         "avoid": [
-          "Ranked values changing over time — use `bar-race`"
+          "Ranked values changing over time. Use `bar-race`"
         ],
         "tags": [
           "timeline",
@@ -5396,7 +5396,7 @@
       "name": "toast-stack",
       "type": "registry:item",
       "title": "Toast Stack",
-      "description": "Several toasts, staggered in time, that close up smoothly as each one leaves — a running sum of occupancy-weighted heights, no measured DOM.",
+      "description": "Several toasts, staggered in time, that close up smoothly as each one leaves: a running sum of occupancy-weighted heights, no measured DOM.",
       "categories": [
         "product"
       ],
@@ -5422,7 +5422,7 @@
           "Simulating a busy notification tray without hand-placing each card"
         ],
         "avoid": [
-          "A single notification — use `toast`"
+          "A single notification. Use `toast`"
         ],
         "tags": [
           "toast",
@@ -5459,7 +5459,7 @@
           "A short system message that appears over a UI mockup"
         ],
         "avoid": [
-          "A message pointing at part of the screen — use `callout`"
+          "A message pointing at part of the screen. Use `callout`"
         ],
         "tags": [
           "toast",
@@ -5500,7 +5500,7 @@
           "Walking through a setup one command at a time"
         ],
         "avoid": [
-          "A single snippet — use `code-block`"
+          "A single snippet. Use `code-block`"
         ],
         "tags": [
           "tutorial",
@@ -5540,8 +5540,8 @@
           "Quotes and statements that should read at speaking pace"
         ],
         "avoid": [
-          "Code listings — use `code-block`",
-          "Shell commands with output — use `terminal`"
+          "Code listings. Use `code-block`",
+          "Shell commands with output. Use `terminal`"
         ],
         "tags": [
           "typing",
@@ -5579,7 +5579,7 @@
           "Beat-synced motion when you know the track's BPM"
         ],
         "avoid": [
-          "Reacting to a voice or an unknown track — use `audio-reactive`"
+          "Reacting to a voice or an unknown track. Use `audio-reactive`"
         ],
         "tags": [
           "beat",
@@ -5618,7 +5618,7 @@
           "Three to eight rows mixing numbers, yes/no features and short text"
         ],
         "avoid": [
-          "A single trend over time — use `line-chart`"
+          "A single trend over time. Use `line-chart`"
         ],
         "tags": [
           "compare",
@@ -5660,7 +5660,7 @@
           "Any full-bleed band of motion tied to a voice or a track"
         ],
         "avoid": [
-          "A frequency view — use `spectrum`"
+          "A frequency view. Use `spectrum`"
         ],
         "tags": [
           "waveform",
@@ -5773,7 +5773,7 @@
           "Hooks such as \"Made for creators / startups / agencies\""
         ],
         "avoid": [
-          "Emphasizing one fixed phrase — use `highlight`"
+          "Emphasizing one fixed phrase. Use `highlight`"
         ],
         "tags": [
           "rotate",
@@ -5813,7 +5813,7 @@
           "The first seconds of a YouTube video or a series episode"
         ],
         "avoid": [
-          "End cards — use `youtube-outro`"
+          "End cards. Use `youtube-outro`"
         ],
         "tags": [
           "youtube",
@@ -5856,7 +5856,7 @@
           "The last seconds of a YouTube video"
         ],
         "avoid": [
-          "Openers — use `youtube-intro`"
+          "Openers. Use `youtube-intro`"
         ],
         "tags": [
           "youtube",

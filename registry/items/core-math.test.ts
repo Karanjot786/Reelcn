@@ -144,7 +144,7 @@ test("matchGraphemes keeps a shared letter's identity instead of fading and re-a
   const pairs = matchGraphemes(from, to);
   const matched = pairs.filter((p) => p.fromIndex >= 0 && p.toIndex >= 0);
   // "i" is the only letter shared between "Build" and "Ship" (case-sensitive as written) at index 2 in
-  // both words — it must be matched, not treated as an exit+enter pair.
+  // both words. It must be matched, not treated as an exit+enter pair.
   assert.ok(
     matched.some((p) => p.fromIndex === 2 && p.toIndex === 2),
     JSON.stringify(pairs),
@@ -201,7 +201,7 @@ test("anchorToContentPercent: identity contentBox (full-canvas ScreenZoom) is a 
 
 test("anchorToContentPercent: a nested ScreenZoom's contentBox rescales the anchor into the wrapper's own %", () => {
   // A BrowserWindow occupying the right half of the canvas (x: 50-100%), with a button anchored at
-  // canvas-x 75% (the middle of that half) — content-relative, that's 50% of the wrapper's own width.
+  // canvas-x 75% (the middle of that half). Content-relative, that's 50% of the wrapper's own width.
   const rect = { x: 62.5, y: 40, width: 25, height: 10 };
   const contentBox = { x: 50, y: 0, width: 50, height: 100 };
   const content = anchorToContentPercent(rect, contentBox);
@@ -225,7 +225,7 @@ test("stepsDuration: no steps is just the hold budget", () => {
 });
 
 test("stepsDuration: unordered `at` values still use the last array entry, not the max", () => {
-  // Matches useKeyframeState's own fold rule (array order, not sorted) — an author who writes steps out
+  // Matches useKeyframeState's own fold rule (array order, not sorted). An author who writes steps out
   // of order gets a duration that matches what actually plays last, not a silently-reordered one.
   const steps: Step<string>[] = [
     { at: 3, state: "a" },
@@ -245,7 +245,7 @@ test("proximityWeight: 0 exactly one row away", () => {
   assert.equal(proximityWeight(2, 1), 0);
 });
 
-test("proximityWeight: symmetric — same distance either direction gives the same weight", () => {
+test("proximityWeight: symmetric: same distance either direction gives the same weight", () => {
   assert.equal(proximityWeight(2, 2.5), proximityWeight(2, 1.5));
 });
 
@@ -276,7 +276,7 @@ test("stackLayout: places sit inside the safe zone, in every orientation", () =>
   }
 });
 
-test("stackLayout: no two placed rows collide — strictly increasing, evenly spaced", () => {
+test("stackLayout: no two placed rows collide: strictly increasing, evenly spaced", () => {
   const places = stackLayout(4, "landscape", SAFE_LANDSCAPE);
   for (let i = 1; i < places.length; i++) {
     assert.ok(places[i].y > places[i - 1].y, "rows must be strictly increasing");
@@ -324,7 +324,7 @@ test("occupancy: half-entered, not leaving, is 0.5", () => {
   assert.equal(occupancy(0.5, 0), 0.5);
 });
 
-test("stackOffset: a 3-toast fixture with staggered enter/leave — offsets sum only the toasts above", () => {
+test("stackOffset: a 3-toast fixture with staggered enter/leave: offsets sum only the toasts above", () => {
   const items = [
     { occupancy: occupancy(1, 0), height: 100 }, // toast 0: fully in
     { occupancy: occupancy(1, 0), height: 100 }, // toast 1: fully in
@@ -340,7 +340,7 @@ test("stackOffset: a toast that has left contributes nothing to slots below it",
     { occupancy: occupancy(1, 1), height: 100 }, // toast 0: fully left, occupancy 0
     { occupancy: occupancy(1, 0), height: 100 }, // toast 1: fully in
   ];
-  assert.equal(stackOffset(items, 1), 0); // toast 0 contributes nothing — the stack closed up
+  assert.equal(stackOffset(items, 1), 0); // toast 0 contributes nothing. The stack closed up
 });
 
 import { checklistDuration, checklistSchedule } from "./core-math.ts";
@@ -423,7 +423,7 @@ test("flipInterpolate: t=0.5 is the midpoint on every field", () => {
 
 import { codeLivePreviewSchedule } from "./core-math.ts";
 
-test("codeLivePreviewSchedule: a 3-preview fixture — arrival frame grows with each preview's line", () => {
+test("codeLivePreviewSchedule: a 3-preview fixture: arrival frame grows with each preview's line", () => {
   const code = ['import { z } from "zod";', "", "export const schema = z.object({", "  name: z.string(),", "});"].join(
     "\n",
   );

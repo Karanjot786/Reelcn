@@ -5,7 +5,7 @@
  * @duration data-driven
  * @use Demonstrating a click path through a UI mockup, dashboard or website
  * @use Drawing the eye to a button just before a `toast` or `callout` appears
- * @avoid A static pointer aimed at one target — use `arrow`
+ * @avoid A static pointer aimed at one target. Use `arrow`
  * @tags cursor, pointer, mouse, click, demo, walkthrough
  * @example
  * <AbsoluteFill>
@@ -53,7 +53,7 @@ export type CursorWaypoint = {
 export type CursorProps = MotionProps & {
   waypoints: CursorWaypoint[];
   /**
-   * A kit anchor as one more destination, appended after `waypoints` — equivalent to a literal waypoint,
+   * A kit anchor as one more destination, appended after `waypoints`, equivalent to a literal waypoint,
    * not a replacement for one (§2's anchor proof: a cursor pointed at a kit anchor renders pixel-identical
    * to the same cursor pointed at the anchor's own literal `%` rect). Arrives `frame` frames after the
    * last waypoint (default 20) and clicks, unless overridden.
@@ -70,7 +70,7 @@ export type CursorProps = MotionProps & {
 
 const clamp01 = (value: number) => Math.min(Math.max(value, 0), 1);
 
-// A plain arrow pointer, tip at the origin — no OS or brand cursor glyph.
+// A plain arrow pointer, tip at the origin, no OS or brand cursor glyph.
 const POINTER = "M0 0 L0 15.5 L3.6 12.1 L6.1 18.3 L8.6 17.3 L6.2 11.2 L11 11.2 Z";
 
 export function Cursor({
@@ -89,10 +89,10 @@ export function Cursor({
   const m = useMotion({ ...motion, exit });
   const fill = color ?? theme.colors.foreground;
   const ring = ringColor ?? theme.colors.accent;
-  // `target` resolves to one literal waypoint, appended after `waypoints` — computed independently from
+  // `target` resolves to one literal waypoint, appended after `waypoints`, computed independently from
   // the same `anchors` map a kit component's own render already produced this frame; no publishing.
   // Throws on a missing id (ponytail-review should-fix 4: the same `requireAnchor` contract every other
-  // `target` consumer uses — a silent no-op here would hide a typo instead of surfacing it).
+  // `target` consumer uses, a silent no-op here would hide a typo instead of surfacing it).
   const resolved = target ? requireAnchor(target.anchors, target.id, "Cursor") : undefined;
   const withTarget: CursorWaypoint[] = resolved
     ? waypoints.concat([

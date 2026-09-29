@@ -5,7 +5,7 @@
  * @duration 18
  * @use Circling a number, button or face in a screenshot or recording
  * @use Marking the one thing viewers should look at in a busy frame
- * @avoid Pointing at something from a distance — use `arrow`
+ * @avoid Pointing at something from a distance. Use `arrow`
  * @tags annotation, circle, marker, hand-drawn, doodle
  * @example
  * <ScribbleCircle target={{ x: 65, y: 29, width: 23, height: 17 }} />

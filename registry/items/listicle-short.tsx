@@ -5,7 +5,7 @@
  * @duration data-driven
  * @use "Three ways to…" and top-five shorts
  * @use Splitting a blog post into a quick video
- * @avoid Mixed scene types — use `storyboard`
+ * @avoid Mixed scene types. Use `storyboard`
  * @tags listicle, list, short, top, template
  * @example
  * <Composition

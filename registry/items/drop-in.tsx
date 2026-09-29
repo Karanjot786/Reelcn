@@ -5,7 +5,7 @@
  * @duration 30
  * @use Playful announcements, drops and release titles
  * @use Friendly, casual brands
- * @avoid Serious or premium tone — use `blur-in`
+ * @avoid Serious or premium tone. Use `blur-in`
  * @tags drop, fall, playful, headline
  * @preset text-reveal
  * @example

@@ -5,7 +5,7 @@
  * @duration 100
  * @use Showing audience love for a clip, a hot take or a product reveal
  * @use Social proof in short-form and live-stream style edits
- * @avoid A single celebratory moment — use `confetti`
+ * @avoid A single celebratory moment. Use `confetti`
  * @tags reactions, hearts, likes, live, social, float
  * @example
  * <Sequence from={30} durationInFrames={120}>

@@ -5,7 +5,7 @@
  * @duration data-driven
  * @use Shorts, reels and talking-head videos that need burned-in captions
  * @use Podcast and tutorial clips watched without sound
- * @avoid A single static line of text — use `text-reveal`
+ * @avoid A single static line of text. Use `text-reveal`
  * @tags captions, subtitles, karaoke, shorts, accessibility
  * @example
  * import captions from "../../public/captions/talk.json";
@@ -178,7 +178,7 @@ function CaptionPage({
   const fontPx = u(size) * Math.min(1, 26 / Math.max(26, characters));
   const enter = tween(frame, fps, { duration: Math.round(fps * 0.18), motion: "snappy" });
   const stack = variant === "word-stack";
-  // Asymmetric ramp: 4 frames to snap up to the peak scale, 9 to settle back down — reads as a real
+  // Asymmetric ramp: 4 frames to snap up to the peak scale, 9 to settle back down. Reads as a real
   // emphasis pop, not a symmetric pulse (spec P2-6a). `active` is computed per-word below; this is the
   // shape of the ramp, evaluated per-word at its own fromMs/toMs.
   const emphasisScale = (activeSinceFrames: number) =>
@@ -278,7 +278,7 @@ function CaptionPage({
     if (!pill) {
       // The scale transform above doesn't reserve layout space, so at peak scale the word can
       // touch its neighbors. Reserve a matching horizontal gap sized off the same `scale` and the
-      // word's own character count (in `ch`, so it tracks glyph width without measuring the DOM) —
+      // word's own character count (in `ch`, so it tracks glyph width without measuring the DOM),
       // a longer word overflows its box by more absolute space at the same scale, so it needs a
       // proportionally wider gap.
       const gap = `${((scale - 1) / 2) * token.text.trim().length}ch`;
@@ -288,7 +288,7 @@ function CaptionPage({
         </span>
       );
     }
-    // chromewave: a real filled pill behind the active word, sized with padding and font-size — not a
+    // chromewave: a real filled pill behind the active word, sized with padding and font-size, not a
     // CSS transform:scale() on a fixed box, which doesn't reserve layout space and clips neighboring
     // text (the exact bug the approved theme mockups fixed; see out/theme-proposals/README.md's
     // "rendering fixes" note).

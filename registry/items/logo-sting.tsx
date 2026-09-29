@@ -5,7 +5,7 @@
  * @duration data-driven
  * @use A brand's own logo mark drawing itself, not a generic "LOGO" placeholder
  * @use The opening or closing beat of `brand-reel`
- * @avoid A logo that needs to keep moving after it lands — pair with `svg-draw` directly instead
+ * @avoid A logo that needs to keep moving after it lands. Pair with `svg-draw` directly instead
  * @tags logo, sting, draw, brand, sfx
  * @example
  * <Center>
@@ -45,7 +45,7 @@ export function LogoSting({
   const { u } = useViewport();
   const { fps } = useVideoConfig();
   // A sting's whole point is to snap into place and hold (M3: pixel-static, logo still visible, for the
-  // final second) — `useMotion`'s own default (`exit: true`) would auto-fade it out before that hold ever
+  // final second), `useMotion`'s own default (`exit: true`) would auto-fade it out before that hold ever
   // starts, since `holdFrames` there only pulls the exit's own end *earlier*, never suppresses it. Default
   // to no exit; a caller who explicitly wants one still gets it (`exit`/`holdFrames` stay public props).
   const m = useMotion({ exit: false, ...motion, holdFrames: holdFrames ?? fps });

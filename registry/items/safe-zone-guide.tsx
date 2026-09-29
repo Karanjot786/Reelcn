@@ -5,7 +5,7 @@
  * @duration 24
  * @use Checking a caption, lower third or button clears a platform's UI before publishing
  * @use Auditing a layout across 16:9, 9:16 and 1:1 while building a component
- * @avoid Shipping in the final render — this is a development-time guide, not a look
+ * @avoid Shipping in the final render. This is a development-time guide, not a look
  * @tags safe-zone, guide, dev, platform, tiktok, reels, shorts, youtube
  * @example
  * <SafeZoneGuide platform="tiktok" />

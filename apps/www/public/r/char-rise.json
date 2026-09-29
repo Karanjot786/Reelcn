@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "registry/items/char-rise.tsx",
-      "content": "/**\n * @title Char Rise\n * @category text\n * @description A short word or name whose characters rise in one after another.\n * @duration 30\n * @use Single words, names and short brand lines\n * @use Big title cards with only a few letters\n * @avoid Sentences longer than a few words — use `rise-up`\n * @tags characters, letters, stagger, rise, title\n * @preset text-reveal\n * @example\n * <Center>\n *   <CharRise text=\"Launch day\" size={150} />\n * </Center>\n */\nimport { TextReveal, type TextRevealProps } from \"./text-reveal\";\n\nexport type CharRiseProps = Omit<TextRevealProps, \"effect\" | \"split\">;\n\nexport function CharRise(props: CharRiseProps) {\n  return <TextReveal {...props} split=\"char\" effect=\"rise\" />;\n}\n",
+      "content": "/**\n * @title Char Rise\n * @category text\n * @description A short word or name whose characters rise in one after another.\n * @duration 30\n * @use Single words, names and short brand lines\n * @use Big title cards with only a few letters\n * @avoid Sentences longer than a few words. Use `rise-up`\n * @tags characters, letters, stagger, rise, title\n * @preset text-reveal\n * @example\n * <Center>\n *   <CharRise text=\"Launch day\" size={150} />\n * </Center>\n */\nimport { TextReveal, type TextRevealProps } from \"./text-reveal\";\n\nexport type CharRiseProps = Omit<TextRevealProps, \"effect\" | \"split\">;\n\nexport function CharRise(props: CharRiseProps) {\n  return <TextReveal {...props} split=\"char\" effect=\"rise\" />;\n}\n",
       "type": "registry:file",
       "target": "~/src/reelcn/char-rise.tsx"
     }
@@ -22,7 +22,7 @@
       "Big title cards with only a few letters"
     ],
     "avoid": [
-      "Sentences longer than a few words — use `rise-up`"
+      "Sentences longer than a few words. Use `rise-up`"
     ],
     "tags": [
       "characters",

@@ -5,8 +5,8 @@
  * @duration 45
  * @use Revenue, users, downloads and other headline metrics
  * @use Prices and percentages that should tick up on screen
- * @avoid A metric with a label and a change indicator — use `stat-counter`
- * @avoid Several metrics at once — use `kpi-grid`
+ * @avoid A metric with a label and a change indicator. Use `stat-counter`
+ * @avoid Several metrics at once. Use `kpi-grid`
  * @tags number, count up, odometer, metric, stat
  * @example
  * <Center>

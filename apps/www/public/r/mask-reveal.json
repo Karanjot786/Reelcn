@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "registry/items/mask-reveal.tsx",
-      "content": "/**\n * @title Mask Reveal\n * @category text\n * @description Headline whose words slide up from behind an invisible edge, as if uncovered by a mask.\n * @duration 30\n * @use Editorial and cinematic titles\n * @use Crisp reveals where fading would feel soft\n * @avoid Multi-line statements that should arrive line by line — use `line-slide`\n * @tags mask, clip, reveal, editorial, headline\n * @preset text-reveal\n * @example\n * <Center>\n *   <MaskReveal text=\"Made for vertical first\" />\n * </Center>\n */\nimport { TextReveal, type TextRevealProps } from \"./text-reveal\";\n\nexport type MaskRevealProps = Omit<TextRevealProps, \"effect\">;\n\nexport function MaskReveal(props: MaskRevealProps) {\n  return <TextReveal {...props} effect=\"mask\" />;\n}\n",
+      "content": "/**\n * @title Mask Reveal\n * @category text\n * @description Headline whose words slide up from behind an invisible edge, as if uncovered by a mask.\n * @duration 30\n * @use Editorial and cinematic titles\n * @use Crisp reveals where fading would feel soft\n * @avoid Multi-line statements that should arrive line by line. Use `line-slide`\n * @tags mask, clip, reveal, editorial, headline\n * @preset text-reveal\n * @example\n * <Center>\n *   <MaskReveal text=\"Made for vertical first\" />\n * </Center>\n */\nimport { TextReveal, type TextRevealProps } from \"./text-reveal\";\n\nexport type MaskRevealProps = Omit<TextRevealProps, \"effect\">;\n\nexport function MaskReveal(props: MaskRevealProps) {\n  return <TextReveal {...props} effect=\"mask\" />;\n}\n",
       "type": "registry:file",
       "target": "~/src/reelcn/mask-reveal.tsx"
     }
@@ -22,7 +22,7 @@
       "Crisp reveals where fading would feel soft"
     ],
     "avoid": [
-      "Multi-line statements that should arrive line by line — use `line-slide`"
+      "Multi-line statements that should arrive line by line. Use `line-slide`"
     ],
     "tags": [
       "mask",

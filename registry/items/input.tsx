@@ -5,7 +5,7 @@
  * @duration data-driven
  * @use A sign-up or checkout field a cursor clicks into and types
  * @use A `ui` scene's `component: "input"`
- * @avoid A field that never receives focus — use plain text
+ * @avoid A field that never receives focus. Use plain text
  * @tags input, field, form, typing, ui, kit
  * @example
  * <Center>
@@ -51,7 +51,7 @@ export const FIELD_WIDTH = 340;
 export const FIELD_HEIGHT = 52;
 const PAD_X = 16;
 const FONT_SIZE = 20;
-/** Characters per second the field types at — fixed, independent of the step's own `at` spacing (the bug
+/** Characters per second the field types at, fixed, independent of the step's own `at` spacing (the bug
  * this row fixes: remocn ties typing speed to transition length instead of a real CPS). */
 const INPUT_CPS = 14;
 
@@ -71,7 +71,7 @@ function typingStepAt<S>(
 }
 
 /** The field's displayed text: live-typed from the applicable step, or the static `value`. Evaluated
- * identically by `Input` and `useInputAnchors` — same inputs, same formula, computed twice. */
+ * identically by `Input` and `useInputAnchors`, same inputs, same formula, computed twice. */
 function useDisplayedValue(
   steps: Step<InputState>[] | undefined,
   value: string | undefined,
@@ -84,7 +84,7 @@ function useDisplayedValue(
   return useTypedText(typing.text, frame - typing.startFrame, fps, { cps: INPUT_CPS }).visible;
 }
 
-/** Pure: fixed field proportions — the overall box never depends on the displayed text (only the
+/** Pure: fixed field proportions, the overall box never depends on the displayed text (only the
  * `.caret` sub-anchor would, and the `ui` scene never needs sub-anchors; see Deviation 4a). Shared by
  * `useInputAnchors` and the `ui` scene (Task 9), ponytail-review blocker 2's "one formula" contract. */
 export function inputBoxSize(u: (n: number) => number) {
@@ -133,7 +133,7 @@ export function Input({ id: _id, label, steps, value, placeholder, place, style,
   const isFocused = state === "active" || state === "typing";
   const borderColor = isInvalid ? theme.colors.danger : isFocused ? theme.colors.accent : theme.colors.border;
   const shownText = displayed || placeholder || "";
-  // T1: a long typed value (past ~30 chars) ran past the field's right edge onto the background — the
+  // T1: a long typed value (past ~30 chars) ran past the field's right edge onto the background, the
   // field's own box must stay `FIELD_WIDTH`/`FIELD_HEIGHT` throughout (the ai-generation template flips
   // this exact box into a skeleton), so the text shrinks to fit instead, the same "measure, then scale
   // the font" approach `CodeBlock`/`Button` already use for their own fixed-box text.

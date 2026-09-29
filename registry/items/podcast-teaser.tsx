@@ -4,7 +4,7 @@
  * @description Vertical teaser cut from a podcast: one clip of the audio with its waveform, the show, and a pull quote.
  * @duration data-driven
  * @use Promoting an episode with its best thirty seconds
- * @avoid Whole episodes or segments with captions — use `audiogram`
+ * @avoid Whole episodes or segments with captions. Use `audiogram`
  * @tags podcast, teaser, clip, short, template
  * @example
  * <Composition

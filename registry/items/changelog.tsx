@@ -5,7 +5,7 @@
  * @duration data-driven
  * @use Monthly or per-release update videos
  * @use Turning a changelog page into something people watch
- * @avoid A whole product story — use `product-launch`
+ * @avoid A whole product story. Use `product-launch`
  * @tags changelog, release, updates, product, template
  * @example
  * <Composition

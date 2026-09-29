@@ -30,7 +30,7 @@ export type WhipPanProps = {
   strength?: number;
 };
 
-/** Sharper than a plain parabola — the research's own whip pan uses `p≈3`. */
+/** Sharper than a plain parabola, the research's own whip pan uses `p≈3`. */
 const PUNCH_EXPONENT = 3;
 
 function WhipPanPresentation({

@@ -1,11 +1,11 @@
 /**
  * @title Redact
  * @category product
- * @description Covers one or more rectangles with an opaque fill and a blur or pixelate effect on top — the opaque fill always renders, so the region is covered even if the effect layer doesn't.
+ * @description Covers one or more rectangles with an opaque fill and a blur or pixelate effect on top. The opaque fill always renders, so the region is covered even if the effect layer doesn't.
  * @duration 1
  * @use Hiding an API key, email or account number in a real screenshot or screen recording
  * @use Covering a sensitive panel in a dashboard demo without cropping it out
- * @avoid A region that should stay fully visible — this always covers, never partially
+ * @avoid A region that should stay fully visible. This always covers, never partially
  * @tags redact, blur, pixelate, privacy, censor
  * @example
  * <BrowserWindow url="app.dev">
@@ -20,7 +20,7 @@ import type { CalloutRect } from "./callout";
 import { type MotionProps, redactRectBudget, useMotion, useTheme, useViewport } from "./core";
 
 export type RedactProps = MotionProps & {
-  /** Areas to cover, in % of canvas — same shape `callout`'s `target` uses. At most 8 (`redactRectBudget`). */
+  /** Areas to cover, in % of canvas, same shape `callout`'s `target` uses. At most 8 (`redactRectBudget`). */
   rects: CalloutRect[];
   mode?: "pixelate" | "blur";
   /** Blur radius, or pixelate cell size, in design units. */

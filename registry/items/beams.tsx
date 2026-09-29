@@ -5,7 +5,7 @@
  * @duration sustained
  * @use Launch reveals, award-style titles and event promos
  * @use Adding energy behind a logo or headline without busy shapes
- * @avoid A single soft pool of light — use `spotlight`
+ * @avoid A single soft pool of light. Use `spotlight`
  * @tags beams, light rays, stage, sweep, god rays
  * @example
  * <AbsoluteFill>

@@ -5,7 +5,7 @@
  * @duration data-driven
  * @use A logo mark, icon or custom illustration drawing itself on screen
  * @use Sketching a diagram or shape that a `callout` or label then points at
- * @avoid A single hand-drawn circle or arrow — use `scribble-circle` or `arrow`
+ * @avoid A single hand-drawn circle or arrow. Use `scribble-circle` or `arrow`
  * @tags svg, draw, path, icon, illustration, line art
  * @example
  * <Center>
@@ -22,7 +22,7 @@ export type SvgDrawProps = MotionProps & {
   viewBox: string;
   /** Stroke color. Defaults to the theme foreground. */
   color?: string;
-  /** In `viewBox` units, not design units — it scales with the drawing, like an icon's stroke. */
+  /** In `viewBox` units, not design units, it scales with the drawing, like an icon's stroke. */
   strokeWidth?: number;
   /** Frames between one path's draw and the next. Defaults to 0.15s. */
   step?: number;

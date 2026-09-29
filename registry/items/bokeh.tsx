@@ -5,7 +5,7 @@
  * @duration sustained
  * @use Warm, celebratory or lifestyle scenes: holidays, thank-yous, testimonials
  * @use A soft, cinematic backdrop behind quotes and names
- * @avoid Tiny pin-sharp points of light — use `starfield`
+ * @avoid Tiny pin-sharp points of light. Use `starfield`
  * @tags bokeh, lights, blur, depth, particles
  * @example
  * <AbsoluteFill>

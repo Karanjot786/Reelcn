@@ -5,7 +5,7 @@
  * @duration data-driven
  * @use Social proof for a landing page or an ad
  * @use Collecting launch-day reactions into one clip
- * @avoid One quote on its own — use `quote-card`
+ * @avoid One quote on its own. Use `quote-card`
  * @tags testimonials, quotes, social proof, template
  * @example
  * <Composition

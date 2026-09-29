@@ -5,7 +5,7 @@
  * @duration sustained
  * @use Making a logo, headline or card move with the track
  * @use Reacting to a voice whose tempo you do not know
- * @avoid A known BPM, where pure math is steadier — use `use-beat`
+ * @avoid A known BPM, where pure math is steadier. Use `use-beat`
  * @tags audio, reactive, pulse, wrapper
  * @example
  * <AudioReactive src={staticFile("track.mp3")} effect="both">

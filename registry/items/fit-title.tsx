@@ -5,7 +5,7 @@
  * @duration 30
  * @use Big one-word or short titles that should fill the frame at every aspect ratio
  * @use Titles of unknown length, such as data-driven names or chapter titles
- * @avoid Headlines that should wrap onto several lines — use `text-reveal`
+ * @avoid Headlines that should wrap onto several lines. Use `text-reveal`
  * @tags fit, auto size, responsive, title, big type
  * @example
  * <Center>

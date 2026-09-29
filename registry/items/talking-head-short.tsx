@@ -5,7 +5,7 @@
  * @duration data-driven
  * @use Turning a recorded explanation or interview answer into a short
  * @use Captioned clips for feeds that autoplay muted
- * @avoid Captions over a layout you build yourself — use `captions`
+ * @avoid Captions over a layout you build yourself. Use `captions`
  * @tags short, captions, talking head, creator, template
  * @example
  * <Composition

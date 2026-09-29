@@ -5,7 +5,7 @@
  * @duration 45
  * @use The last five seconds of a video, or right after a payoff
  * @use Any moment that asks for one specific action
- * @avoid Several competing asks at once — show one call to action
+ * @avoid Several competing asks at once, show one call to action
  * @tags cta, subscribe, bell, youtube
  * @example
  * <Sequence from={120} durationInFrames={90}>

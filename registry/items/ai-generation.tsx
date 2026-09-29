@@ -1,11 +1,11 @@
 /**
  * @title Ai Generation
  * @category templates
- * @description A prompt types into a neutral input, then morphs into a skeleton loader and flips into result cards — one continuous rect drives the box, a 3D flip drives the cards.
+ * @description A prompt types into a neutral input, then morphs into a skeleton loader and flips into result cards. One continuous rect drives the box, a 3D flip drives the cards.
  * @duration data-driven
  * @use An AI product's core generate-and-see-results loop
  * @use Any "type a prompt, get structured results" launch demo
- * @avoid A branded chat-bubble look — this stays neutral (no ChatGPT-style chrome)
+ * @avoid A branded chat-bubble look. This stays neutral (no ChatGPT-style chrome)
  * @tags ai, generation, prompt, skeleton, flip, template
  * @example
  * <Composition
@@ -170,7 +170,7 @@ export function aiGenerationStory(props: AiGenerationProps): Story {
   const scenes: (Scene | CustomScene)[] = [
     { type: "ai-generation-beat", prompt: props.prompt, resultCards: props.resultCards } as CustomScene,
   ];
-  // One array-level cast, not per-scene `any` — see brand-reel.tsx's own note (Task 15).
+  // One array-level cast, not per-scene `any`. See brand-reel.tsx's own note (Task 15).
   return templateStory(props, scenes as Scene[]);
 }
 
@@ -181,8 +181,8 @@ export function AiGeneration(props: AiGenerationProps) {
 }
 
 // Not `templateMetadata(aiGenerationStory)`: that helper calls `storyFrames(story)` with no custom scene
-// rules, and this story's one scene is the template-local `defineScene` type above ("ai-generation-beat")
-// — without its rule, `sceneSeconds` falls through to `Scene`'s own switch, matches no case, and returns
+// rules, and this story's one scene is the template-local `defineScene` type above ("ai-generation-beat").
+// Without its rule, `sceneSeconds` falls through to `Scene`'s own switch, matches no case, and returns
 // `undefined`, making `durationInFrames` NaN (same failure mode documented in product-launch.tsx).
 export const aiGenerationMetadata: CalculateMetadataFunction<AiGenerationProps> = ({ props }) => ({
   durationInFrames: storyFrames(aiGenerationStory(props), aiGenerationScenes),

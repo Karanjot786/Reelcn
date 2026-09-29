@@ -5,7 +5,7 @@
  * @duration 40
  * @use Turning a post into a video without copying any platform's interface
  * @use Showing praise or a quote in a shareable form
- * @avoid Attributed praise from a customer — use `quote-card`
+ * @avoid Attributed praise from a customer. Use `quote-card`
  * @tags post, social, card, quote
  * @example
  * <Center>

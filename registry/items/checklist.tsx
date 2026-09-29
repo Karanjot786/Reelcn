@@ -5,7 +5,7 @@
  * @duration data-driven
  * @use A features/setup-steps list that completes itself in a product demo
  * @use Any "here's everything done" beat that shouldn't feel mechanically linear
- * @avoid A single item — use plain text with `svg-draw`'s check path directly
+ * @avoid A single item. Use plain text with `svg-draw`'s check path directly
  * @tags checklist, checkmark, list, tasks, stagger
  * @example
  * <Center>

@@ -4,7 +4,7 @@
  * @description Channel opener: the channel mark, then the video's title, joined by an accent sweep.
  * @duration data-driven
  * @use The first seconds of a YouTube video or a series episode
- * @avoid End cards — use `youtube-outro`
+ * @avoid End cards. Use `youtube-outro`
  * @tags youtube, intro, opener, channel, template
  * @example
  * <Composition

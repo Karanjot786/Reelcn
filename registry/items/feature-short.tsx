@@ -5,7 +5,7 @@
  * @duration data-driven
  * @use Social shorts that show off a single feature
  * @use Weekly "did you know" clips for a product
- * @avoid A full product story — use `product-launch`
+ * @avoid A full product story. Use `product-launch`
  * @tags short, feature, product, vertical, template
  * @example
  * <Composition

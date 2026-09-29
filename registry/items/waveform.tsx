@@ -5,7 +5,7 @@
  * @duration sustained
  * @use Audiograms and podcast clips
  * @use Any full-bleed band of motion tied to a voice or a track
- * @avoid A frequency view — use `spectrum`
+ * @avoid A frequency view. Use `spectrum`
  * @tags waveform, audiogram, podcast, audio
  * @example
  * <Waveform src={staticFile("episode.mp3")} variant="mirror" bars={64} />
@@ -107,7 +107,7 @@ export function Waveform({
     >
       {samples.map((value, index) => {
         // `visualizeAudioWaveform`'s minus-one-to-one range alternates sign per index
-        // as a drawing convention, not a real polarity — bar height needs magnitude.
+        // as a drawing convention, not a real polarity, bar height needs magnitude.
         const size = Math.max(u(4), Math.min(1, Math.abs(value) * gain) * band);
         return (
           <div

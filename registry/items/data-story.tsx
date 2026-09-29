@@ -5,7 +5,7 @@
  * @duration data-driven
  * @use Quarterly results, year-in-review and research findings
  * @use Turning a dashboard into a narrated walkthrough
- * @avoid A single number — use `stat-counter`
+ * @avoid A single number. Use `stat-counter`
  * @tags data, charts, report, stats, template
  * @example
  * <Composition

@@ -1,11 +1,11 @@
 /**
  * @title Layout Morph
  * @category motion
- * @description Images rearrange between named layouts (grid, mosaic, strip) with a closed-form tile morph — each image is always rendered full-canvas and only its clip-path window moves, so nothing ever reflows or distorts mid-morph.
+ * @description Images rearrange between named layouts (grid, mosaic, strip) with a closed-form tile morph: each image is always rendered full-canvas and only its clip-path window moves, so nothing ever reflows or distorts mid-morph.
  * @duration data-driven
  * @use A brand collage or portfolio grid that rearranges itself
  * @use Any beat that needs several images to feel like one continuous composition, not a cut
- * @avoid Two images — use `split-screen` or a plain crossfade
+ * @avoid Two images. Use `split-screen` or a plain crossfade
  * @tags layout, morph, grid, mosaic, collage, flip
  * @example
  * <LayoutMorph

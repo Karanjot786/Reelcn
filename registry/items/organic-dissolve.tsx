@@ -30,7 +30,7 @@ export type OrganicDissolveProps = {
   grain?: number;
 };
 
-/** A small, fixed string hash — deterministic, not `Math.random` — turned into `feTurbulence`'s numeric `seed`. */
+/** A small, fixed string hash, deterministic, not `Math.random`, turned into `feTurbulence`'s numeric `seed`. */
 function seedToNumber(seed: string): number {
   let hash = 0;
   for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) % 1000;
@@ -52,7 +52,7 @@ function OrganicDissolvePresentation({
   // The exiting scene stays fully opaque underneath for the whole transition; only the entering scene
   // dissolves in on top via the grain mask below, across the full 0→1 progress. coverPhase's sequential
   // cover/reveal split (cover 1→0 on [0, 0.5], reveal 0→1 on [0.5, 1]) made both layers hit 0 at the
-  // p=0.5 swap point — a flat black frame — which is right for a hard cover/reveal transition (one layer
+  // p=0.5 swap point, a flat black frame, which is right for a hard cover/reveal transition (one layer
   // is meant to fully occlude the other) but wrong for a cross-dissolve, where both scenes must be
   // visibly mixed at the midpoint. Same fix as rack-focus.tsx's opaque exiting layer.
   if (exiting) return <AbsoluteFill>{children}</AbsoluteFill>;
@@ -71,7 +71,7 @@ function OrganicDissolvePresentation({
   // roughly [0, 1], not [-1, 1]), so grains disappear/appear in the same organic pattern the noise
   // already drew instead of a uniform cross-fade. Centering that sweep on `revealAmount - 1` (rather
   // than `- 0.5`) means the threshold only clears the alpha channel's real range at revealAmount ≈ 1,
-  // not ≈ 0.5 — otherwise the whole dissolve finishes by the transition's own halfway point and its
+  // not ≈ 0.5, otherwise the whole dissolve finishes by the transition's own halfway point and its
   // true midpoint renders as a plain, fully-revealed frame instead of a visible mix of both scenes.
   const cutoff = (revealAmount - 1) * 24;
 

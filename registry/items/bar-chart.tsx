@@ -5,8 +5,8 @@
  * @duration 40
  * @use Comparing a handful of categories: revenue by quarter, survey answers, signups by channel
  * @use Calling out one bar in the accent while the rest stay muted
- * @avoid Rankings that change over time — use `bar-race`
- * @avoid Trends across many points — use `line-chart`
+ * @avoid Rankings that change over time. Use `bar-race`
+ * @avoid Trends across many points. Use `line-chart`
  * @tags chart, bar, column, compare, data
  * @example
  * <Center>

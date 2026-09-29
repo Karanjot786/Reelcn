@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "registry/items/captions-neon.tsx",
-      "content": "/**\n * @title Captions: Neon\n * @category social\n * @description Captions where the spoken word glows in the accent color.\n * @duration data-driven\n * @preset captions\n * @use Night-time and club footage, music clips\n * @avoid Corporate or documentary footage — use `captions-minimal`\n * @tags captions, neon, glow, music\n * @example\n * <CaptionsNeon captions={captions} />\n */\nimport { Captions, type CaptionsProps } from \"./captions\";\n\nexport type CaptionsNeonProps = Omit<CaptionsProps, \"variant\">;\n\nexport function CaptionsNeon(props: CaptionsNeonProps) {\n  return <Captions {...props} variant=\"neon\" />;\n}\n",
+      "content": "/**\n * @title Captions: Neon\n * @category social\n * @description Captions where the spoken word glows in the accent color.\n * @duration data-driven\n * @preset captions\n * @use Night-time and club footage, music clips\n * @avoid Corporate or documentary footage. Use `captions-minimal`\n * @tags captions, neon, glow, music\n * @example\n * <CaptionsNeon captions={captions} />\n */\nimport { Captions, type CaptionsProps } from \"./captions\";\n\nexport type CaptionsNeonProps = Omit<CaptionsProps, \"variant\">;\n\nexport function CaptionsNeon(props: CaptionsNeonProps) {\n  return <Captions {...props} variant=\"neon\" />;\n}\n",
       "type": "registry:file",
       "target": "~/src/reelcn/captions-neon.tsx"
     }
@@ -21,7 +21,7 @@
       "Night-time and club footage, music clips"
     ],
     "avoid": [
-      "Corporate or documentary footage — use `captions-minimal`"
+      "Corporate or documentary footage. Use `captions-minimal`"
     ],
     "tags": [
       "captions",

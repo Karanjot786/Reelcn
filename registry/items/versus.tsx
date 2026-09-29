@@ -5,7 +5,7 @@
  * @duration 70
  * @use Plan or tier comparisons, before/after specs, us-vs-them feature tables
  * @use Three to eight rows mixing numbers, yes/no features and short text
- * @avoid A single trend over time — use `line-chart`
+ * @avoid A single trend over time. Use `line-chart`
  * @tags compare, comparison, table, plans, pricing, data
  * @example
  * <Center>

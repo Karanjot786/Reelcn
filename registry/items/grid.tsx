@@ -5,7 +5,7 @@
  * @duration sustained
  * @use Tech, developer and product scenes that want structure behind the content
  * @use Retro or futuristic openers with the perspective floor
- * @avoid A soft dotted texture — use `dots`
+ * @avoid A soft dotted texture. Use `dots`
  * @tags grid, lines, blueprint, perspective, synthwave, floor
  * @example
  * <AbsoluteFill>

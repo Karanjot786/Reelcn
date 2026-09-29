@@ -1,11 +1,11 @@
 /**
  * @title Toast Stack
  * @category product
- * @description Several toasts, staggered in time, that close up smoothly as each one leaves — a running sum of occupancy-weighted heights, no measured DOM.
+ * @description Several toasts, staggered in time, that close up smoothly as each one leaves: a running sum of occupancy-weighted heights, no measured DOM.
  * @duration data-driven
  * @use Several sequential confirmations or status updates in one product demo
  * @use Simulating a busy notification tray without hand-placing each card
- * @avoid A single notification — use `toast`
+ * @avoid A single notification. Use `toast`
  * @tags toast, stack, notification, queue
  * @example
  * <ToastStack
@@ -26,7 +26,7 @@ export type ToastStackProps = {
   edge?: ToastProps["edge"];
 };
 
-/** `ponytail:` `toast.tsx` exposes no height constant of its own (Deviation 7) — this is a hand-tuned
+/** `ponytail:` `toast.tsx` exposes no height constant of its own (Deviation 7), this is a hand-tuned
  * estimate matching its rendered card height, not a measurement. Upgrade path: keep in sync by eye if
  * `toast.tsx`'s own card height ever changes; both are already hand constants today. */
 const TOAST_HEIGHT = 96;
@@ -39,7 +39,7 @@ export function ToastStack({ toasts, edge }: ToastStackProps) {
   const { u, isPortrait } = useViewport();
   const slide = Math.round(fps * SLIDE_FRAMES_S);
   // `toast.tsx`'s own default (`edge ?? (isPortrait ? "top" : "bottom-right")`), re-derived here rather
-  // than read back from the child — two independent evaluations of the same inputs, never a child→parent read.
+  // than read back from the child, two independent evaluations of the same inputs, never a child→parent read.
   const resolvedEdge = edge ?? (isPortrait ? "top" : "bottom-right");
   // Toasts anchored from the top grow the stack downward, away from the anchor (positive offset).
   // Toasts anchored from the bottom must grow upward instead, or the stack would sink off the bottom edge.
@@ -60,7 +60,7 @@ export function ToastStack({ toasts, edge }: ToastStackProps) {
         // Each toast gets its own local timeline: `Toast`'s own `useMotion` anchors its exit window to
         // "the end of the parent Sequence" (`core.tsx`'s `useMotion` docs), so without a per-toast
         // `Sequence` its exit would fire at the end of the *whole* stack's duration for every toast at
-        // once, not on its own enter → hold → leave schedule — exactly the staggered-close the occupancy
+        // once, not on its own enter → hold → leave schedule, exactly the staggered-close the occupancy
         // math above assumes. `delay` is intentionally omitted: the Sequence's own `from` already rebases
         // `useCurrentFrame()` for everything inside it, so passing both would double the offset.
         <Sequence key={i} from={item.atFrame} durationInFrames={item.lifespan}>

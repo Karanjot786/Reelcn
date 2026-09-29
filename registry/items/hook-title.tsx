@@ -5,7 +5,7 @@
  * @duration 30
  * @use The first two seconds of a short, reel or TikTok
  * @use Restating the promise over b-roll halfway through
- * @avoid Full headlines in landscape video — use `text-reveal`
+ * @avoid Full headlines in landscape video. Use `text-reveal`
  * @tags hook, shorts, title, opening
  * @example
  * <Sequence durationInFrames={90}>

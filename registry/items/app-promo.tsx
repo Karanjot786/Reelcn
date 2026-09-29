@@ -5,7 +5,7 @@
  * @duration data-driven
  * @use App store previews and paid social ads
  * @use Showing a mobile or desktop app screen by screen
- * @avoid A web product in a browser window — use `product-launch`
+ * @avoid A web product in a browser window. Use `product-launch`
  * @tags app, promo, mobile, ad, template
  * @example
  * <Composition

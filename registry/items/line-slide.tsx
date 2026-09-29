@@ -5,7 +5,7 @@
  * @duration 30
  * @use Two- or three-line statements, with lines separated by "\n"
  * @use Manifesto-style sequences and closing statements
- * @avoid A single word or name — use `char-rise`
+ * @avoid A single word or name. Use `char-rise`
  * @tags lines, mask, slide, statement, stagger
  * @preset text-reveal
  * @example

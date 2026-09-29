@@ -5,7 +5,7 @@
  * @duration data-driven
  * @use Tech, security and launch reveals
  * @use Names, codes or numbers that should feel computed
- * @avoid Long sentences — use `text-reveal`
+ * @avoid Long sentences. Use `text-reveal`
  * @tags decode, cipher, glyphs, hacker, random
  * @example
  * <Center>

@@ -5,7 +5,7 @@
  * @duration 36
  * @use Section breaks in tutorials and long-form video
  * @use Naming the step a viewer is about to watch
- * @avoid A speaker's name — use `lower-third`
+ * @avoid A speaker's name. Use `lower-third`
  * @tags chapter, section, divider, tutorial
  * @example
  * <Sequence from={300} durationInFrames={110}>

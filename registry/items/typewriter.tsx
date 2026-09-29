@@ -5,8 +5,8 @@
  * @duration data-driven
  * @use Prompts, search queries and chat-style reveals
  * @use Quotes and statements that should read at speaking pace
- * @avoid Code listings — use `code-block`
- * @avoid Shell commands with output — use `terminal`
+ * @avoid Code listings. Use `code-block`
+ * @avoid Shell commands with output. Use `terminal`
  * @tags typing, caret, cursor, prompt, type on
  * @example
  * <Center>
@@ -158,7 +158,7 @@ export function Typewriter({
   const block = caret === "block";
 
   // Follow: the caret position `lag` frames ago, from the same reveal logic above evaluated at an
-  // earlier frame — always computed (cheap, pure), only measured/used when `follow` is set.
+  // earlier frame, always computed (cheap, pure), only measured/used when `follow` is set.
   const laggedFrame = Math.max(m.frame - (follow?.lag ?? 6), m.delay);
   const lagged = stateAt(laggedFrame);
   const laggedText = phrases[lagged.phrase].chars.slice(0, lagged.typed).join("");
@@ -174,8 +174,8 @@ export function Typewriter({
   const laggedLines = laggedText.split("\n").length - 1;
 
   // The div is centered horizontally by its usual layout (see the `@example`'s `<Center>`), and its
-  // rendered width never changes while typing — the hidden untyped tail below always reserves the full
-  // text's space — so the box's real screen-space origin is fixed and derivable from the *full* text's
+  // rendered width never changes while typing, the hidden untyped tail below always reserves the full
+  // text's space, so the box's real screen-space origin is fixed and derivable from the *full* text's
   // width. Without this, caret.x above was a bare local offset that implicitly assumed the box started
   // flush at the frame's left edge (x=0), which sent `follow`'s zoom off-frame for this, the default,
   // centered rendering (see CONTRIBUTING.md's `follow` guidance).

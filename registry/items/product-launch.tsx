@@ -5,7 +5,7 @@
  * @duration data-driven
  * @use Announcing a new product or a major version
  * @use A hero video for a landing page
- * @avoid One feature in a vertical short — use `feature-short`
+ * @avoid One feature in a vertical short. Use `feature-short`
  * @tags launch, product, saas, announcement, template
  * @example
  * <Composition
@@ -80,7 +80,7 @@ function DeviceStageScene({
     );
   // A slow push toward the screenshot's own center over the scene's whole length, instead of a static frame.
   // `BrowserWindow`/`LaptopFrame`/`PhoneFrame` are all documented (their own `@example`) to sit inside a
-  // `<Center>` — none of the three self-centers — so `PerspectiveStage`'s child is wrapped in one here;
+  // `<Center>`, none of the three self-centers, so `PerspectiveStage`'s child is wrapped in one here;
   // without it the frame renders flush to the AbsoluteFill's top-left corner instead of mid-canvas.
   return (
     <PerspectiveStage
@@ -112,7 +112,7 @@ const deviceStageScene = defineScene({
 // implementation it hasn't read (`remocn-ui-templates-platform.md:196` is cited, not available here).
 // This ships the buildable subset: the last feature and the CTA combined into one scene whose own
 // internal cut is a `flipInterpolate` move of one pill-shaped element from "feature CTA position" to
-// "CTA scene title position" — the same mechanism at a smaller, verifiable scope, not the full
+// "CTA scene title position", the same mechanism at a smaller, verifiable scope, not the full
 // two-scene Sequence-overlap version. Flag as a follow-up if the full cross-scene overlap is required.
 function FeatureCtaScene({
   lastFeatureTitle,
@@ -190,7 +190,7 @@ export function productLaunchStory(props: ProductLaunchProps): Story {
   const { name, tagline, features, screenshots, cta, url } = props;
   const logo: Scene[] = props.brand?.logo ? [{ type: "logo", text: name }] : [];
   const screens: (string | undefined)[] = screenshots.length > 0 ? screenshots : [undefined];
-  // K3/M1: one idea per scene — a single text/title scene per feature (not chunk(features, 2)'s
+  // K3/M1: one idea per scene, a single text/title scene per feature (not chunk(features, 2)'s
   // bullets grouping, and `chunk` is no longer imported), so each feature gets its own beat instead of
   // stacking two or three in one shot.
   const featureScenes: Scene[] = features.map(
@@ -213,7 +213,7 @@ export function productLaunchStory(props: ProductLaunchProps): Story {
       url,
     } as CustomScene,
   ];
-  // One array-level cast, not per-scene `any` — see brand-reel.tsx's own note (Task 15).
+  // One array-level cast, not per-scene `any`, see brand-reel.tsx's own note (Task 15).
   return templateStory(props, scenes as Scene[]);
 }
 
@@ -226,12 +226,12 @@ export function ProductLaunch(props: ProductLaunchProps) {
 
 // Not `templateMetadata(productLaunchStory)`: that helper calls `storyFrames(story)` with no custom
 // scene rules, and this story now carries the two template-local `defineScene` types above
-// ("device-stage", "feature-cta") — without their rules, `sceneSeconds` falls through to `Scene`'s own
+// ("device-stage", "feature-cta"), without their rules, `sceneSeconds` falls through to `Scene`'s own
 // switch, matches no case, and returns `undefined`, making `durationInFrames` NaN (reproduced locally:
 // Remotion's `validateDurationInFrames` throws "must be an integer, but got NaN" for the real
 // `<Composition id="ProductLaunch">` in apps/studio/src/Root.tsx, which still uses this export).
-// `storyFrames` itself already takes an optional `custom: CustomSceneRule[]` — the same list already
-// passed to `<Storyboard scenes={...}>` above — so passing it here keeps this composition's metadata
+// `storyFrames` itself already takes an optional `custom: CustomSceneRule[]`, the same list already
+// passed to `<Storyboard scenes={...}>` above, so passing it here keeps this composition's metadata
 // correct instead of widening `templateMetadata`'s own signature (shared by every other template).
 export const productLaunchMetadata: CalculateMetadataFunction<ProductLaunchProps> = ({ props }) => ({
   durationInFrames: storyFrames(productLaunchStory(props), productLaunchScenes),

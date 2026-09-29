@@ -3,9 +3,9 @@
  * @category product
  * @description Comparison slider: a divider with a handle wipes from one position to another, revealing "after" past it.
  * @duration 45
- * @use Redesigns, edits and upgrades — anything with a clear before and after state
+ * @use Redesigns, edits and upgrades: anything with a clear before and after state
  * @use A single screenshot that changes at one point, rather than two panes shown at once
- * @avoid Two panes shown side by side the whole time — use `split-screen`
+ * @avoid Two panes shown side by side the whole time. Use `split-screen`
  * @tags before after, comparison, slider, diff, reveal
  * @example
  * <BeforeAfter labels={["Before", "After"]} before={<OldUI />} after={<NewUI />} />

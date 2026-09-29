@@ -5,7 +5,7 @@
  * @duration data-driven
  * @use A confirmation or form modal in a UI-sim walkthrough, composing `button`/`input` as its body
  * @use A `ui` scene's `component: "dialog"`
- * @avoid A modal with no real content — use `callout`
+ * @avoid A modal with no real content. Use `callout`
  * @tags dialog, modal, popup, ui, kit
  * @example
  * <Dialog id="confirm" title="Delete staging-db-7?" steps={[{ at: 0, state: "closed" }, { at: 0.5, state: "open" }]} place={{ x: 50, y: 50 }}>
@@ -40,7 +40,7 @@ export const POPUP_WIDTH = 420;
 export const POPUP_HEIGHT = 220;
 const PAD = 28;
 
-/** Pure: capped by the safe zone — shared by `useDialogAnchors`, `Dialog` and the `ui` scene (Task 9),
+/** Pure: capped by the safe zone: shared by `useDialogAnchors`, `Dialog` and the `ui` scene (Task 9),
  * ponytail-review blocker 2's "one formula" contract. */
 export function dialogBoxSize(u: (n: number) => number, canvasWidth: number, safeX: number) {
   return { width: Math.min(u(POPUP_WIDTH), canvasWidth - safeX * 2), height: u(POPUP_HEIGHT) };
@@ -63,7 +63,7 @@ export function Dialog({ id: _id, steps, title, children, place, style, classNam
   const fromOpen = from === "open" ? 1 : 0;
   const toOpen = state === "open" ? 1 : 0;
   const openAmount = Math.max(0, Math.min(1, fromOpen + (toOpen - fromOpen) * progress));
-  // Same formula `useDialogAnchors` hands out as this dialog's anchor rect — the card's real box must
+  // Same formula `useDialogAnchors` hands out as this dialog's anchor rect, the card's real box must
   // match it, or a child placed by `place` (a % of *this* box, per its own containing-block CSS) lands
   // against a height the card never actually reserves (T1: an auto-height card sized to the title alone
   // put a `place={{y:60}}` button on top of the title instead of below it).

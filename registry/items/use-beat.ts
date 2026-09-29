@@ -5,7 +5,7 @@
  * @duration sustained
  * @use Cutting, popping or shaking anything in time with a music bed
  * @use Beat-synced motion when you know the track's BPM
- * @avoid Reacting to a voice or an unknown track — use `audio-reactive`
+ * @avoid Reacting to a voice or an unknown track. Use `audio-reactive`
  * @tags beat, bpm, rhythm, sync, hook
  * @example
  * const { pulse, beat } = useBeat({ bpm: 120 });

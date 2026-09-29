@@ -5,7 +5,7 @@
  * @duration data-driven
  * @use A small product or feature cluster the camera pushes through or reframes around
  * @use A 3D "gallery" of cards or screenshots without CSS 3D's sibling depth-sorting problem
- * @avoid Scenes with many overlapping opaque volumes — this only depth-sorts flat children, painter's-algorithm style
+ * @avoid Scenes with many overlapping opaque volumes. This only depth-sorts flat children, painter's-algorithm style
  * @tags 3d, camera, space, perspective, slerp, matrix
  * @example
  * <Space
@@ -47,7 +47,7 @@ const vcross = (a: Vec3, b: Vec3): Vec3 => ({
   z: a.x * b.y - a.y * b.x,
 });
 
-/** Rotates the camera's forward axis `(0,0,-1)` by `q` — the standard `v + 2*cross(qv, cross(qv,v) + q.w*v)` formula. */
+/** Rotates the camera's forward axis `(0,0,-1)` by `q`, the standard `v + 2*cross(qv, cross(qv,v) + q.w*v)` formula. */
 function forwardAxis(q: Quat): Vec3 {
   const v: Vec3 = { x: 0, y: 0, z: -1 };
   const qv: Vec3 = { x: q.x, y: q.y, z: q.z };
@@ -104,7 +104,7 @@ export function Space({ beats, fov = 50, children }: SpaceProps) {
       scale: shortSide / 2 / projected.depth,
     });
   }
-  // Painter's algorithm: farthest first, so nearer children draw on top — no CSS 3D sibling sorting.
+  // Painter's algorithm: farthest first, so nearer children draw on top, no CSS 3D sibling sorting.
   placed.sort((a, b) => b.depth - a.depth);
 
   return (

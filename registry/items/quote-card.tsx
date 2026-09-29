@@ -5,7 +5,7 @@
  * @duration 40
  * @use Customer praise and testimonials
  * @use Lifting one line out of an interview
- * @avoid A social post with engagement counts — use `post-card`
+ * @avoid A social post with engagement counts. Use `post-card`
  * @tags quote, testimonial, praise, card
  * @example
  * <Center>

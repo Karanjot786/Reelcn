@@ -5,8 +5,8 @@
  * @duration 45
  * @use Goal completion, adoption rate, uptime, a score out of 100
  * @use One number with a short label such as "of teams onboarded"
- * @avoid Splitting a whole into parts — use `donut`
- * @avoid Several numbers side by side — use `kpi-grid`
+ * @avoid Splitting a whole into parts. Use `donut`
+ * @avoid Several numbers side by side. Use `kpi-grid`
  * @tags progress, ring, gauge, percent, goal, data
  * @example
  * <Center>

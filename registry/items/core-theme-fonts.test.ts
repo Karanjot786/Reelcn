@@ -50,7 +50,7 @@ function extractBracedBlock(source: string, openBraceIndex: number): string {
 // own font family (`schibstedGrotesk`), never an identifier belonging to another theme's font
 // loader (e.g. `archivo`/`archivoVariable`, `bricolage`, `anton`, ...). Since a getter body can only
 // call what it references, a body that never names another theme's loader can never call it, no
-// matter which theme object `themes[theme]` selects at runtime — this is what actually proves
+// matter which theme object `themes[theme]` selects at runtime. This is what actually proves
 // "rendering daylight never calls another theme's font loader" for the code that ships.
 test("daylight's fonts getter in core.tsx references only its own font, never another theme's loader", () => {
   const corePath = fileURLToPath(new URL("./core.tsx", import.meta.url));
@@ -98,7 +98,7 @@ test("daylight's fonts getter in core.tsx references only its own font, never an
 });
 
 // loadArchivoVariable() in fonts.ts returns its fontFamily string synchronously, before
-// FontFace.load() can possibly reject — so the only way a failed load still renders Archivo (rather
+// FontFace.load() can possibly reject, so the only way a failed load still renders Archivo (rather
 // than falling through to the browser's generic sans-serif) is if the string handed out up front
 // already lists the static Archivo family as a CSS fallback. Pinning to the shipped source text for
 // the same reason the test above does: it can't import fonts.ts's browser-only FontFace/delayRender

@@ -5,7 +5,7 @@
  * @duration 30
  * @use Single words, names and short brand lines
  * @use Big title cards with only a few letters
- * @avoid Sentences longer than a few words — use `rise-up`
+ * @avoid Sentences longer than a few words. Use `rise-up`
  * @tags characters, letters, stagger, rise, title
  * @preset text-reveal
  * @example

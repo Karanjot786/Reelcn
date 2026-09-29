@@ -5,7 +5,7 @@
  * @duration 50
  * @use Asking for a follow at the end of a short
  * @use Introducing a guest or a collaborator
- * @avoid A subscribe ask for long-form video — use `subscribe-cta`
+ * @avoid A subscribe ask for long-form video. Use `subscribe-cta`
  * @tags follow, profile, card, cta
  * @example
  * <Center>

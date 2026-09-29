@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "registry/items/pop-in.tsx",
-      "content": "/**\n * @title Pop In\n * @category text\n * @description Headline whose words scale up with a springy overshoot.\n * @duration 30\n * @use Energetic hooks, sales and launch callouts\n * @use Short labels that should feel lively\n * @avoid Calm or premium tone — use `blur-in`\n * @tags pop, bounce, spring, scale, energetic\n * @preset text-reveal\n * @example\n * <Center>\n *   <PopIn text=\"Now in beta\" size={130} />\n * </Center>\n */\nimport { TextReveal, type TextRevealProps } from \"./text-reveal\";\n\nexport type PopInProps = Omit<TextRevealProps, \"effect\" | \"motion\">;\n\nexport function PopIn(props: PopInProps) {\n  return <TextReveal scaleFrom={0.7} {...props} effect=\"scale\" motion=\"bouncy\" />;\n}\n",
+      "content": "/**\n * @title Pop In\n * @category text\n * @description Headline whose words scale up with a springy overshoot.\n * @duration 30\n * @use Energetic hooks, sales and launch callouts\n * @use Short labels that should feel lively\n * @avoid Calm or premium tone. Use `blur-in`\n * @tags pop, bounce, spring, scale, energetic\n * @preset text-reveal\n * @example\n * <Center>\n *   <PopIn text=\"Now in beta\" size={130} />\n * </Center>\n */\nimport { TextReveal, type TextRevealProps } from \"./text-reveal\";\n\nexport type PopInProps = Omit<TextRevealProps, \"effect\" | \"motion\">;\n\nexport function PopIn(props: PopInProps) {\n  return <TextReveal scaleFrom={0.7} {...props} effect=\"scale\" motion=\"bouncy\" />;\n}\n",
       "type": "registry:file",
       "target": "~/src/reelcn/pop-in.tsx"
     }
@@ -22,7 +22,7 @@
       "Short labels that should feel lively"
     ],
     "avoid": [
-      "Calm or premium tone — use `blur-in`"
+      "Calm or premium tone. Use `blur-in`"
     ],
     "tags": [
       "pop",

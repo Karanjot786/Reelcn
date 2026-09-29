@@ -1,11 +1,11 @@
 /**
  * @title Screen Zoom
  * @category product
- * @description Zooms and pans across whatever you wrap so a rectangle of the content — a button, a chart, a card — fills the frame, eased between keyframes.
+ * @description Zooms and pans across whatever you wrap so a rectangle of the content (a button, a chart, a card) fills the frame, eased between keyframes.
  * @duration data-driven
  * @use Pushing in on a detail inside a `browser-window`, `app-window` or dashboard mockup
  * @use A guided tour that visits several parts of the same screen in turn
- * @avoid Panning and zooming over a photo or footage with pixel offsets — use `camera`
+ * @avoid Panning and zooming over a photo or footage with pixel offsets. Use `camera`
  * @tags zoom, pan, focus, screen, product, tour
  * @example
  * <BrowserWindow url="app.dev">
@@ -44,7 +44,7 @@ export type ScreenZoomFocus =
   | {
       frame: number;
       /**
-       * A kit anchor's rect instead of a literal one — lets a tour visit several kit anchors in turn.
+       * A kit anchor's rect instead of a literal one, lets a tour visit several kit anchors in turn.
        * Anchors are always canvas-% (§2); this `ScreenZoom`'s own `x/y/width/height` above is
        * content-% (relative to whatever it wraps). `contentBox` names this `ScreenZoom`'s own
        * canvas-relative rect so the anchor can be converted correctly; omit it only when this
@@ -77,7 +77,7 @@ const CANVAS_BOX: AnchorRect = { x: 0, y: 0, width: 100, height: 100 };
 export function ScreenZoom({ focus, exit = false, children, style, className, ...motion }: ScreenZoomProps) {
   const m = useMotion({ ...motion, exit });
   // Resolves each keyframe's rect independently, in this same render pass, from whatever `anchors` map
-  // the caller already produced this frame — no reference held past this line, no publishing. A `target`
+  // the caller already produced this frame, no reference held past this line, no publishing. A `target`
   // resolves via `requireAnchor` (throws on a missing id, same contract every other consumer uses) and is
   // converted from canvas-% to this ScreenZoom's own content-% via `contentBox` (identity when omitted).
   const rectOf = (p: ScreenZoomFocus) =>

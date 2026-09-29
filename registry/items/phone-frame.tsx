@@ -5,7 +5,7 @@
  * @duration data-driven
  * @use Framing an app screen, onboarding flow or social feed in a product video
  * @use Two phones side by side inside `split-screen` for a before/after
- * @avoid A laptop or desktop screen — use `laptop-frame`
+ * @avoid A laptop or desktop screen. Use `laptop-frame`
  * @tags phone, mobile, device, mockup, frame, app
  * @example
  * <Center>
@@ -102,7 +102,7 @@ export function PhoneFrame({
           }}
         />
       </div>
-      {/* Camera/sensor cutout — a hole in the bezel, so it stays near-black regardless of theme. */}
+      {/* Camera/sensor cutout, a hole in the bezel, so it stays near-black regardless of theme. */}
       <div
         style={{
           position: "absolute",

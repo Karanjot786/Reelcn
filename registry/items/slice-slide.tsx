@@ -5,7 +5,7 @@
  * @duration 30
  * @use Stylised scene changes in promos, music and fashion edits
  * @use Swapping between two layouts with a strong horizontal rhythm
- * @avoid Scenes that play audio or video, since both render once per slice — use `brand-sweep`
+ * @avoid Scenes that play audio or video, since both render once per slice. Use `brand-sweep`
  * @tags slices, strips, push, stagger
  * @example
  * <TransitionSeries>

@@ -5,7 +5,7 @@
  * @duration 30
  * @use Editorial and cinematic titles
  * @use Crisp reveals where fading would feel soft
- * @avoid Multi-line statements that should arrive line by line — use `line-slide`
+ * @avoid Multi-line statements that should arrive line by line. Use `line-slide`
  * @tags mask, clip, reveal, editorial, headline
  * @preset text-reveal
  * @example

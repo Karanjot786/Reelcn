@@ -5,7 +5,7 @@
  * @duration 30
  * @use Verdicts and labels such as sold out, approved or new
  * @use One- or two-word punchlines
- * @avoid Headlines longer than a few words — use `pop-in`
+ * @avoid Headlines longer than a few words. Use `pop-in`
  * @tags stamp, slam, bounce, label, punchline
  * @preset text-reveal
  * @example

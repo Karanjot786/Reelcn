@@ -5,7 +5,7 @@
  * @duration data-driven
  * @use Getting-started guides and "how to" videos for developer tools
  * @use Walking through a setup one command at a time
- * @avoid A single snippet — use `code-block`
+ * @avoid A single snippet. Use `code-block`
  * @tags tutorial, code, terminal, developer, template
  * @example
  * <Composition

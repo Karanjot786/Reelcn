@@ -5,7 +5,7 @@
  * @duration sustained
  * @use Hero scenes, launch titles and product intros that need color and gentle motion
  * @use Behind glass cards, device frames and stat callouts
- * @avoid A still, single-color brand canvas — use `brand-solid`
+ * @avoid A still, single-color brand canvas. Use `brand-solid`
  * @tags gradient, mesh, blobs, color, ambient
  * @example
  * <AbsoluteFill>

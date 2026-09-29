@@ -3,8 +3,8 @@
  * @description A ranked table whose rows swap places like a split-flap departures board between weekly snapshots.
  * @category templates
  * @use A leaderboard, ranking or standings reveal across several time periods
- * @use Any "who's on top now" beat with real, specific rows — not a generic bar chart
- * @avoid A single static ranking with no re-sort — use `bar-race` or `bar-chart` instead
+ * @use Any "who's on top now" beat with real, specific rows, not a generic bar chart
+ * @avoid A single static ranking with no re-sort. Use `bar-race` or `bar-chart` instead
  * @tags standings, leaderboard, rank, split-flap, template
  * @duration data-driven
  * @example
@@ -107,7 +107,7 @@ function StandingsScene({ rows, weeks }: { rows: Row[]; weeks?: Row[][] }) {
                   split="char"
                   size={30}
                   font="mono"
-                  // The rank digit must stay put through the scene's own final frame — `useMotion`'s
+                  // The rank digit must stay put through the scene's own final frame, `useMotion`'s
                   // default auto-fade near the end of the enclosing Sequence (this scene spans every
                   // week, not just the one this row belongs to) would otherwise fade the last-shown
                   // rank to nothing right before the video ends.
@@ -153,7 +153,7 @@ export function Standings(props: StandingsProps) {
 
 // Not `templateMetadata(standingsStory)`: that helper calls `storyFrames(story)` with no custom scene
 // rules, and this story's one scene is the template-local `defineScene` type above ("standings-beat")
-// — without its rule, `sceneSeconds` falls through to `Scene`'s own switch, matches no case, and returns
+// without its rule, `sceneSeconds` falls through to `Scene`'s own switch, matches no case, and returns
 // `undefined`, making `durationInFrames` NaN (same failure mode documented in product-launch.tsx).
 export const standingsMetadata: CalculateMetadataFunction<StandingsProps> = ({ props }) => ({
   durationInFrames: storyFrames(standingsStory(props), standingsScenes),

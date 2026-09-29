@@ -5,7 +5,7 @@
  * @duration 30
  * @use Calling out the key phrase in a quote, claim or hook
  * @use Tutorial titles that point at a single term
- * @avoid Cycling through several words in one slot — use `word-rotator`
+ * @avoid Cycling through several words in one slot. Use `word-rotator`
  * @tags marker, underline, circle, box, emphasis, annotate
  * @example
  * <Center>
@@ -32,7 +32,7 @@ export type HighlightProps = MotionProps & {
   text?: string;
   /** Phrase inside `text` to emphasize (first match, any case). It never wraps, so keep it short. Required unless `target` is given. */
   highlight?: string;
-  /** A kit anchor's rect to highlight instead of a text phrase — only with `variant: "box"` or `"circle"` (no text to flow `marker`/`underline` around). */
+  /** A kit anchor's rect to highlight instead of a text phrase. Only with `variant: "box"` or `"circle"` (no text to flow `marker`/`underline` around). */
   target?: { anchors: Record<string, AnchorRect>; id: string };
   variant?: HighlightVariant;
   /** Font size in design units. */

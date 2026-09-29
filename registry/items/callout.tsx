@@ -5,7 +5,7 @@
  * @duration 26
  * @use Highlighting a button, field or panel in product demos and walkthroughs
  * @use Explaining one region of a screenshot or screen recording
- * @avoid A quick pointer that leaves the rest of the frame undimmed — use `arrow`
+ * @avoid A quick pointer that leaves the rest of the frame undimmed. Use `arrow`
  * @tags spotlight, highlight, tooltip, focus, product, tutorial
  * @example
  * <Sequence from={30} durationInFrames={90}>

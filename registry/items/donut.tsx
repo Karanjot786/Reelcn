@@ -5,8 +5,8 @@
  * @duration 50
  * @use Share of a whole: traffic sources, budget split, time spent across a few groups
  * @use Two to six segments
- * @avoid A single percentage — use `progress-ring`
- * @avoid Many small categories — use `bar-chart`
+ * @avoid A single percentage. Use `progress-ring`
+ * @avoid Many small categories. Use `bar-chart`
  * @tags chart, donut, pie, share, percent, data
  * @example
  * <Center>

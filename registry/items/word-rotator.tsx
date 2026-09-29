@@ -5,7 +5,7 @@
  * @duration sustained
  * @use Taglines that list audiences, platforms or benefits
  * @use Hooks such as "Made for creators / startups / agencies"
- * @avoid Emphasizing one fixed phrase — use `highlight`
+ * @avoid Emphasizing one fixed phrase. Use `highlight`
  * @tags rotate, cycle, swap, words, tagline
  * @example
  * <Center>

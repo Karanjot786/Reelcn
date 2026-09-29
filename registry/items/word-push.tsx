@@ -27,7 +27,7 @@ import {
 export type WordPushOptions = { gap?: number; accel?: number };
 
 /** One entry per word: `delay` in frames (a geometric accelerando, not a constant stagger), `zoomBoost`
- * a small cumulative scale so later words read as part of one continuous push. Pure — no measurement,
+ * a small cumulative scale so later words read as part of one continuous push. Pure, no measurement,
  * no hook; positions come from ordinary inline-block DOM flow in the consumer, which already measures
  * the real font the way the browser lays out any text (see the Phase 3a plan's Deviation 3). */
 export function useWordPush(
@@ -126,13 +126,13 @@ export function WordPush({
         const opacity = Math.min(Math.max(progress, 0), 1);
         const zoom = 1 + entry.zoomBoost * progress;
         // The cumulative zoom sells the "push", but scaling a word about its own center bleeds its
-        // painted glyphs past its unscaled layout box on both sides — with only a plain space
+        // painted glyphs past its unscaled layout box on both sides, with only a plain space
         // character's width reserved between words, that bleed (from the words on both sides of a gap)
         // eats straight through it and merges them (see the visual-check bug). Anchoring the scale to
         // the word's own left edge confines its growth to bleeding rightward into its own trailing gap
         // instead of also eating into the gap before it, so each gap only has to outgrow the one word's
-        // own bleed — proportional to `zoomBoost` (how much it grows) and its length (how far that
-        // growth reaches) — plus a fixed safety pad. Later words push harder and bleed further, so the
+        // own bleed, proportional to `zoomBoost` (how much it grows) and its length (how far that
+        // growth reaches), plus a fixed safety pad. Later words push harder and bleed further, so the
         // reserved gap actually grows even as the *visible* gap (what's left after bleed eats into it)
         // keeps shrinking, which is what should read as the accelerando never fully closing the gap.
         const gapEm = gapOf(i);

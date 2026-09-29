@@ -5,7 +5,7 @@
  * @duration 30
  * @use Calm, premium intros and brand statements
  * @use Titles laid over footage or gradients
- * @avoid Punchy, high-energy hooks — use `pop-in`
+ * @avoid Punchy, high-energy hooks. Use `pop-in`
  * @tags blur, focus, soft, headline
  * @preset text-reveal
  * @example

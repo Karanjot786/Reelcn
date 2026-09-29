@@ -5,7 +5,7 @@
  * @duration data-driven
  * @use A short agency or brand-kit showcase
  * @use Introducing a visual identity before a product launch
- * @avoid A product feature tour — use `product-launch`
+ * @avoid A product feature tour. Use `product-launch`
  * @tags brand, identity, palette, collage, template
  * @example
  * <Composition
@@ -103,7 +103,7 @@ export function BrandReel(props: BrandReelProps) {
 
 // Not `templateMetadata(brandReelStory)`: that helper calls `storyFrames(story)` with no custom scene
 // rules, and this story carries the two template-local `defineScene` types above ("brand-palette",
-// "brand-collage") — without their rules, `sceneSeconds` falls through to `Scene`'s own switch, matches
+// "brand-collage"). Without their rules, `sceneSeconds` falls through to `Scene`'s own switch, matches
 // no case, and returns `undefined`, making `durationInFrames` NaN (same failure mode documented in
 // product-launch.tsx).
 export const brandReelMetadata: CalculateMetadataFunction<BrandReelProps> = ({ props }) => ({

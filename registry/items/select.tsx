@@ -5,7 +5,7 @@
  * @duration data-driven
  * @use A settings/plan picker in a UI-sim walkthrough
  * @use A `ui` scene's `component: "select"`
- * @avoid A single fixed choice with no menu — use plain text
+ * @avoid A single fixed choice with no menu. Use plain text
  * @tags select, dropdown, menu, ui, kit
  * @example
  * <Center>
@@ -66,12 +66,12 @@ function useSelectFolds(steps: SelectProps["steps"]) {
 }
 
 /** Pure: given the longest option's already-measured width, the trigger's own box. Shared by
- * `useSelectAnchors` and the `ui` scene (Task 9) — ponytail-review blocker 2's "one formula" contract. */
+ * `useSelectAnchors` and the `ui` scene (Task 9), ponytail-review blocker 2's "one formula" contract. */
 export function selectBoxSize(u: (n: number) => number, measuredLongestWidth: number) {
   return { width: measuredLongestWidth + u(PAD_X) * 2, height: u(TRIGGER_HEIGHT) };
 }
 
-/** Longest option's rendered width, the panel width every row shares — never a `len*8`px estimate. */
+/** Longest option's rendered width, the panel width every row shares, never a `len*8`px estimate. */
 function usePanelWidth(options: string[], size: number, skip: boolean) {
   const theme = useTheme();
   const { u } = useViewport();
@@ -94,7 +94,7 @@ export function useSelectAnchors(props: SelectProps): Record<string, AnchorRect>
   const x = props.place.x - wPct / 2;
   const triggerY = props.place.y - triggerHPct / 2;
   const anchors: Record<string, AnchorRect> = { [props.id]: { x, y: triggerY, width: wPct, height: triggerHPct } };
-  // Rows are anchored at their fully-open resting position — a target/click id is for a cursor arriving
+  // Rows are anchored at their fully-open resting position, a target/click id is for a cursor arriving
   // once the panel has settled, not a live-tracked position mid-wipe.
   const rowHPct = (u(ROW_HEIGHT) / height) * 100;
   const panelTop = triggerY + triggerHPct;

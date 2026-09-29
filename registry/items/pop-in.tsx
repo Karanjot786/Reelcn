@@ -5,7 +5,7 @@
  * @duration 30
  * @use Energetic hooks, sales and launch callouts
  * @use Short labels that should feel lively
- * @avoid Calm or premium tone — use `blur-in`
+ * @avoid Calm or premium tone. Use `blur-in`
  * @tags pop, bounce, spring, scale, energetic
  * @preset text-reveal
  * @example

@@ -5,7 +5,7 @@
  * @duration 36
  * @use Answering a comment on camera
  * @use Showing the question a video is about to answer
- * @avoid A full post with author metrics — use `post-card`
+ * @avoid A full post with author metrics. Use `post-card`
  * @tags comment, reply, community, card
  * @example
  * <Center>

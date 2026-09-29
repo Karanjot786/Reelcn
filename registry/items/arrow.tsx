@@ -5,7 +5,7 @@
  * @duration 20
  * @use Pointing at a detail in a screenshot, chart or product demo
  * @use Annotating a feature with a short handwritten-style label
- * @avoid Circling a whole card or number — use `scribble-circle`
+ * @avoid Circling a whole card or number. Use `scribble-circle`
  * @tags annotation, pointer, hand-drawn, doodle
  * @example
  * <Arrow from={{ x: 27, y: 72 }} to={{ x: 47, y: 48.5 }} label="Best week yet" />
@@ -103,7 +103,7 @@ export function Arrow({
 
   // Put the label behind the tail, on the side the arrow leaves from. A right/left-anchored box grows
   // with the text (max-content), so when the tail sits near an edge it can push the label past the
-  // canvas edge — estimate the label's width and clamp its box into the safe area to avoid that.
+  // canvas edge. Estimate the label's width and clamp its box into the safe area to avoid that.
   const sx = c1x - x0;
   const sy = c1y - y0;
   const gap = u(20) + sw;

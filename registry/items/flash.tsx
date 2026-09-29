@@ -5,7 +5,7 @@
  * @duration 20
  * @use Hitting a beat, a drop or a hard cut
  * @use Camera-flash moments and reveals
- * @avoid A slow, warm glow over footage — use `light-leak`
+ * @avoid A slow, warm glow over footage. Use `light-leak`
  * @tags flash, strobe, beat, hit, cut
  * @example
  * <Flash delay={24} strength={0.8} />

@@ -1,7 +1,7 @@
 /**
  * @title Core Math
  * @category lib
- * @description Pure, dependency-free math behind Core's motion and text helpers: motion quantization, stagger ordering, Catmull-Rom keyframe interpolation, the typing-reveal model, grapheme splitting and 0-1 clamping. No React, no DOM — safe to unit-test directly.
+ * @description Pure, dependency-free math behind Core's motion and text helpers: motion quantization, stagger ordering, Catmull-Rom keyframe interpolation, the typing-reveal model, grapheme splitting and 0-1 clamping. No React, no DOM. Safe to unit-test directly.
  * @tags math, stagger, keyframe, typing, grapheme, quantize
  * @example
  * const delay = staggerDelay(2, 5, { step: 4 }); // 8
@@ -17,7 +17,7 @@ export type MotionPreset = "smooth" | "snappy" | "bouncy" | "gentle" | "linear" 
 /** A plain preset, or a preset with time-quantization ("on twos"/"on threes") and seeded jitter. */
 export type MotionPersonality = MotionPreset | { preset: MotionPreset; step?: number; jitter?: number };
 
-/** Normalizes a `MotionPersonality` to its full, explicit shape. A plain string is `{ preset, step: 1, jitter: 0 }` — mathematically a no-op quantization. */
+/** Normalizes a `MotionPersonality` to its full, explicit shape. A plain string is `{ preset, step: 1, jitter: 0 }`, mathematically a no-op quantization. */
 export function quantizeMotion(m: MotionPersonality): { preset: MotionPreset; step: number; jitter: number } {
   if (typeof m === "string") return { preset: m, step: 1, jitter: 0 };
   return { preset: m.preset, step: m.step ?? 1, jitter: m.jitter ?? 0 };
@@ -25,7 +25,7 @@ export function quantizeMotion(m: MotionPersonality): { preset: MotionPreset; st
 
 /**
  * 0-1 progress from `frame`/`fps` over `duration` frames starting at `delay`, quantized by `motion`'s
- * step/jitter — the same time-quantization `tween` (in core.tsx) applies, reimplemented here without a
+ * step/jitter: the same time-quantization `tween` (in core.tsx) applies, reimplemented here without a
  * curve library since core-math.ts can't import core.tsx's Easing/spring helpers (core.tsx is JSX and
  * can't be loaded by node's native TypeScript loader; this file exists so node --test can). Returns linear
  * progress; `useVariableFontAxis` applies its own pure ease-out, which keeps this file dependency-free.
@@ -73,7 +73,7 @@ export function useVariableFontAxis(
 export type StaggerOrder = "forward" | "reverse" | "center" | "edges" | "random";
 export type StaggerShape = "linear" | "compress" | "accelerando";
 
-/** 0-indexed fire order for `index` among `count` items — `0` fires first. */
+/** 0-indexed fire order for `index` among `count` items: `0` fires first. */
 function fireRank(index: number, count: number, order: StaggerOrder, seed: string): number {
   if (count <= 1) return 0;
   if (order === "forward") return index;
@@ -128,7 +128,7 @@ export function staggerDelay(
 
 /**
  * Geometric accelerando: `t_i = gap·(1-aⁱ)/(1-a)` for `a = accel < 1`, so each successive delay is
- * shorter than the last — satisfies M2 ("speed comes from acceleration, never linear motion") directly.
+ * shorter than the last, satisfies M2 ("speed comes from acceleration, never linear motion") directly.
  * Distinct from `staggerDelay`'s `accelerando` shape (quadratic-ish), kept as its own function so the
  * research's exact geometric formula is reproducible, not approximated by bending the existing shape.
  */
@@ -160,7 +160,7 @@ export const graphemes = (text: string) =>
 /** Clamp to 0-1. */
 export const clamp01 = (n: number): number => Math.min(Math.max(n, 0), 1);
 
-/** A kit component's placed rect, % of canvas, top-left origin — the same shape `CalloutRect` already uses. */
+/** A kit component's placed rect, % of canvas, top-left origin, the same shape `CalloutRect` already uses. */
 export type AnchorRect = { x: number; y: number; width: number; height: number };
 
 /**
@@ -173,7 +173,7 @@ export function anchorId(base: string, child?: string | number): string {
   return typeof child === "number" ? `${base}.item[${child}]` : `${base}.${child}`;
 }
 
-/** A kit component's center, % of canvas (0-100 on each axis) — the one center-origin convention in the
+/** A kit component's center, % of canvas (0-100 on each axis), the one center-origin convention in the
  * UI-sim kit; `AnchorRect` stays top-left-origin. */
 export type Place = { x: number; y: number };
 
@@ -182,7 +182,7 @@ export type Place = { x: number; y: number };
  * ignore them. */
 export type Step<S> = { at: number; state?: S; type?: string; click?: boolean };
 
-/** Last step's `at` (seconds), converted to frames, plus a hold budget — the content-derived duration
+/** Last step's `at` (seconds), converted to frames, plus a hold budget: the content-derived duration
  * every kit item's `@duration data-driven` and the `ui` scene (Task 9) both use. */
 export function stepsDuration(steps: Step<unknown>[], holdFrames: number, fps: number): number {
   if (steps.length === 0) return holdFrames;
@@ -195,7 +195,7 @@ export function proximityWeight(i: number, offset: number): number {
   return clamp01(1 - Math.abs(i - offset));
 }
 
-/** The three canvas shapes `useViewport()` reports — duplicated here (not imported from `core.tsx`, which
+/** The three canvas shapes `useViewport()` reports, duplicated here (not imported from `core.tsx`, which
  * is JSX and can't be loaded by `node --test`) since it's a one-line, dependency-free union. */
 export type Orientation = "landscape" | "portrait" | "square";
 
@@ -233,7 +233,7 @@ export function occupancy(enter: number, leave: number): number {
   return enter * (1 - leave);
 }
 
-/** The running sum of occupancy-weighted heights above `index` — a slot's y-offset in a closing-up stack,
+/** The running sum of occupancy-weighted heights above `index`, a slot's y-offset in a closing-up stack,
  * with no measured DOM and no state, just a sum over already-computed per-toast values. */
 export function stackOffset(items: { occupancy: number; height: number }[], index: number): number {
   let sum = 0;
@@ -242,7 +242,7 @@ export function stackOffset(items: { occupancy: number; height: number }[], inde
 }
 
 /** Per-item arrival frame, accelerating as the list grows (M2: speed comes from acceleration, ties the
- * pace to "how many tasks are left" as a physical metaphor) — `staggerDelay`'s own `"compress"` shape,
+ * pace to "how many tasks are left" as a physical metaphor), `staggerDelay`'s own `"compress"` shape,
  * whose sub-linear growth is what actually shortens later gaps (`"accelerando"`'s gaps grow, the opposite). */
 export function checklistSchedule(items: unknown[], gap = 5): number[] {
   return items.map((_, i) => staggerDelay(i, items.length, { step: gap, shape: "compress" }));
@@ -268,7 +268,7 @@ function gridDims(count: number, orientation: Orientation): { cols: number; rows
 }
 
 /**
- * Closed-form tile rects for a named layout — never measures the DOM (the FLIP technique this replaces
+ * Closed-form tile rects for a named layout, never measures the DOM (the FLIP technique this replaces
  * would), so both the "from" and "to" rects for a morph are known before any frame renders. `orientation`
  * changes the arrangement, not just the scale: a `strip` is vertical in portrait, horizontal otherwise.
  */
@@ -319,7 +319,7 @@ export function layoutRectsFor(
   return rects;
 }
 
-/** Linear interpolation of every field between two rects — the "to" side of a FLIP morph. */
+/** Linear interpolation of every field between two rects, the "to" side of a FLIP morph. */
 export function flipInterpolate(from: Rect, to: Rect, t: number): Rect {
   return {
     x: from.x + (to.x - from.x) * t,
@@ -341,7 +341,7 @@ export function codeLivePreviewSchedule(code: string, previews: { atLine: number
 }
 
 /** Stable rank-to-slot assignment: slot 0 is the highest `value`, ties broken by array order (a stable
- * sort, not `random(seed)` — the same `rows` always produce the same slots). */
+ * sort, not `random(seed)`. The same `rows` always produce the same slots). */
 export function rankSlots(rows: { name: string; value: number }[]): number[] {
   const order = rows.map((_, i) => i).sort((a, b) => rows[b].value - rows[a].value || a - b);
   const slots = new Array(rows.length);
@@ -351,7 +351,7 @@ export function rankSlots(rows: { name: string; value: number }[]): number[] {
   return slots;
 }
 
-/** Looks up `id` in `anchors`, throwing a named error instead of returning `undefined` — the one
+/** Looks up `id` in `anchors`, throwing a named error instead of returning `undefined`, the one
  * consistent contract all four `target` consumers use (ponytail-review should-fix 4). */
 export function requireAnchor(anchors: Record<string, AnchorRect>, id: string, itemName: string): AnchorRect {
   const rect = anchors[id];
@@ -359,7 +359,7 @@ export function requireAnchor(anchors: Record<string, AnchorRect>, id: string, i
   return rect;
 }
 
-/** Converts a canvas-relative `%` rect into a rect relative to `contentBox` (also canvas-relative `%`) —
+/** Converts a canvas-relative `%` rect into a rect relative to `contentBox` (also canvas-relative `%`),
  * `AnchorRect`s are always canvas-% (Task 1), but `ScreenZoomFocus`'s existing `x/y/width/height` is
  * content-relative-% (ponytail-review blocker 1: the two conventions were being mixed with no conversion).
  * The identity `contentBox` (`{x:0,y:0,width:100,height:100}`) is the common case: a `ScreenZoom` that
@@ -379,7 +379,7 @@ export const graphemeInitial = (name: string): string => graphemes(name)[0] ?? "
 /* ─────────────────────────── Transitions ─────────────────────────── */
 
 /**
- * `d` shaped so the result is exactly 0 at `d=0` and exactly 1 at `d=1` (not merely close — a
+ * `d` shaped so the result is exactly 0 at `d=0` and exactly 1 at `d=1` (not merely close, a
  * `TransitionSeries` presentation stays mounted at `progress=0` outside its overlap, so a near-zero
  * residual like `sin(π)` is a real, visible artifact). `p` controls how sharp the punch is; the research's
  * whip pan uses `p≈3`.
@@ -395,7 +395,7 @@ export function punchCurve(d: number, p: number): number {
  * The cover/swap/reveal split every existing cover-style transition (`circle-burst`, `stripe-wipe`,
  * `shutter`, `tile-reveal`) hand-rolls inline. `cover` runs 0→1 over `[0, coverEnd]`, `reveal` runs 0→1
  * over `[revealStart, 1]`, `showsNext` flips at `swapAt`. Exactly 0 at `p=0` and exactly 1 at `p=1` for
- * both `cover` and `reveal` — the displace-zero contract.
+ * both `cover` and `reveal`, the displace-zero contract.
  */
 export function coverPhase(
   p: number,
@@ -551,7 +551,7 @@ export function quatFromLookAt(eye: Vec3, target: Vec3, up: Vec3 = { x: 0, y: 1,
 /**
  * Projects a world point through `viewMatrix` (from `mat4LookAt`) with a pinhole perspective: `fov` in
  * degrees, `aspect` = width/height. `x`/`y` are roughly `[-1, 1]` inside the frustum; `depth` is distance
- * in front of the camera along its view axis (negative or zero means behind the camera — callers should
+ * in front of the camera along its view axis (negative or zero means behind the camera: callers should
  * skip drawing that child).
  */
 export function projectPoint(
@@ -572,7 +572,7 @@ export function projectPoint(
 
 /**
  * The translate needed to put `target` (normalized 0-1 of the content) at frame center after scaling by
- * `zoom`, computed from the actual measured canvas size instead of a hardcoded stage size — the
+ * `zoom`, computed from the actual measured canvas size instead of a hardcoded stage size, the
  * `terminal-cursor-zoom`/`stage` bug this row exists to fix. Pair with `transformOrigin: "0 0"` and
  * `transform: translate(offset.x, offset.y) scale(zoom)`.
  */
@@ -634,7 +634,7 @@ export function useTypedText(
 }
 
 /**
- * Reserves each `to` grapheme against the nearest (by index — a left-to-right text's index already
+ * Reserves each `to` grapheme against the nearest (by index, a left-to-right text's index already
  * approximates horizontal position before measurement) unclaimed identical `from` grapheme, so a letter
  * shared between two phrases keeps its identity and just translates instead of fading out and back in.
  * Leftover `to` entries get `fromIndex: -1` (a fresh grapheme, fades in); leftover `from` entries get

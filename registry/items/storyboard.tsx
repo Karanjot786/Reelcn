@@ -5,10 +5,10 @@
  * @duration data-driven
  * @use Whole videos written as data, by hand or by an agent
  * @use Rendering one story at 16:9, 9:16 and 1:1
- * @avoid Scenes you lay out by hand in JSX — use `scenes`
+ * @avoid Scenes you lay out by hand in JSX. Use `scenes`
  * @tags storyboard, json, template, agent, calculateMetadata
  * @example
- * // src/Root.tsx — then: npx remotion render Storyboard out.mp4 --props=story.json
+ * // src/Root.tsx, then: npx remotion render Storyboard out.mp4 --props=story.json
  * <Composition
  *   id="Storyboard"
  *   component={StoryVideo}
@@ -307,7 +307,7 @@ const uiStepSchema = z.object({
   click: z.string().optional(),
   type: z.string().optional(),
   /** For a step naming a `tabs` component (via `target` or `click`), must parse to an integer tab index
-   * in `[0, labels.length)` — enforced in `uiSceneSchema`'s `superRefine` below. Previously an open
+   * in `[0, labels.length)`, enforced in `uiSceneSchema`'s `superRefine` below. Previously an open
    * should-fix: an invalid value here fed straight into `stepStateFor`'s `Number(step.state)`, so a
    * non-numeric value rendered the Tabs pill at `active: NaN` and an out-of-range index was silently
    * clamped instead of failing schema validation. */
@@ -315,7 +315,7 @@ const uiStepSchema = z.object({
 });
 type UiStep = z.infer<typeof uiStepSchema>;
 
-/** True when a tabs step's `state` string parses to a whole-number tab index in `[0, labelsLength)` —
+/** True when a tabs step's `state` string parses to a whole-number tab index in `[0, labelsLength)`,
  * the same check `stepStateFor` implicitly relies on when it does `Number(step.state)` for a `tabs`
  * target. Kept as its own pure, JSX-free function so it stays reachable by a unit test even though the
  * rest of this file can't be (see storyboard.test.ts). */
@@ -335,7 +335,7 @@ export const uiSceneSchema = z
   .superRefine((scene, ctx) => {
     const byId = new Map(scene.components.map((c) => [c.id, c] as const));
     // A `tabs` component's own tab is addressable as `anchorId(id, index)` (e.g. `"nav.item[2]"`), the
-    // same child-anchor convention `useTabsAnchors` already exports — valid alongside a bare component id.
+    // same child-anchor convention `useTabsAnchors` already exports, valid alongside a bare component id.
     const isValidTabChild = (id: string): boolean => {
       const match = /^(.+)\.item\[(\d+)\]$/.exec(id);
       if (!match) return false;
@@ -345,7 +345,7 @@ export const uiSceneSchema = z
       return Number(match[2]) < labels.length;
     };
     // A step's `target`/`click` names a component either directly or, for `tabs`, via one of its own
-    // child anchors (`id.item[n]`) — resolve either spelling back to the component it addresses.
+    // child anchors (`id.item[n]`), resolve either spelling back to the component it addresses.
     const resolveComponent = (id: string | undefined): UiComponentConfig | undefined => {
       if (id === undefined) return undefined;
       if (byId.has(id)) return byId.get(id);
@@ -364,7 +364,7 @@ export const uiSceneSchema = z
         }
       }
       // A `tabs` target's `state` is a numeric index (`stepStateFor` feeds it straight into
-      // `Number(step.state)`) — reject anything that wouldn't be a valid index before it ever reaches
+      // `Number(step.state)`), reject anything that wouldn't be a valid index before it ever reaches
       // render, instead of producing `active: NaN` or a silently clamped tab.
       if (step.state !== undefined) {
         const tabsTarget = [resolveComponent(step.target), resolveComponent(step.click)].find(
@@ -387,7 +387,7 @@ export const uiSceneSchema = z
 /** A scene-level step's target component's own `Step<unknown>[]` entry: `click` becomes `"press"` for a
  * button and `"active"` for an input (the spec's own two named mappings); an explicit `state` always wins;
  * any other kind with a bare `click` and no `state` is skipped (nothing to infer without one). `tabs` is
- * its own case — it has no named states, only a numeric `active` index — so `state: "2"` parses to
+ * its own case, it has no named states, only a numeric `active` index, so `state: "2"` parses to
  * `{ active: 2 }`, and a `click` naming one tab's own child anchor (`anchorId(id, index)`, e.g.
  * `"nav.item[2]"`) sets `active` to that tab's index. */
 function stepStateFor(kind: UiComponentConfig["component"], step: UiStep): unknown {
@@ -406,7 +406,7 @@ function stepStateFor(kind: UiComponentConfig["component"], step: UiStep): unkno
   return undefined;
 }
 
-/** Each kind's own resting state before any scene step touches it — matches the `initial` every kit's
+/** Each kind's own resting state before any scene step touches it, matches the `initial` every kit's
  * own `useKeyframeState(steps, initial, …)` call already falls back to. */
 const KIND_IDLE_STATE: Partial<Record<UiComponentConfig["component"], unknown>> = {
   button: "idle",
@@ -451,7 +451,7 @@ function UiSceneRenderer({ components, steps, cursor }: z.infer<typeof uiSceneSc
   const safePct = { x: (safe.x / width) * 100, top: (safe.top / height) * 100, bottom: (safe.bottom / height) * 100 };
   const places = stackLayout(components.length, orientation, safePct);
 
-  // One scene-wide font-ready gate (Deviation 4a) — never a per-component `use<Name>Anchors` hook call,
+  // One scene-wide font-ready gate (Deviation 4a), never a per-component `use<Name>Anchors` hook call,
   // which would be a Rules-of-Hooks violation over a variable-length, author-chosen `components` array.
   const buttonLabels = components
     .filter((c) => c.component === "button")
@@ -474,7 +474,7 @@ function UiSceneRenderer({ components, steps, cursor }: z.infer<typeof uiSceneSc
     const compSteps = stepsForComponent(config.id, config.component, steps, fps);
     const shared = { id: config.id, place, steps: compSteps, ...(config.props ?? {}) };
 
-    // Each kind's own exported pure box-size function (ponytail-review blocker 2) — never a formula
+    // Each kind's own exported pure box-size function (ponytail-review blocker 2), never a formula
     // re-derived here, so a component's own `size`/`options`/`labels` prop can't diverge between what
     // renders and what the cursor targets. Text measurement itself still happens here, once per
     // component, in this same fixed `.map()` order (`measurePx` is pure, safe in a loop; the one hook,
@@ -554,12 +554,12 @@ function UiSceneRenderer({ components, steps, cursor }: z.infer<typeof uiSceneSc
       click: Boolean(s.click),
     };
   });
-  // Between two arrivals, `Cursor`'s single eased spline covers the whole gap — and the theme's
+  // Between two arrivals, `Cursor`'s single eased spline covers the whole gap, and the theme's
   // (front-loaded) easing reaches the next anchor well inside the first third of that gap, so a long
   // gap (typing has time to run) leaves the cursor parked on the *next* control long before this one's
   // own step fires. A same-position hold keyframe, timed a short beat before the next arrival is due,
   // pins the cursor on the current control for the rest of the gap and confines the actual travel to
-  // that final beat — so it lands on each control at the time that control acts, per every gap length.
+  // that final beat, so it lands on each control at the time that control acts, per every gap length.
   const CURSOR_TRAVEL_FRAMES = Math.round(fps * 0.4);
   const waypoints: CursorWaypoint[] = [];
   arrivals.forEach((point, i) => {

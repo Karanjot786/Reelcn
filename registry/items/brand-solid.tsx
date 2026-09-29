@@ -5,7 +5,7 @@
  * @duration sustained
  * @use Title cards, logo reveals and end screens that need a calm, on-brand canvas
  * @use Text-heavy scenes where a busier background would compete with the words
- * @avoid Scenes that need visible movement behind them — use `gradient-mesh`
+ * @avoid Scenes that need visible movement behind them. Use `gradient-mesh`
  * @tags solid, brand, tint, minimal, calm
  * @example
  * <AbsoluteFill>

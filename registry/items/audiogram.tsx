@@ -5,7 +5,7 @@
  * @duration data-driven
  * @use Sharing a podcast episode or segment on social feeds
  * @use Turning any voice recording into a video
- * @avoid A short vertical teaser built on one quote — use `podcast-teaser`
+ * @avoid A short vertical teaser built on one quote. Use `podcast-teaser`
  * @tags podcast, audiogram, waveform, captions, template
  * @example
  * <Composition

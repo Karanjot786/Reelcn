@@ -5,7 +5,7 @@
  * @duration 90
  * @use A roadmap, launch history or step-by-step process with three to seven beats
  * @use Company milestones or a project's key dates
- * @avoid Ranked values changing over time — use `bar-race`
+ * @avoid Ranked values changing over time. Use `bar-race`
  * @tags timeline, roadmap, milestones, history, process, data
  * @example
  * <Center>
@@ -160,7 +160,7 @@ export function Timeline({
               }}
             />
             {/* The first/last dot sits flush with the axis ends, so a centered label there would run past the
-                frame edge — anchor those two to the dot instead of straddling it. */}
+                frame edge, anchor those two to the dot instead of straddling it. */}
             <div
               style={{
                 position: "absolute",

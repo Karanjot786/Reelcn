@@ -5,7 +5,7 @@
  * @duration data-driven
  * @use Reposting a popular post as a short
  * @use Quoting a customer's public post in a video
- * @avoid Several posts in a row — use `storyboard` with post scenes
+ * @avoid Several posts in a row. Use `storyboard` with post scenes
  * @tags social, post, repost, short, template
  * @example
  * <Composition

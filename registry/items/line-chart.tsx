@@ -5,8 +5,8 @@
  * @duration 60
  * @use Trends over time: monthly signups, latency, revenue run-rate
  * @use Comparing two to four series on one axis
- * @avoid Comparing separate categories — use `bar-chart`
- * @avoid Volume or cumulative totals — use `area-chart`
+ * @avoid Comparing separate categories. Use `bar-chart`
+ * @avoid Volume or cumulative totals. Use `area-chart`
  * @tags chart, line, trend, time series, data
  * @example
  * <Center>

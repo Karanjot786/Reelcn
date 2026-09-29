@@ -5,7 +5,7 @@
  * @duration 16
  * @use Tech, gaming and music edits
  * @use Hard cuts that need a jolt of energy
- * @avoid Calm, premium or corporate pieces — use `card-push`
+ * @avoid Calm, premium or corporate pieces. Use `card-push`
  * @tags glitch, rgb, digital, cut, distortion
  * @example
  * <TransitionSeries>

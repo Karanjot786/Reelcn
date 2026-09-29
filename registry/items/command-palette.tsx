@@ -5,7 +5,7 @@
  * @duration data-driven
  * @use A ⌘K launcher, quick switcher or fuzzy search in a product demo
  * @use Showing how fast a search or command feature narrows results
- * @avoid A shell session with commands and output — use `terminal`
+ * @avoid A shell session with commands and output. Use `terminal`
  * @tags command palette, search, cmdk, launcher, fuzzy, shortcut
  * @example
  * <Center>
@@ -33,7 +33,7 @@ import {
 
 export type CommandItem = {
   label: string;
-  /** Shown right-aligned, muted — a shortcut or category. */
+  /** Shown right-aligned, muted: a shortcut or category. */
   hint?: string;
 };
 
@@ -106,7 +106,7 @@ export function CommandPalette({
   const typing = !typedText.done;
 
   // Follow: the caret position `lag` frames ago, from the same typed-length logic above evaluated at an
-  // earlier frame — always computed (cheap, pure), only measured/used when `follow` is set. Command
+  // earlier frame. Always computed (cheap, pure), only measured/used when `follow` is set. Command
   // palette is single-line, so `y` is always the query row's fixed y-offset, no line-counting needed.
   const laggedTyped = useTypedText(query, m.frame - (follow?.lag ?? 6) - start, m.fps, { cps });
   const caretMetrics = useTextMetrics(
