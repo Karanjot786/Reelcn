@@ -35,11 +35,11 @@ A component doesn't need an `exit` prop to leave cleanly: `useMotion` reads `dur
 |---|---|
 | `smooth` | `cubic-bezier(0.16, 1, 0.3, 1)` |
 | `snappy` | `cubic-bezier(0.2, 0.9, 0.1, 1)` |
-| `gentle` | `cubic-bezier(0.45, 0, 0.55, 1)` |
+| `gentle` | `cubic-bezier(0.25, 0.1, 0.25, 1)` |
 | `linear` | linear |
-| `bouncy` | a spring (damping 12, stiffness 170, mass 0.9), stretched to `duration` — may overshoot past 1 |
+| `bouncy` | a spring (damping 15, stiffness 170, mass 0.9), stretched to `duration` — may overshoot past 1 |
 
-Exits always ease with a separate accelerating curve, `exitEasing` (`cubic-bezier(0.55, 0, 1, 0.45)`), regardless of which enter preset is active.
+Exits always ease with a separate curve, `exitEasing` (`cubic-bezier(0.23, 1, 0.32, 1)`), whichever enter preset is active. It ends at zero velocity, so the last frame of an exit never pops.
 
 ## Building your own animated component
 
