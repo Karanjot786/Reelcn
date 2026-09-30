@@ -7,6 +7,8 @@ Scenes built alone feel like slides. Build the film as one shot.
 1. Pick a carrier: a caret, a dot, an underline, a frame border, a playhead. Small, in the accent color.
 2. The carrier is on screen at every scene change. It moves into the next scene and becomes part of it: the caret opens into a selection box, the box grows into a frame, the frame's border becomes a timeline bar, a word collapses into a line, the line becomes the logo's stroke.
 3. Hard cuts are rare: at most two per film, each on a beat.
+4. Never crossfade. Two scenes at half opacity read as a grey double exposure. The old scene leaves by moving, shrinking, collapsing or being covered; the new one arrives the same way.
+5. Clear the stage at each join. Every element of the old scene has left, or has become the carrier, before the new scene's words land. A counter or label from the old scene never sits on top of the new one.
 
 ## Joins
 

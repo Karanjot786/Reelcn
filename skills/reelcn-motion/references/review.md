@@ -19,6 +19,15 @@ node scripts/motion-check.mjs out.mp4 plan.md
 
 `--moving` sets the energy under which a frame counts as still. Leave it at the default.
 
+## Join sheet
+
+The check writes a second sheet with one frame from the middle of each join. Look at every frame:
+
+| Pass | Fail |
+|---|---|
+| One scene becoming the next through the carrier | Two scenes stacked at half opacity, grey and muddy |
+| The old scene's elements gone or moving out | An old label or number sitting on the new scene |
+
 ## Frame checks
 
 | Rule | Pass | Fail |

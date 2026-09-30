@@ -25,12 +25,12 @@ The example to study before building: `starters/hyperframes-launch-film/`, a ful
 
 ### 1. Plan
 
-Read: `references/storyboard.md`, `references/choreography.md`, `references/pacing.md`
+Read: `references/material.md`, then `references/storyboard.md`, `references/choreography.md`, `references/pacing.md`
 
-- Read the brief. Collect the real material: logo, screenshots, product renders, numbers, fonts, brand colors. Read them from the project before asking.
+- Gather the material first: read the user's codebase, clone the GitHub repo they name, or capture their live URL. Write `.reelcn-motion/material.md`.
 - Pick the closest file in `plans/` and adapt it, or write a new plan in the same format. Save it as `plan.md`.
 
-Gate: `plan.md` exists and names real material in every `shows` cell.
+Gate: `plan.md` exists, and every `shows` cell names real material from `material.md` or says `mocked:` and why.
 
 ### 2. Check the plan and get approval
 
@@ -81,7 +81,7 @@ Render at 60 fps with the command in the guide, then:
 node scripts/motion-check.mjs out.mp4 plan.md
 ```
 
-Open the contact sheet it writes. Fix every `miss`, render again, check again. Then compare three frames with the starter's film. If yours reads as a slideshow next to it, it is not done.
+Open both sheets it writes: one frame per scene, and one frame at each join. Fix every `miss` and every join frame showing two scenes stacked. Render again, check again. Then compare three frames with the starter's film. If yours reads as a slideshow next to it, it is not done.
 
 Gate: the check exits 0.
 

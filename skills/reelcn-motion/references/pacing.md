@@ -11,6 +11,7 @@
 Viewers read while something else moves. The words hold still; the scene does not.
 
 - Budget: 3.2 words per second of scene. A 2 second scene holds 6 words.
+- When the user's own copy is over budget, lengthen the scene or split it. Never rewrite a tagline or a product claim to fit; ask which words to cut.
 - Every scene names its `live` motion: a counter rolling, a playhead running, a selection hopping, a cursor arriving, a slow push on the frame.
 - Full stillness lasts 1.4 seconds at most before the final 2 seconds, and 1.7 seconds at the end.
 

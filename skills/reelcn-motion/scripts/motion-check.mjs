@@ -298,6 +298,13 @@ function main(argv) {
       sheet,
     );
     console.log(`contact sheet: ${sheet}`);
+    // One frame per join, just before the next scene starts: two scenes stacked here means a crossfade.
+    const joins = plan.scenes.slice(1).map((s) => Math.max(0, s.start - 0.08));
+    if (joins.length > 0) {
+      const joinSheet = sheet.replace(/\.png$/, "-joins.png");
+      contactSheet(video, joins, joinSheet);
+      console.log(`join sheet: ${joinSheet}`);
+    }
   }
   for (const text of misses) console.log(`miss  ${text}`);
   console.log(misses.length === 0 ? `ok    ${plan.scenes.length} scenes pass` : `${misses.length} miss(es)`);
