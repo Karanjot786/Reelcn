@@ -123,3 +123,12 @@ test("SKILL.md is short, named, and links only to files in the skill", () => {
     assert.ok(existsSync(path.join(SKILL, file)), `SKILL.md names ${file}, which is missing`);
   }
 });
+
+test("motion energy in scientific notation reads as near zero, not as motion", () => {
+  const out =
+    "frame:12 pts:12 pts_time:0.4\nlavfi.signalstats.YAVG=6.94e-05\nframe:13 pts:13 pts_time:0.433333\nlavfi.signalstats.YAVG=1.5\n";
+  assert.deepEqual(check.parseEnergy(out), [
+    { t: 0.4, e: 6.94e-5 },
+    { t: 0.433333, e: 1.5 },
+  ]);
+});

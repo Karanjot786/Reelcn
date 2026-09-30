@@ -206,13 +206,17 @@ function ffmpeg(args) {
 /** Motion energy per frame: mean luma difference from the frame before, at 160px wide. */
 export function measureEnergy(video) {
   const graph = "scale=160:-2,tblend=all_mode=difference,signalstats,metadata=print:key=lavfi.signalstats.YAVG:file=-";
-  const out = ffmpeg(["-i", video, "-vf", graph, "-an", "-f", "null", "-"]).stdout;
+  return parseEnergy(ffmpeg(["-i", video, "-vf", graph, "-an", "-f", "null", "-"]).stdout);
+}
+
+/** Samples from ffmpeg's metadata print. ffmpeg writes tiny values in scientific notation, like 6.94e-05. */
+export function parseEnergy(out) {
   const samples = [];
   let t = null;
   for (const line of out.split("\n")) {
     const time = /pts_time:([\d.]+)/.exec(line);
     if (time) t = Number(time[1]);
-    const value = /YAVG=([\d.]+)/.exec(line);
+    const value = /YAVG=([\d.]+(?:e[-+]?\d+)?)/i.exec(line);
     if (value && t !== null) samples.push({ t, e: Number(value[1]) });
   }
   return samples;
