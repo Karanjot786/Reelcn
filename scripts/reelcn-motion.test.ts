@@ -1,6 +1,6 @@
 // The one test file for the reelcn-motion skill. Renders are checked by use, not here.
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import test from "node:test";
 import { renderCss, renderJs, renderRs, renderTs } from "./build-motion-tokens.ts";
 
@@ -41,4 +41,15 @@ test("generated token files are current", () => {
       `${file} is stale. Run pnpm motion:tokens`,
     );
   }
+});
+
+test("the sound list and the music beds match the files on disk", () => {
+  const sounds = readdirSync("sfx")
+    .filter((f) => f.endsWith(".mp3") && !f.endsWith("-alt.mp3"))
+    .map((f) => f.slice(0, -4));
+  assert.deepEqual([...tokens.audio.sfx].sort(), sounds.sort());
+  const beds = readdirSync("music")
+    .filter((f) => f.endsWith(".mp3"))
+    .map((f) => f.slice(0, -4));
+  assert.deepEqual(Object.keys(tokens.audio.beds).sort(), beds.sort());
 });

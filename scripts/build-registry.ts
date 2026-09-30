@@ -305,6 +305,9 @@ function main() {
   if (existsSync("sfx")) {
     cpSync("sfx", "apps/www/public/sfx", { recursive: true });
   }
+  if (existsSync("music")) {
+    cpSync("music", "apps/www/public/music", { recursive: true });
+  }
   // The reelcn-motion skill ships its tokens in four languages; tokens.json is the source.
   buildMotionTokens();
 
