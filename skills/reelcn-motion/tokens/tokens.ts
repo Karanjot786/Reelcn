@@ -48,38 +48,9 @@ export const motion = {
     "maxTotal": 0.6
   },
   "overlap": 0.25,
-  "reading": {
-    "wordsPerSecond": 3,
-    "holdFloor": 1
-  },
-  "tone": {
-    "calm": {
-      "holdScale": 1.3,
-      "maxSounds": 3
-    },
-    "standard": {
-      "holdScale": 1,
-      "maxSounds": 5
-    },
-    "loud": {
-      "holdScale": 1,
-      "maxSounds": 9
-    }
-  },
   "audio": {
     "musicVolume": 0.25,
     "sfxVolume": 0.7,
-    "fadeIn": 0.4,
-    "fadeOut": 1,
-    "beatTolerance": 0.05,
-    "loudnessMin": -24,
-    "loudnessMax": -12,
-    "truePeakMax": -1,
-    "beds": {
-      "bed-calm": 100,
-      "bed-standard": 120,
-      "bed-loud": 150
-    },
     "sfx": [
       "bell",
       "bubble",
@@ -112,6 +83,23 @@ export const motion = {
       "whoosh",
       "whoosh-soft"
     ]
+  },
+  "targets": {
+    "movingThreshold": 0.15,
+    "motionShare": 0.45,
+    "longestStill": 1.7,
+    "sceneStill": 1.4,
+    "finalZone": 2,
+    "fpsMin": 50,
+    "loudnessMin": -16,
+    "loudnessMax": -11,
+    "truePeakMax": -0.5,
+    "sceneMin": 0.8,
+    "sceneMax": 3.5,
+    "secondsPerScene": 2.5,
+    "wordsPerSecond": 3.2,
+    "maxCuts": 2,
+    "beatTolerance": 0.05
   }
 } as const;
 

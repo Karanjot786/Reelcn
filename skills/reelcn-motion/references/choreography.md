@@ -1,44 +1,52 @@
 # Choreography
 
-## One move per element
+## One continuous shot
 
-Describe each entrance with one verb: slides, scales, types, wipes. If the sentence needs "and", cut a layer. Fade plus slide plus scale plus blur on every element is the mark of generated video.
+Scenes built alone feel like slides. Build the film as one shot.
 
-| Token | Feel | Use for |
+1. Pick a carrier: a caret, a dot, an underline, a frame border, a playhead. Small, in the accent color.
+2. The carrier is on screen at every scene change. It moves into the next scene and becomes part of it: the caret opens into a selection box, the box grows into a frame, the frame's border becomes a timeline bar, a word collapses into a line, the line becomes the logo's stroke.
+3. Hard cuts are rare: at most two per film, each on a beat.
+
+## Joins
+
+| Join | How | Use for |
 |---|---|---|
-| `smooth` | Fast start, long settle | Default. Titles, logos, cards |
-| `snappy` | Faster start, short settle | Lists, feature cards, anything in a `loud` film |
-| `gentle` | Even, slow | Title sequences, closing beats |
-| `linear` | Constant | Progress bars, tickers. Never for position of a card or a title |
-| `bouncy` | Overshoots, then rests | One element per film, at most |
+| `morph` | The carrier changes shape into the next scene's main element | The default |
+| `match` | An element in the old scene sits where an element of the new scene appears, same size and place | Swapping content inside one frame |
+| `whip` | A fast move with blur, the new scene arrives from the same direction | A jump in subject |
+| `zoom-through` | Push into an element until it fills the frame and becomes the new background | Entering a product or a detail |
+| `wipe` | The new state sweeps across the old one | A restyle, a before and after |
+| `flood` | A shape grows from the carrier until it covers the frame in a new background color | An inversion from dark to light or back |
+| `cut` | A hard change on a beat | Big words, the final hit |
 
-Every value comes from the token file. Never type a duration or a curve by hand.
+Invert the background once in the middle of a longer film, dark to light or light to dark. It resets the eye.
 
-## Sequences
+## Motion by meaning
 
-- Elements in a `sequence` arrive in reading order: left to right, top to bottom.
-- With music, one element per music beat.
-- With no music, use the stagger gap and keep the whole sequence inside the stagger cap, 0.6s. Shrink each gap by the acceleration value so arrivals speed up, like cards being dealt.
-- After the last arrival, everything rests for the hold.
-- Moving elements land in real slots of the layout. Nothing floats above the scene for good.
+Describe each move with the verb of its meaning. The generic fade and slide is the mark of generated video.
 
-## Overlap
+| Meaning | Move |
+|---|---|
+| A command, code, a search | Types at human speed with a caret. 12 to 30 characters per second |
+| Many of something | Cascades outward from one point, nearest first |
+| Choosing | A selection box hops from item to item on each half beat |
+| A number | Rolls up digit by digit while its bar or chart grows |
+| Formats, sizes | The frame reshapes itself on a beat, content refits inside |
+| A restyle, a theme | The new style wipes across the old one |
+| Speed | Arrives with speed lines or motion blur, stops hard |
+| Polish, focus | Sharpens out of blur |
+| Install, files landing | Letters drop in one by one, each settling |
+| Rendering, progress | A fill sweeps across with a scan line and a frame counter |
+| An ending | Collapses into a line or a point, which becomes the logo |
 
-An element starts moving before the one ahead of it has stopped. Start the next at the overlap fraction of the move before it. Motion with no overlap reads as a slide deck.
+## Timing
 
-## Cut continuity
+- Every duration and curve comes from the token file: `smooth` for arrivals, `exit` for departures, `snappy` for small fast moves.
+- Big moves take 0.3 to 0.5 seconds. Small moves 0.12 to 0.2.
+- Stagger each element of a group by 0.03 to 0.05 seconds. The whole group lands inside half a second.
+- Overlap: the next move starts before the last one stops.
+- Picture events land on beats and half beats: hops, stamps, reshapes, wipes.
+- `bouncy`: one element per film at most.
 
-Scenes built alone feel like slides. The viewer's eye has momentum. Keep it across every cut.
-
-1. **One direction per film.** The plan header sets it. Every `push` follows it.
-2. **Same axis, same direction.** When the old scene leaves to the left, the new scene arrives from the right and travels left. Never mirror.
-3. **Zoom keeps its sign.** In a `zoom in`, the old scene grows and the new scene also grows into place. In a `zoom out`, both shrink.
-4. **Cut while both sides move.** The old scene speeds up on the way out with the `exit` curve. The new scene slows down on the way in with `smooth`. The cut sits at peak speed.
-5. **`carry <element>`.** One element stays on screen through the cut at the same position and size. Everything around it changes.
-6. **`dissolve` once.** It is the only cut with overlap. Keep it for a change of mood.
-7. **`hard` needs no motion.** Use it after a full hold, into a beat with a strong first frame.
-8. **Two or three cut types per film.** List them in the plan header. A film with six kinds of cut has no voice.
-
-Camera shake, whole-frame flashes and whole-frame pulses: three per film at most. Music moves elements, never the camera.
-
-The idea of matching direction and speed across a cut follows the HyperFrames team's public writing on seams. The wording and values here are reelcn's own.
+Motion blur on fast moves: animate `filter: blur()` up during the fastest part and back to zero at rest.

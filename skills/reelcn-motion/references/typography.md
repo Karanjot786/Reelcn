@@ -1,32 +1,39 @@
 # Type in motion
 
-## Size
+## Scale
 
-- Size text for a phone. On a 1920 by 1080 frame, a headline is at least 84px and supporting text at least 44px.
-- Two sizes per beat: one headline, one supporting line. A third size needs a reason.
-- Keep text inside the safe area: 5% in from each edge at 16:9.
+Use the whole range. Studio films run from small mono labels to words filling the frame.
+
+| Role | Size on 1920 by 1080 |
+|---|---|
+| Big words, one per scene | 300 to 450px, condensed bold |
+| Headline | 80 to 110px |
+| Command, code, labels | 30 to 56px mono |
+| Tagline | 44 to 48px |
+
+- Two sizes per scene. A third needs a reason.
+- Keep text 5% in from each edge.
+- Load fonts from local files. The film's fonts are the brand's fonts.
 
 ## Line breaks
 
-- Break lines by meaning, never by width alone. "Ship in" / "90 seconds" reads. "Ship in 90" / "seconds" stumbles.
-- Two lines for a headline at most. Three lines means too many words for one beat.
-- Sentence case. No all-caps labels with wide tracking.
+- Break by meaning: "One timeline." / "Three screens."
+- Two lines for a headline at most.
+- Sentence case. No wide-tracked all-caps labels.
 
 ## Reveal units
 
-| Unit | Use for | Note |
-|---|---|---|
-| Whole line | Most headlines | The default. One move, one read |
-| Word by word | One key line per film | Each word lands on a music beat or a stagger gap |
-| Letter by letter | A logo or a name, once | Slow. Spend it on the big beat |
-| Typed | Commands, prompts, search boxes | Human speed: 12 to 16 characters per second. Pair with `keypress` |
+| Unit | Use for |
+|---|---|
+| Masked line rise | Headlines. Each line rises out of its own mask |
+| Letter by letter | Big words and names |
+| Typed with a caret | Commands, code, search |
+| Decode from symbols | A tagline or a product name, once |
+| Fill sweep | A word about progress or rendering |
 
-One reveal style per film, plus at most one exception for a big beat.
-
-## What to avoid
+## Avoid
 
 - Gradient fills on text.
-- One word of a headline in a second color or in italics.
-- Text smaller than 44px used as texture.
-- Emoji. Fonts differ between machines.
-- Text still moving while the viewer reads it. The reading hold starts when the text rests.
+- One word of a headline in a second color.
+- Text still moving while it is read. Letters settle, then the scene's live motion carries the read.
+- Emoji.

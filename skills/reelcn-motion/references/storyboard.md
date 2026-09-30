@@ -1,48 +1,47 @@
 # Storyboard
 
-A plan is a markdown file: five header lines, then one table. The user reads it, you build from it, and `motion-check.mjs` checks the video against it.
+A plan is a markdown file: four header lines, then one table with one row per scene. The user reads it, you build from it, and both scripts read it.
 
 ## Header
 
 ```
-tone: standard
-direction: left
-transitions: push left, hard
-music: bed-standard
+tempo: 120
+carrier: the amber caret, which becomes the selection box, the frame border and the logo stroke
+music: generated
 total: 15
 ```
 
-| Line | Values |
+| Line | Write |
 |---|---|
-| `tone` | `calm`, `standard` or `loud` |
-| `direction` | `left`, `right`, `up` or `down`. One travel direction for the whole film |
-| `transitions` | One to three cut types. The film uses no others |
-| `music` | `bed-calm`, `bed-standard` or `bed-loud`; or a file, its BPM and its offset in seconds, like `track.mp3 96 0.2`; or `none` |
+| `tempo` | Beats per minute. 120 suits most launch films. 100 suits a calm title sequence |
+| `carrier` | The one element surviving every scene change, and what it becomes along the way |
+| `music` | `generated` for a track from `motion-track.mjs`, a file with its tempo and offset like `track.mp3 124 0.08`, or `none` |
 | `total` | Length in seconds |
 
 ## Table
 
 | Column | Write |
 |---|---|
-| `beat` | A short name. Wrap it in `**` for a big beat, the one or two moments the film exists for |
-| `start` | Seconds from the start |
-| `length` | Seconds |
-| `on screen` | The exact words in double quotes, then the elements. Never write `\|` in a cell |
-| `why` | One sentence: the job this beat does for the viewer |
-| `move` | The entrance: `smooth`, `snappy`, `gentle`, `linear` or `bouncy` |
-| `sequence` | Elements arriving one by one, in order, split by commas. Or `none` |
-| `hold` | Seconds of rest after the move lands, then `still` or `drift` |
-| `sound` | A sound name, then `on`, then the visible action. Or `none` |
-| `cut` | `hard`, `push <direction>`, `zoom in`, `zoom out`, `dissolve`, `carry <element>`, or `end` on the last beat |
+| `scene` | A short name |
+| `start` | Seconds from the start. Every start sits on a beat |
+| `length` | Seconds, between 0.8 and 3.5 |
+| `shows` | The real material on screen: which screenshot, which render, which number, which logo |
+| `words` | The exact words in double quotes, or `none` |
+| `move` | How the main element moves and why. "Types at human speed", not "fades in" |
+| `live` | What keeps moving while the words are read. `none` is allowed once, on a short scene |
+| `carrier` | What the carrier is in this scene, and how it arrives or leaves |
+| `sound` | Cues from: `intro`, `typing`, `ticks`, `build`, `beat`, `drop`, `hit`, `whoosh`, `blip`, `riser`, `scan`, `final`, `none` |
+| `join` | How this scene becomes the next: `morph`, `match`, `whip`, `zoom-through`, `wipe`, `flood`, `cut`, or `end` on the last scene |
 
-## Rules
+Never write `|` inside a cell.
 
-- One idea per beat. If `why` needs "and", split the beat.
-- Beats run back to back. Each `start` equals the `start` plus `length` of the beat before.
-- Write the real words. Numbers beat adjectives: "4,200 teams", not "thousands of teams".
-- Show the real thing at least once: the product screen, the project image, the logo.
-- A big beat starts on a music beat. Two big beats per film at most.
-- Tone sets the count of beats. `calm`: 3 to 4. `standard`: 4 to 5. `loud`: 5 to 8.
+## Shape of a film
+
+- A hook in the first 2 seconds: a command typing, a name appearing, a question.
+- A build of 1.5 to 2 seconds, then a drop near a quarter of the way in, where the music and the busiest picture start together.
+- The middle shows the product doing its job, one idea per scene.
+- The final hit lands about 2 seconds before the end. The lockup holds with light motion to the last frame.
+- At least one scene every 2.5 seconds: 6 scenes in a 15 second film.
 
 ## Approval
 

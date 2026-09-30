@@ -3,16 +3,15 @@
 Use for: release notes as a short clip: one version, up to three changes.
 Avoid for: a first launch. Use launch-film.
 
-tone: standard
-direction: up
-transitions: push up, hard
-music: bed-standard
+tempo: 120
+carrier: the accent dot, which becomes the label chip and returns to the logo
+music: generated
 total: 12
 
-| beat | start | length | on screen | why | move | sequence | hold | sound | cut |
+| scene | start | length | shows | words | move | live | carrier | sound | join |
 |---|---|---|---|---|---|---|---|---|---|
-| **version** | 0 | 2.4 | "Relay 2.4" "September 2026" | Say which release this is | smooth | none | 1.4 still | ding on the version landing | push up |
-| new | 2.4 | 3 | "New" "Preview links for every branch" | Lead with the change users asked for | snappy | none | 2 still | pop on the row landing | push up |
-| improved | 5.4 | 2.7 | "Improved" "Builds start 3x faster" | Give the speed change as a number | snappy | none | 1.7 still | pop on the row landing | push up |
-| fixed | 8.1 | 2.3 | "Fixed" "Logs keep every line" | Close a known complaint | snappy | none | 1.7 still | pop on the row landing | hard |
-| sign-off | 10.4 | 1.6 | "relay.dev/changelog" | Point to the full notes | gentle | none | 1 still | none | end |
+| version | 0 | 2 | the product logo and the version | "Relay 2.4" | the version digits roll from 2.3 to 2.4 | the date types in beside it | the accent dot | intro, ticks, build | morph |
+| new | 2 | 2.5 | a real screenshot of preview links | "New" "Preview links for every branch" | the label stamps in on the drop and the screenshot slides up under it | a cursor opens a preview link | the dot becomes the label chip | drop, beat | match |
+| improved | 4.5 | 2.5 | a real build log | "Improved" "Builds start 3x faster" | the build bar races and the number counts to 3x | log lines scroll | the label chip | beat, blip | match |
+| fixed | 7 | 2.5 | the log viewer | "Fixed" "Logs keep every line" | a missing line drops into its gap | new lines keep streaming | the label chip | beat, hit | whip |
+| sign-off | 9.5 | 2.5 | the logo and the changelog link | "relay.dev/changelog" | the chip shrinks back into the logo's dot | the link underline sweeps | the chip becomes the dot | final | end |

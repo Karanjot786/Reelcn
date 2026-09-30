@@ -1,18 +1,19 @@
 # Showreel
 
-Use for: a portfolio intro, a studio reel opener, a personal site hero video.
+Use for: a portfolio intro or a studio reel opener.
 Avoid for: one product with features to explain. Use launch-film.
 
-tone: standard
-direction: left
-transitions: push left, hard
-music: bed-standard
+tempo: 120
+carrier: the accent underline, which becomes the photo frame, the card edge, a chart bar and the link underline
+music: generated
 total: 15
 
-| beat | start | length | on screen | why | move | sequence | hold | sound | cut |
+| scene | start | length | shows | words | move | live | carrier | sound | join |
 |---|---|---|---|---|---|---|---|---|---|
-| **name** | 0 | 3.5 | "Maya Chen" "Product designer" | Say who this is before any work shows | smooth | none | 1.5 still | impact on the name landing | push left |
-| card one | 3.5 | 3 | "Relay" "Checkout in one tap", project image | Lead with the strongest project | snappy | none | 1.7 still | pop on the card landing | push left |
-| card two | 6.5 | 3 | "Field Notes" "Offline first journal", project image | Show range with a second kind of work | snappy | none | 1.7 still | pop on the card landing | push left |
-| card three | 9.5 | 3 | "Tempo" "Schedules for small teams", project image | Close the set of three | snappy | none | 1.7 still | pop on the card landing | hard |
-| **contact** | 12.5 | 2.5 | "mayachen.design" | Give one place to go next | gentle | none | 1.5 still | none | end |
+| greeting | 0 | 1.5 | the name in large type on black | "Hi, I'm Maya." | letters rise off a baseline one by one | the underline grows under the words | the underline | intro, ticks | morph |
+| name | 1.5 | 2 | a real portrait and the name | "Maya Chen" "Product designer" | the portrait scales out of the underline's end | the role line cycles through three roles | the underline becomes the photo frame | build | morph |
+| work | 3.5 | 2.5 | three real project screenshots | "Relay" "Field Notes" "Tempo" | cards are dealt in on the beat, fanned like a hand | the cards drift apart slowly and the names swap | the photo frame becomes the first card | drop, beat | match |
+| detail | 6 | 2.5 | one project in use, full frame | "Checkout in one tap" | the card grows to fill the frame and a cursor taps the pay button | the cursor travels, the button presses, the total counts up | the card edge becomes the frame | beat, hit | whip |
+| numbers | 8.5 | 2 | real numbers from the work | "4 years" "12 launches" | numbers roll up on the beat while their bars grow | digits roll and bars grow | a bar in accent | beat, blip | wipe |
+| words | 10.5 | 2 | three words at full frame | "Clear. Quick. Kind." | each word moves the way it means: Clear sharpens out of blur, Quick streaks in, Kind eases in soft | letters settle as the blur resolves | the bar becomes the underline | hit, ticks | morph |
+| contact | 12.5 | 2.5 | the portrait, the name and the site | "mayachen.design" | the underline draws the link while the portrait returns | the underline sweeps and a cursor arrives to click | the underline | final | end |
