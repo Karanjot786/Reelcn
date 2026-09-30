@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Showreel</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Inter"; font-weight: 400; src: url("assets/fonts/inter-latin-400-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Inter"; font-weight: 500; src: url("assets/fonts/inter-latin-500-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Inter"; font-weight: 600; src: url("assets/fonts/inter-latin-600-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Inter"; font-weight: 700; src: url("assets/fonts/inter-latin-700-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Inter"; font-weight: 800; src: url("assets/fonts/inter-latin-800-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Instrument Serif"; font-style: italic; font-weight: 400; src: url("assets/fonts/instrument-serif-latin-400-italic.woff2") format("woff2"); }
+      :root { --bg: #0d0d0f; --cream: #f3efe8; --coral: #ff6a3d; --mute: #8b877f; }
+      html, body { margin: 0; background: var(--bg); }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: var(--cream); font-family: "Inter", sans-serif; }
+      .abs { position: absolute; }
+      .mask { overflow: hidden; }
+      .l { display: inline-block; }
+      #hi { left: 0; top: 390px; width: 1920px; height: 190px; text-align: center; font: 800 160px/190px "Inter", sans-serif; letter-spacing: -6px; white-space: nowrap; }
+      .ring { left: 0; top: 0; width: 260px; height: 260px; border-radius: 50%; border: 4px solid rgba(255, 106, 61, 0.7); box-sizing: border-box; opacity: 0; }
+      #uline { left: 0; top: 0; width: 10px; height: 10px; border-radius: 5px; background: var(--coral); box-shadow: 0 0 30px rgba(255, 106, 61, 0.45); }
+
+      #c1 { left: 0; top: 0; width: 260px; height: 260px; border-radius: 130px; overflow: hidden; background: radial-gradient(circle at 30% 25%, #ffb08f, #ff6a3d 55%, #c2410c); box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5); }
+      #mono { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font: italic 400 130px/1 "Instrument Serif", serif; color: #fff7f0; }
+      .card { left: 0; top: 0; width: 600px; height: 338px; border-radius: 22px; overflow: hidden; background: #1a1a1d; box-shadow: 0 0 0 2px rgba(243, 239, 232, 0.16), 0 30px 80px rgba(0, 0, 0, 0.55); }
+      .card img, #c1 img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+      #name { left: 780px; top: 372px; font: 800 136px/1 "Inter", sans-serif; letter-spacing: -5px; white-space: nowrap; }
+      #roles { left: 786px; top: 540px; height: 60px; width: 900px; font: 500 48px/60px "Inter", sans-serif; color: var(--mute); }
+      #roles span { position: absolute; left: 0; top: 0; white-space: nowrap; }
+      #tag { left: 64px; top: 56px; font: 600 34px/1 "Inter", sans-serif; letter-spacing: -0.5px; color: var(--cream); opacity: 0; }
+      .cap { left: 0; top: 0; width: 600px; text-align: center; font: 700 40px/1 "Inter", sans-serif; letter-spacing: -1px; color: var(--cream); opacity: 0; }
+
+      #checkout { position: absolute; inset: 0; background: #f7f5f1; color: #151515; opacity: 0; }
+      #checkout .panel { position: absolute; left: 12%; top: 16%; width: 44%; height: 68%; border-radius: 28px; background: #fff; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1); }
+      #checkout .item { position: absolute; left: 8%; width: 84%; height: 12%; border-bottom: 1px solid #ece8e1; font: 500 30px/1 "Inter", sans-serif; }
+      #checkout .item b { position: absolute; right: 0; top: 0; font-weight: 600; }
+      #checkout .tot { position: absolute; left: 8%; bottom: 10%; width: 84%; font: 800 64px/1 "Inter", sans-serif; letter-spacing: -2px; }
+      #checkout .tot span { color: #8b877f; font-weight: 500; font-size: 30px; letter-spacing: 0; display: block; margin-bottom: 10px; }
+      #pay { position: absolute; left: 62%; top: 44%; width: 26%; height: 12%; border-radius: 999px; background: var(--coral); color: #fff; font: 700 40px/1 "Inter", sans-serif; display: flex; align-items: center; justify-content: center; box-shadow: 0 16px 40px rgba(255, 106, 61, 0.4); }
+      #receipt { position: absolute; left: 66%; top: 44%; width: 200px; height: 250px; border-radius: 16px; background: #fff; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18); opacity: 0; }
+      #receipt i { position: absolute; left: 24px; height: 12px; border-radius: 6px; background: #ece8e1; }
+      #done { position: absolute; left: 62%; top: 60%; width: 26%; text-align: center; font: 600 32px/1 "Inter", sans-serif; color: #15803d; opacity: 0; }
+      #cursor { left: 0; top: 0; width: 44px; height: 44px; }
+
+      .num { top: 320px; font: 800 200px/1 "Inter", sans-serif; letter-spacing: -8px; font-variant-numeric: tabular-nums; opacity: 0; }
+      .num small { display: block; margin-top: 18px; font: 600 50px/1 "Inter", sans-serif; letter-spacing: -1px; color: var(--mute); }
+      .bar { top: 690px; height: 14px; border-radius: 7px; background: var(--coral); transform-origin: left center; }
+
+      .word { left: 0; width: 1920px; text-align: center; height: 190px; white-space: nowrap; }
+      .word span { display: inline-block; font: 800 170px/190px "Inter", sans-serif; letter-spacing: -6px; }
+      #wKind span { font: italic 400 196px/190px "Instrument Serif", serif; letter-spacing: -2px; color: #ffd6c7; }
+      .streak { left: 0; height: 6px; border-radius: 3px; background: linear-gradient(90deg, rgba(243, 239, 232, 0), rgba(243, 239, 232, 0.8)); opacity: 0; }
+
+      #hover { left: 506px; top: 458px; width: 908px; height: 136px; border-radius: 20px; background: rgba(255, 106, 61, 0.26); transform-origin: left center; }
+      #site { left: 0; top: 470px; width: 1920px; text-align: center; font: 700 110px/1 "Inter", sans-serif; letter-spacing: -4px; opacity: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1920" data-height="1080" data-duration="15">
+      <div id="hi" class="abs mask" data-layout-allow-overflow data-layout-allow-overlap data-layout-allow-occlusion><span class="l" data-layout-allow-overlap data-layout-allow-occlusion>H</span><span class="l" data-layout-allow-overlap data-layout-allow-occlusion>i</span><span class="l" data-layout-allow-overlap data-layout-allow-occlusion>,</span><span class="l" data-layout-allow-overlap data-layout-allow-occlusion>&nbsp;</span><span class="l" data-layout-allow-overlap data-layout-allow-occlusion>I</span><span class="l" data-layout-allow-overlap data-layout-allow-occlusion>'</span><span class="l" data-layout-allow-overlap data-layout-allow-occlusion>m</span><span class="l" data-layout-allow-overlap data-layout-allow-occlusion>&nbsp;</span><span class="l" data-layout-allow-overlap data-layout-allow-occlusion>M</span><span class="l" data-layout-allow-overlap data-layout-allow-occlusion>a</span><span class="l" data-layout-allow-overlap data-layout-allow-occlusion>y</span><span class="l" data-layout-allow-overlap data-layout-allow-occlusion>a</span><span class="l" data-layout-allow-overlap data-layout-allow-occlusion>.</span></div>
+
+      <div id="name" class="abs mask" data-layout-allow-overflow data-layout-allow-overlap data-layout-allow-occlusion><span class="l" id="nameIn" data-layout-allow-overlap data-layout-allow-occlusion>Maya Chen</span></div>
+      <div id="roles" class="abs mask" data-layout-allow-overflow data-layout-allow-overlap data-layout-allow-occlusion><span data-layout-allow-overlap data-layout-allow-occlusion>Product designer</span><span data-layout-allow-overlap data-layout-allow-occlusion>Design engineer</span><span data-layout-allow-overlap data-layout-allow-occlusion>Motion and type</span></div>
+      <div id="tag" class="abs">Maya Chen</div>
+
+      <div id="c3" class="abs card"><img src="assets/work/launch.jpg" alt="Draftwell launch film" /></div>
+      <div id="c2" class="abs card"><img src="assets/work/data.jpg" alt="Signals data story" /></div>
+      <div id="c1" class="abs" data-layout-allow-overflow data-layout-allow-overlap data-layout-allow-occlusion>
+        <img id="c1img" src="assets/work/changelog.jpg" alt="Relay changelog" data-layout-allow-overlap data-layout-allow-occlusion />
+        <div id="mono" data-layout-allow-overlap data-layout-allow-occlusion>MC</div>
+        <div id="checkout" data-layout-allow-overflow data-layout-allow-overlap data-layout-allow-occlusion>
+          <div class="panel">
+            <div class="item" style="top: 12%">Relay Pro, yearly <b>$40.00</b></div>
+            <div class="item" style="top: 28%">Extra seat <b>$8.00</b></div>
+            <div class="tot"><span>Total</span><span id="total" style="display: inline; color: #151515; font-weight: 800; font-size: 64px; letter-spacing: -2px">$0.00</span></div>
+          </div>
+          <div id="pay">Pay in one tap</div>
+          <div id="receipt"><i style="top: 36px; width: 120px; background: var(--coral)"></i><i style="top: 76px; width: 150px"></i><i style="top: 108px; width: 130px"></i><i style="top: 140px; width: 150px"></i><i style="top: 196px; width: 90px; background: #151515"></i></div>
+          <div id="done">Paid. Receipt sent.</div>
+        </div>
+      </div>
+      <div id="cap1" class="abs cap">Relay</div>
+      <div id="cap2" class="abs cap">Signals</div>
+      <div id="cap3" class="abs cap">Draftwell</div>
+
+      <div id="n1" class="abs num" style="left: 150px"><span id="n1v">0</span> years<small>designing products</small></div>
+      <div id="n2" class="abs num" style="left: 1080px"><span id="n2v">0</span><small>launches shipped</small></div>
+      <div id="b1" class="abs bar" style="left: 154px; width: 640px"></div>
+      <div id="b2" class="abs bar" style="left: 1084px; width: 560px"></div>
+
+      <div id="wClear" class="abs word mask" style="top: 250px" data-layout-allow-overflow><span>Clear.</span></div>
+      <div id="wQuick" class="abs word mask" style="top: 445px" data-layout-allow-overflow><span>Quick.</span></div>
+      <div id="wKind" class="abs word mask" style="top: 640px" data-layout-allow-overflow><span>Kind.</span></div>
+      <div id="s1" class="abs streak" style="top: 520px; width: 520px"></div>
+      <div id="s2" class="abs streak" style="top: 560px; width: 380px"></div>
+
+      <div id="hover" class="abs"></div>
+      <div id="site" class="abs">mayachen.design</div>
+      <div id="r1" class="abs ring"></div><div id="r2" class="abs ring"></div>
+      <div id="uline" class="abs"></div>
+      <svg id="cursor" class="abs" viewBox="0 0 40 40"><title>cursor</title><path d="M6 4l26 14-12 3-5 12z" fill="#151515" stroke="#fff" stroke-width="2.5" stroke-linejoin="round" /></svg>
+
+      <!-- biome-ignore lint/a11y/useMediaCaption: music and sound effects only, no words to caption -->
+      <audio id="track" src="assets/audio/track.mp3" data-start="0" data-duration="15" data-track-index="10" data-volume="1"></audio>
+    </div>
+    <script>
+      document.fonts.ready.then(() => {
+        // fromTo start states apply when each tween starts, not when the timeline is built.
+        const tl = gsap.timeline({ paused: true, defaults: { immediateRender: false } });
+        const U = "#uline";
+        const hiL = gsap.utils.toArray("#hi .l");
+        const roles = gsap.utils.toArray("#roles span");
+        const CX = 960, CY = 540;
+        gsap.set(hiL, { yPercent: 105 });
+        gsap.set("#nameIn", { yPercent: 105 });
+        gsap.set(roles, { yPercent: 105 });
+        gsap.set(U, { x: CX - 5, y: 590 });
+        gsap.set("#c1", { x: 440, y: 330, scale: 0, transformOrigin: "50% 50%" });
+        gsap.set("#c1img", { opacity: 0 });
+        gsap.set(["#c2", "#c3"], { x: CX - 300, y: 1200, rotation: 0 });
+        gsap.set(["#cap1", "#cap2", "#cap3"], { y: 0 });
+        gsap.set("#cursor", { x: 1500, y: 1150 });
+        gsap.set(["#b1", "#b2", "#hover"], { scaleX: 0 });
+        gsap.set("#c1", { boxShadow: "0 0 0 2px rgba(243, 239, 232, 0.16), 0 30px 80px rgba(0, 0, 0, 0.5)" });
+        gsap.set(".word span", { yPercent: 105 });
+        gsap.set([".word", "#s1", "#s2"], { opacity: 0 });
+        gsap.set("#mono", { opacity: 1 });
+
+        /* ---------- greeting (0 - 1.5s) ---------- */
+        const hiW = document.getElementById("hi").scrollWidth;
+        tl.to(hiL, { yPercent: 0, duration: 0.5, ease: "power4.out", stagger: 0.035 }, 0.1);
+        tl.to(U, { x: 520, width: 880, duration: 1.1, ease: "power3.inOut" }, 0.15);
+
+        /* ---------- name (1.5 - 3.5s) ---------- */
+        tl.to(hiL, { yPercent: -110, duration: 0.3, ease: "power3.in", stagger: 0.015 }, 1.35);
+        // the underline slides under the name; its left end blooms into the portrait
+        tl.to(U, { x: 440 + 125, width: 10, duration: 0.3, ease: "power4.in" }, 1.5);
+        tl.to("#c1", { scale: 1, duration: 0.5, ease: "back.out(1.6)" }, 1.72);
+        tl.set(U, { x: 786, y: 530, width: 10 }, 1.8);
+        tl.to("#nameIn", { yPercent: 0, duration: 0.5, ease: "power4.out" }, 1.8);
+        tl.to(U, { width: 660, duration: 0.5, ease: "power3.out" }, 1.85);
+        tl.to(roles[0], { yPercent: 0, duration: 0.35, ease: "power3.out" }, 2.0);
+        [[2.5, 0, 1], [3.0, 1, 2]].forEach(([t, a, b]) => {
+          tl.to(roles[a], { yPercent: -105, duration: 0.25, ease: "power3.in" }, t);
+          tl.to(roles[b], { yPercent: 0, duration: 0.3, ease: "power3.out" }, t + 0.05);
+        });
+        tl.fromTo("#c1", { rotation: -4 }, { rotation: 4, duration: 1.7, ease: "sine.inOut" }, 1.8);
+        [2.0, 2.5, 3.0].forEach((t, k) => {
+          const r = k % 2 ? "#r2" : "#r1";
+          tl.fromTo(r, { x: 440, y: 330, scale: 1, opacity: 0.8 }, { scale: 1.7, opacity: 0, duration: 0.7, ease: "power2.out" }, t);
+        });
+
+        /* ---------- work (3.5 - 6s) ---------- */
+        tl.to(["#nameIn", roles[2]], { yPercent: -105, duration: 0.25, ease: "power3.in" }, 3.3);
+        tl.to("#tag", { opacity: 1, duration: 0.3 }, 3.5);
+        // the portrait becomes the first card
+        tl.to("#c1", { x: CX - 300 - 640, y: 300, width: 600, height: 338, borderRadius: 22, rotation: -7, duration: 0.5, ease: "power4.inOut" }, 3.5);
+        tl.to("#mono", { opacity: 0, duration: 0.2 }, 3.62);
+        tl.to("#c1img", { opacity: 1, duration: 0.2 }, 3.62);
+        tl.to(U, { x: CX - 300 - 640 + 20, y: 670, width: 560, duration: 0.5, ease: "power4.inOut" }, 3.5);
+        // two more cards dealt in on the beat
+        tl.to("#c2", { x: CX - 300, y: 300, rotation: 0, duration: 0.45, ease: "power4.out" }, 4.0);
+        tl.to("#c3", { x: CX - 300 + 640, y: 300, rotation: 7, duration: 0.45, ease: "power4.out" }, 4.5);
+        [["#cap1", CX - 300 - 640, 3.9], ["#cap2", CX - 300, 4.3], ["#cap3", CX - 300 + 640, 4.8]].forEach(([c, x, t]) => {
+          gsap.set(c, { x, y: 700 });
+          tl.fromTo(c, { y: 700, opacity: 0 }, { y: 690, opacity: 1, duration: 0.3, ease: "power3.out" }, t);
+        });
+        // each card lifts in turn on the half beat while the underline hops under it
+        [["#c1", 5.0, CX - 300 - 640 + 20 - 40], ["#c2", 5.25, CX - 300 + 20], ["#c3", 5.5, CX - 300 + 640 + 20 + 40]].forEach(([c, t, ux]) => {
+          tl.to(c, { y: 270, duration: 0.14, ease: "power3.out" }, t);
+          tl.to(c, { y: 300, duration: 0.2, ease: "power2.inOut" }, t + 0.16);
+          tl.to(U, { x: ux, duration: 0.14, ease: "power3.out" }, t);
+        });
+        tl.to(U, { x: CX - 300 + 20, duration: 0.3, ease: "power3.inOut" }, 4.3);
+        tl.to(U, { x: CX - 300 + 640 + 20, duration: 0.3, ease: "power3.inOut" }, 4.8);
+        tl.to("#c1", { x: CX - 300 - 640 - 40, duration: 0.9, ease: "none" }, 4.95);
+        tl.to("#c3", { x: CX - 300 + 640 + 40, duration: 0.9, ease: "none" }, 4.95);
+        tl.to(U, { x: CX - 300 - 640 + 20 - 40, duration: 0.14, ease: "power3.out" }, 5.75);
+
+        /* ---------- detail (6 - 8.5s) ---------- */
+        tl.to(["#c2", "#cap2"], { opacity: 0, x: CX - 300 + 240, filter: "blur(14px)", duration: 0.3, ease: "power3.in" }, 5.95);
+        tl.to(["#c3", "#cap3"], { opacity: 0, x: CX - 300 + 640 + 40 + 240, filter: "blur(14px)", duration: 0.3, ease: "power3.in" }, 5.95);
+        tl.to(["#cap1", "#tag"], { opacity: 0, duration: 0.2 }, 5.8);
+        tl.to("#c1", { x: 0, y: 0, width: 1920, height: 1080, borderRadius: 0, rotation: 0, duration: 0.5, ease: "power4.inOut" }, 5.85);
+        tl.to(U, { x: 0, y: 1070, width: 1920, height: 10, duration: 0.5, ease: "power4.inOut" }, 5.85);
+        tl.fromTo("#checkout", { clipPath: "inset(0 0 0 100%)", opacity: 1 }, { clipPath: "inset(0 0 0 0%)", opacity: 1, duration: 0.35, ease: "power3.inOut" }, 6.25);
+        tl.to("#cursor", { x: 1440, y: 540, duration: 0.6, ease: "power3.inOut" }, 6.45);
+        tl.to("#cursor", { scale: 0.8, duration: 0.08, yoyo: true, repeat: 1 }, 7.0);
+        tl.to("#pay", { scale: 0.94, duration: 0.08, yoyo: true, repeat: 1 }, 7.0);
+        const tot = { v: 0 };
+        const totEl = document.getElementById("total");
+        tl.to(tot, { v: 48, duration: 0.7, ease: "power2.out", onUpdate: () => { totEl.textContent = "$" + tot.v.toFixed(2); } }, 7.05);
+        tl.fromTo("#done", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, 7.5);
+        tl.to("#cursor", { x: 1560, y: 760, duration: 0.8, ease: "sine.inOut" }, 7.6);
+        // the receipt leaves the pay button and flies off toward the inbox
+        tl.fromTo("#receipt", { opacity: 1, x: 0, y: 0, scale: 0.4, rotation: 0 }, { opacity: 1, x: 520, y: -520, scale: 1, rotation: 14, duration: 0.7, ease: "power2.in" }, 7.55);
+        tl.fromTo("#receipt", { opacity: 1 }, { opacity: 0, duration: 0.15 }, 8.1);
+        tl.fromTo("#c1", { scale: 1 }, { scale: 1.04, duration: 2.0, ease: "none", transformOrigin: "50% 50%" }, 6.3);
+
+        /* ---------- numbers (8.5 - 10.5s) ---------- */
+        tl.to("#c1", { clipPath: "inset(0 100% 0 0)", duration: 0.35, ease: "power3.inOut" }, 8.3);
+        tl.to("#cursor", { x: 1800, y: 1160, duration: 0.3, ease: "power3.in" }, 8.3);
+        tl.to(U, { x: 154, y: 690, width: 10, height: 14, duration: 0.4, ease: "power4.inOut" }, 8.3);
+        tl.set(U, { opacity: 0 }, 8.7);
+        tl.to(["#n1", "#n2"], { opacity: 1, duration: 0.2 }, 8.5);
+        const n1 = { v: 0 }, n2 = { v: 0 };
+        const n1El = document.getElementById("n1v"), n2El = document.getElementById("n2v");
+        tl.to(n1, { v: 4, duration: 0.9, ease: "steps(4)", onUpdate: () => { n1El.textContent = Math.round(n1.v); } }, 8.5);
+        tl.to(n2, { v: 12, duration: 1.3, ease: "steps(12)", onUpdate: () => { n2El.textContent = Math.round(n2.v); } }, 9.0);
+        tl.to("#b1", { scaleX: 1, duration: 0.9, ease: "power2.out" }, 8.6);
+        tl.to("#b2", { scaleX: 1, duration: 1.3, ease: "steps(12)" }, 9.0);
+        tl.fromTo(["#n1", "#n2"], { y: 0 }, { y: -18, duration: 1.8, ease: "none" }, 8.6);
+
+        /* ---------- words (10.5 - 12.5s) ---------- */
+        tl.to(["#n1", "#n2"], { opacity: 0, y: -78, duration: 0.25, ease: "power3.in" }, 10.4);
+        tl.to(["#b1", "#b2"], { opacity: 0, y: -60, duration: 0.25, ease: "power3.in" }, 10.4);
+        tl.set(".word", { opacity: 1 }, 10.45);
+        tl.fromTo("#wClear span", { yPercent: 0, filter: "blur(28px)", opacity: 0 }, { filter: "blur(0px)", opacity: 1, duration: 0.5, ease: "power2.out" }, 10.5);
+        tl.fromTo("#wQuick span", { yPercent: 0, x: -900, filter: "blur(10px)" }, { x: 0, filter: "blur(0px)", duration: 0.28, ease: "expo.out" }, 11.0);
+        tl.fromTo(["#s1", "#s2"], { x: 0, opacity: 0.9 }, { x: 560, opacity: 0, duration: 0.4, ease: "power2.out", stagger: 0.04 }, 11.0);
+        tl.fromTo("#wKind span", { yPercent: 40, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.9, ease: "sine.out" }, 11.5);
+        tl.fromTo(["#wClear", "#wQuick", "#wKind"], { scale: 1 }, { scale: 1.03, duration: 2.0, ease: "none", transformOrigin: "50% 50%" }, 10.5);
+        tl.set(U, { opacity: 1, x: 960, y: 432, width: 10, height: 10 }, 10.5);
+        tl.to(U, { x: 960 - 230, width: 460, duration: 0.35, ease: "power3.out" }, 10.55);
+        tl.to(U, { x: 960 - 250, y: 627, width: 500, duration: 0.25, ease: "power4.out" }, 11.0);
+        tl.to(U, { x: 960 - 190, y: 822, width: 380, duration: 0.4, ease: "sine.out" }, 11.5);
+        [12.0, 12.25].forEach((t, k) => tl.to(U, { x: k ? 960 - 190 : 960 + 170, width: k ? 380 : 20, duration: 0.2, ease: "power2.inOut" }, t));
+
+        /* ---------- contact (12.5 - 15s) ---------- */
+        tl.to(["#wClear span", "#wQuick span", "#wKind span"], { yPercent: -110, duration: 0.3, ease: "power3.in", stagger: 0.05 }, 12.25);
+        tl.set(U, { x: 960, y: 610, width: 10, height: 10 }, 12.5);
+        tl.to("#site", { opacity: 1, duration: 0.3 }, 12.55);
+        tl.fromTo("#site", { y: 30, filter: "blur(8px)" }, { y: 0, filter: "blur(0px)", duration: 0.5, ease: "power3.out" }, 12.55);
+        const siteW = document.getElementById("site").scrollWidth;
+        tl.to(U, { x: 960 - 440, width: 880, duration: 0.6, ease: "power3.inOut" }, 12.7);
+        tl.set("#c1", { clipPath: "inset(0 0% 0 0)", x: 960 - 70, y: 300, width: 140, height: 140, borderRadius: 70, scale: 0, opacity: 1 }, 12.5);
+        tl.set(["#checkout", "#c1img"], { opacity: 0 }, 12.5);
+        tl.set("#mono", { opacity: 1, fontSize: "70px" }, 12.5);
+        tl.to("#c1", { scale: 1, duration: 0.45, ease: "back.out(1.8)" }, 12.8);
+        tl.fromTo("#cursor", { x: 1400, y: 1150 }, { x: 1180, y: 560, duration: 0.6, ease: "power3.out" }, 13.3);
+        tl.to("#cursor", { scale: 0.8, duration: 0.08, yoyo: true, repeat: 1 }, 13.9);
+        [13.5, 14.0, 14.5].forEach((t, k) => {
+          tl.fromTo(k % 2 ? "#r2" : "#r1", { x: 960 - 130, y: 240, scale: 0.54, opacity: 0.8 }, { scale: 1.1, opacity: 0, duration: 0.6, ease: "power2.out" }, t);
+          tl.to(U, { x: k % 2 ? 960 - 440 : 960 + 430, width: k % 2 ? 880 : 10, duration: 0.25, ease: "power3.inOut" }, t);
+        });
+        tl.fromTo("#site", { scale: 1 }, { scale: 1.03, duration: 2.4, ease: "none", transformOrigin: "50% 50%" }, 12.6);
+        // the cursor's hover fills the link in coral, beat by beat
+        tl.to("#hover", { scaleX: 1, duration: 0.3, ease: "power3.out" }, 13.9);
+        tl.to("#hover", { scaleX: 0, transformOrigin: "right center", duration: 0.25, ease: "power3.in" }, 14.3);
+        tl.to("#hover", { scaleX: 1, transformOrigin: "left center", duration: 0.3, ease: "power3.out" }, 14.55);
+
+        window.__timelines["main"] = tl;
+        if (window.__hfForceTimelineRebind) window.__hfForceTimelineRebind();
+      });
+    </script>
+  </body>
+</html>
