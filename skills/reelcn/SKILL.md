@@ -63,6 +63,7 @@ reelcn is a shadcn registry of Remotion components. Items install as source file
 - Size everything with `u()`. Never read `useVideoConfig().width` or `.height` inside components.
 
 **Motion**
+- For a showreel, title sequence, launch film or changelog clip, plan the motion with the `reelcn-motion` skill first.
 - One idea per scene.
 - Let items exit on their own: they fade out at the end of their `Sequence`. Do not add manual exits.
 - Hold a finished frame for at least 1 second before a transition.

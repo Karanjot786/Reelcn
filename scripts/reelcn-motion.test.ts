@@ -1,6 +1,6 @@
 // The one test file for the reelcn-motion skill. Renders are checked by use, not here.
 import assert from "node:assert/strict";
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import test from "node:test";
 import { renderCss, renderJs, renderRs, renderTs } from "./build-motion-tokens.ts";
@@ -113,4 +113,13 @@ test("measured holds are compared with the plan, and drift holds allow slow moti
   const drifting = check.checkHolds(samples(0.5), parsed, { still: 0.15, settled: 1 }).misses;
   assert.equal(drifting.length, 1);
   assert.match(drifting[0], /first: measured still hold 0\.00s, plan says 1\.5s/);
+});
+
+test("SKILL.md is short, named, and links only to files in the skill", () => {
+  const skill = readFileSync(`${SKILL}/SKILL.md`, "utf8");
+  assert.match(skill, /^---\nname: reelcn-motion\ndescription: /);
+  assert.ok(skill.split("\n").length <= 120, "SKILL.md is over 120 lines");
+  for (const [, file] of skill.matchAll(/`((?:references|scripts|tokens)\/[\w./-]+)`/g)) {
+    assert.ok(existsSync(path.join(SKILL, file)), `SKILL.md names ${file}, which is missing`);
+  }
 });
