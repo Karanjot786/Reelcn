@@ -8,6 +8,9 @@
       "!docs",
       "!apps/www/public/r",
       "!registry.json",
+      "!skills/reelcn-motion/tokens/tokens.ts",
+      "!skills/reelcn-motion/tokens/tokens.js",
+      "!skills/reelcn-motion/tokens/tokens.css",
       "!**/.next",
       "!**/next-env.d.ts"
     ]

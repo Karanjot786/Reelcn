@@ -3,6 +3,7 @@
 import { execFileSync } from "node:child_process";
 import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
+import { buildMotionTokens } from "./build-motion-tokens.ts";
 
 export const CATEGORIES = [
   "lib",
@@ -304,6 +305,8 @@ function main() {
   if (existsSync("sfx")) {
     cpSync("sfx", "apps/www/public/sfx", { recursive: true });
   }
+  // The reelcn-motion skill ships its tokens in four languages; tokens.json is the source.
+  buildMotionTokens();
 
   writeFileSync("apps/www/public/llms.txt", llms(items, base, themes, false));
   writeFileSync("apps/www/public/llms-full.txt", llms(items, base, themes, true));
