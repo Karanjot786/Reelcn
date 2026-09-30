@@ -226,7 +226,9 @@
         tl.to(U, { x: 960 - 230, width: 460, duration: 0.35, ease: "power3.out" }, 10.55);
         tl.to(U, { x: 960 - 250, y: 627, width: 500, duration: 0.25, ease: "power4.out" }, 11.0);
         tl.to(U, { x: 960 - 190, y: 822, width: 380, duration: 0.4, ease: "sine.out" }, 11.5);
-        [12.0, 12.25].forEach((t, k) => tl.to(U, { x: k ? 960 - 190 : 960 + 170, width: k ? 380 : 20, duration: 0.2, ease: "power2.inOut" }, t));
+        [12.0, 12.25].forEach((t, k) => {
+          tl.to(U, { x: k ? 960 - 190 : 960 + 170, width: k ? 380 : 20, duration: 0.2, ease: "power2.inOut" }, t);
+        });
 
         /* ---------- contact (12.5 - 15s) ---------- */
         tl.to(["#wClear span", "#wQuick span", "#wKind span"], { yPercent: -110, duration: 0.3, ease: "power3.in", stagger: 0.05 }, 12.25);
