@@ -1,0 +1,11 @@
+{
+  "bpm": 100,
+  "duration": 8,
+  "seed": 3,
+  "intro": { "until": 1.8 },
+  "risers": [{ "from": 0.9, "to": 1.8, "gain": 0.5 }],
+  "hits": [1.8],
+  "beat": { "from": 1.8, "to": 6.6 },
+  "whooshes": [4.25, 6.55],
+  "final": 6.6
+}
