@@ -11,12 +11,14 @@ node --version && ffmpeg -version | head -1
 npx --yes hyperframes@0.8.96 doctor
 ```
 
-Start from the starter, which is a full film to adapt:
+Start from the starter, a full film to adapt. It ships inside this skill:
 
 ```bash
-npx degit Karanjot786/reelcn/starters/hyperframes/launch-film my-film
+cp -R <skill>/starters/hyperframes-launch-film my-film
 cd my-film
 ```
+
+`<skill>` is the folder holding this skill's `SKILL.md`.
 
 For API details load the vendor's `hyperframes-core` and `hyperframes-cli` skills. Treat this as an edit to an existing project so their entry skill skips its interview. Their motion skills (`motion-doctrine`, `cut-the-curve`) are internal; install them with `INSTALL_INTERNAL_SKILLS=1 npx skills add heygen-com/hyperframes` if the user wants them.
 

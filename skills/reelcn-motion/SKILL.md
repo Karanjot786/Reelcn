@@ -19,7 +19,7 @@ A film made with this skill looks like a studio launch film, not a slideshow:
 - Each element moves the way its meaning suggests: "fast" streaks in, a command types, a count rolls.
 - 60 fps, a scene every 1 to 2.5 seconds, picture events on the beat of the music.
 
-The example to study before building: `starters/hyperframes/launch-film` in the reelcn repo. Its plan is `plans/launch-film.md`.
+The example to study before building: `starters/hyperframes-launch-film/`, a full film with its plan, music cues and assets.
 
 ## Workflow
 

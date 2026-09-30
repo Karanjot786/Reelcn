@@ -23,7 +23,7 @@ It reads the plan's `tempo`, `total` and `sound` column and writes a WAV, plus a
 | `scan` | A rising tone for a progress sweep |
 | `final` | The last impact, a chord and a ring-out to the end |
 
-For finer control, write a cue sheet in JSON with the same fields and pass it instead of the plan. `starters/hyperframes/launch-film/cues.json` is a worked example.
+For finer control, write a cue sheet in JSON with the same fields and pass it instead of the plan. `starters/hyperframes-launch-film/cues.json` is a worked example.
 
 ## A track of the user's own
 
