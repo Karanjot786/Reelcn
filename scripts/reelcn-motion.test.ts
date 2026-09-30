@@ -101,3 +101,16 @@ test("the reading formula scales with tone", () => {
   assert.equal(check.readingHold(6, "standard"), 2);
   assert.equal(Number(check.readingHold(6, "calm").toFixed(2)), 2.6);
 });
+
+test("measured holds are compared with the plan, and drift holds allow slow motion", () => {
+  const parsed = check.parsePlan(
+    "tone: standard\ndirection: left\ntransitions: hard\nmusic: none\ntotal: 6\n\n| beat | start | length | on screen | why | move | sequence | hold | sound | cut |\n|---|---|---|---|---|---|---|---|---|---|\n| first | 0 | 3 | box | test | smooth | none | 1.5 still | none | hard |\n| second | 3 | 3 | box | test | smooth | none | 1.5 drift | none | end |\n",
+  );
+  // 30 fps. Each beat: 1s of fast motion, then 2s at the given energy.
+  const samples = (rest: number) =>
+    Array.from({ length: 180 }, (_, i) => ({ t: i / 30, e: (i / 30) % 3 < 1 ? 3 : rest }));
+  assert.deepEqual(check.checkHolds(samples(0), parsed, { still: 0.15, settled: 1 }).misses, []);
+  const drifting = check.checkHolds(samples(0.5), parsed, { still: 0.15, settled: 1 }).misses;
+  assert.equal(drifting.length, 1);
+  assert.match(drifting[0], /first: measured still hold 0\.00s, plan says 1\.5s/);
+});
