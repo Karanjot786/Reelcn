@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Changelog clip</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Inter"; font-weight: 400; src: url("assets/fonts/inter-latin-400-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Inter"; font-weight: 500; src: url("assets/fonts/inter-latin-500-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Inter"; font-weight: 600; src: url("assets/fonts/inter-latin-600-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Inter"; font-weight: 700; src: url("assets/fonts/inter-latin-700-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Inter"; font-weight: 800; src: url("assets/fonts/inter-latin-800-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Plex Mono"; font-weight: 400; src: url("assets/fonts/plex-mono-400.woff2") format("woff2"); }
+      @font-face { font-family: "Plex Mono"; font-weight: 500; src: url("assets/fonts/plex-mono-500.woff2") format("woff2"); }
+      :root { --bg: #0b0d14; --blue: #2f5bff; --ink: #11131a; --muted: #6b7185; --line: #e6e8ef; --green: #16a34a; }
+      html, body { margin: 0; background: var(--bg); }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: #fff; font-family: "Inter", sans-serif; }
+      .abs { position: absolute; }
+      #glow { left: 0; top: 0; width: 1920px; height: 1080px; background: radial-gradient(ellipse 50% 45% at 30% 40%, rgba(47, 91, 255, 0.22), rgba(47, 91, 255, 0) 70%); }
+
+      /* brand block: centered in scene 1, a corner header in scenes 2-4, centered again at the end */
+      #brand { left: 0; top: 0; width: 900px; height: 180px; }
+      #mark { left: 0; top: 20px; width: 140px; height: 140px; }
+      #word { left: 172px; top: 0; font: 800 150px/180px "Inter", sans-serif; letter-spacing: -6px; white-space: nowrap; }
+      #ver { left: 612px; top: 0; height: 180px; overflow: hidden; font: 700 150px/180px "Inter", sans-serif; letter-spacing: -4px; color: #aab4ff; white-space: nowrap; }
+      #ver .roll { display: inline-block; height: 180px; overflow: hidden; vertical-align: top; }
+      #ver .col { display: block; }
+      #date { left: 172px; top: 190px; font: 500 36px/1 "Plex Mono", monospace; color: #8b93ad; white-space: nowrap; }
+      #datewrap { display: inline-block; overflow: hidden; width: 0; vertical-align: top; }
+
+      /* the carrier: a blue dot that becomes the label chip */
+      #chip { left: 0; top: 0; width: 26px; height: 26px; border-radius: 13px; background: var(--blue); box-shadow: 0 0 0 6px rgba(47, 91, 255, 0.25), 0 10px 40px rgba(47, 91, 255, 0.45); overflow: hidden; }
+      #chip .t { position: absolute; left: 0; top: 0; width: 100%; text-align: center; font: 700 38px/76px "Inter", sans-serif; color: #fff; opacity: 0; white-space: nowrap; }
+
+      .head { left: 120px; top: 430px; font: 800 86px/100px "Inter", sans-serif; letter-spacing: -3px; }
+      .head .row { display: block; overflow: hidden; height: 104px; }
+      .head .row span { display: inline-block; white-space: nowrap; }
+
+      /* the app window */
+      #win { left: 0; top: 0; width: 980px; height: 640px; border-radius: 22px; background: #fff; color: var(--ink); overflow: hidden; box-shadow: 0 40px 120px rgba(0, 0, 0, 0.5); }
+      #bar { position: absolute; left: 0; top: 0; width: 100%; height: 58px; background: #f4f5f9; border-bottom: 1px solid var(--line); }
+      #bar i { position: absolute; top: 22px; width: 14px; height: 14px; border-radius: 7px; background: #d6d9e3; }
+      #bar b { position: absolute; left: 110px; top: 13px; width: 620px; height: 32px; border-radius: 9px; background: #fff; border: 1px solid var(--line); font: 500 18px/32px "Plex Mono", monospace; color: var(--muted); padding-left: 14px; box-sizing: border-box; font-weight: 400; }
+      .pane { position: absolute; left: 0; top: 58px; width: 980px; height: 582px; overflow: hidden; }
+      .prow { position: absolute; left: 36px; width: 908px; height: 92px; border-radius: 14px; border: 1px solid var(--line); background: #fff; box-sizing: border-box; }
+      .prow .n { position: absolute; left: 26px; top: 18px; font: 600 26px/1.2 "Inter", sans-serif; color: var(--ink); }
+      .prow .b { position: absolute; left: 26px; top: 54px; font: 400 19px/1.2 "Plex Mono", monospace; color: var(--muted); }
+      .prow .p { position: absolute; right: 22px; top: 24px; height: 44px; padding: 0 18px; border-radius: 22px; background: #eef2ff; color: var(--blue); font: 600 20px/44px "Inter", sans-serif; }
+      #preview { position: absolute; left: 980px; top: 58px; width: 520px; height: 582px; background: #f7f8fc; border-left: 1px solid var(--line); }
+      #preview .hero { position: absolute; left: 40px; top: 50px; width: 440px; height: 190px; border-radius: 16px; background: linear-gradient(135deg, #2f5bff, #7c9bff); }
+      #preview .l1 { position: absolute; left: 40px; top: 270px; width: 320px; height: 26px; border-radius: 8px; background: #dfe3ee; }
+      #preview .l2 { position: absolute; left: 40px; top: 312px; width: 400px; height: 20px; border-radius: 8px; background: #e9ecf3; }
+      #preview .l3 { position: absolute; left: 40px; top: 344px; width: 360px; height: 20px; border-radius: 8px; background: #e9ecf3; }
+      #preview .tag { position: absolute; left: 40px; top: 400px; font: 500 18px/1 "Plex Mono", monospace; color: var(--muted); }
+      #cursor { left: 0; top: 0; width: 40px; height: 40px; }
+
+      .brow { position: absolute; left: 60px; width: 860px; }
+      .brow .k { font: 600 26px/1 "Inter", sans-serif; color: var(--ink); }
+      .brow .v { position: absolute; right: 0; top: 0; font: 600 26px/1 "Plex Mono", monospace; color: var(--muted); }
+      .track { position: absolute; left: 0; top: 44px; width: 860px; height: 26px; border-radius: 13px; background: #eef0f5; overflow: hidden; }
+      .fill { width: 100%; height: 100%; border-radius: 13px; transform-origin: left center; }
+      #big { position: absolute; left: 60px; top: 300px; font: 800 150px/1 "Inter", sans-serif; letter-spacing: -6px; color: var(--blue); font-variant-numeric: tabular-nums; }
+      #big small { font-size: 46px; letter-spacing: -1px; color: var(--muted); margin-left: 14px; }
+      .logs { position: absolute; left: 60px; top: 480px; width: 860px; height: 90px; overflow: hidden; font: 400 20px/30px "Plex Mono", monospace; color: #5b6275; }
+
+      #viewer { position: absolute; left: 0; top: 0; width: 980px; height: 1440px; background: #0f121b; }
+      .vl { position: absolute; left: 0; width: 980px; height: 46px; font: 400 23px/46px "Plex Mono", monospace; color: #c4cadb; white-space: nowrap; }
+      .vl .ln { display: inline-block; width: 80px; text-align: right; margin-right: 26px; color: #7d869c; }
+      .vl.gap { outline: 2px dashed rgba(234, 179, 8, 0.7); outline-offset: -6px; }
+      #missing { position: absolute; left: 0; width: 980px; height: 46px; font: 400 23px/46px "Plex Mono", monospace; color: #e7ffe9; background: rgba(22, 163, 74, 0.28); white-space: nowrap; }
+      #missing .ln { display: inline-block; width: 80px; text-align: right; margin-right: 26px; color: #7ddc98; }
+
+      #link { left: 0; top: 700px; width: 1920px; text-align: center; font: 500 46px/1 "Plex Mono", monospace; color: #c7ceff; opacity: 0; }
+      #under { left: 736px; top: 762px; width: 448px; height: 4px; border-radius: 2px; background: var(--blue); transform-origin: left center; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1920" data-height="1080" data-duration="12">
+      <div id="glow" class="abs"></div>
+
+      <div id="brand" class="abs">
+        <svg id="mark" class="abs" viewBox="0 0 64 64"><title>Relay</title><rect width="64" height="64" rx="16" fill="#2F5BFF" /><path d="M20 44V20h14a8 8 0 0 1 0 16H20m14 0 10 8" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        <div id="word" class="abs">Relay</div>
+        <div id="ver" class="abs">2.<span class="roll" data-layout-allow-overflow><span class="col" id="minor">3<br />4</span></span></div>
+        <div id="date" class="abs"><span id="datewrap" data-layout-allow-overflow><span id="dateinner">September 2026</span></span></div>
+      </div>
+
+      <div id="headA" class="abs head" data-layout-allow-overlap data-layout-allow-overflow data-layout-allow-occlusion><span class="row" data-layout-allow-overlap data-layout-allow-overflow data-layout-allow-occlusion><span data-layout-allow-overlap data-layout-allow-overflow data-layout-allow-occlusion>Preview links</span></span><span class="row" data-layout-allow-overlap data-layout-allow-overflow data-layout-allow-occlusion><span data-layout-allow-overlap data-layout-allow-overflow data-layout-allow-occlusion>for every branch</span></span></div>
+      <div id="headB" class="abs head" data-layout-allow-overlap data-layout-allow-overflow data-layout-allow-occlusion><span class="row" data-layout-allow-overlap data-layout-allow-overflow data-layout-allow-occlusion><span data-layout-allow-overlap data-layout-allow-overflow data-layout-allow-occlusion>Builds start</span></span><span class="row" data-layout-allow-overlap data-layout-allow-overflow data-layout-allow-occlusion><span data-layout-allow-overlap data-layout-allow-overflow data-layout-allow-occlusion>3x faster</span></span></div>
+      <div id="headC" class="abs head" data-layout-allow-overlap data-layout-allow-overflow data-layout-allow-occlusion><span class="row" data-layout-allow-overlap data-layout-allow-overflow data-layout-allow-occlusion><span data-layout-allow-overlap data-layout-allow-overflow data-layout-allow-occlusion>Logs keep</span></span><span class="row" data-layout-allow-overlap data-layout-allow-overflow data-layout-allow-occlusion><span data-layout-allow-overlap data-layout-allow-overflow data-layout-allow-occlusion>every line</span></span></div>
+
+      <div id="win" class="abs" data-layout-allow-overflow data-layout-allow-overlap data-layout-allow-occlusion>
+        <div id="bar"><i style="left: 22px"></i><i style="left: 46px"></i><i style="left: 70px"></i><b>app.relay.dev/acme/deploys</b></div>
+        <div id="paneA" class="pane">
+          <div class="prow" style="top: 34px"><div class="n">Dark mode for settings</div><div class="b">feat/dark-settings</div><div class="p">Preview ↗</div></div>
+          <div class="prow" style="top: 146px"><div class="n">Faster dashboard queries</div><div class="b">perf/dashboard-cache</div><div class="p" id="plink">Preview ↗</div></div>
+          <div class="prow" style="top: 258px"><div class="n">Invite teammates by link</div><div class="b">feat/invite-links</div><div class="p">Preview ↗</div></div>
+          <div class="prow" style="top: 370px"><div class="n">Retry failed webhooks</div><div class="b">fix/webhook-retry</div><div class="p">Preview ↗</div></div>
+        </div>
+        <div id="preview"><div class="hero"></div><div class="l1"></div><div class="l2"></div><div class="l3"></div><div class="tag">perf-dashboard-cache.relay.app</div></div>
+        <div id="paneB" class="pane">
+          <div class="brow" style="top: 60px"><div class="k">Before</div><div class="v">42s</div><div class="track"><div class="fill" id="fillA" style="background: #b8bfd3"></div></div></div>
+          <div class="brow" style="top: 170px"><div class="k">Now</div><div class="v">14s</div><div class="track"><div class="fill" id="fillB" style="background: var(--blue)"></div></div></div>
+          <div id="big"><span id="bignum">1.0</span>x<small>faster cold start</small></div>
+          <div class="logs"><div id="logscroll">▸ restore cache  0.8s<br />▸ install deps  2.1s<br />▸ compile  6.4s<br />▸ bundle  3.2s<br />▸ upload  1.1s<br />▸ ready  14.0s</div></div>
+        </div>
+        <div id="paneC" class="pane"><div id="viewer"></div></div>
+      </div>
+
+      <svg id="cursor" class="abs" viewBox="0 0 40 40"><title>cursor</title><path d="M6 4l26 14-12 3-5 12z" fill="#11131a" stroke="#fff" stroke-width="2.5" stroke-linejoin="round" /></svg>
+      <div id="chip" class="abs"><div class="t">New</div><div class="t">Improved</div><div class="t">Fixed</div></div>
+      <div id="link" class="abs">relay.dev/changelog</div>
+      <div id="under" class="abs"></div>
+
+      <!-- biome-ignore lint/a11y/useMediaCaption: music and sound effects only, no words to caption -->
+      <audio id="track" src="assets/audio/track.mp3" data-start="0" data-duration="12" data-track-index="10" data-volume="1"></audio>
+    </div>
+    <script>
+      // Log viewer rows: line numbers 1 to 30, one gap where the fixed line lands.
+      const viewer = document.getElementById("viewer");
+      const MSG = ["GET /api/deploys 200", "build started", "cache restored", "GET /health 200", "worker ready", "POST /hooks 202", "deploy promoted", "GET /api/logs 200"];
+      for (let i = 0; i < 30; i++) {
+        const row = document.createElement("div");
+        row.className = "vl" + (i === 14 ? " gap" : "");
+        row.style.top = 20 + i * 46 + "px";
+        row.innerHTML = '<span class="ln">' + (1201 + i) + "</span>" + (i === 14 ? "" : MSG[i % MSG.length]);
+        viewer.appendChild(row);
+      }
+      const miss = document.createElement("div");
+      miss.id = "missing";
+      miss.style.top = 20 + 14 * 46 + "px";
+      miss.innerHTML = '<span class="ln">1215</span>webhook retry 3/3 delivered';
+      viewer.appendChild(miss);
+
+      document.fonts.ready.then(() => {
+        const tl = gsap.timeline({ paused: true });
+        const B = 0.5;
+        const chipT = gsap.utils.toArray("#chip .t");
+        // brand block centered for scene 1
+        const BX = 510, BY = 380;
+        gsap.set("#brand", { x: BX, y: BY, scale: 1, transformOrigin: "0 0" });
+        gsap.set("#chip", { x: BX + 930, y: BY + 77 });
+        gsap.set("#win", { x: 820, y: 1100 });
+        gsap.set(["#preview"], { x: 0 });
+        gsap.set(["#paneB", "#paneC"], { opacity: 0 });
+        gsap.set(".head .row span", { yPercent: 105 });
+        gsap.set("#cursor", { x: 1500, y: 1120 });
+        gsap.set("#under", { scaleX: 0 });
+        gsap.set(["#fillA", "#fillB"], { scaleX: 0 });
+        gsap.set("#viewer", { y: 0 });
+        gsap.set("#missing", { y: -300, opacity: 0 });
+
+        /* ---------- version (0 - 2s) ---------- */
+        tl.fromTo("#brand", { opacity: 0, y: BY + 40 }, { opacity: 1, y: BY, duration: 0.5, ease: "power3.out" }, 0.05);
+        tl.fromTo("#chip", { scale: 0 }, { scale: 1, duration: 0.35, ease: "back.out(3)" }, 0.3);
+        tl.to("#minor", { yPercent: -50, duration: 0.45, ease: "power4.inOut" }, 0.7);
+        tl.fromTo("#ver", { color: "#aab4ff" }, { color: "#ffffff", duration: 0.3 }, 0.95);
+        const dateW = document.getElementById("dateinner").offsetWidth;
+        tl.to("#datewrap", { width: dateW, duration: 0.6, ease: "steps(14)" }, 0.9);
+        tl.fromTo("#glow", { x: 0 }, { x: 260, duration: 12, ease: "none" }, 0);
+        // the brand block rises to a corner header while the dot drops to the label spot
+        tl.to("#brand", { x: 120, y: 90, scale: 0.34, duration: 0.5, ease: "power4.inOut" }, 1.55);
+        tl.to("#date", { opacity: 0, duration: 0.2 }, 1.55);
+        tl.to("#chip", { x: 120, y: 330, duration: 0.45, ease: "power4.inOut" }, 1.6);
+
+        /* ---------- new (2 - 4.5s) ---------- */
+        tl.to("#chip", { width: 150, height: 76, borderRadius: 38, duration: 0.25, ease: "back.out(2.4)" }, 2.0);
+        tl.set(chipT[0], { opacity: 1 }, 2.08);
+        tl.fromTo("#chip", { scale: 1.3 }, { scale: 1, duration: 0.3, ease: "power3.out" }, 2.0);
+        tl.to("#headA .row:nth-child(1) span", { yPercent: 0, duration: 0.45, ease: "power4.out" }, 2.05);
+        tl.to("#headA .row:nth-child(2) span", { yPercent: 0, duration: 0.45, ease: "power4.out" }, 2.25);
+        tl.to("#win", { y: 250, duration: 0.6, ease: "power4.out" }, 2.1);
+        tl.fromTo("#paneA .prow", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: "power3.out", stagger: 0.07 }, 2.35);
+        tl.to("#cursor", { x: 1560, y: 470, duration: 0.7, ease: "power3.inOut" }, 2.7);
+        tl.to("#cursor", { scale: 0.82, duration: 0.08, yoyo: true, repeat: 1 }, 3.5);
+        tl.fromTo("#plink", { backgroundColor: "#eef2ff" }, { backgroundColor: "#dbe3ff", duration: 0.1 }, 3.5);
+        tl.to("#preview", { x: -520, duration: 0.5, ease: "power4.out" }, 3.6);
+        tl.to("#cursor", { x: 1720, y: 1150, duration: 0.6, ease: "power3.in" }, 3.9);
+
+        /* ---------- improved (4.5 - 7s) ---------- */
+        tl.to("#headA .row span", { yPercent: -105, duration: 0.25, ease: "power3.in", stagger: 0.05 }, 4.25);
+        tl.to(["#paneA", "#preview"], { y: -80, opacity: 0, duration: 0.25, ease: "power3.in" }, 4.3);
+        tl.set(chipT[0], { opacity: 0 }, 4.5);
+        tl.to("#chip", { width: 230, duration: 0.25, ease: "back.out(2.4)" }, 4.5);
+        tl.set(chipT[1], { opacity: 1 }, 4.56);
+        tl.fromTo("#chip", { scale: 1.25 }, { scale: 1, duration: 0.3, ease: "power3.out" }, 4.5);
+        tl.to("#headB .row:nth-child(1) span", { yPercent: 0, duration: 0.45, ease: "power4.out" }, 4.5);
+        tl.to("#headB .row:nth-child(2) span", { yPercent: 0, duration: 0.45, ease: "power4.out" }, 4.7);
+        tl.fromTo("#paneB", { y: 80, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: "power4.out" }, 4.5);
+        tl.to("#fillB", { scaleX: 14 / 42, duration: 0.7, ease: "power2.out" }, 4.75);
+        tl.to("#fillA", { scaleX: 1, duration: 1.9, ease: "none" }, 4.75);
+        const big = { v: 1 };
+        const bigEl = document.getElementById("bignum");
+        tl.to(big, { v: 3, duration: 1.0, ease: "power2.out", onUpdate: () => { bigEl.textContent = big.v.toFixed(1); } }, 4.8);
+        tl.fromTo("#logscroll", { y: 0 }, { y: -90, duration: 2.1, ease: "steps(3)" }, 4.8);
+        tl.fromTo("#big", { scale: 1 }, { scale: 1.04, duration: 1.6, ease: "none", transformOrigin: "0 50%" }, 5.4);
+
+        /* ---------- fixed (7 - 9.5s) ---------- */
+        tl.to("#headB .row span", { yPercent: -105, duration: 0.25, ease: "power3.in", stagger: 0.05 }, 6.75);
+        tl.to("#paneB", { x: -700, filter: "blur(18px)", opacity: 0, duration: 0.28, ease: "power3.in" }, 6.78);
+        tl.fromTo("#paneC", { x: 700, filter: "blur(18px)", opacity: 0 }, { x: 0, filter: "blur(0px)", opacity: 1, duration: 0.32, ease: "power3.out" }, 7.0);
+        tl.set(chipT[1], { opacity: 0 }, 7.0);
+        tl.to("#chip", { width: 150, backgroundColor: "#16a34a", duration: 0.25, ease: "back.out(2.4)" }, 7.0);
+        tl.set(chipT[2], { opacity: 1 }, 7.06);
+        tl.fromTo("#chip", { scale: 1.25 }, { scale: 1, duration: 0.3, ease: "power3.out" }, 7.0);
+        tl.to("#headC .row:nth-child(1) span", { yPercent: 0, duration: 0.45, ease: "power4.out" }, 7.0);
+        tl.to("#headC .row:nth-child(2) span", { yPercent: 0, duration: 0.45, ease: "power4.out" }, 7.2);
+        tl.fromTo("#viewer", { y: -140 }, { y: -560, duration: 2.4, ease: "none" }, 7.0);
+        tl.fromTo("#missing", { y: -300, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: "back.out(1.6)" }, 7.9);
+        tl.set(".vl.gap", { opacity: 0 }, 8.22);
+
+        /* ---------- sign-off (9.5 - 12s) ---------- */
+        tl.to("#headC .row span", { yPercent: -105, duration: 0.25, ease: "power3.in", stagger: 0.05 }, 9.25);
+        tl.to("#win", { y: 1150, filter: "blur(10px)", duration: 0.4, ease: "power3.in" }, 9.2);
+        tl.set(chipT[2], { opacity: 0 }, 9.35);
+        tl.to("#chip", { width: 26, height: 26, borderRadius: 13, backgroundColor: "#2f5bff", duration: 0.2, ease: "power3.in" }, 9.3);
+        tl.to("#brand", { x: BX, y: BY - 60, scale: 1, duration: 0.55, ease: "power4.inOut" }, 9.45);
+        tl.to("#chip", { x: BX + 930, y: BY + 17, duration: 0.55, ease: "power4.inOut" }, 9.45);
+        tl.to("#chip", { scale: 0, duration: 0.25, ease: "power3.in" }, 10.0);
+        tl.to("#link", { opacity: 1, duration: 0.3 }, 9.9);
+        tl.to("#under", { scaleX: 1, duration: 0.5, ease: "power3.inOut" }, 10.0);
+        tl.to("#under", { scaleX: 0, transformOrigin: "right center", duration: 0.5, ease: "power3.inOut" }, 10.7);
+        tl.to("#under", { scaleX: 1, transformOrigin: "left center", duration: 0.5, ease: "power3.inOut" }, 11.25);
+        tl.fromTo("#cursor", { x: 1300, y: 1150 }, { x: 1090, y: 740, duration: 0.6, ease: "power3.out" }, 10.3);
+        tl.to("#cursor", { scale: 0.82, duration: 0.08, yoyo: true, repeat: 1 }, 11.0);
+        tl.fromTo("#brand", { scale: 1 }, { scale: 1.03, duration: 1.9, ease: "none" }, 10.05);
+
+        window.__timelines["main"] = tl;
+        if (window.__hfForceTimelineRebind) window.__hfForceTimelineRebind();
+      });
+    </script>
+  </body>
+</html>
