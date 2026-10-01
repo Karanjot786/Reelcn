@@ -290,7 +290,7 @@ test("the sidecar asserts each scene's hero, the order, the carrier in frame and
 });
 
 test("every starter has a current sidecar and an end guard", () => {
-  for (const dir of readdirSync(`${SKILL}/starters`)) {
+  for (const dir of readdirSync(`${SKILL}/starters`).filter((d) => d.startsWith("hyperframes-"))) {
     const root = `${SKILL}/starters/${dir}`;
     const parsed = check.parsePlan(readFileSync(`${root}/plan.md`, "utf8"));
     const want = side.sidecar(parsed, ...side.splitScenes(JSON.parse(readFileSync(`${root}/scenes.json`, "utf8"))));

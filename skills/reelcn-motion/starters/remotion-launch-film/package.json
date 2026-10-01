@@ -1,0 +1,20 @@
+{
+  "name": "reelcn-launch-remotion",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "remotion studio",
+    "render": "remotion render LaunchFilm out.mp4"
+  },
+  "dependencies": {
+    "gsap": "3.14.2",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "remotion": "4.0.523"
+  },
+  "devDependencies": {
+    "@remotion/cli": "4.0.523",
+    "@types/react": "19.3.0",
+    "typescript": "5.9.3"
+  }
+}

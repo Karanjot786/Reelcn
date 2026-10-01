@@ -1,0 +1,439 @@
+// The reelcn launch film: markup, styles and timeline, shared with the HyperFrames starter.
+// Only the clock differs: LaunchFilm.tsx seeks this timeline to Remotion's frame.
+import gsap from "gsap";
+
+/** Everything inside <style> in the HyperFrames index.html (lines 9-81). */
+export const CSS = String.raw`      @font-face { font-family: "Plex Sans"; font-weight: 400; src: url("assets/fonts/plex-sans-400.woff2") format("woff2"); }
+      @font-face { font-family: "Plex Sans"; font-weight: 500; src: url("assets/fonts/plex-sans-500.woff2") format("woff2"); }
+      @font-face { font-family: "Plex Sans"; font-weight: 600; src: url("assets/fonts/plex-sans-600.woff2") format("woff2"); }
+      @font-face { font-family: "Plex Sans"; font-weight: 700; src: url("assets/fonts/plex-sans-700.woff2") format("woff2"); }
+      @font-face { font-family: "Plex Cond"; font-weight: 700; src: url("assets/fonts/plex-sans-condensed-700.woff2") format("woff2"); }
+      @font-face { font-family: "Plex Mono"; font-weight: 400; src: url("assets/fonts/plex-mono-400.woff2") format("woff2"); }
+      @font-face { font-family: "Plex Mono"; font-weight: 500; src: url("assets/fonts/plex-mono-500.woff2") format("woff2"); }
+      :root { --ink: #0a0b0d; --paper: #eef0f2; --fg: #f2f3f5; --amber: #ffb224; --dim: #8a8f98; }
+      html, body { margin: 0; background: var(--ink); }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--ink); font-family: "Plex Sans", sans-serif; color: var(--fg); }
+      .abs { position: absolute; }
+
+      /* 1. terminal */
+      #term { left: 0; top: 504px; height: 72px; font: 500 56px/72px "Plex Mono", monospace; white-space: nowrap; }
+      #prompt { color: var(--dim); }
+      #typed { display: inline-block; overflow: hidden; width: 0; vertical-align: top; }
+      #carrier { left: 0; top: 0; width: 30px; height: 66px; border-radius: 4px; background: var(--amber); border: 5px solid var(--amber); box-sizing: border-box; }
+
+      /* 2-3. grid */
+      #flood { left: 910px; top: 446px; width: 100px; height: 100px; border-radius: 50%; background: var(--paper); }
+      #light { inset: 0; color: var(--ink); opacity: 0; }
+      #gridscene { inset: 0; }
+      #head { left: 44px; top: 104px; font: 700 96px/1 "Plex Sans", sans-serif; letter-spacing: -2.5px; white-space: nowrap; }
+      #count { display: inline-block; min-width: 184px; font-variant-numeric: tabular-nums; }
+      #onecmd { display: inline-block; opacity: 0; color: var(--dim); }
+      #grid { left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 960px 496px; }
+      .tile { position: absolute; width: 248px; height: 140px; border-radius: 12px; overflow: hidden; background: #fff; opacity: 0; }
+      .tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      #chip { left: 44px; top: 932px; height: 72px; padding: 0 28px; border-radius: 16px; background: #16181d; box-shadow: inset 0 0 0 1px #2a2d34; color: var(--fg); font: 500 34px/72px "Plex Mono", monospace; white-space: nowrap; opacity: 0; }
+      #chip .d { color: var(--dim); }
+      #names { position: relative; display: inline-block; height: 72px; width: 560px; vertical-align: top; }
+      #names span { position: absolute; left: 0; top: 0; opacity: 0; color: var(--amber); }
+
+      /* 4-5. hero frame */
+      #hero { left: 0; top: 0; width: 248px; height: 140px; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 30px 80px rgba(10, 11, 13, 0.22); opacity: 0; }
+      #hero img { position: absolute; left: 50%; top: 50%; height: 100%; transform: translate(-50%, -50%); opacity: 0; }
+      #hero img.base { opacity: 1; }
+      #hero img.theme { width: 100%; height: 100%; left: 0; top: 0; transform: none; object-fit: cover; opacity: 1; clip-path: inset(0 100% 0 0); }
+      .lines { left: 100px; top: 340px; font: 700 80px/98px "Plex Sans", sans-serif; letter-spacing: -2.4px; color: var(--ink); }
+      .lines .row { display: block; overflow: hidden; height: 98px; }
+      .lines .row span { display: inline-block; white-space: nowrap; }
+      #code { left: 100px; top: 572px; height: 80px; padding: 0 28px; border-radius: 16px; background: #fff; box-shadow: 0 1px 0 rgba(10, 11, 13, 0.08), 0 8px 24px rgba(10, 11, 13, 0.08); color: var(--ink); font: 500 38px/80px "Plex Mono", monospace; white-space: nowrap; opacity: 0; }
+      #code .k { color: #6b7280; }
+      #themes { position: relative; display: inline-block; height: 80px; width: 290px; vertical-align: top; }
+      #themes span { position: absolute; left: 0; top: 0; opacity: 0; color: #b45309; }
+      #bar { left: 930px; top: 814px; width: 900px; height: 6px; border-radius: 3px; background: rgba(10, 11, 13, 0.12); opacity: 0; }
+      #barfill { position: absolute; inset: 0; border-radius: 3px; background: var(--amber); transform-origin: left center; }
+      #head2 { position: absolute; left: 0; top: -9px; width: 24px; height: 24px; margin-left: -12px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 0 5px rgba(255, 178, 36, 0.25); }
+      #fmt { left: 930px; top: 842px; font: 500 28px/1 "Plex Mono", monospace; color: #6b7280; opacity: 0; }
+      #fmt span { position: absolute; left: 0; top: 0; opacity: 0; white-space: nowrap; }
+
+      /* 6. words */
+      #dark { inset: 0; background: var(--ink); opacity: 0; }
+      .word { left: 0; top: 270px; width: 1920px; text-align: center; font: 700 430px/1 "Plex Cond", sans-serif; letter-spacing: -10px; color: var(--fg); white-space: nowrap; opacity: 0; }
+      .word .l { display: inline-block; }
+      #under { left: 360px; top: 760px; width: 1200px; height: 12px; border-radius: 6px; background: var(--amber); transform-origin: left center; opacity: 0; }
+      #editwrap { display: inline-block; overflow: hidden; vertical-align: top; width: 0; }
+      #editcaret { display: inline-block; width: 34px; height: 330px; margin-left: 14px; background: var(--amber); vertical-align: top; margin-top: 50px; }
+      #render .stroke { color: rgba(242, 243, 245, 0.16); -webkit-text-stroke: 3px rgba(242, 243, 245, 0.6); }
+      #render .fill { position: absolute; left: 0; top: 0; width: 1920px; clip-path: inset(0 100% 0 0); }
+      #scan { left: 0; top: 250px; width: 8px; height: 470px; border-radius: 4px; background: var(--amber); box-shadow: 0 0 40px rgba(255, 178, 36, 0.8); opacity: 0; }
+      #frames { left: 0; top: 770px; width: 1920px; text-align: center; font: 500 34px/1 "Plex Mono", monospace; color: var(--dim); opacity: 0; font-variant-numeric: tabular-nums; }
+      #line { left: 0; top: 0; width: 1250px; height: 8px; border-radius: 4px; background: var(--amber); opacity: 0; }
+
+      /* 7. lockup */
+      #lockup { left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 960px 500px; }
+      #logo { left: 525px; top: 330px; width: 260px; height: 260px; }
+      #logo path, #logo rect { fill: none; stroke-width: 1.8; stroke-dasharray: 1; stroke-dashoffset: 1; }
+      #markwrap { left: 833px; top: 352px; width: 0; height: 220px; overflow: hidden; }
+      #mark { font: 700 196px/216px "Plex Sans", sans-serif; letter-spacing: -7px; white-space: nowrap; }
+      #tag { left: 0; top: 650px; width: 1920px; text-align: center; font: 400 46px/1.2 "Plex Sans", sans-serif; color: #a8adb7; opacity: 0; }
+      #ph { left: 0; top: 373px; width: 5px; height: 174px; border-radius: 3px; background: var(--fg); opacity: 0; }
+      #url { left: 860px; top: 752px; width: 200px; height: 58px; border-radius: 29px; border: 2px solid rgba(255, 178, 36, 0.55); box-sizing: border-box; text-align: center; font: 500 26px/54px "Plex Mono", monospace; color: var(--amber); opacity: 0; }`;
+
+/** The children of #root in the HyperFrames index.html (lines 86-134), without the <audio> line. */
+export const MARKUP = String.raw`      <div id="term" class="abs"><span id="prompt">$ </span><span id="typed" data-layout-allow-overlap data-layout-allow-overflow data-layout-allow-occlusion><span id="typedInner" data-layout-allow-overlap data-layout-allow-overflow data-layout-allow-occlusion>npx shadcn add @reelcn/product-launch</span></span></div>
+
+      <div id="gridscene" class="abs">
+        <div id="grid" class="abs"></div>
+        <div id="head" class="abs"><span id="count">0</span> components.<span id="onecmd">&nbsp;One command.</span></div>
+        <div id="chip" class="abs"><span class="d">$ npx shadcn add @reelcn/</span><span id="names"></span></div>
+      </div>
+      <div id="flood" class="abs"></div>
+      <div id="light" class="abs">
+
+        <div id="hero" class="abs">
+          <img class="base" id="f169" data-layout-allow-overflow src="assets/stills/fmt-16x9.jpg" alt="" />
+          <img id="f916" src="assets/stills/fmt-9x16.jpg" alt="" />
+          <img id="f11" data-layout-allow-overflow src="assets/stills/fmt-1x1.jpg" alt="" />
+          <img class="theme" id="tmono" src="assets/stills/theme-mono.jpg" alt="" />
+          <img class="theme" id="tchrome" src="assets/stills/theme-chromewave.jpg" alt="" />
+          <img class="theme" id="tmid" src="assets/stills/theme-midnight.jpg" alt="" />
+        </div>
+        <div id="linesA" class="abs lines" data-layout-allow-overlap data-layout-allow-overflow data-layout-allow-occlusion><span class="row" data-layout-allow-overlap data-layout-allow-overflow data-layout-allow-occlusion><span data-layout-allow-overlap data-layout-allow-overflow data-layout-allow-occlusion>One timeline.</span></span><span class="row" data-layout-allow-overlap data-layout-allow-overflow data-layout-allow-occlusion><span data-layout-allow-overlap data-layout-allow-overflow data-layout-allow-occlusion>Three screens.</span></span></div>
+        <div id="linesB" class="abs lines" data-layout-allow-overlap data-layout-allow-overflow data-layout-allow-occlusion><span class="row" data-layout-allow-overlap data-layout-allow-overflow data-layout-allow-occlusion><span data-layout-allow-overlap data-layout-allow-overflow data-layout-allow-occlusion>Change one line.</span></span><span class="row" data-layout-allow-overlap data-layout-allow-overflow data-layout-allow-occlusion><span data-layout-allow-overlap data-layout-allow-overflow data-layout-allow-occlusion>Restyle every frame.</span></span></div>
+        <div id="code" class="abs"><span class="k">theme=</span>"<span id="themes"><span>daylight"</span><span>mono"</span><span>chromewave"</span><span>midnight"</span></span></div>
+        <div id="bar" class="abs"><div id="barfill"></div><div id="head2"></div></div>
+        <div id="fmt" class="abs"><span>16:9 &nbsp;YouTube, web</span><span>9:16 &nbsp;Shorts, Reels</span><span>1:1 &nbsp;Feeds</span></div>
+      </div>
+
+      <div id="dark" class="abs"></div>
+      <div id="install" class="abs word"><span class="l">I</span><span class="l">n</span><span class="l">s</span><span class="l">t</span><span class="l">a</span><span class="l">l</span><span class="l">l</span><span class="l">.</span></div>
+      <div id="under" class="abs"></div>
+      <div id="edit" class="abs word"><span id="editwrap" data-layout-allow-overlap data-layout-allow-overflow data-layout-allow-occlusion><span id="editinner" data-layout-allow-overlap data-layout-allow-overflow data-layout-allow-occlusion>Edit.</span></span><span id="editcaret"></span></div>
+      <div id="render" class="abs word"><div class="stroke" data-layout-allow-occlusion>Render.</div><div class="fill">Render.</div></div>
+      <div id="scan" class="abs"></div>
+      <div id="frames" class="abs">frame 0 / 900</div>
+      <div id="line" class="abs"></div>
+
+      <div id="lockup" class="abs">
+        <svg id="logo" class="abs" viewBox="0 0 24 24">
+          <title>reelcn</title>
+          <rect id="lrect" x="2" y="4" width="20" height="16" rx="3" stroke="#F2F3F5" pathLength="1" />
+          <path id="ldiv" d="M9 4v16" stroke="#F2F3F5" pathLength="1" />
+          <path id="lamber" d="M9 12h13" stroke="#FFB224" pathLength="1" />
+        </svg>
+        <div id="markwrap" class="abs"><div id="mark">reelcn</div></div>
+        <div id="tag" class="abs">Every frame, already designed.</div>
+        <div id="url" class="abs">reelcn.dev</div>
+        <div id="ph" class="abs"></div>
+      </div>
+
+      <div id="carrier" class="abs"></div>
+      <!-- biome-ignore lint/a11y/useMediaCaption: music and sound effects only, no words to caption -->`;
+
+/** The HyperFrames script (lines 139-310), as a function of the film's root element. */
+export function build(root: HTMLElement): gsap.core.Timeline {
+  const $ = (sel: string) => root.querySelector(sel) as HTMLElement;
+  const NAMES = [
+    "bar-chart-revenue",
+    "audiogram",
+    "bar-race-cities",
+    "beams-top",
+    "bento-grid-features",
+    "bokeh",
+    "brand-reel",
+    "brand-solid",
+    "brand-sweep-default",
+    "browser-window-dashboard",
+    "hero-launch",
+    "camera-tour",
+    "card-push-default",
+    "circle-burst-default",
+    "code-block-follow",
+    "counter-count",
+    "data-story",
+    "area-chart-storage",
+    "donut-traffic",
+    "gradient-mesh",
+    "kpi-grid-overview",
+    "line-chart-signups",
+    "laptop-frame-dashboard",
+    "quote-card",
+    "stat-counter-mrr",
+    "theme-midnight",
+    "theme-chromewave",
+    "terminal-install",
+  ];
+  const LABEL: Record<string, string> = { "hero-launch": "product-launch" };
+  const COLS = 7,
+    TW = 248,
+    TH = 140,
+    GAP = 16,
+    GX = 44,
+    GY = 270,
+    SEED = 10;
+  const pos = (i: number) => ({ x: GX + (i % COLS) * (TW + GAP), y: GY + Math.floor(i / COLS) * (TH + GAP) });
+  const grid = $("#grid");
+  if (grid.children.length === 0) {
+    NAMES.forEach((name, i) => {
+      const p = pos(i);
+      const tile = document.createElement("div");
+      tile.className = "tile";
+      tile.style.left = p.x + "px";
+      tile.style.top = p.y + "px";
+      tile.innerHTML = '<img src="assets/thumbs/' + name + '.jpg" alt="" />';
+      grid.appendChild(tile);
+    });
+  }
+  const tiles = gsap.utils.toArray<HTMLElement>(root.querySelectorAll(".tile"));
+  const HOPS = [4, 19, 8, 23, 1, 13, 26, 16, 5, 10];
+  const names = $("#names");
+  if (names.children.length === 0) {
+    HOPS.forEach((i) => {
+      const s = document.createElement("span");
+      s.textContent = LABEL[NAMES[i]] || NAMES[i];
+      names.appendChild(s);
+    });
+  }
+  const nameSpans = gsap.utils.toArray<HTMLElement>(root.querySelectorAll("#names span"));
+
+  const tl = gsap.timeline({ paused: true });
+  const C = "#carrier";
+  gsap.set(["#flood"], { scale: 0 });
+  gsap.set(["#barfill", "#under"], { scaleX: 0 });
+  gsap.set("#hero", { x: 836, y: 426 });
+  gsap.set("#logo", { opacity: 0 });
+  gsap.set("#ph", { x: 628 });
+  gsap.set("#line", { x: 335, y: 481 });
+  gsap.set(".lines .row span", { yPercent: 100 });
+
+  /* ---------- 1. one command (0 - 2s) ---------- */
+  const promptW = $("#prompt").offsetWidth;
+  const typedW = $("#typedInner").offsetWidth;
+  const termLeft = Math.round((1920 - promptW - typedW) / 2);
+  gsap.set("#term", { left: termLeft });
+  const cx0 = termLeft + promptW + 6,
+    cy0 = 507;
+  gsap.set(C, { x: cx0, y: cy0 });
+  tl.to("#typed", { width: typedW, duration: 1.2, ease: "steps(37)" }, 0.1);
+  tl.to(C, { x: cx0 + typedW, duration: 1.2, ease: "steps(37)" }, 0.1);
+  tl.to(C, { opacity: 0.25, duration: 0.06, repeat: 1, yoyo: true }, 1.36);
+  // the line is pulled back into the caret
+  tl.to("#typed", { width: 0, duration: 0.3, ease: "power3.in" }, 1.5);
+  tl.to(C, { x: cx0, duration: 0.3, ease: "power3.in" }, 1.5);
+  tl.to("#term", { opacity: 0, filter: "blur(6px)", duration: 0.25, ease: "power2.in" }, 1.55);
+  tl.to(C, { x: 946, y: 526, width: 28, height: 28, borderRadius: 14, duration: 0.22, ease: "power3.inOut" }, 1.78);
+
+  /* ---------- 2. the library appears (2 - 4s) ---------- */
+  const t20 = pos(SEED);
+  tl.to(
+    C,
+    {
+      x: t20.x - 8,
+      y: t20.y - 8,
+      width: TW + 16,
+      height: TH + 16,
+      borderRadius: 16,
+      backgroundColor: "rgba(255,178,36,0)",
+      duration: 0.4,
+      ease: "power3.inOut",
+    },
+    2.05,
+  );
+  tl.fromTo(
+    tiles,
+    { opacity: 0, scale: 0.55, y: 26 },
+    {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      duration: 0.34,
+      ease: "power3.out",
+      stagger: { each: 0.046, from: SEED, grid: [4, 7] },
+    },
+    2.3,
+  );
+  const counter = { n: 0 };
+  const countEl = $("#count");
+  tl.fromTo("#head", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 2.25);
+  tl.to(
+    counter,
+    {
+      n: 154,
+      duration: 1.45,
+      ease: "power2.out",
+      onUpdate: () => {
+        countEl.textContent = String(Math.round(counter.n));
+      },
+    },
+    2.35,
+  );
+  tl.to("#grid", { scale: 0.965, duration: 0.2, ease: "power2.in" }, 3.8);
+  tl.to(C, { scale: 0.92, duration: 0.2, ease: "power2.in" }, 3.8);
+
+  /* ---------- 3. one command, any of them (4 - 6.5s) ---------- */
+  tl.to("#grid", { scale: 1, duration: 0.22, ease: "back.out(3)" }, 4.0);
+  tl.to(C, { scale: 1, duration: 0.22, ease: "back.out(3)" }, 4.0);
+  tl.fromTo("#onecmd", { opacity: 0, x: -24 }, { opacity: 1, x: 0, duration: 0.3, ease: "power3.out" }, 4.0);
+  tl.fromTo("#chip", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, 4.0);
+  tl.to(tiles, { opacity: 0.3, duration: 0.18 }, 4.0);
+  HOPS.forEach((idx, k) => {
+    const t = 4.0 + k * 0.25;
+    const p = pos(idx);
+    tl.to(C, { x: p.x - 8, y: p.y - 8, duration: 0.17, ease: "power4.out" }, t);
+    tl.to(tiles[idx], { opacity: 1, scale: 1.08, duration: 0.14, ease: "power3.out" }, t);
+    if (k < HOPS.length - 1)
+      tl.to(tiles[idx], { opacity: 0.3, scale: 1, duration: 0.14, ease: "power2.out" }, t + 0.25);
+    if (k > 0) tl.set(nameSpans[k - 1], { opacity: 0 }, t);
+    tl.fromTo(nameSpans[k], { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, t);
+  });
+
+  /* ---------- 4. one timeline, three screens (6.5 - 9s) ---------- */
+  const HX = 930,
+    HY = 262,
+    HW = 900,
+    HH = 506,
+    HCX = 1380;
+  tl.set(["#hero", "#light"], { opacity: 1 }, 6.44);
+  tl.fromTo("#flood", { scale: 0 }, { scale: 28, duration: 0.45, ease: "power3.inOut" }, 6.45);
+  tl.to("#grid", { scale: 1.3, opacity: 0, filter: "blur(16px)", duration: 0.4, ease: "power2.in" }, 6.45);
+  tl.to(["#head", "#chip"], { opacity: 0, y: -24, duration: 0.25, ease: "power2.in" }, 6.45);
+  tl.to("#hero", { x: HX, y: HY, width: HW, height: HH, borderRadius: 22, duration: 0.5, ease: "power4.inOut" }, 6.45);
+  tl.to(
+    C,
+    { x: HX - 8, y: HY - 8, width: HW + 16, height: HH + 16, borderRadius: 28, duration: 0.5, ease: "power4.inOut" },
+    6.45,
+  );
+  tl.to(C, { opacity: 0, duration: 0.25 }, 6.95);
+  tl.to("#linesA .row:nth-child(1) span", { yPercent: 0, duration: 0.45, ease: "power4.out" }, 6.6);
+  tl.to("#linesA .row:nth-child(2) span", { yPercent: 0, duration: 0.45, ease: "power4.out" }, 7.0);
+  tl.to("#bar", { opacity: 1, duration: 0.2 }, 6.85);
+  tl.fromTo("#barfill", { scaleX: 0 }, { scaleX: 1, duration: 4.05, ease: "none" }, 6.9);
+  tl.to("#head2", { x: 900, duration: 4.05, ease: "none" }, 6.9);
+  tl.fromTo("#hero", { scale: 1 }, { scale: 1.045, duration: 3.75, ease: "none" }, 6.97);
+  tl.to("#fmt", { opacity: 1, duration: 0.2 }, 6.85);
+  const fmts = gsap.utils.toArray<HTMLElement>("#fmt span");
+  const shape = (t: number, w: number, img: string, label: number) => {
+    tl.to("#hero", { x: HCX - w / 2, width: w, duration: 0.32, ease: "power4.inOut" }, t);
+    tl.to(["#f169", "#f916", "#f11"], { opacity: 0, duration: 0.16 }, t + 0.06);
+    tl.to(img, { opacity: 1, duration: 0.16 }, t + 0.08);
+    tl.set(fmts, { opacity: 0 }, t + 0.1);
+    tl.fromTo(fmts[label], { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.15 }, t + 0.1);
+  };
+  tl.set(fmts[0], { opacity: 1 }, 6.85);
+  shape(7.0, 285, "#f916", 1);
+  shape(7.5, 506, "#f11", 2);
+  shape(8.0, 900, "#f169", 0);
+
+  /* ---------- 5. change one line (9 - 11s) ---------- */
+  tl.to("#linesA .row span", { yPercent: -100, duration: 0.25, ease: "power3.in", stagger: 0.05 }, 8.7);
+  tl.to("#fmt", { opacity: 0, duration: 0.2 }, 8.8);
+  tl.to("#linesB .row:nth-child(1) span", { yPercent: 0, duration: 0.4, ease: "power4.out" }, 9.0);
+  tl.to("#linesB .row:nth-child(2) span", { yPercent: 0, duration: 0.4, ease: "power4.out" }, 9.5);
+  tl.fromTo("#code", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, 9.0);
+  const themeSpans = gsap.utils.toArray<HTMLElement>("#themes span");
+  tl.set(themeSpans[0], { opacity: 1 }, 9.0);
+  (
+    [
+      ["#tmono", 9.5],
+      ["#tchrome", 10.0],
+      ["#tmid", 10.5],
+    ] as [string, number][]
+  ).forEach(([img, t], k) => {
+    tl.to(img, { clipPath: "inset(0 0% 0 0)", duration: 0.34, ease: "power3.inOut" }, t);
+    tl.set(themeSpans[k], { opacity: 0 }, t + 0.04);
+    tl.fromTo(
+      themeSpans[k + 1],
+      { opacity: 0, y: 16 },
+      { opacity: 1, y: 0, duration: 0.14, ease: "power2.out" },
+      t + 0.04,
+    );
+    tl.fromTo("#code", { scale: 1 }, { scale: 1.045, duration: 0.09, yoyo: true, repeat: 1 }, t);
+  });
+
+  /* ---------- 6. install, edit, render (11 - 13s) ---------- */
+  tl.to(["#linesB", "#code", "#bar"], { opacity: 0, x: -60, duration: 0.2, ease: "power2.in" }, 10.75);
+  tl.to(
+    "#hero",
+    { x: -480, y: -270, width: 2880, height: 1620, borderRadius: 0, scale: 1, duration: 0.27, ease: "power3.in" },
+    10.73,
+  );
+  tl.set("#dark", { opacity: 1 }, 11.0);
+  tl.set(["#light", "#flood"], { opacity: 0 }, 11.0);
+  // Install: letters land like files
+  tl.set("#install", { opacity: 1 }, 11.0);
+  tl.fromTo(
+    "#install .l",
+    { y: -260, opacity: 0, filter: "blur(10px)" },
+    { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.24, ease: "power4.out", stagger: 0.028 },
+    11.0,
+  );
+  tl.set("#under", { opacity: 1 }, 11.04);
+  tl.fromTo("#under", { scaleX: 0 }, { scaleX: 1, duration: 0.4, ease: "power1.inOut" }, 11.06);
+  tl.set(["#install", "#under"], { opacity: 0 }, 11.5);
+  // Edit: typed by the caret
+  const editW = $("#editinner").offsetWidth;
+  tl.set("#edit", { opacity: 1 }, 11.5);
+  tl.to("#editwrap", { width: editW, duration: 0.25, ease: "steps(5)" }, 11.52);
+  tl.to("#editcaret", { opacity: 0, duration: 0.05, repeat: 3, yoyo: true }, 11.8);
+  tl.set("#edit", { opacity: 0 }, 12.0);
+  // Render: the fill sweeps across like a progress bar
+  const frames = { n: 0 };
+  const framesEl = $("#frames");
+  tl.set(["#render", "#scan", "#frames"], { opacity: 1 }, 12.0);
+  tl.fromTo(
+    "#render .fill",
+    { clipPath: "inset(0 100% 0 0)" },
+    { clipPath: "inset(0 0% 0 0)", duration: 0.45, ease: "none" },
+    12.0,
+  );
+  tl.fromTo("#scan", { x: 330 }, { x: 1590, duration: 0.45, ease: "none" }, 12.0);
+  tl.to(
+    frames,
+    {
+      n: 900,
+      duration: 0.45,
+      ease: "none",
+      onUpdate: () => {
+        framesEl.textContent = "frame " + Math.round(frames.n) + " / 900";
+      },
+    },
+    12.0,
+  );
+  tl.to("#scan", { opacity: 0, duration: 0.08 }, 12.45);
+  // the word collapses into the amber line of the logo
+  tl.to("#render", { scaleY: 0.015, opacity: 0.9, duration: 0.2, ease: "power3.in" }, 12.52);
+  tl.to("#frames", { opacity: 0, duration: 0.12 }, 12.5);
+  tl.set("#line", { opacity: 1 }, 12.7);
+  tl.set("#render", { opacity: 0 }, 12.72);
+  tl.to(
+    "#line",
+    { x: 622.5, y: 450.25, width: 140.8, height: 19.5, borderRadius: 10, duration: 0.28, ease: "power4.inOut" },
+    12.72,
+  );
+
+  /* ---------- 7. lockup (13 - 15s) ---------- */
+  tl.set("#lamber", { strokeDashoffset: 0 }, 13.0);
+  tl.set("#logo", { opacity: 1 }, 13.0);
+  tl.to("#ph", { opacity: 0.9, duration: 0.2 }, 13.55);
+  tl.to("#ph", { x: 756, duration: 1.45, ease: "none" }, 13.55);
+  tl.set("#line", { opacity: 0 }, 13.0);
+  tl.fromTo(
+    "#logo",
+    { scale: 1.25 },
+    { scale: 1, duration: 0.5, ease: "power4.out", transformOrigin: "50% 50%" },
+    13.0,
+  );
+  tl.to("#lrect", { strokeDashoffset: 0, duration: 0.5, ease: "power3.out" }, 13.0);
+  tl.to("#ldiv", { strokeDashoffset: 0, duration: 0.3, ease: "power3.out" }, 13.18);
+  tl.to("#markwrap", { width: 620, duration: 0.5, ease: "power4.out" }, 13.08);
+  tl.fromTo("#mark", { x: -120 }, { x: 0, duration: 0.5, ease: "power4.out" }, 13.08);
+  tl.fromTo(
+    "#tag",
+    { opacity: 0, y: 26, filter: "blur(8px)" },
+    { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.5, ease: "power3.out" },
+    13.5,
+  );
+  tl.fromTo("#url", { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2.2)" }, 13.9);
+  tl.fromTo("#lockup", { scale: 1 }, { scale: 1.03, duration: 2.0, ease: "none" }, 13.0);
+
+  tl.set({}, {}, 15); // the timeline reaches the plan total even if the last tween ends earlier
+  return tl;
+}
