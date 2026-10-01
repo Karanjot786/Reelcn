@@ -1606,10 +1606,8 @@
       display: none;
     }
   }
-  @media (max-width: 760px) {
-    .wrap {
-      padding-inline: 16px;
-    }
+  /* The full nav needs 958px; below that the header switches to the menu. */
+  @media (max-width: 960px) {
     .navlinks,
     .gh,
     .nav .btn-sm,
@@ -1624,6 +1622,11 @@
     }
     .nav .wrap {
       gap: 8px;
+    }
+  }
+  @media (max-width: 760px) {
+    .wrap {
+      padding-inline: 16px;
     }
     .credit ul {
       font-size: 19px;
