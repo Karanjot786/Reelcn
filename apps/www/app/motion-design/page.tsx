@@ -3,7 +3,7 @@ import { CopyCommand } from "@/components/copy-command";
 import { PlanPlayer } from "@/components/plan-player";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { filmOf, RENDERER_NAMES } from "@/lib/motion";
+import { counts, type Film, filmOf, RENDERER_NAMES } from "@/lib/motion";
 import "../landing.css";
 import "./motion.css";
 
@@ -18,6 +18,53 @@ const INSTALL = "npx skills add Karanjot786/reelcn -s reelcn-motion";
 const AGENTS = ["Claude Code", "Codex", "Cursor", "Gemini CLI", "OpenCode"];
 const ORDER = ["hyperframes", "remotion", "editframe", "fframes"];
 const launch = filmOf("hyperframes", "launch-film");
+
+/** A starter film with its caption. Click to play; nothing loads until then. */
+function FilmFigure({ film, title }: { film: Film; title: string }) {
+  return (
+    <figure className="mp-film">
+      <video src={film.video} poster={film.poster} aria-label={title} muted playsInline controls preload="none" />
+      <figcaption>
+        {title}. Built from <code translate="no">plans/{film.plan}.md</code>, rendered with{" "}
+        <span translate="no">{RENDERER_NAMES[film.renderer]}</span>, {film.seconds} seconds.
+      </figcaption>
+    </figure>
+  );
+}
+
+const STEPS: [string, string][] = [
+  ["Install the skill", INSTALL],
+  ["Describe the film", "Make a 15 second launch film for this repo."],
+  ["Approve the plan", "Every scene, its words, its move and its sound, before any code."],
+  ["Build and render", "One continuous film at 60 fps, checked after the render."],
+  ["Ask for a change", "Hold the logo longer. The plan changes first, then the film."],
+];
+const PACK: [string, string, string][] = [
+  [
+    "skill",
+    "The skill",
+    `One SKILL.md and ${counts.references} short references: plan, motion, pacing, type, sound, review.`,
+  ],
+  [
+    "starters",
+    "Scene starters",
+    `${counts.starters} finished films to adapt, each with its plan, music cues and assets.`,
+  ],
+  [
+    "tokens",
+    "Motion tokens",
+    "One file of durations, curves and check targets, generated for TypeScript, JavaScript, CSS and Rust.",
+  ],
+  [
+    "guides",
+    "Renderer guides",
+    `${counts.renderers} guides: setup, patterns, traps and the render command for each renderer.`,
+  ],
+];
+const STRIP: [string, string][] = [
+  ["title-sequence", "The title sequence starter"],
+  ["changelog-clip", "The changelog clip starter"],
+];
 
 export default function MotionDesign() {
   return (
@@ -58,6 +105,77 @@ export default function MotionDesign() {
             The launch film starter: {launch.scenes.length} scenes, {launch.seconds} seconds, rendered from the plan
             beside it. Press a row to jump to its scene.
           </p>
+        </section>
+        <section className="block wrap" aria-labelledby="meaning-title">
+          <div className="sec-head">
+            <div>
+              <span className="tc-label">00:15:00</span>
+              <h2 id="meaning-title">Every move says something.</h2>
+            </div>
+            <p>
+              A command types. A count rolls. A word about speed arrives fast. One element carries the eye from scene to
+              scene, so the film reads as one shot, not a set of slides.
+            </p>
+          </div>
+          <FilmFigure film={filmOf("hyperframes", "showreel")} title="The showreel starter" />
+        </section>
+        <section className="block wrap" aria-labelledby="material-title">
+          <div className="sec-head">
+            <div>
+              <span className="tc-label">00:30:00</span>
+              <h2 id="material-title">Your product, not grey boxes.</h2>
+            </div>
+            <p>
+              Point it at your codebase, a GitHub repo or a running app. It gathers the real screens, copy, numbers and
+              brand. When it has to mock a screen, the plan says so.
+            </p>
+          </div>
+          <FilmFigure film={launch} title="The launch film starter" />
+        </section>
+        <section className="block wrap" aria-labelledby="how-title">
+          <div className="sec-head">
+            <div>
+              <span className="tc-label">00:45:00</span>
+              <h2 id="how-title">Plan first. Film second.</h2>
+            </div>
+            <p>Nothing is built until you approve the plan.</p>
+          </div>
+          <ol className="mp-steps">
+            {STEPS.map(([title, body], i) => (
+              <li key={title}>
+                <span className="num tab">{i + 1}</span>
+                <h3>{title}</h3>
+                <p>{body}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+        <section className="block wrap" aria-labelledby="pack-title">
+          <div className="sec-head">
+            <div>
+              <span className="tc-label">01:00:00</span>
+              <h2 id="pack-title">What is in the pack.</h2>
+            </div>
+            <p>Plain files in your repo. Read them, change them, keep them.</p>
+          </div>
+          <div className="costs mp-pack">
+            {PACK.map(([art, title, body]) => (
+              <article className="cost" key={title}>
+                <span className={`mp-art mp-art-${art}`} aria-hidden="true">
+                  <i />
+                  <i />
+                  <i />
+                </span>
+                <h3>{title}</h3>
+                <p>{body}</p>
+              </article>
+            ))}
+          </div>
+          <div className="mp-strip">
+            {STRIP.map(([plan, title]) => (
+              <FilmFigure key={plan} film={filmOf("hyperframes", plan)} title={title} />
+            ))}
+          </div>
         </section>
       </main>
       <SiteFooter />

@@ -112,4 +112,189 @@
       grid-template-columns: minmax(0, 1fr);
     }
   }
+  .mp-film {
+    margin: 0;
+  }
+  .mp-film figcaption {
+    max-width: 70ch;
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 14px;
+    text-wrap: pretty;
+  }
+  .mp-steps {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 24px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .mp-steps .num {
+    display: block;
+    margin-bottom: 14px;
+    color: var(--play);
+    font: 500 13px var(--mono);
+  }
+  .mp-steps h3 {
+    margin: 0 0 6px;
+    font: 600 21px / 1.25 var(--display);
+  }
+  .mp-steps p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+  .mp-pack {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .mp-art {
+    position: relative;
+    display: block;
+    width: 56px;
+    height: 28px;
+    margin-bottom: 22px;
+  }
+  .mp-art i {
+    position: absolute;
+    display: block;
+    border-radius: 2px;
+    background: var(--text);
+  }
+  /* The skill: a line types beside a waiting caret. */
+  .mp-art-skill i:nth-child(1) {
+    top: 12px;
+    left: 0;
+    width: 40px;
+    height: 4px;
+    transform-origin: left;
+  }
+  .mp-art-skill i:nth-child(2) {
+    top: 6px;
+    left: 44px;
+    width: 4px;
+    height: 16px;
+    background: var(--play);
+  }
+  .mp-art-skill i:nth-child(3) {
+    display: none;
+  }
+  /* Starters: three frames, the lit one moves. */
+  .mp-art-starters i {
+    top: 6px;
+    width: 14px;
+    height: 16px;
+    border: 1.5px solid var(--text);
+    background: none;
+  }
+  .mp-art-starters i:nth-child(1) {
+    left: 0;
+  }
+  .mp-art-starters i:nth-child(2) {
+    left: 20px;
+    border-color: var(--play);
+  }
+  .mp-art-starters i:nth-child(3) {
+    left: 40px;
+  }
+  /* Tokens: a dot eases along a line. */
+  .mp-art-tokens i:nth-child(1) {
+    top: 20px;
+    left: 0;
+    right: 0;
+    height: 1.5px;
+  }
+  .mp-art-tokens i:nth-child(2) {
+    top: 14px;
+    left: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--play);
+  }
+  .mp-art-tokens i:nth-child(3) {
+    display: none;
+  }
+  /* Guides: squares, one lit. */
+  .mp-art-guides i {
+    top: 8px;
+    width: 11px;
+    height: 11px;
+  }
+  .mp-art-guides i:nth-child(1) {
+    left: 0;
+    background: var(--play);
+  }
+  .mp-art-guides i:nth-child(2) {
+    left: 15px;
+  }
+  .mp-art-guides i:nth-child(3) {
+    left: 30px;
+  }
+  .mp-strip {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    margin-top: 32px;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .mp-art-skill i:nth-child(1) {
+      animation: mp-type 2.4s steps(8) infinite;
+    }
+    .mp-art-starters i:nth-child(2) {
+      animation: mp-hop 2.4s var(--e-out) infinite;
+    }
+    .mp-art-tokens i:nth-child(2) {
+      animation: mp-slide 2.4s var(--e-out) infinite;
+    }
+    .mp-art-guides i:nth-child(1) {
+      animation: mp-hop 2.4s var(--e-out) infinite;
+    }
+  }
+  @media (max-width: 1100px) {
+    .mp-steps,
+    .mp-pack {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 760px) {
+    .mp-steps,
+    .mp-pack,
+    .mp-strip {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+}
+@keyframes mp-type {
+  from {
+    transform: scaleX(0);
+  }
+  70%,
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes mp-hop {
+  0%,
+  40% {
+    transform: translateX(0);
+  }
+  50%,
+  90% {
+    transform: translateX(15px);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes mp-slide {
+  from {
+    transform: translateX(0);
+  }
+  60%,
+  to {
+    transform: translateX(44px);
+  }
 }
