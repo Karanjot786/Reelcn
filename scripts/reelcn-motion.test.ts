@@ -302,3 +302,18 @@ test("every starter has a current sidecar and an end guard", () => {
     );
   }
 });
+
+test("a gap ducks the half beat before the drop", () => {
+  const text = plan("launch-film").replace("| drop, beat | flood |", "| drop, gap, beat | flood |");
+  const cues = track.cuesFromPlan(check.parsePlan(text));
+  assert.deepEqual(cues.gaps, [{ from: 3.75, to: 4 }]);
+  const pcm = track.renderTrack(cues);
+  const rms = (a: number, b: number) => {
+    let s = 0;
+    for (let i = Math.round(a * 44100); i < Math.round(b * 44100); i++) s += pcm[i] * pcm[i];
+    return Math.sqrt(s / ((b - a) * 44100));
+  };
+  assert.ok(rms(3.78, 3.97) < rms(3.5, 3.72) * 0.25, "the gap is not quiet");
+  const bad = check.checkPlan(check.parsePlan(plan("launch-film").replace("build, hit", "build, hit, gap")));
+  assert.match(bad.join("\n"), /library: "gap" goes with "drop"/);
+});

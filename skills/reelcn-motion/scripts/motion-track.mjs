@@ -223,6 +223,14 @@ export function renderTrack(cues) {
     add(pluck(659.25, 0.8), t + 1.8 * beat, 0.1);
   }
 
+  // Gaps: the half beat before a drop falls to about -16 dB, so the drop lands harder.
+  const ramp = len(0.01);
+  for (const g of cues.gaps ?? []) {
+    const a = len(g.from);
+    const b = len(g.to);
+    for (let i = a; i < b && i < N; i++) mix[i] *= 1 - 0.84 * (Math.min(i - a, b - i, ramp) / ramp);
+  }
+
   const fade = len(0.35);
   let peak = 1e-9;
   const out = new Float64Array(N);
@@ -245,6 +253,7 @@ export function cuesFromPlan(plan) {
     hits: [],
     risers: [],
     scans: [],
+    gaps: [],
   };
   const beatScenes = [];
   for (const s of plan.scenes) {
@@ -262,6 +271,7 @@ export function cuesFromPlan(plan) {
       if (sound === "riser") cues.risers.push({ from: Math.max(s.start, end - 0.5), to: end, gain: 0.4 });
       if (sound === "scan") cues.scans.push({ from: s.start, to: s.start + Math.min(0.45, s.length) });
       if (sound === "final") cues.final = s.start;
+      if (sound === "gap") cues.gaps.push({ from: s.start - 30 / cues.bpm, to: s.start });
     }
   }
   if (beatScenes.length > 0) {

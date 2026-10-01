@@ -33,7 +33,7 @@ Live motion changes information: a count, a playhead, a cursor, a hop. A glow, a
 | `move` | How the main element moves and why. "Types at human speed", not "fades in" |
 | `live` | What keeps moving while the words are read. `none` is allowed once, on a short scene |
 | `carrier` | What the carrier is in this scene, and how it arrives or leaves |
-| `sound` | Cues from: `intro`, `typing`, `ticks`, `build`, `beat`, `drop`, `hit`, `whoosh`, `blip`, `riser`, `scan`, `final`, `none` |
+| `sound` | Cues from: `intro`, `typing`, `ticks`, `build`, `beat`, `drop`, `gap`, `hit`, `whoosh`, `blip`, `riser`, `scan`, `final`, `none` |
 | `join` | How this scene becomes the next: `morph`, `match`, `whip`, `zoom-through`, `wipe`, `flood`, `cut`, or `end` on the last scene |
 
 Never write `|` inside a cell.

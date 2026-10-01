@@ -20,6 +20,7 @@ export const SOUNDS = [
   "build",
   "beat",
   "drop",
+  "gap",
   "hit",
   "whoosh",
   "blip",
@@ -171,6 +172,8 @@ export function checkPlan(plan) {
         scene,
         `live "${scene.live}" is idle motion. Name something that changes during the read: a count, a playhead, a cursor, a hop`,
       );
+    if (scene.sound.includes("gap") && !scene.sound.includes("drop"))
+      miss(scene, `"gap" goes with "drop": it silences the half beat before the drop`);
     const prev = plan.scenes.slice(Math.max(0, i - 2), i).map((s) => s.join);
     if (scene.join !== "end" && prev.length === 2 && prev.every((j) => j === scene.join))
       miss(scene, `the third "${scene.join}" join in a row. Vary the joins`);
