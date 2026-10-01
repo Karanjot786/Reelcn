@@ -266,6 +266,18 @@
       grid-template-columns: minmax(0, 1fr);
     }
   }
+  .mp-switch .toggle-group {
+    margin-bottom: 16px;
+  }
+  .mp-switch video {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: var(--bg);
+    border-radius: var(--r3);
+    outline: 1px solid rgba(255, 255, 255, 0.1);
+    outline-offset: -1px;
+  }
 }
 @keyframes mp-type {
   from {

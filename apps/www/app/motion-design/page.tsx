@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { CopyCommand } from "@/components/copy-command";
 import { PlanPlayer } from "@/components/plan-player";
+import { RendererSwitch } from "@/components/renderer-switch";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { counts, type Film, filmOf, RENDERER_NAMES } from "@/lib/motion";
@@ -176,6 +177,18 @@ export default function MotionDesign() {
               <FilmFigure key={plan} film={filmOf("hyperframes", plan)} title={title} />
             ))}
           </div>
+        </section>
+        <section className="block wrap" aria-labelledby="renderers-title">
+          <div className="sec-head">
+            <div>
+              <span className="tc-label">01:15:00</span>
+              <h2 id="renderers-title">One plan, {counts.renderers} renderers.</h2>
+            </div>
+            <p>
+              The same scene plan, built on each renderer the skill supports. Pick the one your project already uses.
+            </p>
+          </div>
+          <RendererSwitch films={ORDER.map((r) => filmOf(r, "launch-film"))} />
         </section>
       </main>
       <SiteFooter />
