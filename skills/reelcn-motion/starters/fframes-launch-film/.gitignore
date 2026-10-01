@@ -1,0 +1,6 @@
+target/
+out.mp4
+*.wav
+strip.png
+onion.png
+frames/

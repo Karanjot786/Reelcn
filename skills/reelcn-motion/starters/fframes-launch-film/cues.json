@@ -1,0 +1,19 @@
+{
+  "bpm": 120,
+  "duration": 15,
+  "seed": 7,
+  "intro": { "until": 2.0 },
+  "typing": [{ "from": 0.1, "to": 1.3, "count": 37 }],
+  "ticks": [
+    { "kind": "hat", "from": 11.0, "count": 8, "step": 0.05, "gain": 0.18 },
+    { "kind": "tick", "from": 11.52, "count": 5, "step": 0.05, "gain": 0.3 }
+  ],
+  "build": { "from": 2.0, "to": 4.0 },
+  "beat": { "from": 4.0, "to": 11.0 },
+  "whooshes": [1.5, 6.45, 7.0, 7.5, 8.0],
+  "blips": [9.0, 9.5, 10.0, 10.5],
+  "hits": [2.0, 4.0, 6.5, 11.0, 11.5, 12.0],
+  "risers": [{ "from": 10.5, "to": 11.0, "gain": 0.3 }, { "from": 12.5, "to": 13.0, "gain": 0.55 }],
+  "scans": [{ "from": 12.0, "to": 12.45 }],
+  "final": 13.0
+}
