@@ -1,0 +1,348 @@
+{
+  "renderers": ["editframe", "fframes", "hyperframes", "remotion"],
+  "references": 10,
+  "plans": 4,
+  "films": [
+    {
+      "id": "editframe-launch-film",
+      "renderer": "editframe",
+      "plan": "launch-film",
+      "video": "/motion/editframe-launch-film.mp4",
+      "poster": "/motion/editframe-launch-film.jpg",
+      "seconds": 15,
+      "bytes": 891401,
+      "scenes": [
+        {
+          "name": "command",
+          "start": 0,
+          "length": 2,
+          "words": "npx shadcn add @reelcn/product-launch"
+        },
+        {
+          "name": "library",
+          "start": 2,
+          "length": 2,
+          "words": "154 components."
+        },
+        {
+          "name": "any of them",
+          "start": 4,
+          "length": 2.5,
+          "words": "One command."
+        },
+        {
+          "name": "three screens",
+          "start": 6.5,
+          "length": 2.5,
+          "words": "One timeline. Three screens."
+        },
+        {
+          "name": "themes",
+          "start": 9,
+          "length": 2,
+          "words": "Change one line. Restyle every frame."
+        },
+        {
+          "name": "three words",
+          "start": 11,
+          "length": 2,
+          "words": "Install. Edit. Render."
+        },
+        {
+          "name": "lockup",
+          "start": 13,
+          "length": 2,
+          "words": "reelcn Every frame, already designed. reelcn.dev"
+        }
+      ]
+    },
+    {
+      "id": "fframes-launch-film",
+      "renderer": "fframes",
+      "plan": "launch-film",
+      "video": "/motion/fframes-launch-film.mp4",
+      "poster": "/motion/fframes-launch-film.jpg",
+      "seconds": 15,
+      "bytes": 907385,
+      "scenes": [
+        {
+          "name": "command",
+          "start": 0,
+          "length": 2,
+          "words": "npx shadcn add @reelcn/product-launch"
+        },
+        {
+          "name": "library",
+          "start": 2,
+          "length": 2,
+          "words": "154 components."
+        },
+        {
+          "name": "any of them",
+          "start": 4,
+          "length": 2.5,
+          "words": "One command."
+        },
+        {
+          "name": "three screens",
+          "start": 6.5,
+          "length": 2.5,
+          "words": "One timeline. Three screens."
+        },
+        {
+          "name": "themes",
+          "start": 9,
+          "length": 2,
+          "words": "Change one line. Restyle every frame."
+        },
+        {
+          "name": "three words",
+          "start": 11,
+          "length": 2,
+          "words": "Install. Edit. Render."
+        },
+        {
+          "name": "lockup",
+          "start": 13,
+          "length": 2,
+          "words": "reelcn Every frame, already designed. reelcn.dev"
+        }
+      ]
+    },
+    {
+      "id": "hyperframes-changelog-clip",
+      "renderer": "hyperframes",
+      "plan": "changelog-clip",
+      "video": "/motion/hyperframes-changelog-clip.mp4",
+      "poster": "/motion/hyperframes-changelog-clip.jpg",
+      "seconds": 12,
+      "bytes": 657380,
+      "scenes": [
+        {
+          "name": "version",
+          "start": 0,
+          "length": 2,
+          "words": "Relay 2.4"
+        },
+        {
+          "name": "new",
+          "start": 2,
+          "length": 2.5,
+          "words": "New Preview links for every branch"
+        },
+        {
+          "name": "improved",
+          "start": 4.5,
+          "length": 2.5,
+          "words": "Improved Builds start 3x faster"
+        },
+        {
+          "name": "fixed",
+          "start": 7,
+          "length": 2.5,
+          "words": "Fixed Logs keep every line"
+        },
+        {
+          "name": "sign-off",
+          "start": 9.5,
+          "length": 2.5,
+          "words": "relay.dev/changelog"
+        }
+      ]
+    },
+    {
+      "id": "hyperframes-launch-film",
+      "renderer": "hyperframes",
+      "plan": "launch-film",
+      "video": "/motion/hyperframes-launch-film.mp4",
+      "poster": "/motion/hyperframes-launch-film.jpg",
+      "seconds": 15,
+      "bytes": 870126,
+      "scenes": [
+        {
+          "name": "command",
+          "start": 0,
+          "length": 2,
+          "words": "npx shadcn add @reelcn/product-launch"
+        },
+        {
+          "name": "library",
+          "start": 2,
+          "length": 2,
+          "words": "154 components."
+        },
+        {
+          "name": "any of them",
+          "start": 4,
+          "length": 2.5,
+          "words": "One command."
+        },
+        {
+          "name": "three screens",
+          "start": 6.5,
+          "length": 2.5,
+          "words": "One timeline. Three screens."
+        },
+        {
+          "name": "themes",
+          "start": 9,
+          "length": 2,
+          "words": "Change one line. Restyle every frame."
+        },
+        {
+          "name": "three words",
+          "start": 11,
+          "length": 2,
+          "words": "Install. Edit. Render."
+        },
+        {
+          "name": "lockup",
+          "start": 13,
+          "length": 2,
+          "words": "reelcn Every frame, already designed. reelcn.dev"
+        }
+      ]
+    },
+    {
+      "id": "hyperframes-showreel",
+      "renderer": "hyperframes",
+      "plan": "showreel",
+      "video": "/motion/hyperframes-showreel.mp4",
+      "poster": "/motion/hyperframes-showreel.jpg",
+      "seconds": 15,
+      "bytes": 693625,
+      "scenes": [
+        {
+          "name": "greeting",
+          "start": 0,
+          "length": 1.5,
+          "words": "Hi, I'm Maya."
+        },
+        {
+          "name": "name",
+          "start": 1.5,
+          "length": 2,
+          "words": "Maya Chen Product designer"
+        },
+        {
+          "name": "work",
+          "start": 3.5,
+          "length": 2.5,
+          "words": "Relay Signals Draftwell"
+        },
+        {
+          "name": "detail",
+          "start": 6,
+          "length": 2.5,
+          "words": "Pay in one tap"
+        },
+        {
+          "name": "numbers",
+          "start": 8.5,
+          "length": 2,
+          "words": "4 years 12 launches"
+        },
+        {
+          "name": "words",
+          "start": 10.5,
+          "length": 2,
+          "words": "Clear. Quick. Kind."
+        },
+        {
+          "name": "contact",
+          "start": 12.5,
+          "length": 2.5,
+          "words": "mayachen.design"
+        }
+      ]
+    },
+    {
+      "id": "hyperframes-title-sequence",
+      "renderer": "hyperframes",
+      "plan": "title-sequence",
+      "video": "/motion/hyperframes-title-sequence.mp4",
+      "poster": "/motion/hyperframes-title-sequence.jpg",
+      "seconds": 8,
+      "bytes": 412290,
+      "scenes": [
+        {
+          "name": "dark",
+          "start": 0,
+          "length": 1.8,
+          "words": ""
+        },
+        {
+          "name": "title",
+          "start": 1.8,
+          "length": 2.4,
+          "words": "The Quiet Hours"
+        },
+        {
+          "name": "credit",
+          "start": 4.2,
+          "length": 2.4,
+          "words": "A film by Ana Ruiz"
+        },
+        {
+          "name": "year",
+          "start": 6.6,
+          "length": 1.4,
+          "words": "2026"
+        }
+      ]
+    },
+    {
+      "id": "remotion-launch-film",
+      "renderer": "remotion",
+      "plan": "launch-film",
+      "video": "/motion/remotion-launch-film.mp4",
+      "poster": "/motion/remotion-launch-film.jpg",
+      "seconds": 15,
+      "bytes": 931121,
+      "scenes": [
+        {
+          "name": "command",
+          "start": 0,
+          "length": 2,
+          "words": "npx shadcn add @reelcn/product-launch"
+        },
+        {
+          "name": "library",
+          "start": 2,
+          "length": 2,
+          "words": "154 components."
+        },
+        {
+          "name": "any of them",
+          "start": 4,
+          "length": 2.5,
+          "words": "One command."
+        },
+        {
+          "name": "three screens",
+          "start": 6.5,
+          "length": 2.5,
+          "words": "One timeline. Three screens."
+        },
+        {
+          "name": "themes",
+          "start": 9,
+          "length": 2,
+          "words": "Change one line. Restyle every frame."
+        },
+        {
+          "name": "three words",
+          "start": 11,
+          "length": 2,
+          "words": "Install. Edit. Render."
+        },
+        {
+          "name": "lockup",
+          "start": 13,
+          "length": 2,
+          "words": "reelcn Every frame, already designed. reelcn.dev"
+        }
+      ]
+    }
+  ]
+}
