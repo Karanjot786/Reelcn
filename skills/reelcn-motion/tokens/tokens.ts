@@ -105,6 +105,38 @@ export const motion = {
     "wordsPerSecond": 3.2,
     "maxCuts": 2,
     "beatTolerance": 0.05
+  },
+  "aspect": {
+    "16:9": {
+      "width": 1920,
+      "height": 1080,
+      "safe": {
+        "top": 0.05,
+        "bottom": 0.05,
+        "left": 0.05,
+        "right": 0.05
+      }
+    },
+    "9:16": {
+      "width": 1080,
+      "height": 1920,
+      "safe": {
+        "top": 0.1,
+        "bottom": 0.2,
+        "left": 0.05,
+        "right": 0.12
+      }
+    },
+    "1:1": {
+      "width": 1080,
+      "height": 1080,
+      "safe": {
+        "top": 0.05,
+        "bottom": 0.05,
+        "left": 0.05,
+        "right": 0.05
+      }
+    }
   }
 } as const;
 

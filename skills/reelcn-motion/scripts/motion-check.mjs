@@ -91,7 +91,7 @@ function cells(line) {
 
 export function parsePlan(text) {
   const header = {};
-  for (const m of text.matchAll(/^(tempo|carrier|music|total):[ \t]*(.+)$/gm)) header[m[1]] = m[2].trim();
+  for (const m of text.matchAll(/^(tempo|carrier|music|total|aspect):[ \t]*(.+)$/gm)) header[m[1]] = m[2].trim();
   const rows = text.split("\n").filter((line) => line.trim().startsWith("|"));
   if (rows.length < 3) throw new Error("plan has no scene table");
   const cols = cells(rows[0]);
@@ -129,9 +129,15 @@ export function parsePlan(text) {
     carrier: header.carrier ?? "",
     music: music[0] === "none" ? null : { source: music[0], offset: Number(music[2] ?? 0) },
     total: Number(header.total),
+    aspect: header.aspect ?? "16:9",
     scenes,
   };
 }
+
+// Live motion must change information while the words are read. Idle loops alone do not count.
+const IDLE = /\b(grain|breath\w*|puls\w*|loop\w*|drift\w*|shimmer\w*|glow\w*|float\w*|blink\w*|bob\w*)\b/i;
+const CHANGE =
+  /\b(roll\w*|count\w*|type\w*|run\w*|hop\w*|cycle\w*|swap\w*|fill\w*|grow\w*|scroll\w*|stream\w*|arriv\w*|press\w*|sweep\w*|push\w*|draw\w*|name\w*|travel\w*|cross\w*|walk\w*|slid\w*|open\w*|widen\w*|brighten\w*|settle\w*)\b/i;
 
 /** Every rule a plan breaks, one sentence each. Empty means the plan passes. */
 export function checkPlan(plan) {
@@ -140,6 +146,8 @@ export function checkPlan(plan) {
   if (!(plan.total > 0)) miss(null, "total must be a number of seconds");
   if (!plan.carrier) miss(null, "name the carrier: the element that survives every scene change");
   if (plan.music && !(plan.tempo > 0)) miss(null, "tempo must be a number of beats per minute");
+  if (!TOKENS.aspect[plan.aspect])
+    miss(null, `aspect "${plan.aspect}" is not one of ${Object.keys(TOKENS.aspect).join(", ")}`);
   const minScenes = Math.ceil(plan.total / T.secondsPerScene);
   if (plan.scenes.length < minScenes)
     miss(null, `${plan.scenes.length} scenes, a ${plan.total}s film needs at least ${minScenes}`);
@@ -158,6 +166,14 @@ export function checkPlan(plan) {
       miss(scene, `move "${scene.move}" says nothing about meaning. Describe how the element moves and why`);
     if (!scene.live) miss(scene, "say what keeps moving while the words are read, or write none");
     if (/^none$/i.test(scene.live)) still += 1;
+    if (scene.live && !/^none$/i.test(scene.live) && IDLE.test(scene.live) && !CHANGE.test(scene.live))
+      miss(
+        scene,
+        `live "${scene.live}" is idle motion. Name something that changes during the read: a count, a playhead, a cursor, a hop`,
+      );
+    const prev = plan.scenes.slice(Math.max(0, i - 2), i).map((s) => s.join);
+    if (scene.join !== "end" && prev.length === 2 && prev.every((j) => j === scene.join))
+      miss(scene, `the third "${scene.join}" join in a row. Vary the joins`);
     if (!scene.carrier) miss(scene, "say how the carrier enters or leaves this scene");
     const budget = T.wordsPerSecond * scene.length;
     if (scene.words > budget + EPS)
@@ -433,6 +449,10 @@ function main(argv) {
     const [num, den] = probe(video, "stream=r_frame_rate", "v").split("/").map(Number);
     const fps = num / (den || 1);
     if (fps < T.fpsMin) misses.push(`${fps} fps, render at ${T.fpsMin} or more`);
+    const [w, h] = probe(video, "stream=width,height", "v").split(",").map(Number);
+    const want = TOKENS.aspect[plan.aspect];
+    if (want && (w !== want.width || h !== want.height))
+      misses.push(`file is ${w}x${h}, a ${plan.aspect} plan renders at ${want.width}x${want.height}`);
     misses.push(...checkMotion(measureEnergy(video), plan, Number(flag("moving", T.movingThreshold))));
     const events = checkEvents(measureEnergy(video, EVENT_GRAPH), plan);
     misses.push(...events.misses);

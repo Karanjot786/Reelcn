@@ -254,3 +254,22 @@ test("the four shipped plans have no stock copy", () => {
   for (const name of PLANS)
     assert.deepEqual(check.checkCopy(check.parsePlan(plan(name)), null), { misses: [], warns: [] }, name);
 });
+
+test("idle live motion and the same join three times are reported", () => {
+  const text = plan("launch-film")
+    .replace("the counter rolls from 0 to 154", "a soft glow pulses")
+    .replace("| drop, beat | flood |", "| drop, beat | morph |");
+  const misses = check.checkPlan(check.parsePlan(text)).join("\n");
+  assert.match(misses, /library: live "a soft glow pulses" is idle motion/);
+  assert.match(misses, /any of them: the third "morph" join in a row/);
+});
+
+test("aspect defaults to 16:9, accepts 9:16 and 1:1, rejects others", () => {
+  assert.equal(check.parsePlan(plan("launch-film")).aspect, "16:9");
+  const tall = check.parsePlan(plan("launch-film").replace("total: 15", "aspect: 9:16\ntotal: 15"));
+  assert.equal(tall.aspect, "9:16");
+  assert.deepEqual(check.checkPlan(tall), []);
+  const bad = check.checkPlan(check.parsePlan(plan("launch-film").replace("total: 15", "aspect: 4:3\ntotal: 15")));
+  assert.match(bad.join("\n"), /aspect "4:3" is not one of 16:9, 9:16, 1:1/);
+  assert.equal(tokens.aspect["9:16"].safe.bottom, 0.2);
+});

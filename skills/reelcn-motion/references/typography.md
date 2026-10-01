@@ -15,6 +15,17 @@ Use the whole range. Studio films run from small mono labels to words filling th
 - Keep text 5% in from each edge.
 - Load fonts from local files. The film's fonts are the brand's fonts.
 
+## Safe areas and smallest text
+
+| Aspect | Frame | Keep text out of |
+|---|---|---|
+| 16:9 | 1920 by 1080 | 5% on every edge |
+| 9:16 | 1080 by 1920 | top 10%, bottom 20%, right 12% (the app's buttons sit there), left 5% |
+| 1:1 | 1080 by 1080 | 5% on every edge |
+
+- Smallest text: 32px on a 1080px short side, 56px for any line the viewer must read. Measure after every parent's scale.
+- Numbers that change use `font-variant-numeric: tabular-nums`, so the line does not shift as digits roll.
+
 ## Line breaks
 
 - Break by meaning: "One timeline." / "Three screens."
