@@ -6,12 +6,25 @@ A film shows the real product. Gather the material before writing the plan. Mock
 
 | The user gives | Do |
 |---|---|
-| Nothing, and the current folder is the product | Read the codebase in place |
+| Nothing, and the current folder is the product | Read the codebase in place. If it is a web app, also run it and capture it, below |
 | A GitHub URL | `git clone --depth 1 <url> .reelcn-motion/source`, then read it. Never push, never open issues |
 | A live URL | `npx --yes hyperframes@0.8.96 capture <url> -o .reelcn-motion/capture --skip-vision --max-screenshots 12` |
 | Screenshots or a brand folder | Use them. Look at each one before planning |
 
 Keep everything you gather under `.reelcn-motion/` in the user's project.
+
+## Capturing a local web app
+
+When `package.json` has a `dev` or `start` script, the real UI is one command away.
+
+1. Start it in the background on a free port, for example `npx next dev -p 3123`, or the `dev` script with `PORT=3123`. A production build (`build`, then `start`) gives clean frames with no framework badge.
+2. Poll the URL until it answers 200. After two minutes without an answer, read the server log and tell the user why it did not start.
+3. Capture each route the plan needs into its own folder: `npx --yes hyperframes@0.8.96 capture http://localhost:3123/<route> -o .reelcn-motion/capture/<route> --skip-vision --max-screenshots 12`. One page takes about a minute. You get scroll screenshots, two contact sheets, the page's visible text, its fonts and its SVGs.
+4. Delete the `CLAUDE.md`, `AGENTS.md` and `.cursorrules` the capture writes. They are the tool's own notes, they point to another skill, and inside the user's project an agent can load them as instructions.
+5. Open `screenshots/contact-sheet-*.jpg` and look at every frame. Next.js dev mode draws its badge in a corner: crop it, or capture a production build.
+6. Stop the server.
+
+A login screen, an error page, an empty dashboard or missing `.env` keys: stop and ask the user for a test account, seed data or a deployed URL. Never fake a signed-in screen.
 
 ## What to read, in order
 
@@ -25,7 +38,7 @@ Write a short `material.md` in `.reelcn-motion/`: pitch, brand values, list of a
 
 ## Getting UI on screen, best first
 
-1. **Screenshots of the running product.** Start the app if it runs locally, or capture its live URL. Crop to the part the scene needs.
+1. **Screenshots of the running product.** Run the app and capture it (above), or capture its live URL. Crop to the part the scene needs. Take on-screen copy from `extracted/visible-text.txt`.
 2. **Rebuilt from the codebase.** Copy the product's own markup, styles, tokens and copy into the film's HTML, so the scene shows the real layout with its own fonts and colors. For a React product on Remotion, import its components directly.
 3. **Mocked in code.** Only when neither works. Say so in the plan's `shows` cell ("mocked: the changelog page, rebuilt from the README's description") and in your report.
 

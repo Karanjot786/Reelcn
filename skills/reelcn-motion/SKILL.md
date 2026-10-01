@@ -25,7 +25,7 @@ The example to study before building: `starters/hyperframes-launch-film/`, a ful
 
 Read: `references/material.md`, then `references/storyboard.md`, `references/choreography.md`, `references/pacing.md`
 
-- Gather the material first: read the user's codebase, clone the GitHub repo they name, or capture their live URL. Write `.reelcn-motion/material.md`.
+- Gather the material first: read the user's codebase, clone the GitHub repo they name, or capture their live URL. A local web app: run it and capture localhost, as `references/material.md` says. Write `.reelcn-motion/material.md`.
 - Pick the closest file in `plans/` and adapt it, or write a new plan in the same format. Save it as `plan.md`.
 - "Showreel for a résumé" about a product asks for quality: use `plans/launch-film.md`. With no product named, the film shows the repository in the working folder: its README, code and name. Never make the film about yourself.
 - No details given: 15 seconds, 16:9, 60 fps, generated music. Write them in the plan header so the user sees them.
