@@ -10,12 +10,14 @@ node scripts/motion-check.mjs out.mp4 plan.md
 
 | Line | Meaning | Fix |
 |---|---|---|
-| `miss  32% of frames move, the target is 45%` | The film reads as slides | Give each scene's read a live motion: a push, a counter, a playhead, a hop |
+| `miss  42% of frames move, the target is 60%` | The film reads as slides | Give each scene's read a live motion: a push, a counter, a playhead, a hop |
 | `miss  <scene>: still for 2.10s at 6.40s` | A frozen stretch in the named scene | Add live motion there, or shorten the hold |
 | `miss  30 fps, render at 50 or more` | The render ran at a low frame rate | Render at 60 fps with the guide's command |
 | `miss  loudness -21 LUFS` | The mix is quiet | Generate the track with `motion-track.mjs`, or raise the music |
 | `miss  the plan has music, the file has no audio stream` | The render dropped the audio | Check the audio element and the guide's render flags |
 | `miss  file is 14.20s, plan total is 15s` | Length differs | Set the composition length from the plan total |
+
+The check compares frames 125 ms apart after a slight blur. A slow push counts as motion. Grain does not.
 
 `--moving` sets the energy under which a frame counts as still. Leave it at the default.
 

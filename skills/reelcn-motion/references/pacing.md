@@ -31,7 +31,7 @@ time of beat n = offset + n × 60 / tempo
 
 | Target | Value |
 |---|---|
-| Frames in motion | 45% or more |
+| Frames in motion, measured across 125 ms | 60% or more |
 | Longest stillness before the final 2 seconds | 1.4 seconds |
 | Longest stillness anywhere | 1.7 seconds |
 | Frame rate | 50 fps or more |

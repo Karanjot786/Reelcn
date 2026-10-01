@@ -1,6 +1,8 @@
 // The one test file for the reelcn-motion skill. Renders are checked by use, not here.
 import assert from "node:assert/strict";
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
+import { existsSync, mkdtempSync, readdirSync, readFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { renderCss, renderJs, renderRs, renderTs } from "./build-motion-tokens.ts";
@@ -102,23 +104,59 @@ test("a pipe inside a cell is an error with a fix, and a missing header is repor
 
 test("the motion check fails a slideshow and passes a moving film", () => {
   const parsed = check.parsePlan(plan("launch-film"));
+  // One sample per 1/8 s, as measureEnergy returns them.
   const frames = (energy: (t: number) => number) =>
-    Array.from({ length: 900 }, (_, i) => ({ t: i / 60, e: energy(i / 60) }));
-  // Slideshow: half a second of motion every three seconds, frozen otherwise.
+    Array.from({ length: 121 }, (_, i) => ({ t: i / 8, e: energy(i / 8) }));
   const slides = check
     .checkMotion(
       frames((t) => (t % 3 < 0.5 ? 3 : 0)),
       parsed,
     )
     .join("\n");
-  assert.match(slides, /of frames move, the target is 45%/);
+  assert.match(slides, /of frames move, the target is 60%/);
   assert.match(slides, /still for 2\.\d+s/);
-  // Film: rests of 0.4s every 2s, a 1.5s rest at the end.
   const film = check.checkMotion(
     frames((t) => (t > 13.4 || t % 2 > 1.6 ? 0 : 2)),
     parsed,
   );
   assert.deepEqual(film, []);
+});
+
+const hasFfmpeg = spawnSync("ffmpeg", ["-version"]).status === 0;
+
+test("a slow push moves, heavy grain on a still plate is still", { skip: !hasFfmpeg && "ffmpeg missing" }, () => {
+  const dir = mkdtempSync(path.join(tmpdir(), "reelcn-motion-"));
+  const clip = (name: string, graph: string) => {
+    const file = path.join(dir, name);
+    const run = spawnSync("ffmpeg", [
+      "-hide_banner",
+      "-loglevel",
+      "error",
+      "-y",
+      "-f",
+      "lavfi",
+      "-i",
+      graph,
+      "-c:v",
+      "libx264",
+      "-pix_fmt",
+      "yuv420p",
+      file,
+    ]);
+    assert.equal(run.status, 0, String(run.stderr));
+    return file;
+  };
+  const push = clip(
+    "push.mp4",
+    "color=c=black:s=640x360:r=60:d=3[b];color=c=white:s=80x80:r=60:d=3[s];[b][s]overlay=x='100+t*20':y=140",
+  );
+  const grain = clip("grain.mp4", "color=c=0x202020:s=640x360:r=60:d=3,noise=alls=25");
+  const moving = (file: string) => {
+    const s = check.measureEnergy(file);
+    return s.filter((x: { e: number }) => x.e >= tokens.targets.movingThreshold).length / s.length;
+  };
+  assert.ok(moving(push) > 0.9, `slow push reads ${moving(push)}`);
+  assert.ok(moving(grain) < 0.1, `grain reads ${moving(grain)}`);
 });
 
 test("motion energy in scientific notation reads as near zero, not as motion", () => {

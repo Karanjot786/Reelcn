@@ -85,8 +85,9 @@ export const motion = {
     ]
   },
   "targets": {
-    "movingThreshold": 0.15,
-    "motionShare": 0.45,
+    "movingThreshold": 0.3,
+    "energyFps": 8,
+    "motionShare": 0.6,
     "longestStill": 1.7,
     "sceneStill": 1.4,
     "finalZone": 2,

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // reelcn-motion check.
 // Plan mode:  node motion-check.mjs --plan plan.md
-// Video mode: node motion-check.mjs out.mp4 plan.md [--moving 0.15] [--sheet sheet.png]
+// Video mode: node motion-check.mjs out.mp4 plan.md [--moving 0.3] [--sheet sheet.png]
 // Targets come from three reference films and one approved film (tokens.json `targets`).
 import { spawnSync } from "node:child_process";
 import { mkdtempSync, readFileSync } from "node:fs";
@@ -204,10 +204,15 @@ function ffmpeg(args) {
   return run;
 }
 
-/** Motion energy per frame: mean luma difference from the frame before, at 160px wide. */
-export function measureEnergy(video) {
-  const graph = "scale=160:-2,tblend=all_mode=difference,signalstats,metadata=print:key=lavfi.signalstats.YAVG:file=-";
-  return parseEnergy(ffmpeg(["-i", video, "-vf", graph, "-an", "-f", "null", "-"]).stdout);
+/** Motion energy, one sample per 1/8 s: mean luma change across 125 ms at 160px wide, after a 1px blur.
+ * The span catches slow pushes that look still frame to frame. The blur keeps grain from reading as motion. */
+export const MOTION_GRAPH = `fps=${T.energyFps},scale=160:-2,gblur=sigma=1,tblend=all_mode=difference`;
+/** Energy per frame at the film's own rate, for events: hits and single-frame flashes. */
+export const EVENT_GRAPH = "scale=160:-2,tblend=all_mode=difference";
+
+export function measureEnergy(video, graph = MOTION_GRAPH) {
+  const vf = `${graph},signalstats,metadata=print:key=lavfi.signalstats.YAVG:file=-`;
+  return parseEnergy(ffmpeg(["-i", video, "-vf", vf, "-an", "-f", "null", "-"]).stdout);
 }
 
 function probe(video, entries, stream) {
@@ -275,7 +280,7 @@ function main(argv) {
   const planPath = planOnly ? flag("plan") : files[1];
   if (!planPath || (!planOnly && !files[0])) {
     console.error(
-      "usage: motion-check.mjs --plan plan.md\n       motion-check.mjs out.mp4 plan.md [--moving 0.15] [--sheet sheet.png]",
+      "usage: motion-check.mjs --plan plan.md\n       motion-check.mjs out.mp4 plan.md [--moving 0.3] [--sheet sheet.png]",
     );
     return 2;
   }
