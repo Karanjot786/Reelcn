@@ -1,6 +1,6 @@
 ---
 name: reelcn-motion
-description: Plans, builds and checks motion-designed video in code, at the level of a studio launch film. Use when the user wants a showreel, intro, title sequence, launch film, promo, changelog clip or motion graphics piece rendered with HyperFrames, Remotion, Editframe or fframes, asks for a storyboard or scene plan for a video, or asks to retime one in plain words, like "hold the logo longer".
+description: Plans, builds and checks motion-designed video in code, at the level of a studio launch film. Use when the user wants a showreel, intro, title sequence, launch film, promo, changelog clip or motion graphics piece rendered with HyperFrames, Remotion, Editframe or fframes, asks for a storyboard or scene plan for a video, or asks to retime one in plain words, like "hold the logo longer". Also use for one-line prompts like "make a 15 second motion graphics video, like a showreel for a résumé, go all out".
 ---
 
 # reelcn-motion
@@ -29,6 +29,9 @@ Read: `references/material.md`, then `references/storyboard.md`, `references/cho
 
 - Gather the material first: read the user's codebase, clone the GitHub repo they name, or capture their live URL. Write `.reelcn-motion/material.md`.
 - Pick the closest file in `plans/` and adapt it, or write a new plan in the same format. Save it as `plan.md`.
+- "Showreel for a résumé" about a product asks for quality: use `plans/launch-film.md`. With no product named, the film shows this project.
+- No details given: 15 seconds, 16:9, 60 fps, generated music. Write them in the plan header so the user sees them.
+- A timeline from the user (times and copy) becomes the plan rows. A list of things to avoid goes under the table as `Avoid:`.
 
 Gate: `plan.md` exists, and every `shows` cell names real material from `material.md` or says `mocked:` and why.
 
@@ -54,7 +57,8 @@ Gate: the toolchain check in the guide passes.
 
 Read, as each scene needs them: `references/choreography.md`, `references/typography.md`
 
-- Start from the starter the guide names. Replace its material with the user's. Keep its techniques.
+- Start from the starter the guide names. Replace its material with the user's. Keep its timing and curves; change colors, fonts and radius. Recipes: `references/moves.md`.
+- Build the first scene and its join, render only that range, and show it as the sample scene. Ask "continue or change". No other scene code before the answer.
 - Build the carrier first, then each scene in plan order. Take durations and curves from the token file the guide names.
 
 Gate: every scene, carrier hand-off and live motion in the plan exists in the code.
@@ -81,7 +85,7 @@ Render at 60 fps with the command in the guide, then:
 node scripts/motion-check.mjs out.mp4 plan.md
 ```
 
-Open both sheets it writes: one frame per scene, and one frame at each join. Fix every `miss` and every join frame showing two scenes stacked. Render again, check again. Then compare three frames with the starter's film. If yours reads as a slideshow next to it, it is not done.
+Open the scene sheet and the join strips. For every `miss` and `warn`, open the frame at its time before you fix or dismiss it; to dismiss one, write the rule, the time and why. Then run a fresh review as `references/review.md` says. If the film reads as a slideshow next to the starter's film, it is not done.
 
 Gate: the check exits 0.
 

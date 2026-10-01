@@ -55,3 +55,14 @@ Step through each join at full speed and at quarter speed.
 | Meaning | Each move says what the word or thing is | The same slide-in everywhere |
 | On the beat | Hops and stamps land with the drums | Events drift off the grid |
 | Stillness is rare | A second of rest before the final hit | Two seconds of nothing mid-film |
+
+## Fresh review
+
+You built the film, so you are the wrong judge of it. After the check passes:
+
+1. Copy into a new folder only: `plan.md`, the scene sheet, the join strips, and the same sheets from the previous version if there is one. No code.
+2. Start a new subagent with no history. Give it the folder, this file's frame and motion checks, and `references/slop.md`. Ask: "Which version is better on each check, and what is the biggest fault in the newer one?" Ask it to quote three pieces of on-screen text it read; if two are not in `plan.md`, discard the review and run it again.
+3. Run it twice with the two versions in swapped order. Keep the new version only if it wins both times.
+4. Fix the biggest fault. After three rounds, show the user the best version and its open faults.
+
+A reviewer prefers busy frames. The plan check, the material rule and `slop.md` guard against busy fakes; never drop them to win a review.

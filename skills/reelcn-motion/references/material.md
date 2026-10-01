@@ -36,3 +36,4 @@ Title cards, marketing banners and screenshots with baked-in text are backdrops,
 - Use the product's own words: its tagline, feature names, button labels, numbers.
 - Never rewrite a tagline or a product claim to fit the reading budget. Give the scene more time, split it, or ask the user which words to cut.
 - Invented sample content (PR titles, user names, entries) is fine for mocked UI. List it in your report so the user swaps in real copy.
+- Numbers on screen come from the material: stars, users, speed, versions, counts. The plan check traces each one. Invent none.

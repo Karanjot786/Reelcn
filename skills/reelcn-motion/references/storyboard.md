@@ -40,7 +40,7 @@ Never write `|` inside a cell.
 
 ## Shape of a film
 
-- A hook in the first 2 seconds: a command typing, a name appearing, a question.
+- A hook in the first 2 seconds: the product at work, the command, the name. Never a logo sting or a "welcome".
 - A build of 1.5 to 2 seconds, then a drop near a quarter of the way in, where the music and the busiest picture start together.
 - The middle shows the product doing its job, one idea per scene.
 - The final hit lands about 2 seconds before the end. The lockup holds with light motion to the last frame.

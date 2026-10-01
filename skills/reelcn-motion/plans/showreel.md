@@ -1,7 +1,7 @@
 # Showreel
 
-Use for: a portfolio intro or a studio reel opener.
-Avoid for: one product with features to explain. Use launch-film.
+Use for: a person's or a studio's portfolio opener, built from their real work.
+Avoid for: "a showreel for a résumé, go all out" about a product. That line asks for quality, not a portfolio: use launch-film.
 Built example: `starters/hyperframes-showreel/` in this skill.
 
 tempo: 120

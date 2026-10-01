@@ -345,3 +345,12 @@ test("every move has a recipe with timing, pitfalls and checks; slop has three p
   for (const h of ["## Copy", "## Picture", "## Motion"]) assert.ok(slop.includes(h), h);
   assert.ok(!(moves + slop).includes("—"), "em dash in a reference");
 });
+
+test("SKILL.md routes résumé-showreel prompts and gates on a sample scene and a fresh review", () => {
+  const skill = readFileSync(`${SKILL}/SKILL.md`, "utf8");
+  assert.match(skill, /showreel for a résumé/i);
+  assert.match(skill, /sample scene/i);
+  assert.match(skill, /fresh review/i);
+  assert.match(plan("showreel"), /Avoid for:.*résumé/i);
+  assert.match(readFileSync(`${SKILL}/references/review.md`, "utf8"), /## Fresh review/);
+});

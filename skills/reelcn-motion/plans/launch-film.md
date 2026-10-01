@@ -1,6 +1,6 @@
 # Launch film
 
-Use for: a product or library launch, told through the product itself.
+Use for: a product or library launch, told through the product itself. Also the default for one-line prompts like "a showreel for my project, go all out".
 Avoid for: release notes. Use changelog-clip.
 Built example: `starters/hyperframes-launch-film/` in this skill, the film this plan describes.
 
