@@ -29,7 +29,7 @@ For API details load the vendor's `hyperframes-core` and `hyperframes-cli` skill
 - Audio: `<audio id="track" src="assets/audio/track.mp3" data-start="0" data-duration="15" data-track-index="10" data-volume="1">`. The `id` is required or the render is silent.
 - Fonts: `@font-face` pointing at local files in `assets/fonts/`.
 
-## Patterns in the starter
+## Patterns
 
 | Plan idea | Code |
 |---|---|

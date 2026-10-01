@@ -195,7 +195,6 @@ test("SKILL.md is short, named, and links only to files in the skill", () => {
   for (const [, file] of skill.matchAll(/`((?:references|scripts|tokens|plans)\/[\w./-]+)`/g)) {
     assert.ok(existsSync(path.join(SKILL, file)), `SKILL.md names ${file}, which is missing`);
   }
-  assert.ok(existsSync(`${SKILL}/renderers/hyperframes.md`), "the HyperFrames guide is missing");
 });
 
 const mini = (sound: string) =>
@@ -353,4 +352,43 @@ test("SKILL.md routes résumé-showreel prompts and gates on a sample scene and 
   assert.match(skill, /fresh review/i);
   assert.match(plan("showreel"), /Avoid for:.*résumé/i);
   assert.match(readFileSync(`${SKILL}/references/review.md`, "utf8"), /## Fresh review/);
+});
+
+const RENDERERS = ["hyperframes", "remotion", "editframe", "fframes"];
+
+test("every renderer has a guide and a launch film starter with the shared plan", () => {
+  const shared = readFileSync(`${SKILL}/starters/hyperframes-launch-film/plan.md`, "utf8");
+  for (const name of RENDERERS) {
+    const guide = `${SKILL}/renderers/${name}.md`;
+    assert.ok(existsSync(guide), `${guide} is missing`);
+    const text = readFileSync(guide, "utf8");
+    for (const h of ["## Setup", "## Contract", "## Patterns", "## Traps", "## Check and render"])
+      assert.ok(text.includes(h), `${name} guide lacks ${h}`);
+    assert.ok(!text.includes("—"), `${name} guide has an em dash`);
+    const starter = `${SKILL}/starters/${name}-launch-film`;
+    assert.equal(readFileSync(`${starter}/plan.md`, "utf8"), shared, `${name} plan differs from the approved film's`);
+    assert.match(
+      readFileSync(`${starter}/README.md`, "utf8"),
+      /motion-check\.mjs out\.mp4 plan\.md/,
+      `${name} README lacks the check`,
+    );
+  }
+});
+
+test("starters pin exact renderer versions", () => {
+  const pkg = (dir: string) => JSON.parse(readFileSync(`${SKILL}/starters/${dir}/package.json`, "utf8"));
+  const remotion = pkg("remotion-launch-film");
+  assert.equal(remotion.dependencies.remotion, "4.0.523");
+  assert.equal(remotion.devDependencies["@remotion/cli"], "4.0.523");
+  assert.equal(remotion.dependencies.gsap, "3.14.2");
+  const editframe = pkg("editframe-launch-film");
+  for (const [name, v] of Object.entries({ ...editframe.dependencies, ...editframe.devDependencies }))
+    if (name.startsWith("@editframe/")) assert.equal(v, "0.59.47", name);
+  assert.equal(editframe.dependencies.gsap, "3.14.2");
+  assert.match(readFileSync(`${SKILL}/starters/fframes-launch-film/Cargo.toml`, "utf8"), /fframes = \{ version = "=\d/);
+});
+
+test("the Remotion guide shows how to drop the film into an existing project", () => {
+  const guide = readFileSync(`${SKILL}/renderers/remotion.md`, "utf8");
+  for (const word of ["LaunchFilm.tsx", "film.ts", "<Composition"]) assert.ok(guide.includes(word), word);
 });
