@@ -1,0 +1,47 @@
+---
+title: Motion design skill
+description: Install reelcn-motion, the agent skill that plans, builds and checks launch films, and learn its plan format.
+---
+
+reelcn-motion turns "make a 15 second launch film for this repo" into a rendered film. Your agent gathers the real material, writes a scene plan, waits for your approval, builds one continuous film and checks the render. Watch the films on [/motion-design](/motion-design).
+
+## Install
+
+```bash
+npx skills add Karanjot786/reelcn -s reelcn-motion
+```
+
+## The plan
+
+The agent writes `plan.md`: four header lines, then one row per scene.
+
+```
+tempo: 120
+carrier: the amber caret, which becomes the selection box, the frame border and the logo stroke
+music: generated
+total: 15
+```
+
+| Column | Holds |
+|---|---|
+| `scene`, `start`, `length` | A name, and seconds on the beat |
+| `shows` | The real material on screen, or `mocked:` and why |
+| `words` | The exact words, in quotes |
+| `move` | How the main element moves, and why |
+| `live` | What keeps changing while the words are read |
+| `carrier` | What the carrier is in this scene |
+| `sound` | Cues such as `typing`, `drop`, `hit`, `final` |
+| `join` | How the scene becomes the next: `morph`, `match`, `whip`, `wipe`, `flood`, `cut`, or `end` |
+
+## Ask for changes in plain words
+
+"Hold the logo longer", "faster", "less text in the middle". The agent changes the plan row first, then the code, and renders again.
+
+## Renderers
+
+| Renderer | Guide |
+|---|---|
+| HyperFrames | [hyperframes.md](https://github.com/Karanjot786/reelcn/blob/main/skills/reelcn-motion/renderers/hyperframes.md) |
+| Remotion | [remotion.md](https://github.com/Karanjot786/reelcn/blob/main/skills/reelcn-motion/renderers/remotion.md) |
+| Editframe | [editframe.md](https://github.com/Karanjot786/reelcn/blob/main/skills/reelcn-motion/renderers/editframe.md) |
+| fframes | [fframes.md](https://github.com/Karanjot786/reelcn/blob/main/skills/reelcn-motion/renderers/fframes.md) |
