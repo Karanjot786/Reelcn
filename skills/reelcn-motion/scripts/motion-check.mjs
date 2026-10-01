@@ -4,7 +4,7 @@
 // Video mode: node motion-check.mjs out.mp4 plan.md [--moving 0.3] [--sheet sheet.png]
 // Targets come from three reference films and one approved film (tokens.json `targets`).
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, readFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -31,6 +31,49 @@ export const SOUNDS = [
 // Moves that describe no meaning. A move names what the element does and why, not only that it appears.
 const GENERIC =
   /^(fade|fades|fade in|fade up|fades in|slide|slides|slide in|slides in|slide up|pop|pops in|appear|appears|scale in|zoom in)\.?$/i;
+// Stock copy. Lists from Anti-Slop, MIT, Copyright (c) 2026 Miqdad Badjuber, github.com/miqdadbadjuber/Anti-Slop @91f12ec:
+// R-15 calls to action, R-16 buzzwords, and the copywriting skill's empty vocabulary, inflation and empty proof.
+export const SLOP = [
+  "ai powered",
+  "next generation",
+  "next gen",
+  "revolutionary",
+  "revolutionize",
+  "revolutionizing",
+  "seamless",
+  "seamlessly",
+  "cutting edge",
+  "intelligent",
+  "ultimate",
+  "powerful",
+  "effortless",
+  "effortlessly",
+  "unlock",
+  "unleash",
+  "elevate",
+  "empower",
+  "delve",
+  "showcase",
+  "testament",
+  "journey",
+  "robust",
+  "game changer",
+  "next level",
+  "streamline",
+  "the future of",
+  "a new era",
+  "pivotal moment",
+  "trusted by",
+  "industry leading",
+  "world class",
+  "loved by",
+  "get started",
+  "learn more",
+  "try now",
+  "explore",
+  "discover",
+];
+const phrase = (p) => new RegExp(`\\b${p.replace(/ /g, "[- ]?")}\\b`, "i");
 const EPS = 0.011;
 
 /** Seconds at which beat `n` of a track lands. */
@@ -60,15 +103,15 @@ export function parsePlan(text) {
       );
     }
     const raw = Object.fromEntries(parts.map((cell, i) => [cols[i], cell]));
-    const words = [...(raw.words ?? "").matchAll(/"([^"]*)"/g)]
-      .flatMap((m) => m[1].split(/\s+/))
-      .filter(Boolean).length;
+    const quotes = [...(raw.words ?? "").matchAll(/"([^"]*)"/g)].map((m) => m[1]);
+    const words = quotes.flatMap((q) => q.split(/\s+/)).filter(Boolean).length;
     return {
       name: raw.scene ?? "",
       start: Number(raw.start),
       length: Number(raw.length),
       shows: raw.shows ?? "",
       words,
+      quotes,
       move: raw.move ?? "",
       live: raw.live ?? "",
       carrier: raw.carrier ?? "",
@@ -136,6 +179,30 @@ export function checkPlan(plan) {
   if (cuts > T.maxCuts) miss(null, `${cuts} cuts, at most ${T.maxCuts}. Join scenes through the carrier instead`);
   if (still > 1) miss(null, `${still} scenes with nothing moving during the read, at most one`);
   return misses;
+}
+
+/** Stock copy, em dashes and emoji in the words; numbers not found in the material. Copy found in the material is the owner's. */
+export function checkCopy(plan, material) {
+  const own = (material ?? "").toLowerCase();
+  const tells = [];
+  const misses = [];
+  for (const scene of plan.scenes) {
+    for (const quote of scene.quotes) {
+      if (own && own.includes(quote.toLowerCase())) continue;
+      for (const p of SLOP)
+        if (phrase(p).test(quote))
+          tells.push(`${scene.name}: "${p}" in "${quote}" is stock copy. Use the product's own words from material.md`);
+      if (quote.includes("\u2014")) tells.push(`${scene.name}: an em dash in "${quote}". Use a period or a comma`);
+      if (/\p{Extended_Pictographic}/u.test(quote))
+        tells.push(`${scene.name}: an emoji in "${quote}". Show the real thing`);
+      if (material === null || /mocked:/i.test(scene.shows)) continue;
+      for (const [n] of quote.matchAll(/\d[\d.,]*[%x+kKmM]?/g)) {
+        const num = n.replace(/[.,]+$/, "").toLowerCase();
+        if (!own.includes(num)) misses.push(`${scene.name}: "${num}" is not in material.md. Use a real number or none`);
+      }
+    }
+  }
+  return tells.length >= 2 ? { misses: [...misses, ...tells], warns: [] } : { misses, warns: tells };
 }
 
 /** Samples from ffmpeg's metadata print. ffmpeg writes tiny values in scientific notation, like 6.94e-05. */
@@ -334,7 +401,9 @@ function main(argv) {
     return i === -1 ? fallback : argv[i + 1];
   };
   const planOnly = argv.indexOf("--plan") !== -1;
-  const files = argv.filter((arg, i) => !arg.startsWith("--") && !(argv[i - 1] ?? "").match(/^--(moving|sheet|plan)$/));
+  const files = argv.filter(
+    (arg, i) => !arg.startsWith("--") && !(argv[i - 1] ?? "").match(/^--(moving|sheet|plan|material)$/),
+  );
   const planPath = planOnly ? flag("plan") : files[1];
   if (!planPath || (!planOnly && !files[0])) {
     console.error(
@@ -345,6 +414,17 @@ function main(argv) {
   const plan = parsePlan(readFileSync(planPath, "utf8"));
   const misses = checkPlan(plan);
   const warns = [];
+  const near = [
+    flag("material"),
+    path.join(path.dirname(planPath), ".reelcn-motion/material.md"),
+    ".reelcn-motion/material.md",
+  ];
+  const materialPath = near.find((p) => p && existsSync(p));
+  const material = materialPath ? readFileSync(materialPath, "utf8") : null;
+  if (!material) warns.push("no .reelcn-motion/material.md found: numbers on screen were not traced to the material");
+  const copy = checkCopy(plan, material);
+  misses.push(...copy.misses);
+  warns.push(...copy.warns);
   if (!planOnly && misses.length === 0) {
     const video = files[0];
     const seconds = Number(probe(video, "format=duration"));

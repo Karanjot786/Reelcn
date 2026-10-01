@@ -222,3 +222,35 @@ test("a single-frame flash fails, a hit without picture warns", () => {
   );
   assert.deepEqual(ok, { misses: [], warns: [] });
 });
+
+test("stock copy warns once and fails twice; the owner's own copy is exempt", () => {
+  const one = plan("launch-film").replace('"154 components."', '"Unlock 154 components."');
+  const r1 = check.checkCopy(check.parsePlan(one), null);
+  assert.deepEqual(r1.misses, []);
+  assert.match(r1.warns.join("\n"), /library: "unlock" in "Unlock 154 components\." is stock copy/);
+  const two = one.replace('"One command."', '"Seamless — one command."');
+  const r2 = check.checkCopy(check.parsePlan(two), null);
+  assert.equal(r2.warns.length, 0);
+  assert.match(r2.misses.join("\n"), /"seamless" in/);
+  assert.match(r2.misses.join("\n"), /an em dash in/);
+  const own = check.checkCopy(check.parsePlan(two), "Tagline: Seamless — one command.\nUnlock 154 components.");
+  assert.deepEqual(own, { misses: [], warns: [] });
+});
+
+test("numbers on screen must come from the material", () => {
+  const p = check.parsePlan(plan("launch-film"));
+  assert.match(
+    check.checkCopy(p, "reelcn ships many components").misses.join("\n"),
+    /library: "154" is not in material\.md/,
+  );
+  assert.deepEqual(check.checkCopy(p, "154 components").misses, []);
+  const mocked = check.parsePlan(
+    plan("launch-film").replace("| 28 real component renders |", "| mocked: 28 renders |"),
+  );
+  assert.deepEqual(check.checkCopy(mocked, "nothing").misses, []);
+});
+
+test("the four shipped plans have no stock copy", () => {
+  for (const name of PLANS)
+    assert.deepEqual(check.checkCopy(check.parsePlan(plan(name)), null), { misses: [], warns: [] }, name);
+});
