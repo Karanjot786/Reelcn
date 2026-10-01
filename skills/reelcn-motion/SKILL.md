@@ -1,6 +1,6 @@
 ---
 name: reelcn-motion
-description: Plans, builds and checks motion-designed video in code, at the level of a studio launch film. Use when the user wants a showreel, intro, title sequence, launch film, promo, changelog clip or motion graphics piece rendered with HyperFrames, Remotion, Editframe or fframes, asks for a storyboard or scene plan for a video, or asks to retime one in plain words, like "hold the logo longer". Also use for one-line prompts like "make a 15 second motion graphics video, like a showreel for a résumé, go all out".
+description: Plans, builds and checks motion-designed video in code, at the level of a studio launch film. Use when the user wants a showreel, intro, title sequence, launch film, promo, changelog clip or motion graphics piece rendered with HyperFrames, Remotion, Editframe or fframes, asks for a storyboard or scene plan for a video, or asks to retime one in plain words, like "hold the logo longer". Also use for one-line prompts like "make a 15 second motion graphics video, like a showreel for a résumé, go all out", and for animated explainers, including ones asked for as a single HTML page.
 ---
 
 # reelcn-motion
@@ -29,8 +29,10 @@ Read: `references/material.md`, then `references/storyboard.md`, `references/cho
 
 - Gather the material first: read the user's codebase, clone the GitHub repo they name, or capture their live URL. Write `.reelcn-motion/material.md`.
 - Pick the closest file in `plans/` and adapt it, or write a new plan in the same format. Save it as `plan.md`.
-- "Showreel for a résumé" about a product asks for quality: use `plans/launch-film.md`. With no product named, the film shows this project.
+- "Showreel for a résumé" about a product asks for quality: use `plans/launch-film.md`. With no product named, the film shows the repository in the working folder: its README, code and name. Never make the film about yourself.
 - No details given: 15 seconds, 16:9, 60 fps, generated music. Write them in the plan header so the user sees them.
+- A request for 30 fps: say the motion check needs 50 or more, propose 60, and ask.
+- An explainer (problem, steps, proof): no explainer plan exists yet. Say so, offer the launch film shape, and ask for the missing details. Invent no proof numbers.
 - A timeline from the user (times and copy) becomes the plan rows. A list of things to avoid goes under the table as `Avoid:`.
 
 Gate: `plan.md` exists, and every `shows` cell names real material from `material.md` or says `mocked:` and why.
@@ -49,7 +51,7 @@ Gate: the check exits 0 and the user approved the plan.
 
 Read: `renderers/<name>.md` for `hyperframes`, `remotion`, `editframe` or `fframes`
 
-HyperFrames is the proven path. Use it when the project has no renderer yet. If the guide for the project's renderer is missing, say so and offer HyperFrames.
+HyperFrames is the proven path. Use it when the project has no renderer yet. If the guide for the requested renderer is missing, say so and offer HyperFrames before building. Build in no renderer without a guide.
 
 Gate: the toolchain check in the guide passes.
 
@@ -97,7 +99,7 @@ Find the scene the request names. Change its row in `plan.md` first, then its co
 
 ## Laws
 
-- No scene code before the user approves the plan.
+- No scene code before the user approves the plan. A one-shot or non-interactive session is no exception: stop after the plan and wait.
 - Report a render, a preview or a check as done only after its command exited 0.
 - When a tool is missing, print the install command from the guide and stop.
 - Load the vendor skill the guide names for API details. Skip the vendor's own interview.
