@@ -1,0 +1,18 @@
+{
+  "duration": 8,
+  "assertions": [
+    {
+      "kind": "appearsBy",
+      "selector": "#title .l:nth-child(8)",
+      "bySec": 2.3
+    },
+    {
+      "kind": "staysInFrame",
+      "selector": "#line"
+    },
+    {
+      "kind": "keepsMoving",
+      "maxStaticSec": 1.4
+    }
+  ]
+}

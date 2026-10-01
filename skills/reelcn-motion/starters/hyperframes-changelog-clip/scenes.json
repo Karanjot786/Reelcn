@@ -1,0 +1,7 @@
+{
+  "version": "#brand",
+  "new": "#paneA > .prow:nth-child(1)",
+  "improved": "#paneB",
+  "fixed": "#paneC",
+  "carrier": "#chip"
+}

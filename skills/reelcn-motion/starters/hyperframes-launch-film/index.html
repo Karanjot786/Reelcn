@@ -94,9 +94,9 @@
       <div id="light" class="abs">
 
         <div id="hero" class="abs">
-          <img class="base" id="f169" src="assets/stills/fmt-16x9.jpg" alt="" />
+          <img class="base" id="f169" data-layout-allow-overflow src="assets/stills/fmt-16x9.jpg" alt="" />
           <img id="f916" src="assets/stills/fmt-9x16.jpg" alt="" />
-          <img id="f11" src="assets/stills/fmt-1x1.jpg" alt="" />
+          <img id="f11" data-layout-allow-overflow src="assets/stills/fmt-1x1.jpg" alt="" />
           <img class="theme" id="tmono" src="assets/stills/theme-mono.jpg" alt="" />
           <img class="theme" id="tchrome" src="assets/stills/theme-chromewave.jpg" alt="" />
           <img class="theme" id="tmid" src="assets/stills/theme-midnight.jpg" alt="" />
@@ -112,7 +112,7 @@
       <div id="install" class="abs word"><span class="l">I</span><span class="l">n</span><span class="l">s</span><span class="l">t</span><span class="l">a</span><span class="l">l</span><span class="l">l</span><span class="l">.</span></div>
       <div id="under" class="abs"></div>
       <div id="edit" class="abs word"><span id="editwrap" data-layout-allow-overlap data-layout-allow-overflow data-layout-allow-occlusion><span id="editinner" data-layout-allow-overlap data-layout-allow-overflow data-layout-allow-occlusion>Edit.</span></span><span id="editcaret"></span></div>
-      <div id="render" class="abs word"><div class="stroke">Render.</div><div class="fill">Render.</div></div>
+      <div id="render" class="abs word"><div class="stroke" data-layout-allow-occlusion>Render.</div><div class="fill">Render.</div></div>
       <div id="scan" class="abs"></div>
       <div id="frames" class="abs">frame 0 / 900</div>
       <div id="line" class="abs"></div>
@@ -305,6 +305,7 @@
         tl.fromTo("#url", { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2.2)" }, 13.9);
         tl.fromTo("#lockup", { scale: 1 }, { scale: 1.03, duration: 2.0, ease: "none" }, 13.0);
 
+        tl.set({}, {}, 15); // the timeline reaches the plan total even if the last tween ends earlier
         window.__timelines["main"] = tl;
         if (window.__hfForceTimelineRebind) window.__hfForceTimelineRebind();
       });

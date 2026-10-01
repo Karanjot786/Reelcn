@@ -58,13 +58,31 @@ For API details load the vendor's `hyperframes-core` and `hyperframes-cli` skill
 - Mark masked reveals with `data-layout-allow-overflow`, `data-layout-allow-overlap` and `data-layout-allow-occlusion`.
 - Outline text needs a faint fill color, never `transparent`.
 
+## Traps
+
+| Trap | Fix |
+|---|---|
+| `fromTo` start states apply when the timeline is built, so elements show at frame 0 | `gsap.timeline({ paused: true, defaults: { immediateRender: false } })` |
+| A timeline shorter than `data-duration` ends early and the last frames go black | End with `tl.set({}, {}, TOTAL)` |
+| `tl.call`, class swaps and values written by several tweens stick when seeking backward | Drive them from one function of time: `tl.fromTo(drv, { t: 0 }, { t: END, duration: END, ease: "none", onUpdate: () => frame(drv.t) }, 0)` |
+| Steep eases ending between frames alias | End tweens on multiples of 1/60 s |
+| `Math.random`, `Date.now`, CSS `@keyframes` and CSS transitions do not follow the seek | A seeded random, timeline tweens only |
+| Two SVGs share a `<defs>` id: the second paints nothing once the first is hidden | Prefix every id with its scene name |
+| A `<video>` paints black with several render workers | Render with `--workers 1` when the film has video |
+| The rendered audio measures quieter than the track | Remux: `ffmpeg -i out.mp4 -i assets/audio/track.wav -map 0:v -map 1:a -c:v copy -c:a aac -b:a 256k out-final.mp4` |
+| A box measured after a transform applied | Read `getBoundingClientRect` once before the first tween, and divide out any parent scale |
+| `repeat: -1` inside the main timeline | Give every loop a finite `repeat` that ends by the plan total |
+
 ## Check and render
 
 ```bash
-npx --yes hyperframes@0.8.96 check
-node scripts/motion-track.mjs plan.md assets/audio/track.wav
+node <skill>/scripts/motion-sidecar.mjs plan.md scenes.json > index.motion.json
+npx --yes hyperframes@0.8.96 check --at-transitions --frame-check --snapshots --strict
+node <skill>/scripts/motion-track.mjs plan.md assets/audio/track.wav
 npx --yes hyperframes@0.8.96 render --fps 60 --quality looks --output out.mp4
 node <skill>/scripts/motion-check.mjs out.mp4 plan.md
 ```
 
-`check` must print `Check passed` before rendering. Copy `motion-track.mjs` and `motion-check.mjs` from the skill's `scripts/` folder, or run them from there.
+`scenes.json` maps each scene name to the element that must be visible half a second into it, plus `"carrier"`. With the sidecar, `check` verifies the plan under seek: each scene's element appears on time and in order, the carrier stays in frame, nothing freezes past 1.4 seconds. It also catches text overflowing its box, held overlaps, occlusion and low contrast.
+
+`check` must print `Check passed`. Open the crop in `snapshots/` for every finding before fixing it. For a 9:16 film add `--caption-zone "x0=0;y0=.8;x1=1;y1=1;severity=error"`.

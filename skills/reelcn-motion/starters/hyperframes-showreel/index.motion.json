@@ -1,0 +1,38 @@
+{
+  "duration": 15,
+  "assertions": [
+    {
+      "kind": "appearsBy",
+      "selector": "#tag",
+      "bySec": 4
+    },
+    {
+      "kind": "appearsBy",
+      "selector": "#wClear span",
+      "bySec": 11
+    },
+    {
+      "kind": "appearsBy",
+      "selector": "#site",
+      "bySec": 13
+    },
+    {
+      "kind": "before",
+      "a": "#tag",
+      "b": "#wClear span"
+    },
+    {
+      "kind": "before",
+      "a": "#wClear span",
+      "b": "#site"
+    },
+    {
+      "kind": "staysInFrame",
+      "selector": "#uline"
+    },
+    {
+      "kind": "keepsMoving",
+      "maxStaticSec": 1.4
+    }
+  ]
+}

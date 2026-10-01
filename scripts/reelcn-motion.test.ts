@@ -273,3 +273,32 @@ test("aspect defaults to 16:9, accepts 9:16 and 1:1, rejects others", () => {
   assert.match(bad.join("\n"), /aspect "4:3" is not one of 16:9, 9:16, 1:1/);
   assert.equal(tokens.aspect["9:16"].safe.bottom, 0.2);
 });
+
+const side = await import(path.resolve(SKILL, "scripts/motion-sidecar.mjs"));
+
+test("the sidecar asserts each scene's hero, the order, the carrier in frame and no long freeze", () => {
+  const out = side.sidecar(check.parsePlan(plan("launch-film")), { command: "#typed", lockup: "#tag" }, "#carrier");
+  assert.deepEqual(out, {
+    duration: 15,
+    assertions: [
+      { kind: "appearsBy", selector: "#typed", bySec: 0.5 },
+      { kind: "appearsBy", selector: "#tag", bySec: 13.5 },
+      { kind: "before", a: "#typed", b: "#tag" },
+      { kind: "staysInFrame", selector: "#carrier" },
+      { kind: "keepsMoving", maxStaticSec: tokens.targets.sceneStill },
+    ],
+  });
+});
+
+test("every starter has a current sidecar and an end guard", () => {
+  for (const dir of readdirSync(`${SKILL}/starters`)) {
+    const root = `${SKILL}/starters/${dir}`;
+    const parsed = check.parsePlan(readFileSync(`${root}/plan.md`, "utf8"));
+    const want = side.sidecar(parsed, ...side.splitScenes(JSON.parse(readFileSync(`${root}/scenes.json`, "utf8"))));
+    assert.deepEqual(JSON.parse(readFileSync(`${root}/index.motion.json`, "utf8")), want, `${dir} sidecar is stale`);
+    assert.ok(
+      readFileSync(`${root}/index.html`, "utf8").includes(`tl.set({}, {}, ${parsed.total});`),
+      `${dir} has no end guard`,
+    );
+  }
+});

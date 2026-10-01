@@ -93,10 +93,10 @@
       <div id="win" class="abs" data-layout-allow-overflow data-layout-allow-overlap data-layout-allow-occlusion>
         <div id="bar"><i style="left: 22px"></i><i style="left: 46px"></i><i style="left: 70px"></i><b>app.relay.dev/acme/deploys</b></div>
         <div id="paneA" class="pane">
-          <div class="prow" style="top: 34px"><div class="n">Dark mode for settings</div><div class="b">feat/dark-settings</div><div class="p">Preview ↗</div></div>
-          <div class="prow" style="top: 146px"><div class="n">Faster dashboard queries</div><div class="b">perf/dashboard-cache</div><div class="p" id="plink">Preview ↗</div></div>
-          <div class="prow" style="top: 258px"><div class="n">Invite teammates by link</div><div class="b">feat/invite-links</div><div class="p">Preview ↗</div></div>
-          <div class="prow" style="top: 370px"><div class="n">Retry failed webhooks</div><div class="b">fix/webhook-retry</div><div class="p">Preview ↗</div></div>
+          <div class="prow" style="top: 34px"><div class="n">Dark mode for settings</div><div class="b">feat/dark-settings</div><div class="p" data-layout-allow-occlusion data-layout-allow-overlap>Preview ↗</div></div>
+          <div class="prow" style="top: 146px"><div class="n">Faster dashboard queries</div><div class="b">perf/dashboard-cache</div><div class="p" id="plink" data-layout-allow-occlusion>Preview ↗</div></div>
+          <div class="prow" style="top: 258px"><div class="n">Invite teammates by link</div><div class="b">feat/invite-links</div><div class="p" data-layout-allow-occlusion data-layout-allow-overlap>Preview ↗</div></div>
+          <div class="prow" style="top: 370px"><div class="n">Retry failed webhooks</div><div class="b">fix/webhook-retry</div><div class="p" data-layout-allow-occlusion data-layout-allow-overlap>Preview ↗</div></div>
         </div>
         <div id="preview"><div class="hero"></div><div class="l1"></div><div class="l2"></div><div class="l3"></div><div class="tag">perf-dashboard-cache.relay.app</div></div>
         <div id="paneB" class="pane">
@@ -123,14 +123,15 @@
       for (let i = 0; i < 30; i++) {
         const row = document.createElement("div");
         row.className = "vl" + (i === 14 ? " gap" : "");
+        row.setAttribute("data-layout-allow-occlusion", "");
         row.style.top = 20 + i * 46 + "px";
-        row.innerHTML = '<span class="ln">' + (1201 + i) + "</span>" + (i === 14 ? "" : MSG[i % MSG.length]);
+        row.innerHTML = `<span class="ln" data-layout-allow-occlusion${i === 14 ? " data-layout-allow-overlap" : ""}>` + (1201 + i) + "</span>" + (i === 14 ? "" : MSG[i % MSG.length]);
         viewer.appendChild(row);
       }
       const miss = document.createElement("div");
       miss.id = "missing";
       miss.style.top = 20 + 14 * 46 + "px";
-      miss.innerHTML = '<span class="ln">1215</span>webhook retry 3/3 delivered';
+      miss.innerHTML = '<span class="ln" data-layout-allow-overlap>1215</span>webhook retry 3/3 delivered';
       viewer.appendChild(miss);
 
       document.fonts.ready.then(() => {
@@ -167,7 +168,7 @@
         /* ---------- new (2 - 4.5s) ---------- */
         tl.to("#chip", { width: 150, height: 76, borderRadius: 38, duration: 0.25, ease: "back.out(2.4)" }, 2.0);
         tl.set(chipT[0], { opacity: 1 }, 2.08);
-        tl.fromTo("#chip", { scale: 1.3 }, { scale: 1, duration: 0.3, ease: "power3.out" }, 2.0);
+        tl.fromTo("#chip", { scale: 1.3 }, { scale: 1, duration: 0.3, ease: "power3.out", immediateRender: false }, 2.0);
         tl.to("#headA .row:nth-child(1) span", { yPercent: 0, duration: 0.45, ease: "power4.out" }, 2.05);
         tl.to("#headA .row:nth-child(2) span", { yPercent: 0, duration: 0.45, ease: "power4.out" }, 2.25);
         tl.to("#win", { y: 250, duration: 0.6, ease: "power4.out" }, 2.1);
@@ -180,11 +181,11 @@
 
         /* ---------- improved (4.5 - 7s) ---------- */
         tl.to("#headA .row span", { yPercent: -105, duration: 0.25, ease: "power3.in", stagger: 0.05 }, 4.25);
-        tl.to(["#paneA", "#preview"], { y: -80, opacity: 0, duration: 0.25, ease: "power3.in" }, 4.3);
+        tl.to(["#paneA", "#preview"], { y: -80, opacity: 0, duration: 0.25, ease: "power3.in" }, 4.25);
         tl.set(chipT[0], { opacity: 0 }, 4.5);
         tl.to("#chip", { width: 230, duration: 0.25, ease: "back.out(2.4)" }, 4.5);
         tl.set(chipT[1], { opacity: 1 }, 4.56);
-        tl.fromTo("#chip", { scale: 1.25 }, { scale: 1, duration: 0.3, ease: "power3.out" }, 4.5);
+        tl.fromTo("#chip", { scale: 1.25 }, { scale: 1, duration: 0.3, ease: "power3.out", immediateRender: false }, 4.5);
         tl.to("#headB .row:nth-child(1) span", { yPercent: 0, duration: 0.45, ease: "power4.out" }, 4.5);
         tl.to("#headB .row:nth-child(2) span", { yPercent: 0, duration: 0.45, ease: "power4.out" }, 4.7);
         tl.fromTo("#paneB", { y: 80, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: "power4.out" }, 4.5);
@@ -203,7 +204,7 @@
         tl.set(chipT[1], { opacity: 0 }, 7.0);
         tl.to("#chip", { width: 150, backgroundColor: "#16a34a", duration: 0.25, ease: "back.out(2.4)" }, 7.0);
         tl.set(chipT[2], { opacity: 1 }, 7.06);
-        tl.fromTo("#chip", { scale: 1.25 }, { scale: 1, duration: 0.3, ease: "power3.out" }, 7.0);
+        tl.fromTo("#chip", { scale: 1.25 }, { scale: 1, duration: 0.3, ease: "power3.out", immediateRender: false }, 7.0);
         tl.to("#headC .row:nth-child(1) span", { yPercent: 0, duration: 0.45, ease: "power4.out" }, 7.0);
         tl.to("#headC .row:nth-child(2) span", { yPercent: 0, duration: 0.45, ease: "power4.out" }, 7.2);
         tl.fromTo("#viewer", { y: -140 }, { y: -560, duration: 2.4, ease: "none" }, 7.0);
@@ -224,8 +225,9 @@
         tl.to("#under", { scaleX: 1, transformOrigin: "left center", duration: 0.5, ease: "power3.inOut" }, 11.25);
         tl.fromTo("#cursor", { x: 1300, y: 1150 }, { x: 1090, y: 740, duration: 0.6, ease: "power3.out" }, 10.3);
         tl.to("#cursor", { scale: 0.82, duration: 0.08, yoyo: true, repeat: 1 }, 11.0);
-        tl.fromTo("#brand", { scale: 1 }, { scale: 1.03, duration: 1.9, ease: "none" }, 10.05);
+        tl.fromTo("#brand", { scale: 1 }, { scale: 1.03, duration: 1.9, ease: "none", immediateRender: false }, 10.05);
 
+        tl.set({}, {}, 12); // the timeline reaches the plan total even if the last tween ends earlier
         window.__timelines["main"] = tl;
         if (window.__hfForceTimelineRebind) window.__hfForceTimelineRebind();
       });

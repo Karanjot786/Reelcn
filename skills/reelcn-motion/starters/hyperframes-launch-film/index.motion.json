@@ -1,0 +1,68 @@
+{
+  "duration": 15,
+  "assertions": [
+    {
+      "kind": "appearsBy",
+      "selector": "#head",
+      "bySec": 2.5
+    },
+    {
+      "kind": "appearsBy",
+      "selector": "#onecmd",
+      "bySec": 4.5
+    },
+    {
+      "kind": "appearsBy",
+      "selector": "#bar",
+      "bySec": 7
+    },
+    {
+      "kind": "appearsBy",
+      "selector": "#code",
+      "bySec": 9.5
+    },
+    {
+      "kind": "appearsBy",
+      "selector": "#install",
+      "bySec": 11.5
+    },
+    {
+      "kind": "appearsBy",
+      "selector": "#logo",
+      "bySec": 13.5
+    },
+    {
+      "kind": "before",
+      "a": "#head",
+      "b": "#onecmd"
+    },
+    {
+      "kind": "before",
+      "a": "#onecmd",
+      "b": "#bar"
+    },
+    {
+      "kind": "before",
+      "a": "#bar",
+      "b": "#code"
+    },
+    {
+      "kind": "before",
+      "a": "#code",
+      "b": "#install"
+    },
+    {
+      "kind": "before",
+      "a": "#install",
+      "b": "#logo"
+    },
+    {
+      "kind": "staysInFrame",
+      "selector": "#carrier"
+    },
+    {
+      "kind": "keepsMoving",
+      "maxStaticSec": 1.4
+    }
+  ]
+}

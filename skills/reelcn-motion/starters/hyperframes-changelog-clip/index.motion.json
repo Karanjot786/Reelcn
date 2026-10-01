@@ -1,0 +1,48 @@
+{
+  "duration": 12,
+  "assertions": [
+    {
+      "kind": "appearsBy",
+      "selector": "#brand",
+      "bySec": 0.5
+    },
+    {
+      "kind": "appearsBy",
+      "selector": "#paneA > .prow:nth-child(1)",
+      "bySec": 2.5
+    },
+    {
+      "kind": "appearsBy",
+      "selector": "#paneB",
+      "bySec": 5
+    },
+    {
+      "kind": "appearsBy",
+      "selector": "#paneC",
+      "bySec": 7.5
+    },
+    {
+      "kind": "before",
+      "a": "#brand",
+      "b": "#paneA > .prow:nth-child(1)"
+    },
+    {
+      "kind": "before",
+      "a": "#paneA > .prow:nth-child(1)",
+      "b": "#paneB"
+    },
+    {
+      "kind": "before",
+      "a": "#paneB",
+      "b": "#paneC"
+    },
+    {
+      "kind": "staysInFrame",
+      "selector": "#chip"
+    },
+    {
+      "kind": "keepsMoving",
+      "maxStaticSec": 1.4
+    }
+  ]
+}

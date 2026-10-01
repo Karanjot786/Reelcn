@@ -33,7 +33,7 @@
       <div id="leak" class="abs"></div>
       <div id="stage" class="abs">
         <div id="mask" class="abs" data-layout-allow-overflow data-layout-allow-overlap data-layout-allow-occlusion>
-          <div id="title" class="abs" data-layout-allow-overlap data-layout-allow-occlusion><span class="l">T</span><span class="l">h</span><span class="l">e</span><span class="l">&nbsp;</span><span class="l">Q</span><span class="l">u</span><span class="l">i</span><span class="l">e</span><span class="l">t</span><span class="l">&nbsp;</span><span class="l">H</span><span class="l">o</span><span class="l">u</span><span class="l">r</span><span class="l">s</span></div>
+          <div id="title" class="abs" data-layout-allow-overlap data-layout-allow-occlusion><span class="l" data-layout-allow-occlusion>T</span><span class="l" data-layout-allow-occlusion>h</span><span class="l" data-layout-allow-occlusion>e</span><span class="l" data-layout-allow-occlusion>&nbsp;</span><span class="l" data-layout-allow-occlusion>Q</span><span class="l" data-layout-allow-occlusion>u</span><span class="l" data-layout-allow-occlusion>i</span><span class="l" data-layout-allow-occlusion>e</span><span class="l" data-layout-allow-occlusion>t</span><span class="l" data-layout-allow-occlusion>&nbsp;</span><span class="l" data-layout-allow-occlusion>H</span><span class="l" data-layout-allow-occlusion>o</span><span class="l" data-layout-allow-occlusion>u</span><span class="l" data-layout-allow-occlusion>r</span><span class="l" data-layout-allow-occlusion>s</span></div>
           <div id="credit" class="abs" data-layout-allow-overlap data-layout-allow-occlusion>A film by <b>Ana Ruiz</b></div>
           <div id="year" class="abs" data-layout-allow-overlap data-layout-allow-occlusion>2026</div>
         </div>
@@ -94,6 +94,7 @@
         tl.to("#line", { boxShadow: "0 0 40px 10px rgba(255, 217, 160, 0.9)", duration: 0.3, ease: "power2.out" }, 7.55);
         tl.to("#line", { opacity: 0, scale: 0.4, duration: 0.3, ease: "power2.in" }, 7.7);
 
+        tl.set({}, {}, 8); // the timeline reaches the plan total even if the last tween ends earlier
         window.__timelines["main"] = tl;
         if (window.__hfForceTimelineRebind) window.__hfForceTimelineRebind();
       });
