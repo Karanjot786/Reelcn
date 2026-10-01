@@ -5,9 +5,7 @@ description: Plans, builds and checks motion-designed video in code, at the leve
 
 # reelcn-motion
 
-Motion design for video, written down. You write a scene plan, the user approves it, you build one continuous film, generate its music from the same plan, and a script checks the rendered file against targets measured from studio films.
-
-Paths below are relative to this file.
+Motion design for video, written down. You write a scene plan, the user approves it, you build one continuous film, generate its music from the same plan, and a script checks the rendered file against targets measured from studio films. Paths below are relative to this file.
 
 ## The bar
 
@@ -51,9 +49,14 @@ Gate: the check exits 0 and the user approved the plan.
 
 Read: `renderers/<name>.md` for `hyperframes`, `remotion`, `editframe` or `fframes`
 
-HyperFrames is the proven path. Use it when the project has no renderer yet. If the guide for the requested renderer is missing, say so and offer HyperFrames before building. Build in no renderer without a guide.
+| Renderer | Use when | Starter |
+|---|---|---|
+| HyperFrames | No renderer yet. The proven path, with a layout audit | `starters/hyperframes-launch-film/` and three more |
+| Remotion | The project uses Remotion | `starters/remotion-launch-film/` |
+| Editframe | The project uses Editframe | `starters/editframe-launch-film/` |
+| fframes | The user wants Rust or a native binary | `starters/fframes-launch-film/` |
 
-Gate: the toolchain check in the guide passes.
+Other plans on Remotion, Editframe or fframes: adapt the launch film starter, with scene patterns from `renderers/hyperframes.md`. Another renderer has no guide: say so and offer HyperFrames before building. Gate: the toolchain check in the guide passes.
 
 ### 4. Build
 
@@ -87,9 +90,7 @@ Render at 60 fps with the command in the guide, then:
 node scripts/motion-check.mjs out.mp4 plan.md
 ```
 
-Open the scene sheet and the join strips. For every `miss` and `warn`, open the frame at its time before you fix or dismiss it; to dismiss one, write the rule, the time and why. Then run a fresh review as `references/review.md` says. If the film reads as a slideshow next to the starter's film, it is not done.
-
-Gate: the check exits 0.
+Open the scene sheet and the join strips. For every `miss` and `warn`, open the frame at its time before you fix or dismiss it; to dismiss one, write the rule, the time and why. Then run a fresh review as `references/review.md` says. If the film reads as a slideshow next to the starter's film, it is not done. Gate: the check exits 0.
 
 ### 7. Change requests
 
@@ -115,4 +116,4 @@ Find the scene the request names. Change its row in `plan.md` first, then its co
 | `scripts/motion-check.mjs` | The plan check and the video check. Needs ffmpeg |
 | `scripts/motion-track.mjs` | Music and sound effects from a plan or a cue sheet |
 | `references/*.md` | The rules, one subject per file |
-| `renderers/*.md` | Setup, patterns and render command per renderer |
+| `renderers/*.md` | Setup, contract, patterns, traps and render command for HyperFrames, Remotion, Editframe and fframes |

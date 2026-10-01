@@ -392,3 +392,8 @@ test("the Remotion guide shows how to drop the film into an existing project", (
   const guide = readFileSync(`${SKILL}/renderers/remotion.md`, "utf8");
   for (const word of ["LaunchFilm.tsx", "film.ts", "<Composition"]) assert.ok(guide.includes(word), word);
 });
+
+test("SKILL.md names a starter for every renderer", () => {
+  const skill = readFileSync(`${SKILL}/SKILL.md`, "utf8");
+  for (const name of RENDERERS) assert.ok(skill.includes(`starters/${name}-launch-film/`), name);
+});

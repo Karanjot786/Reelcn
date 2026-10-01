@@ -4,6 +4,7 @@
     "includes": [
       "**",
       "!**/node_modules",
+      "!skills/reelcn-motion/starters/*/target",
       "!out",
       "!docs",
       "!apps/www/public/r",
