@@ -6,7 +6,7 @@ import { PlanPlayer } from "@/components/plan-player";
 import { RendererSwitch } from "@/components/renderer-switch";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { counts, type Film, filmOf, RENDERER_NAMES } from "@/lib/motion";
+import { counts, type Film, filmOf, RENDERER_NAMES, RENDERER_ORDER } from "@/lib/motion";
 import "../landing.css";
 import "./motion.css";
 
@@ -42,7 +42,7 @@ const FAQ: [string, string][] = [
   ],
   [
     "Is it free for client work?",
-    "The skill and its starters are MIT, so yes. HyperFrames (Apache-2.0) and fframes (MIT) are open source. Remotion and Editframe are free for individuals and companies of three or fewer, and paid above that. Read their terms.",
+    "The skill's code and starters are MIT, their fonts are SIL OFL and their music is CC0, so yes. HyperFrames (Apache-2.0) and fframes (MIT, its h264 output links GPL ffmpeg) are open source. Remotion and Editframe are free for individuals and companies of three or fewer, and paid above that. Read their terms.",
   ],
 ];
 
@@ -52,7 +52,6 @@ const faqJsonLd = {
   mainEntity: FAQ.map(([name, text]) => ({ "@type": "Question", name, acceptedAnswer: { "@type": "Answer", text } })),
 };
 const AGENTS = ["Claude Code", "Codex", "Cursor", "Gemini CLI", "OpenCode"];
-const ORDER = ["hyperframes", "remotion", "editframe", "fframes"];
 const launch = filmOf("hyperframes", "launch-film");
 
 /** A starter film with its caption. Click to play; nothing loads until then. */
@@ -128,7 +127,7 @@ export default function MotionDesign() {
             </div>
             <div>
               <dt>Renders with</dt>
-              {ORDER.map((r) => (
+              {RENDERER_ORDER.map((r) => (
                 <dd key={r} translate="no">
                   {RENDERER_NAMES[r]}
                 </dd>
@@ -225,7 +224,7 @@ export default function MotionDesign() {
               The same scene plan, built on each renderer the skill supports. Pick the one your project already uses.
             </p>
           </div>
-          <RendererSwitch films={ORDER.map((r) => filmOf(r, "launch-film"))} />
+          <RendererSwitch films={RENDERER_ORDER.map((r) => filmOf(r, "launch-film"))} />
         </section>
 
         <section className="block wrap" aria-labelledby="faq-title">

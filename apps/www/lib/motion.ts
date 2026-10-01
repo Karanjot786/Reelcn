@@ -29,6 +29,9 @@ export const RENDERER_NAMES: Record<string, string> = {
   fframes: "fframes",
 };
 
+/** Display order. The manifest is alphabetical, so this stays explicit; motion.test.ts checks it covers every renderer. */
+export const RENDERER_ORDER = ["hyperframes", "remotion", "editframe", "fframes"];
+
 export function filmOf(renderer: string, plan: string): Film {
   const film = films.find((f) => f.renderer === renderer && f.plan === plan);
   if (!film) throw new Error(`no ${renderer} ${plan} film`);

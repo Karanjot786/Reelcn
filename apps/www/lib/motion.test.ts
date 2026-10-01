@@ -3,7 +3,7 @@ import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
-import { clock, counts, filmOf, films, renderers, sceneAt } from "./motion.ts";
+import { clock, counts, filmOf, films, RENDERER_NAMES, RENDERER_ORDER, renderers, sceneAt } from "./motion.ts";
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
 const skill = path.join(root, "skills/reelcn-motion");
@@ -46,4 +46,12 @@ test("sceneAt picks the scene playing at a time, clock prints m:ss", () => {
   assert.equal(clock(0), "0:00");
   assert.equal(clock(6.5), "0:06.5");
   assert.equal(clock(13), "0:13");
+});
+
+test("every manifest renderer has a name and a place in the page order", () => {
+  for (const r of renderers) {
+    assert.ok(RENDERER_NAMES[r], `${r} has no RENDERER_NAMES entry`);
+    assert.ok(RENDERER_ORDER.includes(r), `${r} is missing from RENDERER_ORDER`);
+  }
+  assert.equal(RENDERER_ORDER.length, renderers.length);
 });

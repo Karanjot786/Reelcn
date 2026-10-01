@@ -44,6 +44,9 @@ export function RendererSwitch({ films }: { films: Film[] }) {
         playsInline
         controls
         preload="metadata"
+        onError={() => {
+          resume.current = null;
+        }}
         onLoadedMetadata={(e) => {
           const r = resume.current;
           if (!r) return;
