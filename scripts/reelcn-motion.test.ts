@@ -197,3 +197,28 @@ test("SKILL.md is short, named, and links only to files in the skill", () => {
   }
   assert.ok(existsSync(`${SKILL}/renderers/hyperframes.md`), "the HyperFrames guide is missing");
 });
+
+const mini = (sound: string) =>
+  check.parsePlan(
+    `tempo: 120\ncarrier: the dot\nmusic: generated\ntotal: 2\n\n| scene | start | length | shows | words | move | live | carrier | sound | join |\n|---|---|---|---|---|---|---|---|---|---|\n| a | 0 | 1 | x | none | types | counter rolls | dot | intro | morph |\n| b | 1 | 1 | x | none | types | counter rolls | dot | ${sound} | end |\n`,
+  );
+
+test("a single-frame flash fails, a hit without picture warns", () => {
+  const at60 = (energy: (i: number) => number) => Array.from({ length: 120 }, (_, i) => ({ t: i / 60, e: energy(i) }));
+  const flash = check.checkEvents(
+    at60((i) => (i === 30 || i === 31 ? 6 : 0.1)),
+    mini("hit"),
+  );
+  assert.match(flash.misses.join("\n"), /single-frame flash at 0\.50s/);
+  assert.match(flash.warns.join("\n"), /b: the hit at 1s has no picture event/);
+  const late = check.checkEvents(
+    at60((i) => (i === 69 ? 9 : 0.1)),
+    mini("hit"),
+  );
+  assert.match(late.warns.join("\n"), /b: the picture lands 0\.15s from its hit at 1s/);
+  const ok = check.checkEvents(
+    at60((i) => (i === 61 ? 9 : 0.1)),
+    mini("hit"),
+  );
+  assert.deepEqual(ok, { misses: [], warns: [] });
+});

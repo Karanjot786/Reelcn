@@ -197,6 +197,64 @@ export function checkMotion(samples, plan, moving = T.movingThreshold) {
   return misses;
 }
 
+/** Times of one-frame flashes: two big changes in a row (on, then off) with calm frames either side. */
+export function findFlashes(samples, level = T.flashLevel) {
+  const at = [];
+  for (let i = 1; i < samples.length - 2; i++) {
+    const [a, b, c, d] = [samples[i - 1].e, samples[i].e, samples[i + 1].e, samples[i + 2].e];
+    if (b > level && c > level && a < level / 4 && d < level / 4) at.push(samples[i].t);
+  }
+  return at;
+}
+
+const HITS = ["hit", "drop", "final"];
+
+/** Flashes fail. A planned hit with no picture peak near it, or a peak off its beat, warns. */
+export function checkEvents(samples, plan) {
+  const misses = findFlashes(samples).map(
+    (t) => `single-frame flash at ${t.toFixed(2)}s. A tween starts or ends one frame early`,
+  );
+  const warns = [];
+  const sorted = samples.map((s) => s.e).sort((a, b) => a - b);
+  const median = sorted[sorted.length >> 1] ?? 0;
+  for (const scene of plan.scenes) {
+    if (!scene.sound.some((s) => HITS.includes(s))) continue;
+    const near = samples.filter((s) => Math.abs(s.t - scene.start) <= T.hitWindow);
+    if (near.length === 0) continue;
+    const peak = near.reduce((a, b) => (b.e > a.e ? b : a));
+    const off = peak.t - scene.start;
+    if (peak.e < T.hitMin * median)
+      warns.push(
+        `${scene.name}: the hit at ${scene.start}s has no picture event. Land a stamp, a cut or a reshape on it`,
+      );
+    else if (Math.abs(off) > T.hitTolerance)
+      warns.push(`${scene.name}: the picture lands ${off.toFixed(2)}s from its hit at ${scene.start}s`);
+  }
+  return { misses, warns };
+}
+
+/** Ten frames around each join, one row per join: a freeze, a stop between two moves or a flash shows here. */
+export function joinStrips(video, times, output) {
+  const dir = mkdtempSync(path.join(tmpdir(), "motion-joins-"));
+  times.forEach((t, j) => {
+    ffmpeg([
+      "-y",
+      "-ss",
+      Math.max(0, t - 5 / 60).toFixed(3),
+      "-i",
+      video,
+      "-frames:v",
+      "10",
+      "-vf",
+      "scale=192:-2",
+      "-start_number",
+      String(j * 10),
+      path.join(dir, "%03d.png"),
+    ]);
+  });
+  ffmpeg(["-y", "-i", path.join(dir, "%03d.png"), "-vf", `tile=10x${times.length}`, "-frames:v", "1", output]);
+}
+
 function ffmpeg(args) {
   const run = spawnSync("ffmpeg", ["-hide_banner", "-nostdin", ...args], { encoding: "utf8", maxBuffer: 1 << 28 });
   if (run.error?.code === "ENOENT") throw new Error("ffmpeg not found. Install it, for example: brew install ffmpeg");
@@ -286,6 +344,7 @@ function main(argv) {
   }
   const plan = parsePlan(readFileSync(planPath, "utf8"));
   const misses = checkPlan(plan);
+  const warns = [];
   if (!planOnly && misses.length === 0) {
     const video = files[0];
     const seconds = Number(probe(video, "format=duration"));
@@ -295,6 +354,9 @@ function main(argv) {
     const fps = num / (den || 1);
     if (fps < T.fpsMin) misses.push(`${fps} fps, render at ${T.fpsMin} or more`);
     misses.push(...checkMotion(measureEnergy(video), plan, Number(flag("moving", T.movingThreshold))));
+    const events = checkEvents(measureEnergy(video, EVENT_GRAPH), plan);
+    misses.push(...events.misses);
+    warns.push(...events.warns);
     misses.push(...checkAudio(measureAudio(video), plan));
     const sheet = flag("sheet", video.replace(/\.[^.]+$/, "-sheet.png"));
     contactSheet(
@@ -303,14 +365,15 @@ function main(argv) {
       sheet,
     );
     console.log(`contact sheet: ${sheet}`);
-    // One frame per join, just before the next scene starts: two scenes stacked here means a crossfade.
-    const joins = plan.scenes.slice(1).map((s) => Math.max(0, s.start - 0.08));
+    // Ten frames at each join, one row per join: stacked scenes, a freeze or a flash shows here.
+    const joins = plan.scenes.slice(1).map((s) => s.start);
     if (joins.length > 0) {
       const joinSheet = sheet.replace(/\.png$/, "-joins.png");
-      contactSheet(video, joins, joinSheet);
-      console.log(`join sheet: ${joinSheet}`);
+      joinStrips(video, joins, joinSheet);
+      console.log(`join strips: ${joinSheet}`);
     }
   }
+  for (const text of warns) console.log(`warn  ${text}`);
   for (const text of misses) console.log(`miss  ${text}`);
   console.log(misses.length === 0 ? `ok    ${plan.scenes.length} scenes pass` : `${misses.length} miss(es)`);
   return misses.length === 0 ? 0 : 1;

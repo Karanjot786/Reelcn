@@ -16,19 +16,24 @@ node scripts/motion-check.mjs out.mp4 plan.md
 | `miss  loudness -21 LUFS` | The mix is quiet | Generate the track with `motion-track.mjs`, or raise the music |
 | `miss  the plan has music, the file has no audio stream` | The render dropped the audio | Check the audio element and the guide's render flags |
 | `miss  file is 14.20s, plan total is 15s` | Length differs | Set the composition length from the plan total |
+| `miss  single-frame flash at 4.02s` | Something shows for one frame | Find the tween that starts or ends there: usually a `fromTo` start state or an `opacity` set one frame early |
+| `warn  <scene>: the hit at 4s has no picture event` | The sound lands on nothing | Put a stamp, reshape or cut on that beat, or drop the cue |
+| `warn  <scene>: the picture lands 0.15s from its hit` | Sound and picture drift | Move the tween so its fastest frame sits on the beat |
 
 The check compares frames 125 ms apart after a slight blur. A slow push counts as motion. Grain does not.
 
 `--moving` sets the energy under which a frame counts as still. Leave it at the default.
 
-## Join sheet
+## Join strips
 
-The check writes a second sheet with one frame from the middle of each join. Look at every frame:
+The check writes one row of ten frames around each join, 1/60 s apart. Read each row left to right:
 
 | Pass | Fail |
 |---|---|
 | One scene becoming the next through the carrier | Two scenes stacked at half opacity, grey and muddy |
 | The old scene's elements gone or moving out | An old label or number sitting on the new scene |
+| One continuous move across the ten frames | A move that stops dead, then a second move starts |
+| Every frame differs a little from the next | Five identical frames, then a jump |
 
 ## Frame checks
 
