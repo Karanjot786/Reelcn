@@ -88,6 +88,9 @@
   .mp-name {
     font-weight: 500;
   }
+  .mp-plan button[aria-current="true"] .mp-name {
+    font-weight: 600;
+  }
   .mp-words {
     font-size: 13px;
     text-wrap: pretty;
