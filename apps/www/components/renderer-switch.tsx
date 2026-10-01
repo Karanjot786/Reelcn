@@ -12,7 +12,9 @@ export function RendererSwitch({ films }: { films: Film[] }) {
 
   const pick = (i: number) => {
     const el = video.current;
-    if (el) resume.current = { t: el.currentTime, play: !el.paused };
+    if (i === active) return;
+    // A second switch before the new source loads keeps the first switch's place.
+    if (el && !resume.current) resume.current = { t: el.currentTime, play: !el.paused };
     setActive(i);
   };
 

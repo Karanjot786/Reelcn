@@ -38,7 +38,8 @@
     align-items: start;
   }
   .mp-player video,
-  .mp-film video {
+  .mp-film video,
+  .mp-switch video {
     display: block;
     width: 100%;
     aspect-ratio: 16 / 9;
@@ -46,6 +47,13 @@
     border-radius: var(--r3);
     outline: 1px solid rgba(255, 255, 255, 0.1);
     outline-offset: -1px;
+  }
+  /* The hairline above outranks the site focus ring, so bring the ring back. */
+  .mp-player video:focus-visible,
+  .mp-film video:focus-visible,
+  .mp-switch video:focus-visible {
+    outline: 2px solid var(--grease);
+    outline-offset: 3px;
   }
   .mp-plan {
     margin: 0;
@@ -70,8 +78,8 @@
     cursor: pointer;
     touch-action: manipulation;
     transition:
-      color var(--t1) ease-out,
-      background-color var(--t1) ease-out;
+      color var(--t1) var(--e-out),
+      background-color var(--t1) var(--e-out);
   }
   .mp-t {
     grid-row: span 2;
@@ -95,32 +103,27 @@
     font-size: 13px;
     text-wrap: pretty;
   }
-  .mp-cap {
+  .mp-cap,
+  .mp-film figcaption {
     max-width: 70ch;
     margin: 14px 0 0;
     color: var(--muted);
     font-size: 14px;
     text-wrap: pretty;
   }
+  /* A link inside a sentence needs more than color to stand out. */
+  .mp-cap a {
+    color: var(--text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
   @media (hover: hover) and (pointer: fine) {
     .mp-plan button:hover {
       color: var(--text);
     }
   }
-  @media (max-width: 1100px) {
-    .mp-player {
-      grid-template-columns: minmax(0, 1fr);
-    }
-  }
   .mp-film {
     margin: 0;
-  }
-  .mp-film figcaption {
-    max-width: 70ch;
-    margin-top: 12px;
-    color: var(--muted);
-    font-size: 14px;
-    text-wrap: pretty;
   }
   .mp-steps {
     display: grid;
@@ -133,7 +136,7 @@
   .mp-steps .num {
     display: block;
     margin-bottom: 14px;
-    color: var(--play);
+    color: var(--muted);
     font: 500 13px var(--mono);
   }
   .mp-steps h3 {
@@ -145,7 +148,11 @@
     color: var(--muted);
     font-size: 15px;
     line-height: 1.5;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
+  }
+  .mp-steps code {
+    color: var(--text);
+    font: 400 14px / 1.5 var(--mono);
   }
   .mp-pack {
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -178,7 +185,8 @@
     height: 16px;
     background: var(--play);
   }
-  .mp-art-skill i:nth-child(3) {
+  .mp-art-skill i:nth-child(3),
+  .mp-art-tokens i:nth-child(3) {
     display: none;
   }
   /* Starters: three frames, the lit one moves. */
@@ -213,9 +221,6 @@
     height: 12px;
     border-radius: 50%;
     background: var(--play);
-  }
-  .mp-art-tokens i:nth-child(3) {
-    display: none;
   }
   /* Guides: squares, one lit. */
   .mp-art-guides i {
@@ -254,6 +259,9 @@
     }
   }
   @media (max-width: 1100px) {
+    .mp-player {
+      grid-template-columns: minmax(0, 1fr);
+    }
     .mp-steps,
     .mp-pack {
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -268,15 +276,6 @@
   }
   .mp-switch .toggle-group {
     margin-bottom: 16px;
-  }
-  .mp-switch video {
-    display: block;
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    background: var(--bg);
-    border-radius: var(--r3);
-    outline: 1px solid rgba(255, 255, 255, 0.1);
-    outline-offset: -1px;
   }
   .mp-faq {
     max-width: 75ch;

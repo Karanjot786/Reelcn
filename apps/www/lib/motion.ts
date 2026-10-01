@@ -44,7 +44,8 @@ export function sceneAt(scenes: Scene[], t: number): number {
 
 /** Seconds as m:ss, with a tenth only when there is one: 6.5 is 0:06.5, 13 is 0:13. */
 export function clock(seconds: number): string {
-  const s = seconds % 60;
+  const tenths = Math.round(seconds * 10); // round first, so 59.96 is 1:00, not 0:060.0
+  const s = (tenths % 600) / 10;
   const whole = Number.isInteger(s);
-  return `${Math.floor(seconds / 60)}:${(whole ? String(s) : s.toFixed(1)).padStart(whole ? 2 : 4, "0")}`;
+  return `${Math.floor(tenths / 600)}:${(whole ? String(s) : s.toFixed(1)).padStart(whole ? 2 : 4, "0")}`;
 }

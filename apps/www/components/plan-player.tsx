@@ -9,11 +9,20 @@ export function PlanPlayer({ film, label }: { film: Film; label: string }) {
   const [current, setCurrent] = useState(0);
 
   // Autoplay, muted, only for viewers who allow motion and only while the film is on screen.
+  // A film the viewer paused stays paused when it scrolls back into view.
   useEffect(() => {
     const el = video.current;
     if (!el || !matchMedia("(prefers-reduced-motion: no-preference)").matches) return;
+    let resume = true;
     const seen = new IntersectionObserver(
-      ([entry]) => (entry.isIntersecting ? el.play().catch(() => {}) : el.pause()),
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          if (resume) el.play().catch(() => {});
+        } else {
+          resume = !el.paused || el.played.length === 0;
+          el.pause();
+        }
+      },
       { threshold: 0.5 },
     );
     seen.observe(el);

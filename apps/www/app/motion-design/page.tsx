@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { CopyCommand } from "@/components/copy-command";
 import { JsonLd } from "@/components/json-ld";
 import { PlanPlayer } from "@/components/plan-player";
@@ -67,8 +68,8 @@ function FilmFigure({ film, title }: { film: Film; title: string }) {
   );
 }
 
-const STEPS: [string, string][] = [
-  ["Install the skill", INSTALL],
+const STEPS: [string, ReactNode][] = [
+  ["Install the skill", <code translate="no">{INSTALL}</code>],
   ["Describe the film", "Make a 15 second launch film for this repo."],
   ["Approve the plan", "Every scene, its words, its move and its sound, before any code."],
   ["Build and render", "One continuous film at 60 fps, checked after the render."],
@@ -107,7 +108,9 @@ export default function MotionDesign() {
       <SiteHeader />
       <main id="main">
         <section className="hero wrap mp-hero" aria-labelledby="hero-title">
-          <span className="tc-label">reelcn-motion</span>
+          <span className="tc-label" translate="no">
+            reelcn-motion
+          </span>
           <h1 id="hero-title">Motion design your agent can plan.</h1>
           <p className="lede">
             A free agent skill, MIT licensed. Your agent reads your product, writes a scene plan, builds the film from
