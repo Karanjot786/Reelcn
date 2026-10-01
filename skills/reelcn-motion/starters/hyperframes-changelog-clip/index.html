@@ -193,8 +193,8 @@
         tl.to("#fillA", { scaleX: 1, duration: 1.9, ease: "none" }, 4.75);
         const big = { v: 1 };
         const bigEl = document.getElementById("bignum");
-        tl.to(big, { v: 3, duration: 1.0, ease: "power2.out", onUpdate: () => { bigEl.textContent = big.v.toFixed(1); } }, 4.8);
-        tl.fromTo("#logscroll", { y: 0 }, { y: -90, duration: 2.1, ease: "steps(3)" }, 4.8);
+        tl.to(big, { v: 3, duration: 1.95, ease: "power2.out", onUpdate: () => { bigEl.textContent = big.v.toFixed(1); } }, 4.8);
+        tl.fromTo("#logscroll", { y: 0 }, { y: -90, duration: 2.1, ease: "none" }, 4.8);
         tl.fromTo("#big", { scale: 1 }, { scale: 1.04, duration: 1.6, ease: "none", transformOrigin: "0 50%" }, 5.4);
 
         /* ---------- fixed (7 - 9.5s) ---------- */
@@ -225,7 +225,9 @@
         tl.to("#under", { scaleX: 1, transformOrigin: "left center", duration: 0.5, ease: "power3.inOut" }, 11.25);
         tl.fromTo("#cursor", { x: 1300, y: 1150 }, { x: 1090, y: 740, duration: 0.6, ease: "power3.out" }, 10.3);
         tl.to("#cursor", { scale: 0.82, duration: 0.08, yoyo: true, repeat: 1 }, 11.0);
-        tl.fromTo("#brand", { scale: 1 }, { scale: 1.03, duration: 1.9, ease: "none", immediateRender: false }, 10.05);
+        tl.fromTo("#brand", { scale: 1 }, { scale: 1.1, duration: 1.95, ease: "none", immediateRender: false }, 10.05);
+        // the link rises toward the logo across the whole read, so the sign-off keeps moving
+        tl.fromTo(["#link", "#under"], { y: 0 }, { y: -40, duration: 1.8, ease: "none", immediateRender: false }, 10.2);
 
         tl.set({}, {}, 12); // the timeline reaches the plan total even if the last tween ends earlier
         window.__timelines["main"] = tl;
