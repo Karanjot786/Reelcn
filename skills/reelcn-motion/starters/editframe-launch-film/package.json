@@ -1,0 +1,19 @@
+{
+  "name": "editframe-project",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "start": "editframe preview"
+  },
+  "dependencies": {
+    "@editframe/cli": "0.59.47",
+    "@editframe/elements": "0.59.47",
+    "@editframe/vite-plugin": "0.59.47",
+    "@tailwindcss/vite": "4.3.3",
+    "gsap": "3.14.2",
+    "tailwindcss": "4.3.3",
+    "vite": "8.3.1",
+    "vite-plugin-singlefile": "2.3.3"
+  }
+}
