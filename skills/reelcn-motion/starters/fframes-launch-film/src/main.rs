@@ -1,4 +1,4 @@
-use fframes::{EncoderOptions, RenderOptions, StaticMediaProvider, cli};
+use fframes::{CombinedMediaProvider, EncoderOptions, MediaDirectory, MediaProvider, RenderOptions, StaticMediaProvider, cli};
 use fframes_skia_renderer::{
     SkiaFFramesRenderer, SkiaPipelineConcurrencyPolicy, SkiaPipelineConfig,
     metal::SkiaMetalCtx,
@@ -17,9 +17,13 @@ struct VideoArgs {
 
 fn main() -> ExitCode {
     let args = cli::parse::<VideoArgs>();
-    let media = FframesLaunchFilmMedia::prepare().expect("media");
+    let static_media = FframesLaunchFilmMedia::prepare().expect("media");
+    // The music loads at run time from `audio/`: files embedded in `media/` decode to mono.
+    let audio_dir = MediaDirectory::read_folder("audio").expect("audio/ folder");
+    let audio = audio_dir.process_media_source().expect("audio/track.mp3");
+    let media = CombinedMediaProvider::from([&static_media as &dyn MediaProvider, &audio]);
     let title = args.app.title.clone();
-    let video = FframesLaunchFilmVideo::new(&media, &title);
+    let video = FframesLaunchFilmVideo::new(&static_media, &title);
     let gpu = SkiaMetalCtx::new(WIDTH, HEIGHT).expect("GPU context");
 
     cli::new(

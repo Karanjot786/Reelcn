@@ -2,13 +2,17 @@
 //! `_frame_snapshots/`. The first run only creates them, so look at the PNGs before you
 //! commit them. `FFRAMES_UPDATE_SNAPSHOTS=1 cargo test` accepts intentional changes; failing
 //! frames leave `.actual.png` and `.diff.png` files.
-use fframes::{CpuFrameRenderer, Previewer, RenderOptions, StaticMediaProvider, snapshot};
+use fframes::{CombinedMediaProvider, CpuFrameRenderer, MediaDirectory, MediaProvider, Previewer, RenderOptions, StaticMediaProvider, snapshot};
 use fframes_launch_film::{ FframesLaunchFilmMedia, FframesLaunchFilmVideo };
 
 #[test]
 fn key_frames_match_snapshots() {
-    let media = FframesLaunchFilmMedia::prepare().unwrap();
-    let video = FframesLaunchFilmVideo::new(&media, "Fframes Launch Film");
+    let static_media = FframesLaunchFilmMedia::prepare().unwrap();
+    // The music loads from `audio/` at run time, as in main.rs.
+    let audio_dir = MediaDirectory::read_folder("audio").unwrap();
+    let audio = audio_dir.process_media_source().unwrap();
+    let media = CombinedMediaProvider::from([&static_media as &dyn MediaProvider, &audio]);
+    let video = FframesLaunchFilmVideo::new(&static_media, "Fframes Launch Film");
     let options = RenderOptions {
         media: Some(&media),
         scale_resolution: 0.5,
@@ -28,8 +32,12 @@ fn key_frames_match_snapshots() {
 #[test]
 fn no_problems_in_any_frame() {
     // Converting a frame without rasterizing it is fast, so every frame is checked.
-    let media = FframesLaunchFilmMedia::prepare().unwrap();
-    let video = FframesLaunchFilmVideo::new(&media, "Fframes Launch Film");
+    let static_media = FframesLaunchFilmMedia::prepare().unwrap();
+    // The music loads from `audio/` at run time, as in main.rs.
+    let audio_dir = MediaDirectory::read_folder("audio").unwrap();
+    let audio = audio_dir.process_media_source().unwrap();
+    let media = CombinedMediaProvider::from([&static_media as &dyn MediaProvider, &audio]);
+    let video = FframesLaunchFilmVideo::new(&static_media, "Fframes Launch Film");
     let options = RenderOptions {
         media: Some(&media),
         ..Default::default()
@@ -43,6 +51,8 @@ fn no_problems_in_any_frame() {
             .diagnostics
             .iter()
             .filter(|d| d.severity >= fframes::diagnostics::Severity::Warning)
+            // "Install." drops in from above the frame by design (11.0s to 11.33s).
+            .filter(|d| !((660..=680).contains(&frame) && d.message.contains("cut off by the canvas edge")))
             .map(|d| d.message.as_str())
             .collect();
         assert!(problems.is_empty(), "frame {frame} ({:.2}s): {problems:?}", report.seconds);
