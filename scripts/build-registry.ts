@@ -273,6 +273,7 @@ function readmeInstall(base: string, repo: string) {
     `Browse every item with live previews at ${base}/docs/components.`,
     "",
     `Agents: \`npx skills add ${repo}\` installs the reelcn skill, and ${base}/llms.txt lists the whole catalog.`,
+    `Motion films: \`npx skills add ${repo} -s reelcn-motion\` installs reelcn-motion, a skill that plans, builds and checks launch films. See ${base}/motion-design.`,
   ].join("\n");
 }
 

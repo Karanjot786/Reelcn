@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { CopyCommand } from "@/components/copy-command";
+import { JsonLd } from "@/components/json-ld";
 import { PlanPlayer } from "@/components/plan-player";
 import { RendererSwitch } from "@/components/renderer-switch";
 import { SiteFooter } from "@/components/site-footer";
@@ -16,6 +17,39 @@ export const metadata: Metadata = {
 };
 
 const INSTALL = "npx skills add Karanjot786/reelcn -s reelcn-motion";
+
+const FAQ: [string, string][] = [
+  [
+    "Do I need motion design experience?",
+    "No. The skill carries the rules: one element carries the eye, motion shows meaning, something moves during every read. You approve the plan in plain words.",
+  ],
+  [
+    "What kinds of video does it make?",
+    `Launch films, showreels, title sequences and changelog clips: ${counts.plans} plans. Ask for something else and it adapts the closest one.`,
+  ],
+  [
+    "Which coding agents work?",
+    "Any agent with skill support. It was tested end to end with Claude Code, by running real prompts in fresh projects.",
+  ],
+  [
+    "Which renderer should I pick?",
+    "The one your project uses. With none, pick HyperFrames: it is the proven path and it checks the layout for you. Remotion and Editframe suit web teams. fframes suits Rust.",
+  ],
+  [
+    "How does it check the film?",
+    "motion-check reads the rendered file: how much of it moves, the longest still stretch, one-frame flashes, loudness and true peak, and whether hits land on picture. It also checks the plan for stock copy and for numbers your material does not back.",
+  ],
+  [
+    "Is it free for client work?",
+    "The skill and its starters are MIT, so yes. HyperFrames (Apache-2.0) and fframes (MIT) are open source. Remotion and Editframe are free for individuals and companies of three or fewer, and paid above that. Read their terms.",
+  ],
+];
+
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQ.map(([name, text]) => ({ "@type": "Question", name, acceptedAnswer: { "@type": "Answer", text } })),
+};
 const AGENTS = ["Claude Code", "Codex", "Cursor", "Gemini CLI", "OpenCode"];
 const ORDER = ["hyperframes", "remotion", "editframe", "fframes"];
 const launch = filmOf("hyperframes", "launch-film");
@@ -189,6 +223,39 @@ export default function MotionDesign() {
             </p>
           </div>
           <RendererSwitch films={ORDER.map((r) => filmOf(r, "launch-film"))} />
+        </section>
+
+        <section className="block wrap" aria-labelledby="faq-title">
+          <JsonLd data={faqJsonLd} />
+          <div className="sec-head">
+            <div>
+              <span className="tc-label">01:30:00</span>
+              <h2 id="faq-title">Questions.</h2>
+            </div>
+          </div>
+          <div className="mp-faq">
+            {FAQ.map(([q, a]) => (
+              <details key={q}>
+                <summary>{q}</summary>
+                <p>{a}</p>
+              </details>
+            ))}
+          </div>
+          <p className="mp-cap">
+            Vendor terms: <a href="https://www.remotion.dev/license">Remotion</a>,{" "}
+            <a href="https://www.editframe.com">Editframe</a>.
+          </p>
+        </section>
+
+        <section className="final wrap" aria-labelledby="final-title">
+          <span className="tc-label">01:45:00, end of reel</span>
+          <h2 id="final-title">Describe the film. Approve the plan.</h2>
+          <div className="cta-row">
+            <CopyCommand command={INSTALL} />
+            <a className="btn btn-ghost" href="/docs/motion-design">
+              Read the docs
+            </a>
+          </div>
         </section>
       </main>
       <SiteFooter />

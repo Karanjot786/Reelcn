@@ -8,6 +8,7 @@ import { source } from "@/lib/source";
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: SITE_URL, lastModified: lastModified("apps/www/app/page.tsx") },
+    { url: `${SITE_URL}/motion-design`, lastModified: lastModified("apps/www/app/motion-design/page.tsx") },
     ...source.getPages().map((page) => ({
       url: `${SITE_URL}${page.url}`,
       lastModified: lastModified(path.join("apps/www/content/docs", page.path)),

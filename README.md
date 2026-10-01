@@ -19,6 +19,7 @@ npx shadcn@latest add https://www.reelcn.dev/r/text-reveal.json
 Browse every item with live previews at https://www.reelcn.dev/docs/components.
 
 Agents: `npx skills add Karanjot786/reelcn` installs the reelcn skill, and https://www.reelcn.dev/llms.txt lists the whole catalog.
+Motion films: `npx skills add Karanjot786/reelcn -s reelcn-motion` installs reelcn-motion, a skill that plans, builds and checks launch films. See https://www.reelcn.dev/motion-design.
 <!-- install:end -->
 
 ## What you get
