@@ -12,6 +12,7 @@
       "!skills/reelcn-motion/tokens/tokens.ts",
       "!skills/reelcn-motion/tokens/tokens.js",
       "!skills/reelcn-motion/tokens/tokens.css",
+      "!apps/www/lib/motion-films.json",
       "!**/.next",
       "!**/next-env.d.ts"
     ]

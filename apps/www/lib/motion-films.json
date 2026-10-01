@@ -1,5 +1,10 @@
 {
-  "renderers": ["editframe", "fframes", "hyperframes", "remotion"],
+  "renderers": [
+    "editframe",
+    "fframes",
+    "hyperframes",
+    "remotion"
+  ],
   "references": 10,
   "plans": 4,
   "films": [
