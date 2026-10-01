@@ -317,3 +317,31 @@ test("a gap ducks the half beat before the drop", () => {
   const bad = check.checkPlan(check.parsePlan(plan("launch-film").replace("build, hit", "build, hit, gap")));
   assert.match(bad.join("\n"), /library: "gap" goes with "drop"/);
 });
+
+test("every move has a recipe with timing, pitfalls and checks; slop has three parts", () => {
+  const moves = readFileSync(`${SKILL}/references/moves.md`, "utf8");
+  const names = [
+    "Typed command",
+    "Cascade",
+    "Selection hop",
+    "Roll-up",
+    "Reshape",
+    "Restyle wipe",
+    "Speed",
+    "Focus pull",
+    "Letter drop",
+    "Fill sweep",
+    "Collapse to logo",
+    "Flood",
+  ];
+  for (const name of names) {
+    const at = moves.indexOf(`## ${name}\n`);
+    assert.ok(at !== -1, `${name} has no recipe`);
+    const next = moves.indexOf("\n## ", at + 3);
+    const body = moves.slice(at, next === -1 ? undefined : next);
+    for (const line of ["Timing:", "Pitfalls:", "Check at:"]) assert.ok(body.includes(line), `${name} lacks ${line}`);
+  }
+  const slop = readFileSync(`${SKILL}/references/slop.md`, "utf8");
+  for (const h of ["## Copy", "## Picture", "## Motion"]) assert.ok(slop.includes(h), h);
+  assert.ok(!(moves + slop).includes("—"), "em dash in a reference");
+});

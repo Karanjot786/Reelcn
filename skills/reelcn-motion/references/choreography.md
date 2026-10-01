@@ -52,3 +52,8 @@ Describe each move with the verb of its meaning. The generic fade and slide is t
 - `bouncy`: one element per film at most.
 
 Motion blur on fast moves: animate `filter: blur()` up during the fastest part and back to zero at rest.
+
+- One gesture, not two: a reframe that ends and then a wipe that starts reads as a stutter. Merge them on one curve, or start the second before the first ends.
+- A group finishes before its join: the last element's start plus its stagger plus its duration lands before the next scene starts.
+- Spotlight: one element at full strength at a time. Others drop to about half opacity while it reads.
+- Recipes with numbers and checks: `references/moves.md`. Tells to avoid: `references/slop.md`.

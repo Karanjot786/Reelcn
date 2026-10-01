@@ -37,3 +37,10 @@ time of beat n = offset + n × 60 / tempo
 | Frame rate | 50 fps or more |
 | Loudness | -16 to -11 LUFS |
 | True peak | -0.5 dBFS or lower |
+
+## Shape of the cut
+
+- Scenes shorten into the climax: two beats, then one, then half beats for a short flurry, then a long hold on the lockup. The flurry's quick changes are morphs or hops, not hard cuts.
+- Hold back one color until the drop or the final hit. Its first appearance is the moment.
+- A label reads in about 0.8 seconds. A sentence needs 0.3 seconds a word, and at least 1.2 seconds.
+- Something changes every 2 to 3 seconds at the latest.
