@@ -4,7 +4,7 @@
 // Video mode: node motion-check.mjs out.mp4 plan.md [--moving 0.3] [--sheet sheet.png]
 // Targets come from three reference films and one approved film (tokens.json `targets`).
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdtempSync, readFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -145,9 +145,16 @@ export function parsePlan(text) {
 }
 
 // The stock moves in moves.md. A signature is invented for the film, so it never names one of these.
+// Each heading reduces to the stems of its 4+ letter words, so "collapses into the logo" still names "Collapse to logo".
+const stem = (word) => (/eed$/.test(word) ? word : word.replace(/(ing|es|ed|s|e)$/, ""));
 const STOCK_MOVES = [...readFileSync(path.join(HERE, "../references/moves.md"), "utf8").matchAll(/^## (.+)$/gm)].map(
-  (m) => m[1].trim(),
+  (m) => ({ name: m[1].trim(), stems: (m[1].toLowerCase().match(/\p{L}{4,}/gu) ?? []).map(stem) }),
 );
+const stockMove = (text) => {
+  const words = text.toLowerCase().match(/\p{L}+/gu) ?? [];
+  return STOCK_MOVES.find(({ stems }) => stems.length > 0 && stems.every((s) => words.some((w) => w.startsWith(s))))
+    ?.name;
+};
 const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const wholePhrase = (p) => new RegExp(`(^|[^\\p{L}])${escapeRegExp(p)}($|[^\\p{L}])`, "iu");
 
@@ -168,16 +175,16 @@ export function checkPlan(plan) {
     miss(null, 'write refuses: the category default this film avoids, like "a slideshow of logo, feature cards, CTA"');
   if (!plan.signature)
     miss(null, "write the signature: one move invented for this film, landing once at the drop or the final hit");
-  const stock = plan.signature && STOCK_MOVES.find((name) => wholePhrase(name).test(plan.signature));
+  const stock = plan.signature && stockMove(plan.signature);
   if (stock)
     miss(null, `signature "${plan.signature}" is the stock move "${stock}" from moves.md. Invent a move for this film`);
-  const feel = (plan.feel ?? "")
-    .split(",")
-    .map((w) => w.trim())
-    .filter(Boolean);
+  const feel = (plan.feel ?? "").split(/[\s,]+/).filter(Boolean);
   if (!plan.feel) miss(null, 'write the feel: two or three adjectives, like "calm, exact" or "loud, playful"');
   else if (feel.length < 2 || feel.length > 3)
-    miss(null, `feel "${plan.feel}" has ${feel.length} words, write two or three, comma-separated`);
+    miss(
+      null,
+      `feel "${plan.feel}" has ${feel.length} word${feel.length === 1 ? "" : "s"}, write two or three, comma-separated`,
+    );
   if (plan.music && !(plan.tempo > 0)) miss(null, "tempo must be a number of beats per minute");
   if (!TOKENS.aspect[plan.aspect])
     miss(null, `aspect "${plan.aspect}" is not one of ${Object.keys(TOKENS.aspect).join(", ")}`);
@@ -256,7 +263,18 @@ export function checkCopy(plan, material) {
   return tells.length >= 2 ? { misses: [...misses, ...tells], warns: [] } : { misses, warns: tells };
 }
 
-const STARTER_CARRIERS = ["caret", "playhead", "underline", "line of light", "dot"];
+const STARTER_CARRIERS = ["caret", "playhead", "underline", "line of light", "box"];
+// Each starter's scene table, read once. A plan that reuses their moves studied the film too closely.
+let starterPlans;
+const starters = () => {
+  const dir = path.join(HERE, "../starters");
+  starterPlans ??= readdirSync(dir)
+    .filter((d) => existsSync(path.join(dir, d, "plan.md")))
+    .sort()
+    .map((d) => ({ name: d, plan: parsePlan(readFileSync(path.join(dir, d, "plan.md"), "utf8")) }));
+  return starterPlans;
+};
+const moveKey = (move) => move.trim().toLowerCase();
 // Words any idea and any material share. A match on these proves nothing.
 const COMMON = new Set(
   "about after again around becomes before being could every first frame frames other scene scenes should stage still their there these those through under where which while would".split(
@@ -279,6 +297,19 @@ export function checkIdea(plan, material) {
         warns.push(
           `carrier "${plan.carrier}" borrows the starter's "${word}", which material.md never names. Take the carrier from the subject's own shape`,
         );
+  }
+  const moves = plan.scenes.map((s) => moveKey(s.move)).filter(Boolean);
+  const table = JSON.stringify(plan.scenes);
+  for (const starter of starters()) {
+    if (JSON.stringify(starter.plan.scenes) === table) continue;
+    const theirs = new Set(starter.plan.scenes.map((s) => moveKey(s.move)));
+    const copied = moves.filter((m) => theirs.has(m)).length;
+    if (moves.length > 0 && copied * 2 >= moves.length) {
+      warns.push(
+        `${copied} of ${moves.length} moves are copied from the ${starter.name} starter. Invent moves from the material`,
+      );
+      break;
+    }
   }
   if (/studio dark/i.test(plan.look ?? "") && !DEV_TOOL.test(plan.idea ?? ""))
     warns.push(

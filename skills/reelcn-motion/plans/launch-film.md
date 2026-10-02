@@ -10,7 +10,7 @@ music: generated
 total: 15
 idea: the terminal where reelcn installs becomes the stage, and its caret carries the eye through every scene
 refuses: a slideshow of logo, feature cards and a call to action
-signature: the word Render collapses into one amber bar, which becomes the timeline stroke of the reelcn logo on the final hit
+signature: the amber caret that typed the install line shrinks to a dot, opens into a box around one tile on the hit, then widens into the hero frame's border
 feel: fast, exact, confident
 look: Studio dark
 

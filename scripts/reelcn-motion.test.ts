@@ -469,3 +469,56 @@ test("an idea that shares only common words with material.md still warns", () =>
   const own = check.parsePlan(header(plan("launch-film"), "idea", "the dashboard becomes the stage"));
   assert.doesNotMatch(check.checkIdea(own, material).join("\n"), /names nothing/);
 });
+
+test("a signature that bends a stock move's words still names the stock move", () => {
+  for (const [sig, stock] of [
+    ["the whole scene collapses into the logo", "Collapse to logo"],
+    ["the page floods amber on the hit", "Flood"],
+    ["the bar sweeps across and fills the word", "Fill sweep"],
+    ["the caret typed every command", "Typed command"],
+  ]) {
+    const misses = check.checkPlan(check.parsePlan(header(plan("launch-film"), "signature", sig))).join("\n");
+    assert.match(misses, new RegExp(`is the stock move "${stock}"`), sig);
+  }
+  for (const sig of ["a special glint rides the line", "the logo draws itself around a dot"]) {
+    const misses = check.checkPlan(check.parsePlan(header(plan("launch-film"), "signature", sig))).join("\n");
+    assert.doesNotMatch(misses, /is the stock move/, sig);
+  }
+});
+
+test("a feel split by spaces counts each word, and the count reads as English", () => {
+  const feel = (value: string) =>
+    check.checkPlan(check.parsePlan(header(plan("launch-film"), "feel", value))).join("\n");
+  assert.equal(feel("calm exact warm"), "");
+  assert.match(feel("calm"), /has 1 word,/);
+  assert.match(feel("calm exact loud warm"), /has 4 words,/);
+});
+
+test("a box carrier warns as a starter carrier, a dot carrier does not", () => {
+  const material = "A bakery menu on a chalkboard.";
+  const box = check.parsePlan(header(plan("launch-film"), "carrier", "the box around the cake"));
+  assert.match(check.checkIdea(box, material).join("\n"), /borrows the starter's "box"/);
+  const dot = check.parsePlan(header(plan("launch-film"), "carrier", "the dot over the i"));
+  assert.doesNotMatch(check.checkIdea(dot, material).join("\n"), /borrows the starter's/);
+});
+
+test("moves copied from a starter's scene table warn, a starter's own plan does not", () => {
+  const own = check.parsePlan(plan("launch-film"));
+  const copied = {
+    ...own,
+    scenes: own.scenes.map((s: { name: string }, i: number) =>
+      i < 4 ? s : { ...s, move: `${s.name} moves its own way` },
+    ),
+  };
+  copied.scenes[0] = { ...copied.scenes[0], name: "opening" };
+  const warns = check.checkIdea(copied, null).join("\n");
+  assert.match(warns, /4 of 7 moves are copied from the [\w-]+launch-film starter\. Invent moves from the material/);
+  const mostlyNew = {
+    ...own,
+    scenes: own.scenes.map((s: { name: string }, i: number) => (i < 3 ? s : { ...s, move: `${s.name} is new` })),
+  };
+  mostlyNew.scenes[0] = { ...mostlyNew.scenes[0], name: "opening" };
+  assert.doesNotMatch(check.checkIdea(mostlyNew, null).join("\n"), /copied from/);
+  for (const name of PLANS)
+    assert.doesNotMatch(check.checkIdea(check.parsePlan(plan(name)), null).join("\n"), /copied from/, name);
+});

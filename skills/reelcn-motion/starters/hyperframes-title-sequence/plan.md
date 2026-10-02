@@ -10,7 +10,7 @@ music: generated
 total: 8
 idea: one line of light, like dawn under a door in The Quiet Hours, opens into the title
 refuses: a logo sting over a lens flare
-signature: the line of light parts like a door opening and the title letters sharpen out of blur on the drop
+signature: on the drop the title rises from behind the line of light one glyph at a time, center first, and comes into focus out of blur
 feel: calm, hushed
 
 | scene | start | length | shows | words | move | live | carrier | sound | join |
