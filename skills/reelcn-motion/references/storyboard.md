@@ -18,6 +18,7 @@ total: 15
 | `music` | `generated` for a track from `motion-track.mjs`, a file with its tempo and offset like `track.mp3 124 0.08`, or `none` |
 | `total` | Length in seconds |
 | `aspect` | `16:9` (default), `9:16` or `1:1`. Optional |
+| `quality` | Export size: `1080p` (default), `2K` or `4K`. The 1080p render stays the master `motion-check` judges. Optional |
 
 Live motion changes information: a count, a playhead, a cursor, a hop. A glow, a pulse or grain alone is idle and fails the check.
 

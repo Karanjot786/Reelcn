@@ -97,6 +97,7 @@ The default render above is the one `motion-check` judges. When the user asks fo
 |---|---|
 | A smaller file | `--crf 23` |
 | 4K | `--resolution 4k` (the composition stays 1920 by 1080; Chrome renders at a higher pixel ratio) |
+| 2K (2560 by 1440) | No preset exists. Render `--resolution 4k`, then `ffmpeg -i out-4k.mp4 -vf scale=2560:1440:flags=lanczos -c:v libx264 -preset slow -crf 14 -c:a copy out-2k.mp4`. Downscaling keeps it sharp |
 | A clip to place over footage in Premiere or After Effects | `--format mov` (ProRes 4444 with alpha) or `--format png-sequence`. The page background must be transparent first, or the file holds a solid frame |
 | Film or broadcast rates | `--fps 24`, `--fps 30` |
 

@@ -28,7 +28,7 @@ Read: `references/material.md`, then `references/storyboard.md`, `references/cho
 - Gather the material first: read the user's codebase, clone the GitHub repo they name, or capture their live URL. A local web app: run it and capture localhost, as `references/material.md` says. Write `.reelcn-motion/material.md`.
 - Pick the closest file in `plans/` and adapt it, or write a new plan in the same format. Save it as `plan.md`.
 - "Showreel for a résumé" about a product asks for quality: use `plans/launch-film.md`. With no product named, the film shows the repository in the working folder: its README, code and name. Never make the film about yourself.
-- No details given: 15 seconds, 16:9, 60 fps, generated music. Write them in the plan header so the user sees them.
+- Ask once, before the plan: the aspect (16:9, 9:16 or 1:1) and the export quality (1080p, 2K or 4K). No answer: 15 seconds, 16:9, 1080p, 60 fps, generated music. Write them in the plan header so the user sees them.
 - A request for 30 fps: say the motion check needs 50 or more, propose 60, and ask.
 - An explainer (problem, steps, proof): no explainer plan exists yet. Say so, offer the launch film shape, and ask for the missing details. Invent no proof numbers.
 - A script with no product to show: `plans/kinetic-type.md`. No brand: pick a look from `references/looks.md`. A timeline from the user (times and copy) becomes the plan rows. A list of things to avoid goes under the table as `Avoid:`.
@@ -62,8 +62,8 @@ Other plans on Remotion, Editframe or fframes: adapt the launch film starter, wi
 
 Read, as each scene needs them: `references/choreography.md`, `references/typography.md`
 
-- Start from the starter the guide names. Replace its material with the user's. Keep its timing and curves; change colors, fonts and radius. Recipes: `references/moves.md`.
-- Build the first scene and its join, render only that range, and show it as the sample scene. Ask "continue or change". No other scene code before the answer.
+- The starter is a technique reference, never a layout to reskin. Invent the signature scenes from the user's own world: their product's UI, their tools, how they work (a command palette, a terminal, a dashboard they built). Swap test: put another name and color on it; if it is still the starter's film, rebuild. Recipes: `references/moves.md`.
+- Build the first scene and its join, render only that range, and show it as the sample scene. Cut it before any unbuilt scene and compare its frames with the starter first. Ask "continue or change". No other scene code before the answer.
 - Build the carrier first, then each scene in plan order. Take durations and curves from the token file the guide names.
 
 Gate: every scene, carrier hand-off and live motion in the plan exists in the code.
@@ -90,7 +90,7 @@ Render at 60 fps with the command in the guide, then:
 node scripts/motion-check.mjs out.mp4 plan.md
 ```
 
-Open the scene sheet and the join strips. For every `miss` and `warn`, open the frame at its time before you fix or dismiss it; to dismiss one, write the rule, the time and why. Then run a fresh review as `references/review.md` says. If the film reads as a slideshow next to the starter's film, it is not done. Gate: the check exits 0.
+Open the scene sheet and the join strips. For every `miss` and `warn`, open the frame at its time before you fix or dismiss it; to dismiss one, write the rule, the time and why. Then run a fresh review as `references/review.md` says. If the film reads as a slideshow, or as the starter with new names and colors, it is not done. Gate: the check exits 0.
 
 ### 7. Change requests
 

@@ -26,6 +26,7 @@ Tells of generated video. The plan check catches the copy tells in code. Check t
 | Background grids and dot grids filling space | One accent and real material |
 | Everything centered at one size | A small label next to a word that fills the frame |
 | Swap the logo and the film still works | Change it until it could only be this product |
+| The starter's scenes with new names and colors | Scenes built from the user's own product and tools |
 
 ## Motion
 
