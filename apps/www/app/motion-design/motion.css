@@ -11,6 +11,7 @@
      so "can plan." always takes the third line instead. */
   .mp-line {
     display: block;
+    margin-top: 0.12em;
     white-space: nowrap;
   }
   @media (max-width: 560px) {
@@ -53,6 +54,9 @@
     display: inline-flex;
     width: 14px;
     height: 14px;
+  }
+  .mp-invert {
+    filter: invert(1);
   }
   .mp-mark svg {
     width: 100%;
