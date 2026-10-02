@@ -522,3 +522,19 @@ test("moves copied from a starter's scene table warn, a starter's own plan does 
   for (const name of PLANS)
     assert.doesNotMatch(check.checkIdea(check.parsePlan(plan(name)), null).join("\n"), /copied from/, name);
 });
+
+test("the check takes 1080p, 2K and 4K exports and nothing else", () => {
+  for (const [w, h] of [
+    [1920, 1080],
+    [2560, 1440],
+    [3840, 2160],
+  ])
+    assert.deepEqual(check.checkSize(w, h, "16:9"), []);
+  assert.deepEqual(check.checkSize(1440, 2560, "9:16"), []);
+  for (const [w, h] of [
+    [1280, 720],
+    [1920, 1200],
+    [7680, 4320],
+  ])
+    assert.equal(check.checkSize(w, h, "16:9").length, 1);
+});

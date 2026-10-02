@@ -387,6 +387,13 @@ export function findFlashes(samples, level = T.flashLevel) {
   return at;
 }
 
+/** 1080p, 2K and 4K exports pass: same shape as the aspect, at least its size, at most twice it. */
+export function checkSize(w, h, aspect) {
+  const want = TOKENS.aspect[aspect];
+  if (!want || (w * want.height === h * want.width && w >= want.width && w <= want.width * 2)) return [];
+  return [`file is ${w}x${h}, a ${aspect} plan renders at ${want.width}x${want.height}, 2K or 4K`];
+}
+
 const HITS = ["hit", "drop", "final"];
 
 /** Flashes fail. A planned hit with no picture peak near it, or a peak off its beat, warns. */
@@ -548,9 +555,7 @@ function main(argv) {
     const fps = num / (den || 1);
     if (fps < T.fpsMin) misses.push(`${fps} fps, render at ${T.fpsMin} or more`);
     const [w, h] = probe(video, "stream=width,height", "v").split(",").map(Number);
-    const want = TOKENS.aspect[plan.aspect];
-    if (want && (w !== want.width || h !== want.height))
-      misses.push(`file is ${w}x${h}, a ${plan.aspect} plan renders at ${want.width}x${want.height}`);
+    misses.push(...checkSize(w, h, plan.aspect));
     misses.push(...checkMotion(measureEnergy(video), plan, Number(flag("moving", T.movingThreshold))));
     const events = checkEvents(measureEnergy(video, EVENT_GRAPH), plan);
     misses.push(...events.misses);
