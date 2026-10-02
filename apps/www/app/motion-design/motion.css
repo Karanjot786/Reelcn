@@ -6,6 +6,18 @@
     letter-spacing: -0.025em;
     text-wrap: balance;
   }
+  /* The headline keeps one shape while the agent pill changes width: "[agent] can plan." is its own line
+     and never wraps, so a long name never pushes the page down. Below 560px it cannot fit the widest name,
+     so "can plan." always takes the third line instead. */
+  .mp-line {
+    display: block;
+    white-space: nowrap;
+  }
+  @media (max-width: 560px) {
+    .mp-tail {
+      display: block;
+    }
+  }
   .mp-chips {
     display: flex;
     flex-wrap: wrap;

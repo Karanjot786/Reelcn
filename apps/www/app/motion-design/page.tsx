@@ -112,8 +112,11 @@ export default function MotionDesign() {
             reelcn-motion
           </span>
           <h1 id="hero-title">
-            Motion design <span className="sr-only">your agent</span>
-            <AgentRotate /> can plan.
+            Motion design{" "}
+            <span className="mp-line">
+              <span className="sr-only">your agent</span>
+              <AgentRotate /> <span className="mp-tail">can plan.</span>
+            </span>
           </h1>
           <p className="lede">
             A free agent skill, MIT licensed. Your agent reads your product, writes a scene plan, builds the film from
