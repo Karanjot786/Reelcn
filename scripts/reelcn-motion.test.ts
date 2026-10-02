@@ -15,7 +15,7 @@ const trackPath = path.resolve(SKILL, "scripts/motion-track.mjs");
 const check = await import(checkPath);
 const track = await import(trackPath);
 const plan = (name: string) => readFileSync(`${SKILL}/plans/${name}.md`, "utf8");
-const PLANS = ["launch-film", "showreel", "title-sequence", "changelog-clip"];
+const PLANS = ["launch-film", "showreel", "title-sequence", "changelog-clip", "kinetic-type"];
 
 test("tokens match the presets in core.tsx", () => {
   const core = readFileSync("registry/items/core.tsx", "utf8");

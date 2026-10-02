@@ -73,3 +73,28 @@ Check at: one frame shows the line already part of the logo's outline.
 Timing: a circle from the carrier scales to cover the frame in 0.45 to 0.7s on `power3.inOut`; the new background lands on a beat.
 Pitfalls: a flood that starts away from the carrier breaks the shot. Old-scene content left on the new color.
 Check at: the flood's centre is the carrier; the frame after it shows no old-scene element.
+
+## Checklist tick
+
+Timing: one line per beat. The tick draws as a stroke in 0.2 to 0.3s on `power3.out`, then the line's text brightens from about half opacity to full.
+Pitfalls: ticking every line at once reads as a slide. A tick with no sound under it feels weak; give it the `ticks` cue.
+Check at: between two ticks, the done lines are bright and the next line is still dim.
+
+## Punch-in
+
+Timing: the whole frame scales 1.12 to 1.18 in 0.15 to 0.2s on `power3.out`, centred on the key line, then holds while a slow push continues. Use it once or twice a film, on the line the viewer must remember.
+Pitfalls: a punch-in on every scene stops meaning anything. Text near the edge leaves the safe area after the zoom.
+Check at: after the zoom, the key line still sits inside the safe area and is fully sharp.
+
+## Reframe
+
+Timing: the full-frame layer shrinks to a rounded card in 0.4 to 0.5s on `power4.inOut` while the next element lands beside it on the same curve.
+Pitfalls: a card that shrinks and then waits before the new element arrives reads as two moves. The card's corner radius must grow with the shrink, not snap.
+Check at: mid-reframe, the card's content stays in proportion and the new element is already moving.
+
+## Screenshot zoom
+
+Timing: hold the full screenshot for about 0.5s so the viewer sees where they are, then push and pan to the part that matters in 0.5 to 0.7s on `power3.inOut`. A callout box draws around it and a short line of text lands beside it. The next zoom starts from the current position, never from the full view again.
+Pitfalls: redrawing the screenshot instead of using it. Zooming so far that the pixels blur: keep the crop at the screenshot's own resolution or above. A callout with no words says nothing.
+Check at: at the end of each push, the number, chart or button fills the frame's middle third and is sharp.
+

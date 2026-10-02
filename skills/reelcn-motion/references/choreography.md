@@ -41,6 +41,10 @@ Describe each move with the verb of its meaning. The generic fade and slide is t
 | Install, files landing | Letters drop in one by one, each settling |
 | Rendering, progress | A fill sweeps across with a scan line and a frame counter |
 | An ending | Collapses into a line or a point, which becomes the logo |
+| A list, steps, a done state | Each line gets a tick on its beat |
+| The line to remember | The frame punches in on it and holds |
+| A screen of the product | The screenshot pushes in to the part that matters, with a callout |
+| Footage or a full screen giving way | It shrinks to a card as the next thing arrives |
 
 ## Timing
 

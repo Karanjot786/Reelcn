@@ -31,7 +31,7 @@ Read: `references/material.md`, then `references/storyboard.md`, `references/cho
 - No details given: 15 seconds, 16:9, 60 fps, generated music. Write them in the plan header so the user sees them.
 - A request for 30 fps: say the motion check needs 50 or more, propose 60, and ask.
 - An explainer (problem, steps, proof): no explainer plan exists yet. Say so, offer the launch film shape, and ask for the missing details. Invent no proof numbers.
-- A timeline from the user (times and copy) becomes the plan rows. A list of things to avoid goes under the table as `Avoid:`.
+- A script with no product to show: `plans/kinetic-type.md`. No brand: pick a look from `references/looks.md`. A timeline from the user (times and copy) becomes the plan rows. A list of things to avoid goes under the table as `Avoid:`.
 
 Gate: `plan.md` exists, and every `shows` cell names real material from `material.md` or says `mocked:` and why.
 
@@ -111,7 +111,7 @@ Find the scene the request names. Change its row in `plan.md` first, then its co
 
 | File | Holds |
 |---|---|
-| `plans/*.md` | Four plans: launch film, showreel, title sequence, changelog clip |
+| `plans/*.md` | Five plans: launch film, showreel, title sequence, changelog clip, kinetic type |
 | `tokens/tokens.json` | Durations, curves, spring, stagger and the check targets. Generated as `.ts`, `.js`, `.css` and `.rs` |
 | `scripts/motion-check.mjs` | The plan check and the video check. Needs ffmpeg |
 | `scripts/motion-track.mjs` | Music and sound effects from a plan or a cue sheet |

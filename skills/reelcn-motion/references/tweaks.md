@@ -26,6 +26,11 @@ The user asks in plain words. You change one row of the plan, then the code for 
 | "Swap X and Y" | Swap the rows, recompute starts, check both carrier hand-offs still connect |
 | "Shorter" | Drop the scene with the weakest idea. Never compress every scene |
 | "Different transition" | Change `join` on the named scene. Two cuts per film at most |
+| "Different look", "make it glass", "make it editorial" | Change `look:` in the header to one from `references/looks.md`, then every scene's colors, type and curves. Timing stays |
+| "Use my brand colors", a list of hex codes | Replace the palette tokens. Check contrast on every scene sheet |
+| "Different font", "bigger number" | Change the type on the named element only. Remeasure its width so typed and counted text still fits |
+| "Bouncier", "smoother" | Bouncier: `back.out` on arrivals. Smoother: `power3.out` and longer arrivals. Timing stays |
+| "Move X", "make X smaller" | Change X's position or size only. Keep it inside the safe area |
 
 ## What never changes on a tweak
 

@@ -72,6 +72,8 @@ For API details load the vendor's `hyperframes-core` and `hyperframes-cli` skill
 | The rendered audio measures quieter than the track | Remux: `ffmpeg -i out.mp4 -i assets/audio/track.wav -map 0:v -map 1:a -c:v copy -c:a aac -b:a 256k out-final.mp4` |
 | A box measured after a transform applied | Read `getBoundingClientRect` once before the first tween, and divide out any parent scale |
 | `repeat: -1` inside the main timeline | Give every loop a finite `repeat` that ends by the plan total |
+| A frosted-glass card exported with a transparent background shows no blur: there is nothing behind it to blur | Give overlay cards a solid fill |
+| Film grain or noise over the whole frame makes the file several times larger | Render with `--crf 23` and compare the frames before shipping |
 
 ## Check and render
 
@@ -86,3 +88,16 @@ node <skill>/scripts/motion-check.mjs out.mp4 plan.md
 `scenes.json` maps each scene name to the element that must be visible half a second into it, plus `"carrier"`. With the sidecar, `check` verifies the plan under seek: each scene's element appears on time and in order, the carrier stays in frame, nothing freezes past 1.4 seconds. It also catches text overflowing its box, held overlaps, occlusion and low contrast.
 
 `check` must print `Check passed`. Open the crop in `snapshots/` for every finding before fixing it. For a 9:16 film add `--caption-zone "x0=0;y0=.8;x1=1;y1=1;severity=error"`.
+
+## Export
+
+The default render above is the one `motion-check` judges. When the user asks for another format, render it as well:
+
+| The user wants | Add to `render` |
+|---|---|
+| A smaller file | `--crf 23` |
+| 4K | `--resolution 4k` (the composition stays 1920 by 1080; Chrome renders at a higher pixel ratio) |
+| A clip to place over footage in Premiere or After Effects | `--format mov` (ProRes 4444 with alpha) or `--format png-sequence`. The page background must be transparent first, or the file holds a solid frame |
+| Film or broadcast rates | `--fps 24`, `--fps 30` |
+
+Keep the 60 fps MP4 as the master, and run `motion-check` on it.
