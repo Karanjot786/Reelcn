@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { AGENT_MARKS } from "@/components/agent-marks";
+import { AgentRotate } from "@/components/agent-rotate";
 import { CopyCommand } from "@/components/copy-command";
 import { JsonLd } from "@/components/json-ld";
 import { PlanPlayer } from "@/components/plan-player";
@@ -26,7 +28,7 @@ const FAQ: [string, string][] = [
   ],
   [
     "What kinds of video does it make?",
-    `Launch films, showreels, title sequences and changelog clips: ${counts.plans} plans. Ask for something else and it adapts the closest one.`,
+    `Launch films, showreels, title sequences, changelog clips and kinetic type: ${counts.plans} plans. Ask for something else and it adapts the closest one.`,
   ],
   [
     "Which coding agents work?",
@@ -51,7 +53,6 @@ const faqJsonLd = {
   "@type": "FAQPage",
   mainEntity: FAQ.map(([name, text]) => ({ "@type": "Question", name, acceptedAnswer: { "@type": "Answer", text } })),
 };
-const AGENTS = ["Claude Code", "Codex", "Cursor", "Gemini CLI", "OpenCode"];
 const launch = filmOf("hyperframes", "launch-film");
 
 /** A starter film with its caption. Click to play; nothing loads until then. */
@@ -110,7 +111,10 @@ export default function MotionDesign() {
           <span className="tc-label" translate="no">
             reelcn-motion
           </span>
-          <h1 id="hero-title">Motion design your agent can plan.</h1>
+          <h1 id="hero-title">
+            Motion design <span className="sr-only">your agent</span>
+            <AgentRotate /> can plan.
+          </h1>
           <p className="lede">
             A free agent skill, MIT licensed. Your agent reads your product, writes a scene plan, builds the film from
             it and checks the render.
@@ -121,8 +125,11 @@ export default function MotionDesign() {
           <dl className="mp-chips">
             <div>
               <dt>Works with</dt>
-              {AGENTS.map((a) => (
-                <dd key={a}>{a}</dd>
+              {AGENT_MARKS.map(({ name, mark }) => (
+                <dd key={name} className="mp-agent">
+                  <span className="mp-mark">{mark(`chip-${name}`)}</span>
+                  {name}
+                </dd>
               ))}
             </div>
             <div>
