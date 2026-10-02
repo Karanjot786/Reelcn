@@ -25,7 +25,7 @@ const INSTALL = "npx skills add Karanjot786/reelcn -s reelcn-motion";
 const FAQ: [string, string][] = [
   [
     "Do I need motion design experience?",
-    "No. The skill carries the rules: one element carries the eye, motion shows meaning, something moves during every read. You approve the plan in plain words.",
+    "No. The skill carries the rules: one element carries the eye, motion shows meaning, something moves during every read. Each film gets its own idea from your material, never a reskinned template. You approve the plan in plain words.",
   ],
   [
     "What kinds of video does it make?",
@@ -41,7 +41,7 @@ const FAQ: [string, string][] = [
   ],
   [
     "How does it check the film?",
-    "motion-check reads the rendered file: how much of it moves, the longest still stretch, one-frame flashes, loudness and true peak, and whether hits land on picture. It also checks the plan for stock copy and for numbers your material does not back.",
+    "motion-check reads the rendered file: how much of it moves, the longest still stretch, one-frame flashes, loudness and true peak, and whether hits land on picture. It also checks the plan for stock copy, stock moves, a missing idea and numbers your material does not back.",
   ],
   [
     "Is it free for client work?",
@@ -56,7 +56,7 @@ const faqJsonLd = {
 };
 const launch = filmOf("hyperframes", "launch-film");
 
-/** A starter film with its caption. Click to play; nothing loads until then. */
+/** A film with its caption. Click to play; nothing loads until then. */
 function FilmFigure({ film, title }: { film: Film; title: string }) {
   return (
     <figure className="mp-film">
@@ -72,8 +72,8 @@ function FilmFigure({ film, title }: { film: Film; title: string }) {
 const STEPS: [string, ReactNode][] = [
   ["Install the skill", <code translate="no">{INSTALL}</code>],
   ["Describe the film", "Make a 15 second launch film for this repo."],
-  ["Approve the plan", "Every scene, its words, its move and its sound, before any code."],
-  ["Build and render", "One continuous film at 60 fps, checked after the render."],
+  ["Approve the plan", "The idea, every scene, its words, its move and its sound, before any code."],
+  ["Build and render", "One continuous film at 60 fps in 1080p, 2K or 4K, checked after the render."],
   ["Ask for a change", "Hold the logo longer. The plan changes first, then the film."],
 ];
 const PACK: [string, string, string][] = [
@@ -173,7 +173,7 @@ export default function MotionDesign() {
               scene, so the film reads as one shot, not a set of slides.
             </p>
           </div>
-          <FilmFigure film={filmOf("hyperframes", "showreel")} title="The showreel starter" />
+          <FilmFigure film={filmOf("hyperframes", "showreel")} title="A portfolio reel made with the skill" />
         </section>
         <section className="block wrap" aria-labelledby="material-title">
           <div className="sec-head">

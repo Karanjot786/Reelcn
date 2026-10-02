@@ -11,13 +11,17 @@ const check = await import(path.resolve(SKILL, "scripts/motion-check.mjs"));
 // The render of each starter. Every starter needs one; the page shows only checked films.
 const SOURCES: Record<string, string> = {
   "hyperframes-launch-film": "out/reelcn-launch-film.mp4",
-  "hyperframes-showreel": "out/film-showreel.mp4",
+  "hyperframes-showreel": "out/karanjot-reel/karanjot-reel-2k.mp4",
   "hyperframes-title-sequence": "out/film-title-sequence.mp4",
   "hyperframes-changelog-clip": "out/film-changelog-clip.mp4",
   "remotion-launch-film": "out/remotion-launch-film.mp4",
   "editframe-launch-film": "out/editframe-launch-film.mp4",
   "fframes-launch-film": "out/fframes-launch-film.mp4",
 };
+
+// Posters picked by eye where the longest hold is a weak frame: the title sequence opens on black,
+// and the showreel's longest hold is a half-typed command, so it shows the full tagline.
+const POSTER_AT: Record<string, string> = { "hyperframes-title-sequence": "3.60", "hyperframes-showreel": "12.80" };
 
 type Run = { start: number; seconds: number };
 const ffmpeg = (args: string[]) => execFileSync("ffmpeg", ["-hide_banner", "-loglevel", "error", "-y", ...args]);
@@ -61,8 +65,7 @@ const films = starters.map((id) => {
   // Poster: the middle of the longest hold, never frame 0.
   const runs: Run[] = check.stillRuns(check.measureEnergy(src), check.TOKENS.targets.movingThreshold);
   const hold = runs.reduce((a, r) => (r.seconds > a.seconds ? r : a), { start: plan.total * 0.7, seconds: 0 });
-  // ponytail: hyperframes-title-sequence holds on black for its first 1.8s, so its poster is the title at 3.6s.
-  const at = id === "hyperframes-title-sequence" ? "3.60" : (hold.start + hold.seconds / 2).toFixed(2);
+  const at = POSTER_AT[id] ?? (hold.start + hold.seconds / 2).toFixed(2);
   ffmpeg(["-ss", at, "-i", src, "-frames:v", "1", "-vf", "scale=-2:720", "-q:v", "3", path.join(OUT, `${id}.jpg`)]);
   const [renderer, ...rest] = id.split("-");
   return {
