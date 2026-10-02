@@ -45,3 +45,5 @@ node <skill>/scripts/motion-check.mjs out.mp4 plan.md
 ```
 
 Editframe has no layout audit. Read the scene sheet and the join strips that `motion-check` writes.
+
+4K and 2K: none yet. `--scale` above 1 stretches the 1080p frame, so the file is bigger but no sharper. Tell the user the film ships at 1080p.

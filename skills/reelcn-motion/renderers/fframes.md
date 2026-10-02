@@ -73,3 +73,5 @@ node <skill>/scripts/motion-check.mjs out.mp4 plan.md
 ```
 
 `inspect` is the layout audit: fix every error it reports. `strip` and `onion` show motion without a full render.
+
+4K: set `WIDTH` and `HEIGHT` in `src/lib.rs` to 3840 and 2160 and write the root `<svg>` viewBox as `"0 0 1920 1080"`, so every coordinate stays as it is. For 2K, downscale as the 2K row in `renderers/hyperframes.md` shows. A 4K render on the GPU can drop one frame's elements; if `motion-check` reports a one-frame flash the 1080p render does not have, render again.

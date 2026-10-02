@@ -54,3 +54,5 @@ node <skill>/scripts/motion-check.mjs out.mp4 plan.md
 ```
 
 Remotion has no layout audit like HyperFrames' `check`. Read the scene sheet and the join strips that `motion-check` writes for overlap, clipping and text off the frame.
+
+4K: add `--scale 2` to `render`. For 2K, downscale that file as the 2K row in `renderers/hyperframes.md` shows.
