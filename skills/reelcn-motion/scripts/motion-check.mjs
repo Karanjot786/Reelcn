@@ -257,6 +257,12 @@ export function checkCopy(plan, material) {
 }
 
 const STARTER_CARRIERS = ["caret", "playhead", "underline", "line of light", "dot"];
+// Words any idea and any material share. A match on these proves nothing.
+const COMMON = new Set(
+  "about after again around becomes before being could every first frame frames other scene scenes should stage still their there these those through under where which while would".split(
+    " ",
+  ),
+);
 const DEV_TOOL = /\b(cli|terminal|command|code|developer|api|npm|git)\b/i;
 
 /** Warnings that the film borrows a starter instead of inventing from the material: the idea, the carrier, the look. */
@@ -266,7 +272,7 @@ export function checkIdea(plan, material) {
     const own = material.toLowerCase();
     const words = (text) => new Set(text.toLowerCase().match(/\p{L}{5,}/gu) ?? []);
     const ownWords = words(material);
-    if (plan.idea && ![...words(plan.idea)].some((w) => ownWords.has(w)))
+    if (plan.idea && ![...words(plan.idea)].some((w) => !COMMON.has(w) && ownWords.has(w)))
       warns.push(`idea "${plan.idea}" names nothing from material.md. Take the metaphor from a named thing in it`);
     for (const word of STARTER_CARRIERS)
       if (wholePhrase(word).test(plan.carrier) && !wholePhrase(word).test(own))

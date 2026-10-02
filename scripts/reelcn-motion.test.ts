@@ -461,3 +461,11 @@ test("every shipped plan and starter plan names an idea, a refusal, a signature 
     assert.deepEqual(check.checkPlan(p), [], file);
   }
 });
+
+test("an idea that shares only common words with material.md still warns", () => {
+  const material = "Every frame of their dashboard, which becomes a stage after launch.";
+  const p = check.parsePlan(header(plan("launch-film"), "idea", "every frame becomes their stage"));
+  assert.match(check.checkIdea(p, material).join("\n"), /names nothing from material\.md/);
+  const own = check.parsePlan(header(plan("launch-film"), "idea", "the dashboard becomes the stage"));
+  assert.doesNotMatch(check.checkIdea(own, material).join("\n"), /names nothing/);
+});
