@@ -8,6 +8,10 @@ tempo: 100
 carrier: a thin line of light, which becomes the title baseline and then a point
 music: generated
 total: 8
+idea: one line of light, like dawn under a door in The Quiet Hours, opens into the title
+refuses: a logo sting over a lens flare
+signature: the line of light parts like a door opening and the title letters sharpen out of blur on the drop
+feel: calm, hushed
 
 | scene | start | length | shows | words | move | live | carrier | sound | join |
 |---|---|---|---|---|---|---|---|---|---|

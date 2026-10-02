@@ -8,6 +8,11 @@ tempo: 120
 carrier: the amber caret, which becomes the selection box, the frame border, the playhead and the logo's timeline stroke
 music: generated
 total: 15
+idea: the terminal where reelcn installs becomes the stage, and its caret carries the eye through every scene
+refuses: a slideshow of logo, feature cards and a call to action
+signature: the word Render collapses into one amber bar, which becomes the timeline stroke of the reelcn logo on the final hit
+feel: fast, exact, confident
+look: Studio dark
 
 | scene | start | length | shows | words | move | live | carrier | sound | join |
 |---|---|---|---|---|---|---|---|---|---|

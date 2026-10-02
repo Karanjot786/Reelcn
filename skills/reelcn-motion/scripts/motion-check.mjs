@@ -92,7 +92,10 @@ function cells(line) {
 
 export function parsePlan(text) {
   const header = {};
-  for (const m of text.matchAll(/^(tempo|carrier|music|total|aspect):[ \t]*(.+)$/gm)) header[m[1]] = m[2].trim();
+  for (const m of text.matchAll(
+    /^(tempo|carrier|music|total|aspect|idea|refuses|signature|feel|look|quality):[ \t]*(.+)$/gm,
+  ))
+    header[m[1]] = m[2].trim();
   const rows = text.split("\n").filter((line) => line.trim().startsWith("|"));
   if (rows.length < 3) throw new Error("plan has no scene table");
   const cols = cells(rows[0]);
@@ -131,9 +134,22 @@ export function parsePlan(text) {
     music: music[0] === "none" ? null : { source: music[0], offset: Number(music[2] ?? 0) },
     total: Number(header.total),
     aspect: header.aspect ?? "16:9",
+    idea: header.idea ?? "",
+    refuses: header.refuses ?? "",
+    signature: header.signature ?? "",
+    feel: header.feel ?? "",
+    look: header.look ?? "",
+    quality: header.quality ?? "",
     scenes,
   };
 }
+
+// The stock moves in moves.md. A signature is invented for the film, so it never names one of these.
+const STOCK_MOVES = [...readFileSync(path.join(HERE, "../references/moves.md"), "utf8").matchAll(/^## (.+)$/gm)].map(
+  (m) => m[1].trim(),
+);
+const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const wholePhrase = (p) => new RegExp(`(^|[^\\p{L}])${escapeRegExp(p)}($|[^\\p{L}])`, "iu");
 
 // Live motion must change information while the words are read. Idle loops alone do not count.
 const IDLE = /\b(grain|breath\w*|puls\w*|loop\w*|drift\w*|shimmer\w*|glow\w*|float\w*|blink\w*|bob\w*)\b/i;
@@ -146,6 +162,22 @@ export function checkPlan(plan) {
   const miss = (scene, text) => misses.push(`${scene ? `${scene.name}: ` : ""}${text}`);
   if (!(plan.total > 0)) miss(null, "total must be a number of seconds");
   if (!plan.carrier) miss(null, "name the carrier: the element that survives every scene change");
+  if (!plan.idea)
+    miss(null, "write the idea: one visual metaphor for this film, taken from a named thing in material.md");
+  if (!plan.refuses)
+    miss(null, 'write refuses: the category default this film avoids, like "a slideshow of logo, feature cards, CTA"');
+  if (!plan.signature)
+    miss(null, "write the signature: one move invented for this film, landing once at the drop or the final hit");
+  const stock = plan.signature && STOCK_MOVES.find((name) => wholePhrase(name).test(plan.signature));
+  if (stock)
+    miss(null, `signature "${plan.signature}" is the stock move "${stock}" from moves.md. Invent a move for this film`);
+  const feel = (plan.feel ?? "")
+    .split(",")
+    .map((w) => w.trim())
+    .filter(Boolean);
+  if (!plan.feel) miss(null, 'write the feel: two or three adjectives, like "calm, exact" or "loud, playful"');
+  else if (feel.length < 2 || feel.length > 3)
+    miss(null, `feel "${plan.feel}" has ${feel.length} words, write two or three, comma-separated`);
   if (plan.music && !(plan.tempo > 0)) miss(null, "tempo must be a number of beats per minute");
   if (!TOKENS.aspect[plan.aspect])
     miss(null, `aspect "${plan.aspect}" is not one of ${Object.keys(TOKENS.aspect).join(", ")}`);
@@ -222,6 +254,31 @@ export function checkCopy(plan, material) {
     }
   }
   return tells.length >= 2 ? { misses: [...misses, ...tells], warns: [] } : { misses, warns: tells };
+}
+
+const STARTER_CARRIERS = ["caret", "playhead", "underline", "line of light", "dot"];
+const DEV_TOOL = /\b(cli|terminal|command|code|developer|api|npm|git)\b/i;
+
+/** Warnings that the film borrows a starter instead of inventing from the material: the idea, the carrier, the look. */
+export function checkIdea(plan, material) {
+  const warns = [];
+  if (material) {
+    const own = material.toLowerCase();
+    const words = (text) => new Set(text.toLowerCase().match(/\p{L}{5,}/gu) ?? []);
+    const ownWords = words(material);
+    if (plan.idea && ![...words(plan.idea)].some((w) => ownWords.has(w)))
+      warns.push(`idea "${plan.idea}" names nothing from material.md. Take the metaphor from a named thing in it`);
+    for (const word of STARTER_CARRIERS)
+      if (wholePhrase(word).test(plan.carrier) && !wholePhrase(word).test(own))
+        warns.push(
+          `carrier "${plan.carrier}" borrows the starter's "${word}", which material.md never names. Take the carrier from the subject's own shape`,
+        );
+  }
+  if (/studio dark/i.test(plan.look ?? "") && !DEV_TOOL.test(plan.idea ?? ""))
+    warns.push(
+      `look "Studio dark" is the launch film's look, and the idea names no developer tool. Derive the look from the idea`,
+    );
+  return warns;
 }
 
 /** Samples from ffmpeg's metadata print. ffmpeg writes tiny values in scientific notation, like 6.94e-05. */
@@ -441,6 +498,7 @@ function main(argv) {
   const materialPath = near.find((p) => p && existsSync(p));
   const material = materialPath ? readFileSync(materialPath, "utf8") : null;
   if (!material) warns.push("no .reelcn-motion/material.md found: numbers on screen were not traced to the material");
+  warns.push(...checkIdea(plan, material));
   const copy = checkCopy(plan, material);
   misses.push(...copy.misses);
   warns.push(...copy.warns);

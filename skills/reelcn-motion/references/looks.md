@@ -1,12 +1,23 @@
 # Looks
 
-The brand comes first: colors, fonts and logo from `material.md`. Use a look below only when the user has no brand, or asks for one by name. One look per film. Write its name in the plan header as `look:` so a later change keeps it.
+The brand comes first: colors, fonts and logo from `material.md`. With no brand, derive the look from the plan's `idea:` line: a chalkboard menu gets chalk on slate, a field guide gets paper and ink. The looks below are reference films, not defaults. Use one as is only when the user asks for it by name. One look per film. Write its name or a short description in the plan header as `look:` so a later change keeps it.
+
+## Feel sets the curves
+
+The plan's `feel:` line picks the motion, after IBM Carbon's productive and expressive motion. The film's curves follow its feel, never `power4` by default.
+
+| Feel | Durations | Curves | Overshoot |
+|---|---|---|---|
+| Productive: exact, calm, technical, quiet | Short: arrivals 0.2 to 0.35s, hops under 0.15s | `power2.out`, `power3.out` | None |
+| Expressive: bold, playful, loud, warm | Longer arrivals: 0.4 to 0.7s, with a held beat after | `back.out`, `power4.out` | Allowed, on the key element |
+
+A mixed feel, like "warm, exact", takes productive curves for the UI and one expressive move for the signature.
 
 Every look keeps the bar in `SKILL.md`: a carrier, live motion during each read, real material.
 
 ## Studio dark
 
-The launch film's look. For products, libraries and developer tools.
+The launch film's own look, made for a terminal and a component library. Not a fallback: use it when the idea is a developer tool, a CLI or code.
 
 - Ground: near-black `#0a0b0d`, light text `#f2f3f5`, muted `#8a8f98`, one accent `#ffb224` for the carrier and the key word.
 - Type: IBM Plex Sans 700 for headlines, Plex Sans Condensed 700 for full-frame words, Plex Mono 500 for commands and counters. Files: `starters/hyperframes-launch-film/assets/fonts/`.

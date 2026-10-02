@@ -397,3 +397,67 @@ test("SKILL.md names a starter for every renderer", () => {
   const skill = readFileSync(`${SKILL}/SKILL.md`, "utf8");
   for (const name of RENDERERS) assert.ok(skill.includes(`starters/${name}-launch-film/`), name);
 });
+
+const header = (text: string, line: string, value: string | null) =>
+  value === null
+    ? text.replace(new RegExp(`^${line}:.*\\n`, "m"), "")
+    : text.replace(new RegExp(`^${line}:.*$`, "m"), `${line}: ${value}`);
+
+test("a plan without an idea, a refusal, a signature or a feel is reported", () => {
+  for (const [line, word] of [
+    ["idea", /write the idea/],
+    ["refuses", /write refuses/],
+    ["signature", /write the signature/],
+    ["feel", /write the feel/],
+  ] as const) {
+    const misses = check.checkPlan(check.parsePlan(header(plan("launch-film"), line, null))).join("\n");
+    assert.match(misses, word, line);
+  }
+});
+
+test("the plan header reads idea, refuses, signature, feel, look and quality", () => {
+  const p = check.parsePlan(`quality: 4K\n${plan("launch-film")}`);
+  for (const key of ["idea", "refuses", "signature", "feel", "look"]) assert.ok(p[key], key);
+  assert.equal(p.quality, "4K");
+});
+
+test("a signature named after a stock move from moves.md is reported", () => {
+  for (const sig of ["Flood", "the page floods with a flood of light", "a collapse to logo on the hit"]) {
+    const misses = check.checkPlan(check.parsePlan(header(plan("launch-film"), "signature", sig))).join("\n");
+    assert.match(misses, /is the stock move/, sig);
+  }
+});
+
+test("a feel of one word or four words is reported", () => {
+  for (const feel of ["calm", "calm, exact, loud, warm"]) {
+    const misses = check.checkPlan(check.parsePlan(header(plan("launch-film"), "feel", feel))).join("\n");
+    assert.match(misses, /write two or three/, feel);
+  }
+  assert.deepEqual(check.checkPlan(check.parsePlan(header(plan("launch-film"), "feel", "calm, exact"))), []);
+});
+
+test("an idea from nowhere, a starter carrier and Studio dark without a dev tool warn", () => {
+  const p = check.parsePlan(plan("launch-film"));
+  const material = "Terminal install: npx shadcn add. Selection box, amber logo stroke, playhead on the timeline.";
+  const warns = check.checkIdea(p, material).join("\n");
+  assert.match(warns, /carrier .* borrows the starter's "caret"/);
+  assert.doesNotMatch(warns, /"playhead"/);
+  assert.doesNotMatch(warns, /names nothing from material\.md/);
+  const lost = check.checkIdea(check.parsePlan(header(plan("launch-film"), "idea", "a river of glass")), material);
+  assert.match(lost.join("\n"), /idea "a river of glass" names nothing from material\.md/);
+  const bakery = check.parsePlan(header(plan("launch-film"), "idea", "her bakery's chalkboard menu becomes the stage"));
+  assert.match(check.checkIdea(bakery, null).join("\n"), /look "Studio dark" is the launch film's look/);
+  assert.deepEqual(check.checkIdea(p, null), []);
+});
+
+test("every shipped plan and starter plan names an idea, a refusal, a signature and a feel", () => {
+  const files = [
+    ...PLANS.map((name) => `${SKILL}/plans/${name}.md`),
+    ...readdirSync(`${SKILL}/starters`).map((d) => `${SKILL}/starters/${d}/plan.md`),
+  ];
+  for (const file of files) {
+    const p = check.parsePlan(readFileSync(file, "utf8"));
+    for (const key of ["idea", "refuses", "signature", "feel"]) assert.ok(p[key], `${file} lacks ${key}`);
+    assert.deepEqual(check.checkPlan(p), [], file);
+  }
+});

@@ -8,6 +8,10 @@ tempo: 120
 carrier: the accent dot, which becomes the label chip and returns to the logo
 music: generated
 total: 12
+idea: the Relay logo's dot becomes the release label, stamping each change as the version rolls forward
+refuses: a bulleted list of changes faded in one line at a time
+signature: the label chip shrinks back into the dot of the Relay logo on the final hit, closing the release
+feel: crisp, cheerful
 
 | scene | start | length | shows | words | move | live | carrier | sound | join |
 |---|---|---|---|---|---|---|---|---|---|

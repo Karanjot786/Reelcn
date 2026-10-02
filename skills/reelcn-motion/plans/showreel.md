@@ -8,6 +8,10 @@ tempo: 120
 carrier: the accent underline, which becomes the photo frame, the card edge, a chart bar and the link underline
 music: generated
 total: 15
+idea: Maya's three projects are dealt like a hand of cards from the underline under her name
+refuses: a grid of project thumbnails under a name card
+signature: the photo frame splits into three project cards, dealt and fanned like a hand on the drop
+feel: warm, confident
 
 | scene | start | length | shows | words | move | live | carrier | sound | join |
 |---|---|---|---|---|---|---|---|---|---|

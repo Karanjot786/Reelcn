@@ -15,6 +15,11 @@ carrier: an accent bar that underlines the key word on each screen and ends as t
 music: generated
 aspect: 9:16
 total: 15
+idea: the user's own script, each key word struck by one accent bar like a pen marking a page
+refuses: centered subtitles fading on and off over a gradient
+signature: the last words fall onto the bar, which shrinks to a single point on the final hit
+feel: loud, blunt
+look: Kinetic type
 
 | scene | start | length | shows | words | move | live | carrier | sound | join |
 |---|---|---|---|---|---|---|---|---|---|
