@@ -13,9 +13,9 @@
       "renderer": "editframe",
       "plan": "launch-film",
       "video": "/motion/editframe-launch-film.mp4",
-      "poster": "/motion/editframe-launch-film.jpg",
+      "poster": "/motion/editframe-launch-film.webp",
       "seconds": 15,
-      "bytes": 891401,
+      "bytes": 2091371,
       "scenes": [
         {
           "name": "command",
@@ -66,9 +66,9 @@
       "renderer": "fframes",
       "plan": "launch-film",
       "video": "/motion/fframes-launch-film.mp4",
-      "poster": "/motion/fframes-launch-film.jpg",
+      "poster": "/motion/fframes-launch-film.webp",
       "seconds": 15,
-      "bytes": 907385,
+      "bytes": 2824403,
       "scenes": [
         {
           "name": "command",
@@ -119,9 +119,9 @@
       "renderer": "hyperframes",
       "plan": "changelog-clip",
       "video": "/motion/hyperframes-changelog-clip.mp4",
-      "poster": "/motion/hyperframes-changelog-clip.jpg",
+      "poster": "/motion/hyperframes-changelog-clip.webp",
       "seconds": 12,
-      "bytes": 657380,
+      "bytes": 2562718,
       "scenes": [
         {
           "name": "version",
@@ -160,9 +160,9 @@
       "renderer": "hyperframes",
       "plan": "launch-film",
       "video": "/motion/hyperframes-launch-film.mp4",
-      "poster": "/motion/hyperframes-launch-film.jpg",
+      "poster": "/motion/hyperframes-launch-film.webp",
       "seconds": 15,
-      "bytes": 870126,
+      "bytes": 2715881,
       "scenes": [
         {
           "name": "command",
@@ -213,9 +213,9 @@
       "renderer": "hyperframes",
       "plan": "showreel",
       "video": "/motion/hyperframes-showreel.mp4",
-      "poster": "/motion/hyperframes-showreel.jpg",
+      "poster": "/motion/hyperframes-showreel.webp",
       "seconds": 15,
-      "bytes": 763907,
+      "bytes": 2531305,
       "scenes": [
         {
           "name": "greeting",
@@ -266,9 +266,9 @@
       "renderer": "hyperframes",
       "plan": "title-sequence",
       "video": "/motion/hyperframes-title-sequence.mp4",
-      "poster": "/motion/hyperframes-title-sequence.jpg",
+      "poster": "/motion/hyperframes-title-sequence.webp",
       "seconds": 8,
-      "bytes": 412290,
+      "bytes": 3910232,
       "scenes": [
         {
           "name": "dark",
@@ -301,9 +301,9 @@
       "renderer": "remotion",
       "plan": "launch-film",
       "video": "/motion/remotion-launch-film.mp4",
-      "poster": "/motion/remotion-launch-film.jpg",
+      "poster": "/motion/remotion-launch-film.webp",
       "seconds": 15,
-      "bytes": 931121,
+      "bytes": 2896870,
       "scenes": [
         {
           "name": "command",

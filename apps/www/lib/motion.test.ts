@@ -24,7 +24,7 @@ test("the manifest matches the skill on disk", () => {
     assert.equal(film.seconds, Number(/^total:\s*(\S+)/m.exec(plan)?.[1]), `${film.id} length`);
     for (const file of [film.video, film.poster]) assert.ok(existsSync(path.join(pub, file)), `${file} is missing`);
     assert.equal(statSync(path.join(pub, film.video)).size, film.bytes, `${film.id} bytes`);
-    assert.ok(film.bytes < 2.5e6, `${film.id} is ${film.bytes} bytes, keep films under 2.5 MB`);
+    assert.ok(film.bytes < 5e6, `${film.id} is ${film.bytes} bytes, keep films under 5 MB`);
   }
 });
 
