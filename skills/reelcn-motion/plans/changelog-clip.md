@@ -2,7 +2,7 @@
 
 Use for: release notes as a short clip: one version, up to three changes.
 Avoid for: a first launch. Use launch-film.
-Built example: `starters/hyperframes-changelog-clip/` in this skill.
+Reference film, to study and never copy: `starters/hyperframes-changelog-clip/` in this skill.
 
 tempo: 120
 carrier: the accent dot, which becomes the label chip and returns to the logo

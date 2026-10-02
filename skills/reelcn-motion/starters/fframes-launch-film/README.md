@@ -2,7 +2,7 @@
 
 The reelcn launch film on fframes 1.1.0, Rust and SVG: 15 seconds, 1920 by 1080, 60 fps. The motion is the HyperFrames timeline replayed in `src/motion.rs` with GSAP's own ease formulas.
 
-Adapt it: replace the files in `media/` and the words in `src/lib.rs`, then regenerate the track and render.
+This is a reference film. Study its timing, its carrier and its moves, then build your own film from your plan and your material. Do not ship it with new words and images: that is the generic template this skill exists to avoid.
 
 ```bash
 cargo build --release

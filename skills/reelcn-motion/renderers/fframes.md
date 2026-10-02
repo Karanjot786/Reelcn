@@ -11,6 +11,8 @@ cargo install --locked cargo-fframes@1.1.0
 cp -R <skill>/starters/fframes-launch-film my-film && cd my-film && cargo build --release
 ```
 
+This copies a working project with the reelcn launch film inside, as a reference. Keep its setup, `src/motion.rs` and `src/main.rs`; replace the scenes in `src/lib.rs` and the files in `media/` with a new film built from your plan. Never ship the launch film's scenes with new words and images.
+
 The first build takes about 3 minutes on an Apple M1. After that the starter renders its 15 seconds in about 10 seconds on the GPU (Metal on macOS, Vulkan on Linux and Windows). With no GPU, create the project with `cargo fframes new <name> --backend cpu`: it builds in about 90 seconds and has no preview window. The spike rendered 3 seconds in 1.1 seconds on the CPU. Vendor skill: https://github.com/dmtrKovalenko/fframes/tree/main/skills/fframes-video.
 
 ## Contract

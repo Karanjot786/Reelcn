@@ -2,7 +2,7 @@
 
 A 12 second release clip for one version and three changes: the version rolls from 2.3 to 2.4, then a label chip carries each change (New, Improved, Fixed) while the app window shows it happening: a cursor opens a preview link, two build bars race to "3.0x", a missing log line drops into its gap. 1920 by 1080, 60 fps, 120 BPM generated track. Its plan is `plan.md`.
 
-Adapt it: the logo and brand color in `index.html` (`#mark`, `--blue`), the version digits in `#minor`, the three headlines, and the UI inside `#paneA`, `#paneB` and `#paneC`. Replace the mocked UI with screenshots or markup from the real product when you have them.
+This is a reference film. Study its timing, its carrier and its moves, then build your own film from your plan and your material. Do not ship it with new words and images: that is the generic template this skill exists to avoid.
 
 ```bash
 node <skill>/scripts/motion-track.mjs cues.json assets/audio/track.wav

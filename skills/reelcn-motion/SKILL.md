@@ -26,7 +26,7 @@ The example to study before building: `starters/hyperframes-launch-film/`, a ful
 Read: `references/material.md`, then `references/storyboard.md`, `references/choreography.md`, `references/pacing.md`
 
 - Gather the material first: read the user's codebase, clone the GitHub repo they name, or capture their live URL. A local web app: run it and capture localhost, as `references/material.md` says. Write `.reelcn-motion/material.md`.
-- Pick the closest file in `plans/` and adapt it, or write a new plan in the same format. Save it as `plan.md`.
+- Read the closest file in `plans/` for structure only: scene count, pacing, sound. Then write this film's own plan, its scenes invented from the user's material. Save it as `plan.md`.
 - "Showreel for a résumé" about a product asks for quality: use `plans/launch-film.md`. With no product named, the film shows the repository in the working folder: its README, code and name. Never make the film about yourself.
 - Ask once, before the plan: the aspect (16:9, 9:16 or 1:1) and the export quality (1080p, 2K or 4K). No answer: 15 seconds, 16:9, 1080p, 60 fps, generated music. Write them in the plan header so the user sees them.
 - A request for 30 fps: say the motion check needs 50 or more, propose 60, and ask.
@@ -56,7 +56,7 @@ Read: `renderers/<name>.md` for `hyperframes`, `remotion`, `editframe` or `ffram
 | Editframe | The project uses Editframe | `starters/editframe-launch-film/` |
 | fframes | The user wants Rust or a native binary | `starters/fframes-launch-film/` |
 
-Other plans on Remotion, Editframe or fframes: adapt the launch film starter, with scene patterns from `renderers/hyperframes.md`. Another renderer has no guide: say so and offer HyperFrames before building. Gate: the toolchain check in the guide passes.
+On Remotion, Editframe or fframes: keep the starter's project setup and clock, and build every scene new, with patterns from `renderers/hyperframes.md`. Another renderer has no guide: say so and offer HyperFrames before building. Gate: the toolchain check in the guide passes.
 
 ### 4. Build
 

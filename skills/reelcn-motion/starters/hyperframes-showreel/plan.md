@@ -2,7 +2,7 @@
 
 Use for: a portfolio intro or a studio reel opener.
 Avoid for: one product with features to explain. Use launch-film.
-Built example: `starters/hyperframes-showreel/` in this skill.
+Reference film, to study and never copy: `starters/hyperframes-showreel/` in this skill.
 
 tempo: 120
 carrier: the accent underline, which becomes the photo frame, the card edge, a chart bar and the link underline

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import type { ReactNode } from "react";
 import { AGENT_MARKS } from "@/components/agent-marks";
 import { AgentRotate } from "@/components/agent-rotate";
@@ -28,7 +29,7 @@ const FAQ: [string, string][] = [
   ],
   [
     "What kinds of video does it make?",
-    `Launch films, showreels, title sequences, changelog clips and kinetic type: ${counts.plans} plans. Ask for something else and it adapts the closest one.`,
+    `Launch films, showreels, title sequences, changelog clips and kinetic type: ${counts.plans} plans. Ask for something else and it plans a new film from the closest structure.`,
   ],
   [
     "Which coding agents work?",
@@ -84,7 +85,7 @@ const PACK: [string, string, string][] = [
   [
     "starters",
     "Scene starters",
-    `${counts.starters} finished films to adapt, each with its plan, music cues and assets.`,
+    `${counts.starters} finished reference films to study, each with its plan, music cues and assets.`,
   ],
   [
     "tokens",
@@ -138,7 +139,15 @@ export default function MotionDesign() {
             <div>
               <dt>Renders with</dt>
               {RENDERER_ORDER.map((r) => (
-                <dd key={r} translate="no">
+                <dd key={r} className="mp-agent" translate="no">
+                  {/* Renderer logos from motionvideohq/motionvideo.xyz public/logos (MIT). */}
+                  <Image
+                    className={`mp-mark${r === "editframe" ? " mp-invert" : ""}`}
+                    src={`/logos/${r}.${r === "fframes" ? "svg" : "png"}`}
+                    alt=""
+                    width={14}
+                    height={14}
+                  />
                   {RENDERER_NAMES[r]}
                 </dd>
               ))}

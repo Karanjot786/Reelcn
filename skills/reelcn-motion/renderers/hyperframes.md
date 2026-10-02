@@ -11,11 +11,11 @@ node --version && ffmpeg -version | head -1
 npx --yes hyperframes@0.8.96 doctor
 ```
 
-Start from the starter, a full film to adapt. It ships inside this skill:
+The starters in this skill are reference films: study how they move, never copy one as the base of a new film. A new film gets a new folder with the project setup only, then a new `index.html` written from its plan:
 
 ```bash
-cp -R <skill>/starters/hyperframes-launch-film my-film
-cd my-film
+mkdir my-film && cd my-film
+cp <skill>/starters/hyperframes-launch-film/{hyperframes.json,package.json} .
 ```
 
 `<skill>` is the folder holding this skill's `SKILL.md`.

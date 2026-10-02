@@ -11,6 +11,8 @@ node --version && ffmpeg -version | head -1
 cp -R <skill>/starters/remotion-launch-film my-film && cd my-film && npm install
 ```
 
+This copies a working project with the reelcn launch film inside, as a reference. Keep its setup and its clock (`src/LaunchFilm.tsx`); replace `src/film.ts` and `public/assets/` with a new film built from your plan. Never ship the launch film's scenes with new words and images.
+
 For API details load the vendor's `remotion-best-practices` skill: https://github.com/remotion-dev/skills.
 
 ## Contract

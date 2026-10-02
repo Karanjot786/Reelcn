@@ -2,7 +2,7 @@
 
 A 15 second portfolio intro: a greeting rises off a coral underline, the underline blooms into a portrait, the portrait becomes the first of three project cards dealt in on the beat, one project opens full frame and a cursor pays in one tap, two numbers roll up, three words move the way they mean, and the underline draws the site link. 1920 by 1080, 60 fps, 120 BPM generated track. Its plan is `plan.md`.
 
-Adapt it: the name, roles and words in `index.html`; the monogram in `#mono` (or an `<img>` of a real portrait inside `#c1`); the three project images in `assets/work/`; the checkout UI in `#checkout` (replace it with one real project in use); the numbers in `#n1` and `#n2`; the site in `#site`.
+This is a reference film. Study its timing, its carrier and its moves, then build your own film from your plan and your material. Do not ship it with new words and images: that is the generic template this skill exists to avoid.
 
 ```bash
 node <skill>/scripts/motion-track.mjs cues.json assets/audio/track.wav

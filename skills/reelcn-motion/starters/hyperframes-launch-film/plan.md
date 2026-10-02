@@ -2,7 +2,7 @@
 
 Use for: a product or library launch, told through the product itself.
 Avoid for: release notes. Use changelog-clip.
-Built example: `starters/hyperframes-launch-film/` in this skill, the film this plan describes.
+Reference film, to study and never copy: `starters/hyperframes-launch-film/` in this skill, the film this plan describes.
 
 tempo: 120
 carrier: the amber caret, which becomes the selection box, the frame border, the playhead and the logo's timeline stroke

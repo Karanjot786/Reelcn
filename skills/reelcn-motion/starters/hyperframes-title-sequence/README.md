@@ -2,7 +2,7 @@
 
 An 8 second opener: a line of light draws across the dark, opens into the title, carries the credit along its baseline, and shrinks to a point under the year. 1920 by 1080, 60 fps, 100 BPM generated track. Its plan is `plan.md`.
 
-Adapt it: change the title letters, the credit and the year in `index.html`. Keep one letter per `span` in the title so the focus-in stagger works.
+This is a reference film. Study its timing, its carrier and its moves, then build your own film from your plan and your material. Do not ship it with new words and images: that is the generic template this skill exists to avoid.
 
 ```bash
 node <skill>/scripts/motion-track.mjs cues.json assets/audio/track.wav

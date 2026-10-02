@@ -2,7 +2,7 @@
 
 Use for: a script, a hook or an opinion with no footage and no product screens. One sentence per screen, the user's exact words.
 Avoid for: a product with screens to show. Use launch-film.
-Built example: none yet. The type and timing patterns are in `starters/hyperframes-title-sequence/`; the look is in `references/looks.md`.
+Reference film: none yet. The type and timing patterns are in `starters/hyperframes-title-sequence/`; the look is in `references/looks.md`.
 
 Rules for this plan:
 

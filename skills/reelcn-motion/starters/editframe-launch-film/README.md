@@ -2,7 +2,7 @@
 
 The reelcn launch film on Editframe 0.59.47: 15 seconds, 1920 by 1080, 60 fps. The same plan, markup, styles and GSAP timeline as the HyperFrames starter. Editframe seeks the timeline from a frame task.
 
-Adapt it: replace the thumbnails in `src/assets/thumbs/`, the renders in `src/assets/stills/`, and the words in `src/film.js`, then regenerate the track and render.
+This is a reference film. Study its timing, its carrier and its moves, then build your own film from your plan and your material. Do not ship it with new words and images: that is the generic template this skill exists to avoid.
 
 ```bash
 npm install

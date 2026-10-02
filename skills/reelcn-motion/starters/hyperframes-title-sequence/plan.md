@@ -2,7 +2,7 @@
 
 Use for: a film, talk or series opener with a title and one credit.
 Avoid for: anything selling a product. Use launch-film.
-Built example: `starters/hyperframes-title-sequence/` in this skill.
+Reference film, to study and never copy: `starters/hyperframes-title-sequence/` in this skill.
 
 tempo: 100
 carrier: a thin line of light, which becomes the title baseline and then a point

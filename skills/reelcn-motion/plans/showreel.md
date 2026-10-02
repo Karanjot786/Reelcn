@@ -2,7 +2,7 @@
 
 Use for: a person's or a studio's portfolio opener, built from their real work.
 Avoid for: "a showreel for a résumé, go all out" about a product. That line asks for quality, not a portfolio: use launch-film.
-Built example: `starters/hyperframes-showreel/` in this skill.
+Reference film, to study and never copy: `starters/hyperframes-showreel/` in this skill.
 
 tempo: 120
 carrier: the accent underline, which becomes the photo frame, the card edge, a chart bar and the link underline
