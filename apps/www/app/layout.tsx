@@ -2,6 +2,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { RootProvider } from "fumadocs-ui/provider/next";
 import type { Metadata } from "next";
 import { IBM_Plex_Mono, IBM_Plex_Sans, IBM_Plex_Sans_Condensed } from "next/font/google";
+import { Analytics as TrailAnalytics } from "trail-analytics/next";
 import { ClarityAnalytics } from "@/components/clarity";
 import { JsonLd } from "@/components/json-ld";
 import { REPO_URL } from "@/lib/layout.shared";
@@ -58,6 +59,8 @@ export default function Layout({ children }: LayoutProps<"/">) {
         {/* Page views and referrers, so search traffic is visible. Collects nothing until Web Analytics is on in Vercel. */}
         <Analytics />
         <ClarityAnalytics />
+        {/* Trail: first-party, cookieless page views, served through proxy.ts at /t/*. */}
+        <TrailAnalytics site="reelcn" src="/t/t.js" api="/t/e" />
       </body>
     </html>
   );
